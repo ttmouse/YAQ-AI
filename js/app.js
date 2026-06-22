@@ -176,16 +176,12 @@
       // 专项检查任务
       tasks: [
         // 日常任务（优先级最高）
-        { name: '今日到期整改事项跟进', startDate: '2026-06-29', endDate: '2026-06-29', covered: 3, rate: '33%', progress: '100%', hazards: '-', majorHazards: '-', creator: '系统', region: '全片区', risk: '-', lag: true, type: '日常', priority: 1 },
-        { name: '超期未整改对象督办', startDate: '2026-06-22', endDate: '2026-06-29', covered: 2, rate: '0%', progress: '100%', hazards: 2, majorHazards: 2, creator: '系统', region: '良渚/五常', risk: '-', lag: true, type: '日常', priority: 2 },
-        { name: '高层小区消防专项核查', startDate: '2026-06-01', endDate: '2026-06-30', covered: 8, rate: '42%', progress: '100%', hazards: 3, majorHazards: 1, creator: '张毅', region: '全片区', risk: '-', lag: true, type: '日常', priority: 3 },
+        { name: '今日到期整改事项跟进', line: '安全生产组', startDate: '2026-06-29', endDate: '2026-06-29', covered: 3, rate: '33%', progress: '100%', hazards: '-', majorHazards: '-', creator: '系统', region: '全片区', risk: '-', lag: true, type: '日常', priority: 1 },
+        { name: '超期未整改对象督办', line: '安全生产组', startDate: '2026-06-22', endDate: '2026-06-29', covered: 2, rate: '0%', progress: '100%', hazards: 2, majorHazards: 2, creator: '系统', region: '良渚/五常', risk: '-', lag: true, type: '日常', priority: 2 },
+        { name: '高层小区消防专项核查', line: '消防安全组', startDate: '2026-06-01', endDate: '2026-06-30', covered: 8, rate: '42%', progress: '100%', hazards: 3, majorHazards: 1, creator: '张毅', region: '全片区', risk: '-', lag: true, type: '日常', priority: 3 },
         // 专项任务
-        { name: '2026年01月-2026年06月物流片较大风险检查任务', startDate: '2026-01-01', endDate: '2026-06-30', covered: 31, rate: '96%', progress: '100%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '物流片', risk: '较大风险', lag: false, type: '专项' },
-        { name: '2026年第二季度物流片重大风险检查任务', startDate: '2026-04-01', endDate: '2026-06-30', covered: 30, rate: '91%', progress: '98%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '物流片', risk: '重大风险', lag: true, type: '专项' },
-        { name: '2026年01月-2026年06月良渚片较大风险检查任务', startDate: '2026-01-01', endDate: '2026-06-30', covered: 140, rate: '96%', progress: '100%', hazards: 1, majorHazards: 0, creator: '范嘉杰', region: '良渚片', risk: '较大风险', lag: false, type: '专项' },
-        { name: '2026年第二季度良渚片重大风险检查任务', startDate: '2026-04-01', endDate: '2026-06-30', covered: 141, rate: '0%', progress: '91%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '良渚片', risk: '重大风险', lag: true, type: '专项' },
-        { name: '2026年01月-2026年06月勾庄片较大风险检查任务', startDate: '2026-01-01', endDate: '2026-06-30', covered: 110, rate: '96%', progress: '100%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '勾庄片', risk: '较大风险', lag: false, type: '专项' },
-        { name: '2026年第二季度勾庄片重大风险检查任务', startDate: '2026-04-01', endDate: '2026-06-30', covered: 65, rate: '0%', progress: '91%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '勾庄片', risk: '重大风险', lag: true, type: '专项' }
+        { name: '2026年第二季度良渚片重大风险检查任务', line: '企业安全组', startDate: '2026-04-01', endDate: '2026-06-30', covered: 141, rate: '0%', progress: '91%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '良渚片', risk: '重大风险', lag: true, type: '专项' },
+        { name: '2026年01月-2026年06月物流片较大风险检查任务', line: '企业安全组', startDate: '2026-01-01', endDate: '2026-06-30', covered: 31, rate: '96%', progress: '100%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '物流片', risk: '较大风险', lag: false, type: '专项' }
       ],
 
       // 分级处置事项（内部管理 + 外部管理双线）
@@ -531,6 +527,7 @@
         '<thead><tr style="border-bottom:1px solid var(--border);background:var(--fg-soft)">' +
           '<th style="padding:7px 10px;text-align:left;font-weight:500;color:var(--weak);font-size:9px">任务名称</th>' +
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">类型</th>' +
+          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">条线</th>' +
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">完成进度</th>' +
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">时间进度</th>' +
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:50px">完成率</th>' +
@@ -552,6 +549,7 @@
           html += '<tr style="border-bottom:1px solid var(--border)">' +
             '<td style="padding:7px 10px;font-weight:500;color:var(--text);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + t.name + '</td>' +
             '<td style="padding:7px 10px;text-align:center;white-space:nowrap"><span style="font-size:10px;font-weight:600;color:' + (t.type === '日常' ? '#98a2b3' : 'var(--blue)') + '">' + (t.type === '日常' ? '日常任务' : '专项任务') + '</span></td>' +
+            '<td style="padding:7px 10px;text-align:center;font-size:10px;color:var(--muted);white-space:nowrap">' + (t.line || '—') + '</td>' +
             '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + rateNum + '%;height:100%;border-radius:999px;background:' + colorBar + '"></div></div><span style="font-size:11px;font-weight:600;color:' + colorBar + '">' + t.rate + '</span></div></td>' +
             '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + (parseInt(t.progress) || 0) + '%;height:100%;border-radius:999px;background:#98a2b3"></div></div><span style="font-size:11px;font-weight:600;color:#98a2b3">' + (t.progress || '-') + '</span></div></td>' +
             '<td style="padding:7px 10px;text-align:center;font-weight:700;color:' + colorBar + '">' + t.rate + '</td>' +
