@@ -1680,28 +1680,33 @@
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">时间进度</th>' +
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:50px">完成率</th>' +
           '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:50px">覆盖</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:72px">隐患总数/重大</th>' +
+          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;white-space:nowrap;width:85px">隐患总数/重大</th>' +
           '<th style="padding:7px 10px;text-align:right;font-weight:500;color:var(--weak);font-size:9px;width:78px">开始时间</th>' +
           '<th style="padding:7px 10px;text-align:right;font-weight:500;color:var(--weak);font-size:9px;width:78px">结束时间</th>' +
           '<th style="padding:7px 10px;text-align:right;font-weight:500;color:var(--weak);font-size:9px;width:50px">创建</th>' +
         '</tr></thead><tbody>';
-      for (var ti = 0; ti < tasks.length; ti++) {
-        var t = tasks[ti];
-        var riskColor = t.risk === '重大风险' ? 'var(--red)' : '#d97706';
-        var rateNum = parseInt(t.rate) || 0;
-        var colorBar = t.lag ? riskColor : (rateNum >= 90 ? 'var(--green)' : rateNum >= 70 ? '#d97706' : riskColor);
-        html += '<tr style="border-bottom:1px solid var(--border)">' +
-          '<td style="padding:7px 10px;font-weight:500;color:var(--text);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + t.name + '</td>' +
-          '<td style="padding:7px 10px;text-align:center;white-space:nowrap"><span style="font-size:10px;font-weight:600;color:' + (t.type === '日常' ? '#98a2b3' : 'var(--blue)') + '">' + (t.type === '日常' ? '日常任务' : '专项任务') + '</span></td>' +
-          '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + rateNum + '%;height:100%;border-radius:999px;background:' + colorBar + '"></div></div><span style="font-size:11px;font-weight:600;color:' + colorBar + '">' + t.rate + '</span></div></td>' +
-          '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + (parseInt(t.progress) || 0) + '%;height:100%;border-radius:999px;background:#98a2b3"></div></div><span style="font-size:11px;font-weight:600;color:#98a2b3">' + (t.progress || '-') + '</span></div></td>' +
-          '<td style="padding:7px 10px;text-align:center;font-weight:700;color:' + colorBar + '">' + t.rate + '</td>' +
-          '<td style="padding:7px 10px;text-align:center;font-weight:600;color:var(--text)">' + t.covered + '</td>' +
-          '<td style="padding:7px 10px;text-align:center"><span style="font-weight:600">' + t.hazards + '</span><span style="color:var(--weak);margin:0 1px">/</span><span style="font-weight:600;color:var(--red)">' + t.majorHazards + '</span></td>' +
-          '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak)">' + t.startDate + '</td>' +
-          '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak)">' + t.endDate + '</td>' +
-          '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.creator + '</td>' +
-        '</tr>';
+      // 专项任务在上，日常任务在下
+      var taskTypes = ['专项', '日常'];
+      for (var tt = 0; tt < taskTypes.length; tt++) {
+        for (var ti = 0; ti < tasks.length; ti++) {
+          var t = tasks[ti];
+          if (t.type !== taskTypes[tt]) continue;
+          var riskColor = t.risk === '重大风险' ? 'var(--red)' : '#d97706';
+          var rateNum = parseInt(t.rate) || 0;
+          var colorBar = t.lag ? riskColor : (rateNum >= 90 ? 'var(--green)' : rateNum >= 70 ? '#d97706' : riskColor);
+          html += '<tr style="border-bottom:1px solid var(--border)">' +
+            '<td style="padding:7px 10px;font-weight:500;color:var(--text);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + t.name + '</td>' +
+            '<td style="padding:7px 10px;text-align:center;white-space:nowrap"><span style="font-size:10px;font-weight:600;color:' + (t.type === '日常' ? '#98a2b3' : 'var(--blue)') + '">' + (t.type === '日常' ? '日常任务' : '专项任务') + '</span></td>' +
+            '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + rateNum + '%;height:100%;border-radius:999px;background:' + colorBar + '"></div></div><span style="font-size:11px;font-weight:600;color:' + colorBar + '">' + t.rate + '</span></div></td>' +
+            '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + (parseInt(t.progress) || 0) + '%;height:100%;border-radius:999px;background:#98a2b3"></div></div><span style="font-size:11px;font-weight:600;color:#98a2b3">' + (t.progress || '-') + '</span></div></td>' +
+            '<td style="padding:7px 10px;text-align:center;font-weight:700;color:' + colorBar + '">' + t.rate + '</td>' +
+            '<td style="padding:7px 10px;text-align:center;font-weight:600;color:var(--text)">' + t.covered + '</td>' +
+            '<td style="padding:7px 10px;text-align:center"><span style="font-weight:600">' + t.hazards + '</span><span style="color:var(--weak);margin:0 1px">/</span><span style="font-weight:600;color:var(--red)">' + t.majorHazards + '</span></td>' +
+            '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.startDate + '</td>' +
+            '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.endDate + '</td>' +
+            '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.creator + '</td>' +
+          '</tr>';
+        }
       }
       html += '</tbody></table></div>';
       html += '</div></div>' +
