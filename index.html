@@ -204,6 +204,19 @@
     .modal-foot .mfoot-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
     .modal-foot .mfoot-btn.primary:hover{opacity:.85}
 
+    /* ─── 隐患详情弹窗 ──────────────────────────────────────────── */
+    .hmodal-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:620px;max-height:80vh;background:var(--card);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.15);z-index:210;display:none;flex-direction:column;overflow:hidden}
+    .hmodal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid var(--line);flex-shrink:0}
+    .hmodal-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
+    .hmodal-title .hmodal-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .hmodal-close{width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:16px}
+    .hmodal-close:hover{background:#f2f4f7;color:#344054}
+    .hmodal-body{flex:1;overflow-y:auto;padding:14px 18px 18px}
+    .hmodal-row{display:flex;padding:6px 0;border-bottom:1px solid #f0f2f5;font-size:13px}
+    .hmodal-row:last-child{border-bottom:none}
+    .hmodal-label{width:90px;flex-shrink:0;color:var(--weak);font-weight:500}
+    .hmodal-value{flex:1;color:var(--text)}
+
     /* ─── 已选指标拖拽 ─────────────────────────────────────────── */
     .sel-card-drag{cursor:grab;user-select:none;position:relative}
     .sel-card-drag.dragging{opacity:.4}
@@ -215,6 +228,10 @@
     #selectedMetricsList::-webkit-scrollbar{height:4px}
     #selectedMetricsList::-webkit-scrollbar-thumb{background:#d0d5dd;border-radius:999px}
     #selectedMetricsList::-webkit-scrollbar-track{background:transparent}
+
+    /* ─── 指标说明浮层 ──────────────────────────────────────────── */
+    .metric-tip{position:fixed;padding:8px 12px;background:#1f2937;color:#fff;font-size:12px;line-height:1.5;border-radius:10px;max-width:280px;z-index:999;pointer-events:none;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    .metric-tip.show{display:block}
 
     /* ─── 四级风险底数 ──────────────────────────────────────────── */
     .risk-four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -288,6 +305,26 @@
     .hazard-stat-sub{font-size:11px;color:var(--weak);margin-top:4px}
     .hazard-table-wrap{margin-top:14px}
     .delta-up{color:var(--red);font-weight:600}.delta-down{color:var(--green);font-weight:600}
+
+    /* ─── 关键风险闭环卡片 ─────────────────────────────────────── */
+    .hazard-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+    .hc-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+    .hc-name{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .hc-desc{font-size:12.5px;color:#344054;line-height:1.5;margin-bottom:6px}
+    .hc-meta{display:flex;align-items:center;gap:12px;font-size:11.5px;color:var(--muted);margin-bottom:4px;flex-wrap:wrap}
+    .hc-status{padding:1px 6px;border-radius:999px;font-weight:600;font-size:10px}
+    .hc-status.danger{background:var(--red-bg);color:var(--red)}
+    .hc-status.warning{background:var(--orange-bg);color:#a75605}
+    .hc-status.done{background:var(--green-bg);color:var(--green)}
+    .hc-status.neutral{background:#f2f4f7;color:#667085}
+    .hc-time{font-size:11px;color:var(--weak);margin-bottom:8px}
+    .hc-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .hc-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:11.5px;color:var(--muted);cursor:pointer}
+    .hc-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+    .hc-scroll{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overflow-y:hidden;padding:8px 12px}
+    .hc-scroll::-webkit-scrollbar{height:4px}
+    .hc-scroll::-webkit-scrollbar-thumb{background:#d0d5dd;border-radius:999px}
+    .hc-scroll::-webkit-scrollbar-track{background:transparent}
 
     /* two-col-grid → .grid2 */
     .two-col-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
@@ -1082,8 +1119,24 @@
     </div>
   </div>
 
+  <!-- ─── 隐患详情弹窗 ─────────────────────────────────────────── -->
+  <div class="modal-overlay" id="hazardModalOverlay" onclick="closeHazardModal()"></div>
+  <div class="hmodal-panel" id="hazardModal">
+    <div class="hmodal-head">
+      <div class="hmodal-title">
+        <span class="hmodal-dot" id="hazardModalDot" style="background:var(--red)"></span>
+        <span id="hazardModalName">隐患详情</span>
+      </div>
+      <button class="hmodal-close" onclick="closeHazardModal()">✕</button>
+    </div>
+    <div class="hmodal-body" id="hazardModalBody"></div>
+  </div>
+
   <!-- ─── Toast ────────────────────────────────────────────────────── -->
   <div class="toast" id="toast"></div>
+
+  <!-- ─── 指标说明浮层 ─────────────────────────────────────────── -->
+  <div class="metric-tip" id="metricTip"></div>
 
   <script>
   (function() {
@@ -1125,44 +1178,78 @@
       // 重大隐患完整数据（含状态变化）
       hazards: [
         {
-          object: '北苑商业综合体', hazard: '消防通道堵塞', region: '北苑片区',
-          status: '超期未整改', statusCls: 'danger',
-          prevStatus: '超期未整改', prevStatusCls: 'danger',
-          person: '王志安', days: 3, remark: '临时管控待确认',
+          object: '囿泽果蔬店', hazard: '1、视频中焊接作业区未见灭火器材\n2、堆放的金属型材存在堆叠过高距离作业人员过近',
+          level: '重大事故隐患', source: '现场看', status: '已完成',
+          foundDate: '2026-06-22', deadline: '2026-06-29', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '刘强', region: '东湖街道',
+          regulation: '《消防法》《焊接作业安全规范》',
+          suggestion: '1、按作业区单元配置灭火器\n2、将金属型材堆垛高度控制在安全范围内（建议不超过1.5米）并与作业人员保持安全距离',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '灭火器已配置到位，金属型材重新码放至安全高度',
+          measures: '已配置灭火器，金属型材重新码放', plan: '已完成整改'
+        },
+        {
+          object: '杭州余杭李航电动车商行（爱玛）', hazard: '室内设置床铺，存在违规住人现象',
+          level: '重大事故隐患', source: '现场看', status: '已完成',
+          foundDate: '2026-06-19', deadline: '2026-06-26', overdue: 0,
+          statusCls: 'done', person: '陈芳', days: 0,
+          discoverer: '李华', region: '五常街道',
+          regulation: '《消防法》',
+          suggestion: '拆除床铺，清空住人设施',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '床铺已拆除，违规住人已清空',
+          measures: '已清退住宿人员', plan: '已完成整改'
+        },
+        {
+          object: '北苑商业综合体', hazard: '消防通道堵塞',
+          level: '重大事故隐患', source: '日常巡查', status: '超期未整改',
+          foundDate: '2026-06-10', deadline: '2026-06-22', overdue: 3,
+          statusCls: 'danger', person: '王志安', days: 3,
+          discoverer: '周新', region: '良渚街道',
+          regulation: '《消防法》第二十八条',
+          suggestion: '立即清理消防通道，确保畅通；设置临时管控措施',
+          hasPhoto: true, resultPhoto: false,
+          resultText: '',
           measures: '已设置警示带，但无专人值守',
-          plan: '未提交正式整改方案', timeline: '无明确时间表'
+          plan: '未提交正式整改方案'
         },
         {
-          object: '云栖高层住宅', hazard: '自动消防设施失效', region: '云栖街道',
-          status: '超期未整改', statusCls: 'danger',
-          prevStatus: '超期未整改', prevStatusCls: 'danger',
-          person: '李明', days: 1, remark: '整改证据不足',
+          object: '云栖高层住宅', hazard: '自动消防设施失效',
+          level: '重大事故隐患', source: '专项检查', status: '超期未整改',
+          foundDate: '2026-06-15', deadline: '2026-06-24', overdue: 1,
+          statusCls: 'danger', person: '李明', days: 1,
+          discoverer: '区消防大队', region: '五常街道',
+          regulation: '《消防法》第十六条',
+          suggestion: '修复自动消防设施，采取临时管控措施',
+          hasPhoto: true, resultPhoto: false,
+          resultText: '',
           measures: '未采取临时管控措施',
-          plan: '整改方案已提交审核中', timeline: '预计 7 月 30 日完成'
+          plan: '整改方案已提交审核中'
         },
         {
-          object: '东港园区 3 号楼', hazard: '疏散通道占用', region: '东港片区',
-          status: '即将到期', statusCls: 'warning',
-          prevStatus: '整改中', prevStatusCls: 'warning',
-          person: '赵刚', days: -2, remark: '2 天后到期',
-          measures: '已清理主要通道',
-          plan: '已完成 60%', timeline: '计划 7 月 24 日前完成'
+          object: '恒源化工', hazard: '危化品存储区警示标识缺失',
+          level: '一般隐患', source: '监督检查', status: '整改中',
+          foundDate: '2026-06-20', deadline: '2026-07-26', overdue: 0,
+          statusCls: 'neutral', person: '李安全', days: 0,
+          discoverer: '专项检查组', region: '仓前街道',
+          regulation: '《危险化学品安全管理条例》',
+          suggestion: '完善危化品存储区警示标识，设置临时围挡',
+          hasPhoto: true, resultPhoto: false,
+          resultText: '',
+          measures: '临时围挡已设置', plan: '采购中，预计本周到位'
         },
         {
-          object: '新城沿街商铺群', hazard: '电动自行车违规停放', region: '新城片区',
-          status: '反复出现', statusCls: 'warning',
-          prevStatus: '反复出现', prevStatusCls: 'warning',
-          person: '陈芳', days: 0, remark: '本月已 5 次',
-          measures: '已增设临时停放区',
-          plan: '需系统性整改方案', timeline: '待明确'
-        },
-        {
-          object: '恒源化工', hazard: '危化品存储区警示标识缺失', region: '滨海片区',
-          status: '整改中', statusCls: 'neutral',
-          prevStatus: '超期未整改', prevStatusCls: 'danger',
-          person: '李安全', days: 0, remark: '已安排整改',
-          measures: '临时围挡已设置',
-          plan: '采购中，预计本周到位', timeline: '计划 7 月 26 日前完成'
+          object: '杭州余杭区良渚街道张春国小吃店', hazard: '人员在室内睡觉，存在违规住人迹象',
+          level: '重大事故隐患', source: '现场看', status: '已完成',
+          foundDate: '2026-06-22', deadline: '2026-06-29', overdue: 0,
+          statusCls: 'done', person: '李明', days: 0,
+          discoverer: '张伟', region: '良渚街道',
+          regulation: '《消防法》',
+          suggestion: '清退住宿人员',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '已清退住宿人员',
+          measures: '已清退住宿人员', plan: '已完成整改'
         }
       ],
 
@@ -1354,11 +1441,11 @@
       // 四级风险统计
       var majorRisk = 0, significantRisk = 0, generalRisk = 0, lowRisk = 0;
       for (var ri = 0; ri < MOCK.hazards.length; ri++) {
-        var s = MOCK.hazards[ri].status;
-        if (s === '超期未整改') majorRisk++;
-        else if (s === '反复出现' || s === '即将到期') significantRisk++;
-        else if (s === '整改中') generalRisk++;
-        else lowRisk++;
+        var hz = MOCK.hazards[ri];
+        if (hz.status === '超期未整改') majorRisk++;
+        else if (hz.status === '整改中') significantRisk++;
+        else if (hz.status === '已完成') lowRisk++;
+        else generalRisk++;
       }
       for (var pi = 0; pi < MOCK.priority.length; pi++) {
         if (MOCK.priority[pi].tag === '滞后') significantRisk++;
@@ -1495,31 +1582,53 @@
         '</div>' +
       '</div>';
 
-      // ─── 双栏：关键风险 + 核心任务 ────────────────────────────
-      html += '<div class="two-col-grid">' +
+      // ─── 纵向：关键风险 + 核心任务 ────────────────────────────
+      // 只展示重大隐患，未闭环/未完成排前面
+      var majorHazards = [];
+      for (var ti = 0; ti < MOCK.hazards.length; ti++) {
+        if (MOCK.hazards[ti].level === '重大事故隐患') majorHazards.push(MOCK.hazards[ti]);
+      }
+      majorHazards.sort(function(a,b) {
+        var aDone = a.status === '已完成' ? 1 : 0;
+        var bDone = b.status === '已完成' ? 1 : 0;
+        return aDone - bDone;
+      });
+      window.__majorHazards = majorHazards;
+
+      html +=
       '<div class="info-card" style="padding:0;overflow:hidden">' +
         '<div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">' +
           '<h3 style="margin:0;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:6px"><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red);width:16px;height:16px"></i> 关键风险闭环</h3>' +
-          '<span class="info-card-badge danger">' + MOCK.hazards.length + ' 项</span>' +
+          '<span class="info-card-badge danger">' + majorHazards.length + ' 项</span>' +
         '</div>' +
-        '<table style="width:100%;border-collapse:collapse;font-size:11.5px">' +
-        '<thead><tr>' +
-          '<th style="text-align:left;padding:5px 12px;color:var(--muted);font-weight:500;font-size:10px;border-bottom:1px solid var(--border);background:var(--fg-soft)">对象</th>' +
-          '<th style="text-align:left;padding:5px 12px;color:var(--muted);font-weight:500;font-size:10px;border-bottom:1px solid var(--border);background:var(--fg-soft)">隐患</th>' +
-          '<th style="text-align:left;padding:5px 12px;color:var(--muted);font-weight:500;font-size:10px;border-bottom:1px solid var(--border);background:var(--fg-soft)">状态</th>' +
-          '<th style="width:56px;text-align:left;padding:5px 12px;color:var(--muted);font-weight:500;font-size:10px;border-bottom:1px solid var(--border);background:var(--fg-soft)">动作</th>' +
-        '</tr></thead><tbody>';
-      for (var hi = 0; hi < MOCK.hazards.length; hi++) {
-        var h = MOCK.hazards[hi];
-        html += '<tr style="border-bottom:1px solid var(--border)">' +
-          '<td style="padding:6px 12px;font-weight:500">' + h.object + '</td>' +
-          '<td style="padding:6px 12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px">' + h.hazard + '</td>' +
-          '<td style="padding:6px 12px"><span class="ht-status ' + h.statusCls + '" style="font-size:9px;padding:1px 5px">' + h.status + '</span></td>' +
-          '<td style="padding:6px 12px"><div class="ht-actions"><button class="ht-action-btn" style="width:22px;height:22px" title="督办" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" aria-hidden="true" width="11" height="11"></i></button><button class="ht-action-btn" style="width:22px;height:22px" title="现场核查" onclick="openDrawer(\'inspect\')"><i data-lucide="search" aria-hidden="true" width="11" height="11"></i></button></div></td>' +
-        '</tr>';
+        '<div class="hc-scroll">';
+      for (var hi = 0; hi < majorHazards.length; hi++) {
+        var h = majorHazards[hi];
+        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + h.overdue + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
+        html += '<div class="hazard-card" style="flex:0 0 270px;min-width:250px;cursor:pointer" onclick="openHazardDetail(\'' + h.object + '\')" title="点击查看详情">' +
+          '<div class="hc-head">' +
+            '<span class="hc-name">' + h.object + '</span>' +
+          '</div>' +
+          '<div class="hc-desc">' + h.hazard + '</div>' +
+          '<div class="hc-meta">' +
+            '<span>来源 ' + h.source + '</span>' +
+            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
+            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
+          '</div>' +
+          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
+          '<div class="hc-actions">' +
+            (h.status === '已完成' ?
+              '<button class="hc-btn" onclick="showToast(\'复查记录已提交\')"><i data-lucide="check-circle" width="11" height="11"></i> 复查确认</button>' +
+              '<button class="hc-btn" onclick="openHazardDetail(\'' + h.object + '\')"><i data-lucide="file-text" width="11" height="11"></i> 查看详情</button>'
+            :
+              '<button class="hc-btn" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" width="11" height="11"></i> 督办</button>' +
+              '<button class="hc-btn" onclick="openDrawer(\'inspect\')"><i data-lucide="search" width="11" height="11"></i> 现场核查</button>' +
+              '<button class="hc-btn" onclick="showToast(\'已加入持续跟踪\')"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
+            ) +
+          '</div>' +
+        '</div>';
       }
-      html += '</tbody></table>' +
-        '<div style="padding:7px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:4px" onclick="switchScene(\'hazard-report\')">查看完整日报与状态变化 <i data-lucide="chevron-right" width="13" height="13"></i></div>' +
+      html += '</div>' +
       '</div>' +
 
       // ─── 板块三：核心任务进展 ──────────────────────────────────
@@ -1537,7 +1646,7 @@
         '</div>' +
       '</div>' +
 
-      '</div>'; // two-col-grid
+      '</div>';
 
       // ════════════════════════════════════════════════════════════
       // 优先处理队列（移到三大板块下方）
@@ -1846,7 +1955,7 @@
           { label: '提醒方式', value: '系统自动发送浙政钉通知 + 短信提醒至以下角色：\n• 应消站值班人员\n• 区域站负责人\n• 第三方安全专家\n• 属地村社负责人' },
           { label: '跟踪要求', value: '请于 2 个工作日内反馈现场核查结果。若本周内无反馈，将升级为站长督办事项。' }
         ]
-      }
+      },
     };
 
     function openDrawer(action) {
@@ -1888,6 +1997,99 @@
       el.classList.add('show');
       setTimeout(function() { el.classList.remove('show'); }, 2500);
     }
+
+    // ════════════════════════════════════════════════════════════════
+    // HAZARD DETAIL
+    // ════════════════════════════════════════════════════════════════
+
+    function openHazardDetail(objectName) {
+      var arr = window.__majorHazards || [];
+      var h = null;
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].object === objectName) { h = arr[i]; break; }
+      }
+      if (!h) { showToast('未找到隐患数据'); return; }
+
+      var dotColor = h.level.indexOf('重大') > -1 ? 'var(--red)' : '#d97706';
+      document.getElementById('hazardModalName').textContent = h.object;
+      document.getElementById('hazardModalDot').style.background = dotColor;
+
+      // — 顶部状态区 —
+      var statusBadge = '<span class="hc-status ' + h.statusCls + '" style="font-size:11px;padding:2px 8px">' + h.status + '</span>';
+      var overdueHtml = h.overdue > 0 ? '<span style="color:var(--red);font-weight:700;font-size:13px">⚠ 逾期 ' + h.overdue + ' 天</span>' : '';
+      var bodyHtml =
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--red) 12%, #fff);color:var(--red)">' + h.level + '</span>' +
+          statusBadge +
+        '</div>' +
+        (overdueHtml ? '<div>' + overdueHtml + '</div>' : '') +
+      '</div>' +
+      // — 隐患描述（突出）—
+      '<div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:12px;padding:10px 12px;background:var(--fg-soft);border-radius:10px">' + h.hazard.replace(/\n/g, '<br>') + '</div>' +
+      // — 整改建议（突出）—
+      '<div style="font-size:10px;font-weight:600;color:var(--weak);margin-bottom:4px;letter-spacing:0.05em">整改建议</div>' +
+      '<div style="font-size:13px;color:#344054;line-height:1.6;margin-bottom:14px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">' + (h.suggestion || '—') + '</div>' +
+      // — 基础信息（两列简洁）—
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;margin-bottom:10px">' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">对象</span> ' + h.object + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">责任人</span> ' + (h.person || '—') + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">发现</span> ' + (h.discoverer || '—') + ' / ' + h.foundDate + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">期限</span> ' + h.deadline + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">来源</span> ' + h.source + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">片区</span> ' + (h.region || '—') + '</div>' +
+      '</div>' +
+      // — 依据（可折叠）—
+      '<div id="regulationWrap" style="margin-bottom:6px">' +
+        '<div onclick="toggleRegulation()" style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--weak);cursor:pointer;user-select:none">' +
+          '<span id="regArrow">▶</span> 关联法规依据' +
+        '</div>' +
+        '<div id="regulationBody" style="display:none;margin-top:4px;font-size:11.5px;color:var(--muted);padding:6px 10px;background:#f9fafb;border-radius:8px">' + (h.regulation || '无') + '</div>' +
+      '</div>';
+
+      // 现场证据（图片区域单独展示）
+      bodyHtml += '<div style="border-bottom:1px solid var(--line);margin:8px 0"></div>';
+      bodyHtml += '<div style="font-size:10px;font-weight:600;color:var(--weak);margin-bottom:8px;letter-spacing:0.05em">现场证据</div>';
+      // 问题快照
+      var photoCount = h.hasPhoto ? 3 : 0;
+      bodyHtml += '<div class="hmodal-row" style="align-items:flex-start;padding-top:10px"><div class="hmodal-label">问题快照</div><div class="hmodal-value"><div style="display:flex;gap:8px;flex-wrap:wrap">';
+      if (photoCount > 0) {
+        for (var pi = 1; pi <= photoCount; pi++) {
+          bodyHtml += '<div style="width:80px;height:60px;border-radius:8px;background:#f2f4f7;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--weak)"><i data-lucide="image" width="16" height="16" style="opacity:.4"></i></div>';
+        }
+      } else {
+        bodyHtml += '<span style="font-size:11px;color:var(--weak)">无</span>';
+      }
+      bodyHtml += '</div></div></div>';
+      // 整改结果
+      bodyHtml += '<div class="hmodal-row" style="align-items:flex-start;padding-top:10px"><div class="hmodal-label">整改结果</div><div class="hmodal-value">' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">' +
+        (h.resultPhoto ? '<div style="width:80px;height:60px;border-radius:8px;background:#e8f5e9;border:1px solid #c8e6c9;display:flex;align-items:center;justify-content:center;font-size:10px;color:#2e7d32"><i data-lucide="check-circle" width="16" height="16"></i></div>' : '') +
+        '</div>' +
+        (h.resultText ? '<div style="font-size:12px;color:var(--text);line-height:1.5">' + h.resultText + '</div>' : '') +
+      '</div></div>';
+      document.getElementById('hazardModalBody').innerHTML = bodyHtml;
+
+      document.getElementById('hazardModalOverlay').style.display = 'block';
+      document.getElementById('hazardModal').style.display = 'flex';
+    }
+
+    function closeHazardModal() {
+      document.getElementById('hazardModalOverlay').style.display = 'none';
+      document.getElementById('hazardModal').style.display = 'none';
+    }
+    window.openHazardDetail = openHazardDetail;
+    window.closeHazardModal = closeHazardModal;
+
+    function toggleRegulation() {
+      var body = document.getElementById('regulationBody');
+      var arrow = document.getElementById('regArrow');
+      if (!body) return;
+      var isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      arrow.textContent = isOpen ? '▶' : '▼';
+    }
+    window.toggleRegulation = toggleRegulation;
 
     // ════════════════════════════════════════════════════════════════
     // SCENE SWITCHING
@@ -2033,7 +2235,7 @@
         var m = checked[j];
         var periodDisp = m.type === '时点' ? '截至目前' : m.period;
         var bCls = ({'截至目前':'current','今日':'today','本周':'week','本月':'month','本季':'quarter','本年':'year','近30天':'d30','累计':'cum'})[periodDisp] || '';
-        html += '<div class="metric-card" title="' + (m.desc || m.label) + '">' +
+        html += '<div class="metric-card" data-desc="' + (m.desc || '') + '" onmouseenter="showMetricTip(event,this.getAttribute(\'data-desc\'))" onmouseleave="hideMetricTip()">' +
           '<div class="mc-value"' + (m.valueColor ? ' style="color:' + m.valueColor + '"' : '') + '>' + m.value + '</div>' +
           '<div class="mc-label">' + m.label + '</div>' +
           '<div class="mc-period ' + bCls + '">' + periodDisp + '</div>' +
@@ -2153,7 +2355,7 @@
           var m = items[j];
           var periodDisp2 = panelPeriodRange(m.type, m.period);
           var bCls = ({'截至目前':'current','今日':'today','本周':'week','本月':'month','本季':'quarter','本年':'year','近30天':'d30','累计':'cum'})[periodDisp2] || '';
-          html += '<div class="metric-card' + (m.checked ? ' mc-active' : ' mc-dim') + '" data-id="' + m.id + '" onclick="toggleMiniCard(this)" title="' + (m.desc || m.label) + '">' +
+          html += '<div class="metric-card' + (m.checked ? ' mc-active' : ' mc-dim') + '" data-id="' + m.id + '" onclick="toggleMiniCard(this)" data-desc="' + (m.desc || '') + '" onmouseenter="showMetricTip(event,this.getAttribute(\'data-desc\'))" onmouseleave="hideMetricTip()">' +
             '<span class="mc-checkmark"><i data-lucide="check" width="10" height="10"></i></span>' +
             '<div class="mc-value"' + (m.valueColor ? ' style="color:' + m.valueColor + '"' : '') + '>' + m.value + '</div>' +
             '<div class="mc-label">' + m.label + '</div>' +
@@ -2197,7 +2399,7 @@
         var m = checked[j];
         var periodDisp = m.type === '时点' ? '截至目前' : m.period;
         var bCls = ({'截至目前':'current','今日':'today','本周':'week','本月':'month','本季':'quarter','本年':'year','近30天':'d30','累计':'cum'})[periodDisp] || '';
-        html += '<div class="metric-card sel-card-drag" draggable="true" data-id="' + m.id + '" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)" title="' + (m.desc || m.label) + '">' +
+        html += '<div class="metric-card sel-card-drag" draggable="true" data-id="' + m.id + '" ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)" data-desc="' + (m.desc || '') + '" onmouseenter="showMetricTip(event,this.getAttribute(\'data-desc\'))" onmouseleave="hideMetricTip()">' +
           '<span class="sel-hover-remove" onclick="event.stopPropagation();removeSelected(\'' + m.id + '\')"><i data-lucide="x" width="10" height="10"></i></span>' +
           '<div class="mc-value"' + (m.valueColor ? ' style="color:' + m.valueColor + '"' : '') + '>' + m.value + '</div>' +
           '<div class="mc-label">' + m.label + '</div>' +
@@ -2287,6 +2489,35 @@
       var input = document.getElementById('metricSearchInput');
       window.__metricSearch = input ? input.value : '';
       renderMetricCheckboxes();
+    }
+
+    // ─── 指标说明浮层 ─────────────────────────────────────────────
+    function showMetricTip(e, text) {
+      if (!text) return;
+      var tip = document.getElementById('metricTip');
+      tip.textContent = text;
+      tip.classList.add('show');
+      // 更新位置跟随鼠标
+      function moveTip(ev) {
+        var x = ev.clientX + 14;
+        var y = ev.clientY + 10;
+        if (x + tip.offsetWidth > window.innerWidth - 8) x = ev.clientX - tip.offsetWidth - 14;
+        if (y + tip.offsetHeight > window.innerHeight - 8) y = ev.clientY - tip.offsetHeight - 10;
+        tip.style.left = x + 'px';
+        tip.style.top = y + 'px';
+      }
+      moveTip(e);
+      tip._moveHandler = moveTip;
+      document.addEventListener('mousemove', moveTip);
+    }
+
+    function hideMetricTip() {
+      var tip = document.getElementById('metricTip');
+      if (tip._moveHandler) {
+        document.removeEventListener('mousemove', tip._moveHandler);
+        tip._moveHandler = null;
+      }
+      tip.classList.remove('show');
     }
 
     function toggleMiniCard(el) {
@@ -2389,6 +2620,8 @@
     window.onDragEnd = onDragEnd;
     window.removeSelected = removeSelected;
     window.onMetricSearch = onMetricSearch;
+    window.showMetricTip = showMetricTip;
+    window.hideMetricTip = hideMetricTip;
 
     // 渲染左栏场景列表
     renderSceneList();
