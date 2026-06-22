@@ -22,6 +22,10 @@
       <div class="brand">
         <div class="logo">擎</div>
         <h1>应擎 · 站长工作台</h1>
+        <button class="launcher-trigger" id="launcherTrigger" title="所有功能入口 (⌘K)" onclick="toggleLauncher()">
+          <i data-lucide="grid-3x3" width="16" height="16"></i>
+          <span class="lt-label">全部功能</span>
+        </button>
       </div>
       <div class="meta">
         <span class="pill" id="topbarDate"></span>
@@ -166,6 +170,15 @@
       <button class="hmodal-close" onclick="closeHazardModal()">✕</button>
     </div>
     <div class="hmodal-body" id="hazardModalBody"></div>
+    <div class="hmodal-foot">
+      <div class="hmfoot-actions">
+        <button class="hmfoot-action primary" title="督办" onclick="openDrawer('supervise')"><i data-lucide="megaphone" width="14" height="14"></i><span>督办</span></button>
+        <button class="hmfoot-action" title="现场核查" onclick="openDrawer('inspect')"><i data-lucide="search" width="14" height="14"></i><span>现场核查</span></button>
+        <button class="hmfoot-action" title="会议议题" onclick="openDrawer('meeting')"><i data-lucide="calendar" width="14" height="14"></i><span>会议议题</span></button>
+        <button class="hmfoot-action" title="持续跟踪" onclick="showToast('已加入持续跟踪')"><i data-lucide="pin" width="14" height="14"></i><span>跟踪</span></button>
+      </div>
+      <button class="hmfoot-copy" onclick="copyHazardInfo()"><i data-lucide="copy" width="14" height="14"></i> 复制隐患信息</button>
+    </div>
   </div>
 
   <!-- ─── Toast ────────────────────────────────────────────────────── -->
@@ -174,7 +187,38 @@
   <!-- ─── 指标说明浮层 ─────────────────────────────────────────── -->
   <div class="metric-tip" id="metricTip"></div>
 
+  <!-- ─── 指标钻取浮层 ──────────────────────────────────────────── -->
+  <div class="modal-overlay" id="drillOverlay" onclick="closeDrillFloat()"></div>
+  <div class="drill-float" id="drillFloat">
+    <div class="drill-head">
+      <h3 class="drill-title" id="drillTitle"></h3>
+      <button class="drill-close" onclick="closeDrillFloat()"><i data-lucide="x" width="16" height="16"></i></button>
+    </div>
+    <div class="drill-body" id="drillBody">
+      <!-- left: item list / right: AI analysis -->
+    </div>
+  </div>
+
+  <!-- ─── 站点地图启动台 ─────────────────────────────────────────── -->
+  <div class="launcher-overlay" id="launcherOverlay" onclick="closeLauncher()"></div>
+  <div class="launcher-panel" id="launcherPanel">
+    <div class="launcher-header">
+      <div class="launcher-search-wrap">
+        <i data-lucide="search" width="18" height="18" class="launcher-search-icon"></i>
+        <input class="launcher-search" id="launcherSearch" type="text"
+          placeholder="搜索功能名称…"
+          autocomplete="off"
+          oninput="onLauncherSearch()"
+          onkeydown="if(event.key==='Enter')launcherSearchFirst();if(event.key==='Escape')closeLauncher()">
+      </div>
+    </div>
+    <div class="launcher-body" id="launcherBody">
+      <!-- 由 JS 渲染 -->
+    </div>
+  </div>
+
   <script src="js/app.js"></script>
+  <script src="js/rules.js"></script>
 
 </body>
 </html>
