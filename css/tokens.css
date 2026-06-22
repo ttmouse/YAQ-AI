@@ -1,0 +1,102 @@
+/* ═══════════════════════════════════════════════════════════
+   Design Tokens — 安全生产 AI 动态工作台
+   oklch color space · semantic status colors · type scale
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── palette ── */
+  --bg:       oklch(97% 0.004 250);
+  --surface:  oklch(100% 0 0);
+  --fg:       oklch(18% 0.012 250);
+  --muted:    oklch(52% 0.012 250);
+  --border:   oklch(91% 0.005 250);
+  --border-light: oklch(94% 0.003 250);
+
+  /* accent */
+  --accent:       oklch(52% 0.16 255);
+  --accent-hover: oklch(48% 0.17 255);
+  --accent-soft:  color-mix(in oklch, var(--accent) 10%, transparent);
+
+  /* semantic status */
+  --red:       oklch(52% 0.19 28);
+  --red-soft:  color-mix(in oklch, var(--red) 10%, transparent);
+  --orange:    oklch(62% 0.17 65);
+  --orange-soft: color-mix(in oklch, var(--orange) 10%, transparent);
+  --yellow:    oklch(72% 0.14 90);
+  --yellow-soft: color-mix(in oklch, var(--yellow) 12%, transparent);
+  --green:     oklch(56% 0.14 148);
+  --green-soft: color-mix(in oklch, var(--green) 10%, transparent);
+  --blue:      oklch(56% 0.14 245);
+  --blue-soft: color-mix(in oklch, var(--blue) 10%, transparent);
+
+  /* surfaces */
+  --fg-soft:    color-mix(in oklch, var(--fg) 5%, transparent);
+  --fg-muted:   color-mix(in oklch, var(--fg) 12%, transparent);
+  --hover-bg:   oklch(96% 0.006 250);
+  --active-bg:  oklch(94% 0.008 250);
+  --selected-bg: color-mix(in oklch, var(--accent) 6%, transparent);
+  --selected-border: color-mix(in oklch, var(--accent) 25%, var(--border));
+
+  /* ── typography ── */
+  --font-display: -apple-system, 'SF Pro Display', BlinkMacSystemFont, system-ui, sans-serif;
+  --font-body:    -apple-system, 'SF Pro Text', BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono:    ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+
+  /* scale */
+  --fs-xs:   11px;
+  --fs-sm:   12px;
+  --fs-base: 13.5px;
+  --fs-md:   14px;
+  --fs-lg:   16px;
+  --fs-xl:   20px;
+  --fs-2xl:  26px;
+
+  /* weight */
+  --fw-normal: 400;
+  --fw-medium: 450;
+  --fw-semibold: 550;
+  --fw-bold:   650;
+
+  /* line height */
+  --lh-tight: 1.2;
+  --lh-base:  1.5;
+  --lh-relaxed: 1.65;
+
+  /* ── spacing ── */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+
+  /* ── radii ── */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 999px;
+
+  /* ── shadows ── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-xl: 0 8px 32px rgba(0,0,0,0.12);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 0 0 1px var(--border);
+
+  /* ── transitions ── */
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 350ms;
+
+  /* ── layout ── */
+  --header-h: 52px;
+  --goal-h: 48px;
+  --detail-min: 380px;
+  --assistant-w: 320px;
+  --work-item-min: 280px;
+}

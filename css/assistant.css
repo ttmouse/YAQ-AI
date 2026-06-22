@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════════════
+   AI Assistant — right column
+   ═══════════════════════════════════════════════════════════ */
+
+.assistant {
+  display: flex; flex-direction: column;
+  height: 100%;
+}
+
+.assistant-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-3);
+  display: flex; flex-direction: column; gap: var(--sp-3);
+}
+
+/* suggestion chips */
+.assistant-suggestions {
+  display: flex; flex-direction: column; gap: var(--sp-2);
+  padding: var(--sp-2);
+}
+.assistant-sug-title {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--sp-1);
+}
+.assistant-sug {
+  display: flex; align-items: center; gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  color: var(--fg);
+  background: var(--fg-soft);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+  line-height: var(--lh-relaxed);
+}
+.assistant-sug:hover { background: var(--hover-bg); }
+.assistant-sug svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
+
+/* conversation messages */
+.assistant-msg {
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-relaxed);
+  animation: fadeIn var(--duration-base) var(--ease);
+}
+.assistant-msg.user {
+  background: var(--accent-soft);
+  color: var(--fg);
+  margin-left: var(--sp-4);
+  border-bottom-right-radius: var(--r-xs);
+}
+.assistant-msg.ai {
+  background: var(--fg-soft);
+  color: var(--fg);
+  margin-right: var(--sp-4);
+  border-bottom-left-radius: var(--r-xs);
+}
+.assistant-msg-label {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-weight: var(--fw-medium);
+  margin-bottom: 4px;
+}
+
+/* input */
+.assistant-input-wrap {
+  padding: var(--sp-3);
+  border-top: 1px solid var(--border);
+  display: flex; gap: var(--sp-2);
+}
+.assistant-input {
+  flex: 1;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  color: var(--fg);
+  background: var(--bg);
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.assistant-input::placeholder { color: var(--muted); }
+.assistant-input:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.assistant-send {
+  width: 32px; height: 32px;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--surface);
+  display: grid; place-items: center;
+  transition: background var(--duration-fast) var(--ease);
+  flex-shrink: 0;
+}
+.assistant-send:hover { background: var(--accent-hover); }
+.assistant-send svg { width: 15px; height: 15px; }

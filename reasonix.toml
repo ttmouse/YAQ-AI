@@ -1,0 +1,82 @@
+# Reasonix configuration.
+# Resolution order: flag > ./reasonix.toml > ~/.reasonix/config.toml > built-in defaults.
+# Fields marked user/global only are not overridden by ./reasonix.toml.
+# Secrets come from the environment via api_key_env; never put keys here.
+
+config_version = 3   # schema marker for diagnostics; old versions may ignore it
+default_model = "deepseek-flash"
+# language      = "zh"   # ui/model language; empty = auto-detect from $LANG / $REASONIX_LANG
+
+[agent]
+# system_prompt = """..."""   # omit to use the built-in prompt for this version
+# system_prompt_file = "prompts/system.md"   # overrides system_prompt when set
+temperature       = 0.0
+# reasoning_language = "zh"   # visible reasoning language: auto|zh|en
+# auto_plan_classifier = "deepseek-flash"   # optional; only used for borderline tasks
+soft_compact_ratio  = 0.5   # notice only; keeps cache-first prefix intact
+compact_ratio       = 0.8   # try compacting when prompt reaches this fraction
+compact_force_ratio = 0.9   # force compacting at this high-water mark
+# keep                = ["errors"]   # compaction keep policy: errors, user_marked
+# recent_keep         = 2   # minimum recent messages kept verbatim
+cold_resume_prune   = true   # elide stale tool results when reopening a session past the provider cache window
+# planner_model = "deepseek-pro"   # optional: enable two-model collaboration
+# subagent_model = "deepseek-pro"   # optional default for runAs=subagent skills
+# subagent_models = { review = "deepseek-pro", security_review = "deepseek-pro" }   # per-skill overrides
+# subagent_effort = "high"   # optional default effort for subagents
+# subagent_efforts = { review = "max", task = "high" }   # per-tool/skill effort overrides
+# output_style = "explanatory"   # explanatory | learning | concise | custom; empty = default
+
+[tools]
+enabled = []   # empty = all built-in tools
+bash_timeout_seconds = 120   # foreground safety cap; set 0 for no tool-local cap
+
+[tools.background_jobs]
+stalled_warning_seconds = 900   # warn once per background job after this many quiet seconds; 0 disables
+
+[lsp]
+enabled = true   # language server tools; servers launch lazily when used
+# [lsp.servers.go]
+# command = "gopls"
+# args = []
+# extensions = [".go"]
+
+[skills]
+# paths = ["~/my-skills", "../shared/skills"]   # extra custom skill roots
+# excluded_paths = ["~/.agents/skills"]   # hide convention roots without deleting folders
+# max_depth = 3   # nested scan depth; set 1 for legacy root-only discovery
+# disabled_skills = ["review"]   # hide noisy or unwanted skills
+
+[permissions]
+# Per-call gating. mode = writer fallback when no rule matches: ask|allow|deny.
+# Readers always default to allow. Precedence: deny > ask > allow > fallback.
+# Rules are "Tool" or "Tool(specifier)"; e.g. Bash(go test:*), Edit(src/**).
+mode  = "ask"
+# deny = ["Bash(rm -rf*)", "Bash(git push*)"]   # hard-blocked in every mode
+allow = ["Bash(grep -n '<section\\|<main\\|<header\\|<aside\\|id=\"\\|class=\"sidebar\\|class=\"main\\|<script\\|<!--' index.html | head -60)", "Bash(cd /Users/douba/Projects/YAQ-AI && git log --oneline -5 2>/dev/null || echo \"(not a git repo or no commits)\")", "Bash(cd /Users/douba/Projects/YAQ-AI && git remote -v 2>/dev/null; echo \"---\"; git branch 2>/dev/null)", "Bash(cd /Users/douba/Projects/YAQ-AI && wc -l index.html && head -1 index.html && grep -c 'data-lucide' index.html && grep -n 'v2\\|version' index.html | head -5)", "Edit", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && node -e \"\nvar fs = require('fs');\nvar html = fs.readFileSync('index.html', 'utf8');\n\n// Extract JS between <script> and </script>\nvar match = html.match(/<script>([\\s\\S]*?)<\\/script>/);\nif (match) {\n  try {\n    new Function(match[1]);\n    console.log('✅ JS syntax OK');\n  } catch(e) {\n    console.error('❌ JS syntax error:', e.message);\n    // Show line context\n    var lines = match[1].split('\\n');\n    var lineNum = parseInt(e.message.match(/line (\\d+)/)?.[1] || '0');\n    if (lineNum) {\n      for (var i = Math.max(0, lineNum-3); i < Math.min(lines.length, lineNum+2); i++) {\n        console.log((i+1) + ': ' + lines[i]);\n      }\n    }\n  }\n} else {\n  console.log('❌ No <script> tag found');\n}\n\")", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && node -e \"\nvar fs = require('fs');\nvar html = fs.readFileSync('index.html', 'utf8');\nvar match = html.match(/<script>([\\s\\S]*?)<\\/script>/);\ntry {\n  new Function(match[1]);\n  console.log('✅ JS syntax OK');\n} catch(e) {\n  console.error('❌', e.message);\n}\n\n// Verify HTML structure\nvar opens = (html.match(/<section/g) || []).length;\nvar closes = (html.match(/<\\/section>/g) || []).length;\nconsole.log('✅ Sections: ' + opens + ' open, ' + closes + ' close' + (opens===closes?' ✓':' ✗'));\n\nopens = (html.match(/<div/g) || []).length;\ncloses = (html.match(/<\\/div>/g) || []).length;\nconsole.log('✅ Divs: ' + opens + ' open, ' + closes + ' close' + (opens===closes?' ✓':' ✗'));\n\nvar bodyCloses = (html.match(/<\\/body>/g) || []).length;\nconsole.log('✅ </body> count: ' + bodyCloses);\n\nvar htmlCloses = (html.match(/<\\/html>/g) || []).length;\nconsole.log('✅ </html> count: ' + htmlCloses);\n\" 2>&1)", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && open index.html)", "Bash(sleep 2 && curl -s http://localhost:9222/json 2>/dev/null | python3 -c \"\nimport sys, json\ndata = json.load(sys.stdin)\nfor tab in data:\n    title = tab.get('title', '')\n    if '应擎' in title or '安全监管' in title:\n        print('Found tab:', title)\n        print('WS URL:', tab.get('webSocketDebuggerUrl', 'N/A'))\n        break\nelse:\n    print('No matching tab found')\n    for tab in data[:5]:\n        print('  -', tab.get('title', 'unknown'))\n\")", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && python3 -c \"\nimport subprocess, sys\n\n# Try to find chrome processes with remote debugging\nresult = subprocess.run(['ps', 'aux'], capture_output=True, text=True)\nif 'chrome-cdp-wx' in result.stdout or '9222' in result.stdout:\n    print('✅ Chrome CDP process found')\n    for line in result.stdout.split('\\n'):\n        if 'chrome-cdp-wx' in line or '9222' in line:\n            print('  ', line.strip()[:120])\nelse:\n    print('ℹ️ Chrome CDP not running (page opened via default browser)')\n    print('JS syntax verified, HTML structure verified.')\n\")", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && grep -c 'anomaly-card' index.html)", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && grep -c 'class=\"anomaly-card\"' index.html)", "Bash(cd \"/Users/douba/Projects/YAQ-AI\" && node -e \"\nvar fs = require('fs');\nvar html = fs.readFileSync('index.html', 'utf8');\nvar match = html.match(/<script>([\\s\\S]*?)<\\/script>/);\ntry {\n  new Function(match[1]);\n  console.log('✅ Final JS syntax OK');\n} catch(e) {\n  console.error('❌', e.message);\n}\n// also check for the closing of IIFE\nvar iife = match[1];\nvar lastLines = iife.split('\\n').slice(-5);\nconsole.log('Last 5 lines of IIFE:');\nlastLines.forEach(function(l) { console.log('  ' + l); });\n\")", "Bash(which tesseract || which python3)", "Bash(tesseract .reasonix/attachments/clipboard-20260618-233317.392858-000001.png stdout -l chi_sim+eng 2>/dev/null | head -100)", "Bash(python3 << 'EOF'\nfrom PIL import Image\nimport sys\n\ntry:\n    img = Image.open('.reasonix/attachments/clipboard-20260618-233317.392858-000001.png')\n    print(f\"Image size: {img.size}\")\n    print(f\"Mode: {img.mode}\")\n    print(f\"Format: {img.format}\")\n    \n    # Get some pixel information to understand the content\n    width, height = img.size\n    print(f\"Dimensions: {width}x{height}\")\n    \n    # Sample some pixels to understand the color distribution\n    pixels = []\n    for x in range(0, width, width//10):\n        for y in range(0, height, height//10):\n            pixels.append(img.getpixel((x, y)))\n    \n    print(f\"Sampled {len(pixels)} pixels\")\n    \nexcept Exception as e:\n    print(f\"Error: {e}\")\nEOF)", "Bash(open index.html:*)"]
+# ask = ["Edit(src/**)"]   # force a prompt even if otherwise allowed
+
+[sandbox]
+# Confine tool blast radius. File-writers (write_file/edit_file/multi_edit/move_file)
+# may only write under workspace_root (empty = current dir) and allow_write extras.
+# bash = "enforce" (default) jails each command in an OS sandbox (macOS now;
+# graceful fallback elsewhere); "off" disables it. network allows egress.
+# workspace_root = ""            # default: current working directory
+# allow_write = ["/tmp"]          # extra dirs writers may also modify
+bash    = "enforce"
+network = true
+
+[statusline]
+# A custom status line: a command whose first stdout line replaces the built-in
+# data row. It receives {"model","contextUsed","contextWindow","cwd"} as JSON on stdin.
+# command = "my-statusline.sh"
+
+# External MCP servers. type: "stdio" (default, a subprocess) | "http" | "sse".
+# ${VAR} / ${VAR:-default} are expanded from the environment in command/args/env/url/headers.
+# [[plugins]]
+# name    = "example"
+# command = "reasonix-plugin-example"
+# [[plugins]]                                  # a remote server over Streamable HTTP
+# name    = "stripe"
+# type    = "http"
+# url     = "https://mcp.stripe.com"
+# headers = { Authorization = "Bearer ${STRIPE_KEY}" }

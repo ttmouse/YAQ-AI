@@ -1,0 +1,14 @@
+{
+  "step": 5,
+  "total_steps": 5,
+  "stale_count": 0,
+  "current_phase": "completed",
+  "completion_summary": "布局减负完成：全部容器padding增大、去掉了态势栏统计数字、关注问题操作按钮从4个减到2个、三大主线指标从3个减到2个、加大了整体间距。",
+  "steps": [
+    {"id": 1, "name": "Simplify situation bar", "status": "completed"},
+    {"id": 2, "name": "Reduce concern queue actions", "status": "completed"},
+    {"id": 3, "name": "Increase all spacing/padding", "status": "completed"},
+    {"id": 4, "name": "Simplify mainlines (3→2 metrics)", "status": "completed"},
+    {"id": 5, "name": "Test and verify", "status": "completed"}
+  ]
+}

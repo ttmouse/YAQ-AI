@@ -1,0 +1,12 @@
+{
+  "phase": 4,
+  "total_phases": 4,
+  "stale_count": 0,
+  "completion_summary": "站长每日监管闭环工作台 Demo 已构建完成。单 HTML 文件包含 5 个场景页面、5 种抽屉动作、Toast 提示、完整模拟数据和交互逻辑。",
+  "phases": [
+    {"id": 1, "name": "HTML + CSS foundation", "status": "completed"},
+    {"id": 2, "name": "Scene content + CSS", "status": "completed"},
+    {"id": 3, "name": "Drawer + interactions", "status": "completed"},
+    {"id": 4, "name": "Testing", "status": "completed"}
+  ]
+}

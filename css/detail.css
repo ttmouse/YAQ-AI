@@ -1,0 +1,163 @@
+/* ═══════════════════════════════════════════════════════════
+   Detail Panel — center column
+   ═══════════════════════════════════════════════════════════ */
+
+.detail-panel {
+  padding: var(--sp-5);
+  display: flex; flex-direction: column; gap: var(--sp-5);
+  animation: fadeIn var(--duration-base) var(--ease);
+}
+
+/* header */
+.detail-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--sp-3);
+}
+.detail-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  line-height: var(--lh-tight);
+}
+.detail-badges {
+  display: flex; align-items: center; gap: var(--sp-2);
+  flex-shrink: 0;
+}
+
+/* sections */
+.detail-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-4);
+}
+.detail-section-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  margin-bottom: var(--sp-3);
+  display: flex; align-items: center; gap: 6px;
+}
+.detail-section-title svg { width: 14px; height: 14px; }
+
+/* system judgment */
+.detail-judgment {
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--fg);
+}
+.detail-judgment .fact { color: var(--fg); }
+.detail-judgment .inference {
+  color: var(--blue);
+  font-style: italic;
+}
+.detail-judgment .uncertain {
+  color: var(--orange);
+  background: var(--orange-soft);
+  padding: 1px 6px;
+  border-radius: var(--r-xs);
+  font-size: var(--fs-sm);
+}
+
+/* action list */
+.detail-actions {
+  display: flex; flex-direction: column; gap: var(--sp-2);
+}
+.detail-action-item {
+  display: flex; align-items: flex-start; gap: var(--sp-2);
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+}
+.detail-action-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* responsibility chain */
+.detail-chain {
+  display: flex; flex-direction: column; gap: var(--sp-3);
+}
+.detail-chain-item {
+  display: flex; align-items: flex-start; gap: var(--sp-3);
+}
+.detail-chain-role {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--fg);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+.detail-chain-desc {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  line-height: var(--lh-relaxed);
+}
+
+/* evidence list */
+.detail-evidence {
+  display: flex; flex-direction: column; gap: var(--sp-1);
+}
+.detail-evidence-item {
+  display: flex; align-items: center; gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  padding: var(--sp-1) 0;
+}
+.detail-evidence-item::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* action buttons */
+.detail-btn-row {
+  display: flex; flex-wrap: wrap; gap: var(--sp-2);
+}
+.detail-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--r-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  background: var(--surface);
+  transition: all var(--duration-fast) var(--ease);
+}
+.detail-btn svg { width: 14px; height: 14px; }
+.detail-btn:hover {
+  border-color: var(--muted);
+  background: var(--hover-bg);
+}
+.detail-btn.primary {
+  background: var(--accent);
+  color: var(--surface);
+  border-color: var(--accent);
+}
+.detail-btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* empty detail state */
+.detail-empty {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: var(--muted); gap: var(--sp-2);
+  padding: var(--sp-8);
+  text-align: center;
+}
+.detail-empty svg { width: 40px; height: 40px; opacity: 0.2; }
+.detail-empty-title { font-size: var(--fs-md); font-weight: var(--fw-medium); }
+.detail-empty-desc { font-size: var(--fs-sm); max-width: 260px; }
