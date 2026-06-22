@@ -282,7 +282,7 @@
 
     /* info-card → .block */
     .info-card{border:1px solid var(--line);border-radius:20px;background:#fff;padding:16px;margin-bottom:14px}
-    .info-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .info-card-head{display:flex;align-items:center;justify-content:space-between}
     .info-card-head h3{margin:0;font-size:14.5px;display:flex;align-items:center;gap:6px}
     .info-card-badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:700}
     .info-card-badge.warning{background:var(--orange-bg);color:#a75605}
@@ -498,10 +498,10 @@
       padding: 16px 18px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
     }
     .info-card-head {
       display: flex;
+      margin-bottom: 12px;
       align-items: center;
       justify-content: space-between;
     }
@@ -1619,15 +1619,13 @@
       }
 
       html +=
-      '<div class="info-card" style="padding:0;overflow:hidden">' +
-        '<div style="padding:12px 16px 8px;border-bottom:1px solid var(--border)">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between">' +
-            '<h3 style="margin:0;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:6px"><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red);width:16px;height:16px"></i> 关键风险闭环</h3>' +
-            '<div style="display:flex;gap:10px;font-size:11px">' +
-              '<span style="color:var(--weak)">本月 <strong style="color:var(--text)">' + totalMajor + '</strong> 个重大隐患</span>' +
-              '<span style="color:var(--weak)">超期未整改 <strong style="color:var(--red)">' + overdueCount + '</strong></span>' +
-              '<span style="color:var(--weak)">已完成 <strong style="color:var(--green)">' + doneCount + '</strong></span>' +
-            '</div>' +
+      '<div class="info-card">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red)"></i> 关键风险闭环</h3>' +
+          '<div style="display:flex;gap:10px;font-size:11px">' +
+            '<span style="color:var(--weak)">本月 <strong style="color:var(--text)">' + totalMajor + '</strong> 个重大隐患</span>' +
+            '<span style="color:var(--weak)">超期未整改 <strong style="color:var(--red)">' + overdueCount + '</strong></span>' +
+            '<span style="color:var(--weak)">已完成 <strong style="color:var(--green)">' + doneCount + '</strong></span>' +
           '</div>' +
         '</div>' +
         '<div class="hc-scroll">';
@@ -1664,12 +1662,10 @@
       var lagCount = 0;
       for (var ti = 0; ti < tasks.length; ti++) { if (tasks[ti].lag) lagCount++; }
       html +=
-      '<div class="info-card" style="padding:0;overflow:hidden">' +
-        '<div style="padding:12px 16px 8px;border-bottom:1px solid var(--border)">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
-            '<h3 style="margin:0;font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:6px"><i data-lucide="target" aria-hidden="true" style="color:var(--accent)"></i> 核心任务进展</h3>' +
-            '<span class="info-card-badge warning">' + lagCount + ' 项滞后</span>' +
-          '</div>' +
+      '<div class="info-card">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="target" aria-hidden="true" style="color:var(--accent)"></i> 核心任务进展</h3>' +
+          '<span class="info-card-badge warning">' + lagCount + ' 项滞后</span>' +
         '</div>' +
         '<div style="padding:0">' +
         '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
@@ -1709,54 +1705,83 @@
         }
       }
       html += '</tbody></table></div>';
-      html += '</div></div>' +
+      html += '</div>';
 
-      '</div>';
-
-      // ════════════════════════════════════════════════════════════
-      // 优先处理队列（移到三大板块下方）
-      // ════════════════════════════════════════════════════════════
-      html += '<div class="priority-section">' +
-        '<div class="section-head">' +
-          '<h2><i data-lucide="list-checks" aria-hidden="true"></i> 站长今日优先处理队列</h2>' +
-          '<span class="section-count">共 <strong>' + p.length + '</strong> 项 · <span class="num-danger">' + countByLevel(p, 'high') + '</span> 项高优</span>' +
-        '</div>' +
-        '<div class="priority-list">';
-      for (var pi = 0; pi < p.length; pi++) {
-        html += renderPriorityItem(p[pi]);
-      }
-      html += '</div></div>';
-
-      // Bottom grid: AI简报 + 建议处置顺序 + 数据可信度
-      html += '<div class="briefing-row">' +
-        // AI 站长简报
-        '<div class="briefing-card ai-highlight">' +
-          '<div class="briefing-head"><i data-lucide="sparkles" aria-hidden="true" style="color:var(--accent)"></i> AI 站长简报 <span class="pulse-dot"></span></div>' +
-          '<div class="briefing-body">' +
-            '<div class="bb-item"><i data-lucide="info" aria-hidden="true" style="color:var(--accent)"></i><div class="bb-text"><div class="bb-label">今日判断</div><div class="bb-desc">总体平稳可控，重大隐患闭环压力上升。5 项未闭环中 2 项已超期，3 项推进中。</div></div></div>' +
-            '<div class="bb-item"><i data-lucide="target" aria-hidden="true" style="color:var(--orange)"></i><div class="bb-text"><div class="bb-label">主要依据</div><div class="bb-desc">新增隐患 12 项（较日均+20%），村社履职率 76%（目标 80%），主体责任异常 8 家。</div></div></div>' +
-            '<div class="bb-item"><i data-lucide="alert-circle" aria-hidden="true" style="color:var(--muted)"></i><div class="bb-text"><div class="bb-label">数据限制</div><div class="bb-desc">履职率口径尚未统一定义；风险预测数据不足 6 个月，暂不适合强预测。</div></div></div>' +
+      // ─── 主体责任落实情况 ────────────────────────────────────────
+      (function() {
+        var subs = MOCK.subjects;
+        var total = subs.length;
+        var noSelfCheck = 0, trainingLow = 0, highRisk = 0, noDrill = 0, selfChecked = 0;
+        var trainWarnList = [];
+        for (var si = 0; si < total; si++) {
+          var s = subs[si];
+          if (s.selfCheck === 0 || s.selfCheck === '0 次') {
+            noSelfCheck++;
+          } else {
+            selfChecked++;
+          }
+          var tr = parseInt(s.training);
+          if (!isNaN(tr) && tr < 40) trainingLow++;
+          if (tr < 20) trainWarnList.push(s);
+          if (s.risk === 'high') highRisk++;
+          if (s.drill === '0 次' || s.drill === 0) noDrill++;
+        }
+        var selfCheckRate = Math.round((total - noSelfCheck) / total * 100);
+        var trainingRate = Math.round((total - trainingLow) / total * 100);
+        var drillOk = total - noDrill;
+        var drillRate = Math.round(drillOk / total * 100);
+        // 计算自查-政府检查差异，按差异排序
+        var gapSorted = [];
+        for (var si = 0; si < total; si++) {
+          var s = subs[si];
+          var sc = typeof s.selfCheck === 'number' ? s.selfCheck : (parseInt(s.selfCheck) || 0);
+          var gc = parseInt(s.govCheck) || 0;
+          var gap = gc - sc;
+          if (gap > 0) gapSorted.push({ data: s, gap: gap });
+        }
+        gapSorted.sort(function(a,b){ return b.gap - a.gap; });
+        var sectionHtml =
+        '<div class="info-card">' +
+          '<div class="info-card-head">' +
+            '<h3><i data-lucide="building" aria-hidden="true" style="color:var(--accent)"></i> 企业主体责任落实情况</h3>' +
+            '<span class="info-card-badge danger">' + gapSorted.length + ' 家需督办</span>' +
           '</div>' +
-        '</div>' +
-        // 建议处置顺序
-        '<div class="briefing-card">' +
-          '<div class="briefing-head"><i data-lucide="list" aria-hidden="true" style="color:var(--accent)"></i> 建议处置顺序</div>' +
-          '<div class="briefing-body">' +
-            '<div class="bb-item"><i data-lucide="chevron-right" aria-hidden="true" style="color:var(--red)"></i><div class="bb-text"><div class="bb-label">第 1 优先 <span class="briefing-tag red">超期</span></div><div class="bb-desc">北苑商业综合体、云栖高层住宅 — 已超期，需立即确认处置方案</div></div></div>' +
-            '<div class="bb-item"><i data-lucide="chevron-right" aria-hidden="true" style="color:var(--orange)"></i><div class="bb-text"><div class="bb-label">第 2 优先 <span class="briefing-tag orange">滞后</span></div><div class="bb-desc">高层小区消防专项 — 完成率 42%，滞后时间进度 19pp</div></div></div>' +
-            '<div class="bb-item"><i data-lucide="chevron-right" aria-hidden="true" style="color:var(--accent)"></i><div class="bb-text"><div class="bb-label">第 3 优先 <span class="briefing-tag orange">反复</span></div><div class="bb-desc">沿街商铺电动自行车违规 — 反复出现，需系统性整改方案</div></div></div>' +
-          '</div>' +
-        '</div>' +
-        // 主体责任简报
-        '<div class="briefing-card">' +
-          '<div class="briefing-head"><i data-lucide="users" aria-hidden="true" style="color:var(--accent)"></i> 主体责任异常简报</div>' +
-          '<div class="briefing-body">' +
-            '<div class="bb-item"><i data-lucide="alert-triangle" aria-hidden="true" style="color:var(--red)"></i><div class="bb-text"><div class="bb-label">疑似敷衍自查</div><div class="bb-desc">8 家主体近 30 天自查为 0，但政府检查发现多项隐患，其中恒源化工、鑫盛机械最突出</div></div></div>' +
-            '<div class="bb-item"><i data-lucide="trending-down" aria-hidden="true" style="color:var(--orange)"></i><div class="bb-text"><div class="bb-label">培训/演练不足</div><div class="bb-desc">5 家培训完成率低于 50%，3 家全年未开展演练</div></div></div>' +
-            '<div class="bb-item"><i data-lucide="log-out" aria-hidden="true" style="color:var(--orange)"></i><div class="bb-text"><div class="bb-label">平台长期未登录</div><div class="bb-desc">辰光物流、东兴机械连续 30 天未登录平台</div></div></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
+          '<div style="display:flex;gap:0">' +
+            '<div style="flex:1;text-align:center;padding:12px 0;border-right:1px solid var(--line)"><div style="font-size:22px;font-weight:800;color:' + (selfCheckRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + selfCheckRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">隐患自查上报率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + noSelfCheck + '/' + total + ' 企业未自查</div></div>' +
+            '<div style="flex:1;text-align:center;padding:12px 0;border-right:1px solid var(--line)"><div style="font-size:22px;font-weight:800;color:' + (trainingRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + trainingRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">员工培训完成率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + trainingLow + '/' + total + ' 企业不达标</div></div>' +
+            '<div style="flex:1;text-align:center;padding:12px 0"><div style="font-size:22px;font-weight:800;color:' + (drillRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + drillRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">应急逃生演练完成率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + noDrill + '/' + total + ' 企业未开展</div></div>' +
+          '</div>';
+        if (gapSorted.length > 0) {
+          sectionHtml +=
+          '<div style="padding:6px 14px 10px">' +
+            '<div style="font-size:10px;font-weight:600;color:var(--weak);margin-bottom:4px;letter-spacing:0.03em">自查与政府检查差异较大的企业（按差异从大到小）</div>' +
+            '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
+            '<thead><tr style="border-bottom:1px solid var(--border);background:var(--fg-soft)">' +
+              '<th style="padding:4px 6px;text-align:left;font-weight:500;color:var(--weak);font-size:9px">企业</th>' +
+              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">自查</th>' +
+              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">政府检查</th>' +
+              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">差异</th>' +
+              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">培训</th>' +
+              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">演练</th>' +
+            '</tr></thead><tbody>';
+          for (var gi = 0; gi < gapSorted.length; gi++) {
+            var g = gapSorted[gi].data;
+            var gapVal = gapSorted[gi].gap;
+            var gRisk = g.risk === 'high' ? 'var(--red)' : '#d97706';
+            sectionHtml += '<tr style="border-bottom:1px solid var(--line)">' +
+              '<td style="padding:4px 6px;font-weight:500"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + gRisk + ';margin-right:4px;vertical-align:middle"></span>' + g.name + '</td>' +
+              '<td style="padding:4px 6px;text-align:center;color:' + (g.selfCheck === 0 || g.selfCheck === '0 次' ? 'var(--red)' : 'var(--muted)') + '">' + (g.selfCheck || '0 次') + '</td>' +
+              '<td style="padding:4px 6px;text-align:center;color:var(--muted)">' + g.govCheck + '</td>' +
+              '<td style="padding:4px 6px;text-align:center;font-weight:700;color:' + (gapVal > 5 ? 'var(--red)' : '#d97706') + '">' + gapVal + '</td>' +
+              '<td style="padding:4px 6px;text-align:center;color:' + (parseInt(g.training) < 30 ? 'var(--red)' : 'var(--muted)') + '">' + g.training + '</td>' +
+              '<td style="padding:4px 6px;text-align:center;color:' + (g.drill === '0 次' || g.drill === 0 ? 'var(--red)' : 'var(--green)') + '">' + (g.drill || '0 次') + '</td>' +
+            '</tr>';
+          }
+          sectionHtml += '</tbody></table></div>';
+        }
+        sectionHtml += '</div>';
+        html += sectionHtml;
+      })();
 
       return html;
     }
