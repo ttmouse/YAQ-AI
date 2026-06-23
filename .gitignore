@@ -1,0 +1,14 @@
+# AI tooling
+.codegraph/
+.reasonix/
+.od-skills/
+reasonix.toml
+
+# Non-deploy files
+index.html.artifact.json
+preview (1).html
+yang_station_workbench_style_v18.css
+站长工作SOP-问题大纲.md
+站长访谈调研记录.md
+AGENTS.md
+product-context.md

@@ -109,6 +109,79 @@
           hasPhoto: true, resultPhoto: true,
           resultText: '已清退住宿人员',
           measures: '已清退住宿人员', plan: '已完成整改'
+        },
+        // ─── 北苑商业综合体 历史隐患 ───
+        {
+          object: '北苑商业综合体', hazard: '地下室疏散指示标志损坏多处',
+          level: '一般隐患', source: '日常巡查', status: '已完成',
+          foundDate: '2026-05-10', deadline: '2026-05-24', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '周新', region: '良渚街道',
+          regulation: '《消防法》',
+          suggestion: '更换损坏的疏散指示标志',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '全部损坏标志已更换',
+          measures: '已更换', plan: '已完成整改'
+        },
+        {
+          object: '北苑商业综合体', hazard: '3 层餐饮区灭火器压力不足',
+          level: '一般隐患', source: '监督检查', status: '已完成',
+          foundDate: '2026-04-02', deadline: '2026-04-16', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '区消防大队', region: '良渚街道',
+          regulation: '《消防法》',
+          suggestion: '更换压力不足的灭火器',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '已全部更换',
+          measures: '已更换', plan: '已完成整改'
+        },
+        {
+          object: '北苑商业综合体', hazard: '中庭顶棚电气线路敷设不符合消防要求',
+          level: '一般隐患', source: '专项检查', status: '已完成',
+          foundDate: '2026-02-18', deadline: '2026-03-18', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '专项检查组', region: '良渚街道',
+          regulation: '《建筑防火设计规范》',
+          suggestion: '对中庭顶棚电气线路进行穿管保护',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '已穿管保护完毕',
+          measures: '已穿管保护', plan: '已完成整改'
+        },
+        {
+          object: '北苑商业综合体', hazard: '消防控制室值班人员未持证上岗',
+          level: '一般隐患', source: '专项检查', status: '已完成',
+          foundDate: '2025-12-01', deadline: '2025-12-31', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '区消防大队', region: '良渚街道',
+          regulation: '《消防控制室通用要求》',
+          suggestion: '安排值班人员参加消防培训并取得上岗证',
+          hasPhoto: false, resultPhoto: true,
+          resultText: '2 名值班人员已取得上岗证',
+          measures: '已持证上岗', plan: '已完成整改'
+        },
+        {
+          object: '北苑商业综合体', hazard: '地下室堆放杂物',
+          level: '一般隐患', source: '企业自查', foundBy: '自查', status: '已完成',
+          foundDate: '2026-02-15', deadline: '2026-02-22', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '企业安全员', region: '良渚街道',
+          regulation: '',
+          suggestion: '及时清理地下室堆放的可燃杂物',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '杂物已清理',
+          measures: '已清理', plan: '已完成整改'
+        },
+        {
+          object: '北苑商业综合体', hazard: '3 层东侧安全出口被货架遮挡',
+          level: '一般隐患', source: '企业自查', foundBy: '自查', status: '已完成',
+          foundDate: '2026-03-05', deadline: '2026-03-08', overdue: 0,
+          statusCls: 'done', person: '王志安', days: 0,
+          discoverer: '企业安全员', region: '良渚街道',
+          regulation: '',
+          suggestion: '立即移除遮挡安全出口的货架',
+          hasPhoto: true, resultPhoto: true,
+          resultText: '货架已移走，安全出口畅通',
+          measures: '已移走货架', plan: '已完成整改'
         }
       ],
 
@@ -163,14 +236,14 @@
 
       // 主体责任异常对象
       subjects: [
-        { name: '恒源化工', selfCheck: 0, govCheck: '12 项', training: '32%', drill: '1 次', risk: 'high', suggest: '纳入 C 类重点监管' },
-        { name: '鑫盛机械', selfCheck: 0, govCheck: '8 项', training: '45%', drill: '0 次', risk: 'high', suggest: '纳入 C 类重点监管' },
-        { name: '宏达建材', selfCheck: '1 次', govCheck: '6 项', training: '58%', drill: '1 次', risk: 'mid', suggest: '村社提醒，持续观察' },
-        { name: '东兴机械', selfCheck: 0, govCheck: '5 项', training: '28%', drill: '0 次', risk: 'high', suggest: '建议约谈负责人' },
-        { name: '华阳包装', selfCheck: 0, govCheck: '4 项', training: '20%', drill: '0 次', risk: 'high', suggest: '建议约谈负责人' },
-        { name: '永固建材', selfCheck: '2 次', govCheck: '4 项', training: '60%', drill: '1 次', risk: 'low', suggest: '持续观察' },
-        { name: '天元纺织', selfCheck: 0, govCheck: '6 项', training: '15%', drill: '0 次', risk: 'high', suggest: '建议约谈负责人' },
-        { name: '辰光物流', selfCheck: '1 次', govCheck: '3 项', training: '50%', drill: '1 次', risk: 'mid', suggest: '村社提醒，持续观察' }
+        { name: '杭州恒源化工有限公司', selfCheck: 0, govCheck: '12 项', training: '32%', drill: '1 次', risk: 'high', suggest: '纳入 C 类重点监管' },
+        { name: '杭州鑫盛机械制造有限公司', selfCheck: 0, govCheck: '8 项', training: '45%', drill: '0 次', risk: 'high', suggest: '纳入 C 类重点监管' },
+        { name: '余杭宏达建材经营部', selfCheck: '1 次', govCheck: '6 项', training: '58%', drill: '1 次', risk: 'mid', suggest: '村社提醒，持续观察' },
+        { name: '余杭东兴精密机械厂', selfCheck: 0, govCheck: '5 项', training: '28%', drill: '0 次', risk: 'high', suggest: '建议约谈负责人' },
+        { name: '杭州华阳包装材料有限公司', selfCheck: 0, govCheck: '4 项', training: '20%', drill: '0 次', risk: 'high', suggest: '建议约谈负责人' },
+        { name: '杭州永固建材有限公司', selfCheck: '2 次', govCheck: '4 项', training: '60%', drill: '1 次', risk: 'low', suggest: '持续观察' },
+        { name: '余杭天元纺织厂', selfCheck: 0, govCheck: '6 项', training: '15%', drill: '0 次', risk: 'high', suggest: '建议约谈负责人' },
+        { name: '杭州辰光物流有限公司', selfCheck: '1 次', govCheck: '3 项', training: '50%', drill: '1 次', risk: 'mid', suggest: '村社提醒，持续观察' }
       ],
 
       // 专项检查任务
@@ -178,7 +251,7 @@
         // 日常任务（优先级最高）
         { name: '今日到期整改事项跟进', line: '安全生产组', startDate: '2026-06-29', endDate: '2026-06-29', covered: 3, rate: '33%', progress: '100%', hazards: '-', majorHazards: '-', creator: '系统', region: '全片区', risk: '-', lag: true, type: '日常', priority: 1,
           desc: '今日有 3 项整改事项到期，涉及北苑商业综合体消防通道堵塞等，需逐项确认整改完成情况，未完成的立即转为督办。',
-          person: '王志安', status: '滞后', statusCls: 'danger', relatedItems: ['北苑商业综合体 · 消防通道堵塞', '恒源化工 · 危化品标识缺失', '永固建材 · 培训到期'] },
+          person: '王志安', status: '滞后', statusCls: 'danger', relatedItems: ['北苑商业综合体 · 消防通道堵塞', '杭州恒源化工有限公司 · 危化品标识缺失', '杭州永固建材有限公司 · 培训到期'] },
         { name: '超期未整改对象督办', line: '安全生产组', startDate: '2026-06-22', endDate: '2026-06-29', covered: 2, rate: '0%', progress: '100%', hazards: 2, majorHazards: 2, creator: '系统', region: '良渚/五常', risk: '-', lag: true, type: '日常', priority: 2,
           desc: '2 家超期未整改对象（北苑商业综合体逾期 3 天、云栖高层住宅逾期 1 天），需站长督办。均已进行临时管控，但整改方案未正式提交。',
           person: '王志安 / 李明', status: '超期', statusCls: 'danger', relatedItems: ['北苑商业综合体 · 消防通道堵塞（逾期3天）', '云栖高层住宅 · 自动消防设施失效（逾期1天）'] },
@@ -199,21 +272,21 @@
         {
           level: 1, levelName: '轻微 · 微信/浙政钉/电话了解', tag: 'level-1', icon: 'message-circle',
           items: [
-            { title: '宏达建材 · 自查缺失', desc: '近 30 天自查 0 次，通过浙政钉提醒进一步落实', action: '' },
-            { title: '永固建材 · 培训即将到期', desc: '年度培训完成率 60%，电话了解原因', action: '' }
+            { title: '余杭宏达建材经营部 · 自查缺失', desc: '近 30 天自查 0 次，通过浙政钉提醒进一步落实', action: '' },
+            { title: '杭州永固建材有限公司 · 培训即将到期', desc: '年度培训完成率 60%，电话了解原因', action: '' }
           ]
         },
         {
           level: 2, levelName: '中等 · 叫到办公室谈话', tag: 'level-2', icon: 'users',
           items: [
             { title: '消防安全组 · 复查闭环率 68%', desc: '低于站均值 6pp，叫组长和相关人员到办公室谈话', action: '' },
-            { title: '华阳包装辖区村社 · 自查持续为 0', desc: '已电话提醒一次仍未改善，叫村社负责人谈话', action: '' }
+            { title: '杭州华阳包装材料有限公司辖区村社 · 自查持续为 0', desc: '已电话提醒一次仍未改善，叫村社负责人谈话', action: '' }
           ]
         },
         {
           level: 3, levelName: '较重 · 一键提醒应消站/区域站/专家/村社', tag: 'level-3', icon: 'bell',
           items: [
-            { title: '东兴机械 · 自查缺失+培训不足', desc: '一键提醒应消站、区域站、第三方专家、村社相关人员履职', action: 'remind-all' },
+            { title: '余杭东兴精密机械厂 · 自查缺失+培训不足', desc: '一键提醒应消站、区域站、第三方专家、村社相关人员履职', action: 'remind-all' },
             { title: '云栖高层住宅 · 消防设施失效', desc: '一键提醒相关责任人员现场核查隐患整改进展', action: 'remind-all' }
           ]
         },
@@ -229,15 +302,15 @@
         {
           level: 1, levelName: '第 1 级 · 组长带队现场督促', tag: 'level-1', icon: 'users',
           items: [
-            { title: '鑫盛机械 · 自查 0+隐患 8 项', desc: '组长带队（带上专家；低风险单位则叫上村社和区域站）到现场督促指导', action: '' },
-            { title: '永固建材 · 安全管理能力不足', desc: '安排组长带队了解具体原因，帮助解决实际问题', action: '' }
+            { title: '杭州鑫盛机械制造有限公司 · 自查 0+隐患 8 项', desc: '组长带队（带上专家；低风险单位则叫上村社和区域站）到现场督促指导', action: '' },
+            { title: '杭州永固建材有限公司 · 安全管理能力不足', desc: '安排组长带队了解具体原因，帮助解决实际问题', action: '' }
           ]
         },
         {
           level: 2, levelName: '第 2 级 · 站长约谈企业负责人', tag: 'level-2', icon: 'message-square',
           items: [
             { title: '恒源化工 · 危化品隐患持续超期', desc: '站长及张义、国生出面对企业负责人进行约谈，施加压力、强调责任', action: '' },
-            { title: '天元纺织 · 多项异常叠加', desc: '约谈企业负责人，明确整改时限和责任人', action: '' }
+            { title: '余杭天元纺织厂 · 多项异常叠加', desc: '约谈企业负责人，明确整改时限和责任人', action: '' }
           ]
         },
         {
@@ -268,6 +341,133 @@
         { title: '高层小区消防设施专项滞后', desc: '复盘分析工作流程和责任分工是否存在漏洞，优化工作标准', icon: 'search' },
         { title: '企业自查敷衍问题普遍存在', desc: '加强过程管控和培训指导，完善主体责任考核机制', icon: 'trending-up' }
       ]
+    };
+
+    // ════════════════════════════════════════════════════════════════
+    // 企业主体责任 AI 评估数据（mock）
+    // ════════════════════════════════════════════════════════════════
+
+    var ENTERPRISE_DB = {
+      '北苑商业综合体': {
+        region: '良渚街道',
+        person: '王志安',
+        type: '商业综合体',
+        area: '28,000 m²',
+        riskLevel: '重大风险',
+        score: 'B',
+        scorePct: 72,
+        summary: '该企业安全管理基础较好，隐患排查机制基本建立，但近期出现重大隐患超期未整改情况，需重点关注整改闭环。应急演练频次不足，设备维护记录有断档。',
+        dimensions: [
+          { id: 'responsibility', label: '安全责任体系', score: 'A', icon: 'shield',
+            text: '已建立三级安全责任制（企业负责人→部门负责人→岗位责任人），责任书签订率 100%。有专职安全管理人员 2 名。',
+            bar: 'a' },
+          { id: 'regulation', label: '规章制度执行', score: 'B', icon: 'file-text',
+            text: '安全生产制度 12 项，覆盖消防、用电、特种设备等。但制度更新不及时（最近一次更新为 8 个月前），班组级执行力偏弱。',
+            bar: 'b' },
+          { id: 'inspection', label: '隐患排查治理', score: 'C', icon: 'search',
+            text: '近半年发现隐患 6 项，其中重大隐患 1 项（当前超期未整改）。一般隐患闭环率 80%，整改质量参差不齐，存在反复整改现象。',
+            bar: 'c' },
+          { id: 'training', label: '教育培训', score: 'B', icon: 'graduation-cap',
+            text: '员工安全培训覆盖率 92%，新员工三级教育落实到位。但专项培训（消防/急救）频次偏低，2026 年仅开展 1 次全员消防演练。',
+            bar: 'b' },
+          { id: 'emergency', label: '应急管理能力', score: 'C', icon: 'alert-triangle',
+            text: '应急预案 3 项（火灾/停电/踩踏），最近一次演练为 2025 年 12 月。应急物资配备基本齐全，但无定期检查记录，部分灭火器已过检验期。',
+            bar: 'c' },
+          { id: 'facility', label: '设备设施安全', score: 'B', icon: 'settings',
+            text: '消防设施维保合同在约，维保记录每月 1 次。自动消防设施 2026 年 5 月年检合格。特种设备（电梯/扶梯）年检均在有效期内。',
+            bar: 'b' },
+          { id: 'history', label: '历史表现评价', score: 'B', icon: 'clock',
+            text: '近 2 年无一般及以上生产安全事故。2025 年因消防通道堵塞被行政处罚 1 次（已整改）。日常检查配合度较好，但整改时效性有待提高。',
+            bar: 'b' }
+        ],
+        hazards: [], // 运行时填充
+        selfInspections: [
+          { date: '2026-06-20', type: '月度自查', items: 12, issues: 1, status: '整改中', statusCls: 'neutral',
+            detail: '3层餐饮区灭火器检查记录缺失' },
+          { date: '2026-05-25', type: '月度自查', items: 12, issues: 0, status: '无异常', statusCls: 'done',
+            detail: '' },
+          { date: '2026-04-22', type: '月度自查', items: 12, issues: 2, status: '已完成', statusCls: 'done',
+            detail: '疏散指示标志损坏 2 处 → 已更换' },
+          { date: '2026-03-28', type: '季度全面检查', items: 28, issues: 3, status: '已完成', statusCls: 'done',
+            detail: '电气线路穿管保护不全 → 已整改；灭火器压力不足 1 具 → 已更换；应急灯损坏 1 盏 → 已更换' },
+          { date: '2026-02-15', type: '月度自查', items: 12, issues: 1, status: '已完成', statusCls: 'done',
+            detail: '地下室堆放杂物 → 已清理' }
+        ],
+        expertRecords: [
+          { date: '2026-06-18', expert: '张工', org: '第三方安全机构', type: '日常巡查', result: '发现消防通道堵塞，当场下发整改通知', status: '已处理', statusCls: 'done' },
+          { date: '2026-06-10', expert: '张工', org: '第三方安全机构', type: '日常巡查', result: '检查消防设施运行情况，未见异常', status: '已处理', statusCls: 'done' },
+          { date: '2026-06-05', expert: '王磊', org: '消防安全专家组', type: '复查', result: '上次电气线路整改已通过，建议加强日常巡查', status: '已处理', statusCls: 'done' },
+          { date: '2026-05-20', expert: '张工', org: '第三方安全机构', type: '监督检查', result: '灭火器检查记录缺失，要求限期补充', status: '已处理', statusCls: 'done' },
+          { date: '2026-05-08', expert: '王磊', org: '消防安全专家组', type: '专项检查', result: '中庭电气线路穿管保护基本合格', status: '已处理', statusCls: 'done' },
+          { date: '2026-04-10', expert: '张工', org: '第三方安全机构', type: '复查', result: '疏散指示标志已更换，问题已闭环', status: '已处理', statusCls: 'done' }
+        ],
+        trainingRecords: [
+          { date: '2026-06-15', type: '全员消防演练', instructor: '区消防大队', attendees: 86, status: '已完成', detail: '消防疏散演练 + 灭火器实操' },
+          { date: '2026-04-20', type: '新员工安全培训', instructor: '王志安', attendees: 12, status: '已完成', detail: '三级安全教育，考试合格率 100%' },
+          { date: '2026-03-10', type: '专项培训', instructor: '张工（第三方）', attendees: 24, status: '已完成', detail: '电气安全与消防设施操作培训' },
+          { date: '2026-01-08', type: '年度安全会议', instructor: '企业负责人', attendees: 45, status: '已完成', detail: '年度安全目标分解、责任书签订' }
+        ]
+      },
+      '云栖高层住宅': {
+        region: '五常街道',
+        person: '李明',
+        type: '住宅小区',
+        area: '65,000 m²',
+        riskLevel: '较大风险',
+        score: 'C',
+        scorePct: 45,
+        summary: '该小区物业管理能力偏弱，自动消防设施失效已超期未整改，存在较大安全风险。日常巡查记录不完整，业主消防安全意识普遍偏低。',
+        dimensions: [
+          { id: 'responsibility', label: '安全责任体系', score: 'C', icon: 'shield',
+            text: '物业管理处设安全员 1 名（兼），未建立明确的安全责任制层级。与业委会的安全管理职责界定不清。',
+            bar: 'c' },
+          { id: 'regulation', label: '规章制度执行', score: 'C', icon: 'file-text',
+            text: '基本安全制度存在但不健全，消防控制室制度未上墙，值班记录缺失 2026 年 4-5 月记录。',
+            bar: 'c' },
+          { id: 'inspection', label: '隐患排查治理', score: 'C', icon: 'search',
+            text: '巡查频次不足（合同约定每周 1 次，实际每 2 周 1 次）。2026 年发现隐患 4 项，闭环 2 项，自动消防设施失效长期未修复。',
+            bar: 'c' },
+          { id: 'training', label: '教育培训', score: 'C', icon: 'graduation-cap',
+            text: '员工安全培训覆盖率约 60%，新员工三级教育记录不全。2026 年未开展消防演练。',
+            bar: 'c' },
+          { id: 'emergency', label: '应急管理能力', score: 'D', icon: 'alert-triangle',
+            text: '应急预案 2 项，最近一次更新为 2024 年。未开展过应急演练，应急物资配备严重不足。',
+            bar: 'c' },
+          { id: 'facility', label: '设备设施安全', score: 'C', icon: 'settings',
+            text: '消防设施维保记录断档（2026 年 3 月至今），自动消防设施失效未修复。电梯年检已过期 2 个月。',
+            bar: 'c' },
+          { id: 'history', label: '历史表现评价', score: 'C', icon: 'clock',
+            text: '2025 年因消防设施未保持完好有效被行政处罚 2 次。多次下发整改通知但执行不到位，物业配合度较差。',
+            bar: 'c' }
+        ],
+        hazards: [],
+        selfInspections: [
+          { date: '2026-06-18', type: '月度自查', items: 8, issues: 3, status: '未整改', statusCls: 'danger',
+            detail: '自动消防设施失效（消防主机故障）、灭火器缺失 2 具、消防通道堆放杂物' },
+          { date: '2026-05-20', type: '月度自查', items: 8, issues: 2, status: '已完成', statusCls: 'done',
+            detail: '应急灯损坏 3 盏 → 已更换；疏散指示标志模糊 1 处 → 已更换' },
+          { date: '2026-04-15', type: '季度全面检查', items: 20, issues: 5, status: '已完成', statusCls: 'done',
+            detail: '消防泵房控制柜积灰严重 → 已清洁；灭火器压力不足 2 具 → 已更换；防火门闭门器损坏 1 处 → 已修复' },
+          { date: '2026-03-10', type: '月度自查', items: 8, issues: 1, status: '已完成', statusCls: 'done',
+            detail: '楼道堆物 → 已清理' },
+          { date: '2026-02-08', type: '月度自查', items: 8, issues: 0, status: '无异常', statusCls: 'done',
+            detail: '' }
+        ],
+        expertRecords: [
+          { date: '2026-06-20', expert: '李明辉', org: '消防安全专家组', type: '专项检查', result: '自动消防设施大面积失效，建议立即维修并报区消防大队备案', status: '已处理', statusCls: 'done' },
+          { date: '2026-06-15', expert: '李明辉', org: '消防安全专家组', type: '专项检查', result: '18-25层消防设施失效严重，建议立即采取临时措施', status: '已处理', statusCls: 'done' },
+          { date: '2026-06-01', expert: '陈工', org: '第三方安全机构', type: '日常巡查', result: '灭火器过期2具，楼道堆物严重', status: '已处理', statusCls: 'done' },
+          { date: '2026-05-15', expert: '陈工', org: '第三方安全机构', type: '复查', result: '应急灯更换已通过，但消防设施年检仍未提供', status: '已处理', statusCls: 'done' },
+          { date: '2026-04-20', expert: '李明辉', org: '消防安全专家组', type: '监督检查', result: '消防泵房积灰严重、防火门损坏多处', status: '已处理', statusCls: 'done' },
+          { date: '2026-04-01', expert: '陈工', org: '第三方安全机构', type: '复查', result: '灭火器已更换，但消防控制室值班记录缺失', status: '超期复查', statusCls: 'danger' }
+        ],
+        trainingRecords: [
+          { date: '2026-05-25', type: '全员消防演练', instructor: '第三方安全机构', attendees: 32, status: '已完成', detail: '消防疏散演练' },
+          { date: '2026-03-15', type: '安全培训', instructor: '李明辉', attendees: 15, status: '已完成', detail: '消防安全基础知识、灭火器使用方法' },
+          { date: '2025-12-10', type: '年度安全会议', instructor: '物业经理', attendees: 20, status: '已完成', detail: '年度安全总结、设施维保计划' },
+          { date: '2025-09-20', type: '专项培训', instructor: '区消防大队', attendees: 28, status: '已完成', detail: '高层住宅防火、逃生自救知识' }
+        ]
+      }
     };
 
     // ════════════════════════════════════════════════════════════════
@@ -378,13 +578,13 @@
             { name: '北苑商业综合体', line: '消防安全组', type: '消防通道堵塞', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '消防通道被货架和杂物严重堵塞，宽度不足1.2米', person: '王志安', foundDate: '2026-06-10', deadline: '2026-06-22', overdue: 3, source: '日常巡查', region: '良渚街道' },
             { name: '云栖高层住宅', line: '消防安全组', type: '消防设施失效', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '自动喷淋系统、烟感探测器大面积失效，覆盖18-25层', person: '李明', foundDate: '2026-06-15', deadline: '2026-06-24', overdue: 1, source: '专项检查', region: '五常街道' },
             { name: '恒源化工', line: '企业安全组', type: '危化品标识缺失', status: '整改中', statusText: '整改推进中', statusCls: 'warning', detail: '危化品存储区警示标识缺失，未设置临时围挡和出入登记', person: '李安全', foundDate: '2026-06-20', deadline: '2026-07-26', overdue: 0, source: '监督检查', region: '仓前街道' },
-            { name: '鑫盛机械', line: '企业安全组', type: '自查缺失', status: '整改中', statusText: '整改推进中', statusCls: 'warning', detail: '近30天企业自查0次，政府检查发现隐患8项未整改', person: '张毅', foundDate: '2026-06-18', deadline: '2026-07-10', overdue: 0, source: '系统预警', region: '良渚街道' },
-            { name: '天元纺织', line: '企业安全组', type: '异常叠加', status: '未启动', statusText: '尚未启动整改', statusCls: 'neutral', detail: '多项隐患叠加：疏散通道堵塞、灭火器过期、电气线路私拉乱接', person: '陈芳', foundDate: '2026-06-22', deadline: '2026-07-15', overdue: 0, source: '现场检查', region: '良渚街道' }
+            { name: '杭州鑫盛机械制造有限公司', line: '企业安全组', type: '自查缺失', status: '整改中', statusText: '整改推进中', statusCls: 'warning', detail: '近30天企业自查0次，政府检查发现隐患8项未整改', person: '张毅', foundDate: '2026-06-18', deadline: '2026-07-10', overdue: 0, source: '系统预警', region: '良渚街道' },
+            { name: '余杭天元纺织厂', line: '企业安全组', type: '异常叠加', status: '未启动', statusText: '尚未启动整改', statusCls: 'neutral', detail: '多项隐患叠加：疏散通道堵塞、灭火器过期、电气线路私拉乱接', person: '陈芳', foundDate: '2026-06-22', deadline: '2026-07-15', overdue: 0, source: '现场检查', region: '良渚街道' }
           ],
           aiAnalysis: [
             { label: '关联分析', text: '消防安全组2项超期（北苑商业综合体逾期3天、云栖高层住宅逾期1天），与该组"复查闭环率68%（↓6pp）"数据关联——复查环节效率不足。该组人均日处理量估算为4.2项，当前日均新增+待复查量约6.8项/人，人力已超饱和约62%。建议排查复查人力配置或抽查任务排序。' },
             { label: '交叉验证', text: '北苑商业综合体消防通道堵塞为反复出现项（本月已发生第3次），与"重点监管主体异常"中该主体的记录吻合。单一主体的反复问题需从管理机制入手，建议约谈物业管理方而非仅单次整改。' },
-            { label: '特征分析', text: '企业安全组3项（恒源化工、鑫盛机械、天元纺织）均位于良渚片区，与"良渚片重大风险检查任务覆盖141家、完成率0%"数据吻合。同片区多家企业同时出问题，存在区域性风险集中特征。良渚片整体自查率仅43%，企业端配合度偏低。' }
+            { label: '特征分析', text: '企业安全组3项（杭州恒源化工有限公司、杭州鑫盛机械制造有限公司、余杭天元纺织厂）均位于良渚片区，与"良渚片重大风险检查任务覆盖141家、完成率0%"数据吻合。同片区多家企业同时出问题，存在区域性风险集中特征。良渚片整体自查率仅43%，企业端配合度偏低。' }
           ] },
         { id: 'majorOverdue', label: '逾期未整改重大隐患', value: '2', group: '重大隐患', type: '时点', alert: 'danger', desc: '已过整改期限仍未完成整改的重大隐患', drilldown: [
             { name: '北苑商业综合体', line: '消防安全组', type: '消防通道堵塞', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '消防通道被货架和杂物严重堵塞，逾期3天仍未清理', person: '王志安', foundDate: '2026-06-10', deadline: '2026-06-22', overdue: 3, source: '日常巡查', region: '良渚街道' },
@@ -407,26 +607,26 @@
           drilldown: [
             { name: '北苑商业综合体', line: '消防安全组', type: '整改确认', status: '今日到期', detail: '消防通道堵塞整改确认', region: '良渚街道' },
             { name: '恒源化工', line: '企业安全组', type: '整改验收', status: '今日到期', detail: '危化品标识整改验收', region: '仓前街道' },
-            { name: '永固建材', line: '企业安全组', type: '培训整改', status: '今日到期', detail: '培训到期整改', region: '物流片' }
+            { name: '杭州永固建材有限公司', line: '企业安全组', type: '培训整改', status: '今日到期', detail: '培训到期整改', region: '物流片' }
           ],
           aiAnalysis: [
             { label: '优先级建议', text: '3项均为今日到期，涉及3个责任主体。建议优先处理北苑商业综合体（消防通道堵塞）——该主体已有超期记录，若今日未完成将转为第2项超期，进一步拉低消防安全组指标。其次处理恒源化工（危化品标识验收），已有整改方案，验收通过概率较高。' },
-            { label: '资源评估', text: '永固建材为培训到期整改，可由企业自行完成线上培训后提交凭证，无需现场核查，建议作为"自行整改"处理以减轻一线人力压力。' }
+            { label: '资源评估', text: '杭州永固建材有限公司为培训到期整改，可由企业自行完成线上培训后提交凭证，无需现场核查，建议作为"自行整改"处理以减轻一线人力压力。' }
           ] },
         { id: 'abnormalSubject', label: '重点监管主体异常', value: '8', group: '今日聚焦', type: '时点', alert: 'danger', desc: '重点监管主体中存在风险上升、长期未登录、自查异常、隐患反复等异常的数量',
           drilldown: [
             { name: '恒源化工', line: '企业安全组', type: '风险上升', status: '超期', detail: '危化品隐患超期', region: '仓前街道' },
-            { name: '鑫盛机械', line: '企业安全组', type: '自查缺失', status: '异常', detail: '自查0次+隐患8项', region: '良渚街道' },
-            { name: '天元纺织', line: '企业安全组', type: '异常叠加', status: '异常', detail: '多项异常叠加', region: '良渚街道' },
-            { name: '华阳包装', line: '企业安全组', type: '自查缺失', status: '异常', detail: '自查持续为0', region: '物流片' },
-            { name: '东兴机械', line: '安全生产组', type: '培训缺失', status: '异常', detail: '培训不足+自查缺失', region: '良渚街道' },
+            { name: '杭州鑫盛机械制造有限公司', line: '企业安全组', type: '自查缺失', status: '异常', detail: '自查0次+隐患8项', region: '良渚街道' },
+            { name: '余杭天元纺织厂', line: '企业安全组', type: '异常叠加', status: '异常', detail: '多项异常叠加', region: '良渚街道' },
+            { name: '杭州华阳包装材料有限公司', line: '企业安全组', type: '自查缺失', status: '异常', detail: '自查持续为0', region: '物流片' },
+            { name: '余杭东兴精密机械厂', line: '安全生产组', type: '培训缺失', status: '异常', detail: '培训不足+自查缺失', region: '良渚街道' },
             { name: '北苑商业综合体', line: '消防安全组', type: '隐患反复', status: '超期', detail: '消防通道反复堵塞', region: '良渚街道' },
             { name: '云栖高层住宅', line: '消防安全组', type: '设施失效', status: '超期', detail: '消防设施全面失效', region: '五常街道' },
             { name: '高层小区消防专项', line: '消防安全组', type: '进度滞后', status: '滞后', detail: '完成率仅42%', region: '全片区' }
           ],
           aiAnalysis: [
-            { label: '特征分析', text: '8家异常主体中，5家属于企业安全组管辖的工贸企业（恒源化工、鑫盛机械、天元纺织、华阳包装、东兴机械），共性特征为"自查持续为0"。其中4家自查为0的同时培训完成率低于40%，企业安全主体责任落实存在系统性缺失。' },
-            { label: '关联分析', text: '自查缺失的企业——鑫盛机械、东兴机械、华阳包装——同期政府检查隐患数分别为8项、5项、4项。自查0 vs 政府查出一大堆，"自查与检查差异"显著，企业可能是在敷衍自查或根本未开展。建议安排专项抽查核实。' },
+            { label: '特征分析', text: '8家异常主体中，5家属于企业安全组管辖的工贸企业（杭州恒源化工有限公司、杭州鑫盛机械制造有限公司、余杭天元纺织厂、杭州华阳包装材料有限公司、余杭东兴精密机械厂），共性特征为"自查持续为0"。其中4家自查为0的同时培训完成率低于40%，企业安全主体责任落实存在系统性缺失。' },
+            { label: '关联分析', text: '自查缺失的企业——杭州鑫盛机械制造有限公司、余杭东兴精密机械厂、杭州华阳包装材料有限公司——同期政府检查隐患数分别为8项、5项、4项。自查0 vs 政府查出一大堆，"自查与检查差异"显著，企业可能是在敷衍自查或根本未开展。建议安排专项抽查核实。' },
             { label: '风险推演', text: '消防安全组3项异常（北苑、云栖、高层专项）均与高层建筑消防相关。考虑到当前消防安全组复查闭环率仅68%，若不增加该组支援力量，本月闭环率可能跌破65%的警戒线，触发上级督办。' }
           ] },
         { id: 'taskCompleteRate', label: '检查任务完成率', value: '82%', group: '今日聚焦', type: '闭环率', periods: ['今日','本周','本月'], desc: '今日已完成检查任务占今日应完成检查任务的比例',
@@ -548,7 +748,7 @@
         '</div>' +
       '</div>';
 
-      // ─── 纵向：关键风险 + 核心任务 ────────────────────────────
+      // ─── 重大隐患数据预计算 ──────────────────────────────
       // 只展示重大隐患，未闭环/未完成排前面
       var majorHazards = [];
       for (var ti = 0; ti < MOCK.hazards.length; ti++) {
@@ -587,47 +787,7 @@
         riskSummary = '本月暂无重大隐患记录。';
       }
 
-      html +=
-      '<div class="info-card">' +
-        '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
-          '<h3><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red)"></i> 关键风险闭环</h3>' +
-          '<div style="margin-left:auto;display:flex;gap:10px;font-size:11px">' +
-            '<span style="color:var(--weak)">本月 <strong style="color:var(--text)">' + totalMajor + '</strong> 个重大隐患</span>' +
-            '<span style="color:var(--weak)">超期未整改 <strong style="color:var(--red)">' + overdueCount + '</strong></span>' +
-            '<span style="color:var(--weak)">已完成 <strong style="color:var(--green)">' + doneCount + '</strong></span>' +
-          '</div>' +
-          '<div style="width:100%;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px">' + riskSummary + '</div>' +
-        '</div>' +
-        '<div class="hc-scroll">';
-      for (var hi = 0; hi < majorHazards.length; hi++) {
-        var h = majorHazards[hi];
-        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + h.overdue + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
-        html += '<div class="hazard-card" style="flex:0 0 270px;min-width:250px;cursor:pointer" onclick="openHazardDetail(\'' + h.object + '\')" title="点击查看详情">' +
-          '<div class="hc-head">' +
-            '<span class="hc-name">' + h.object + '</span>' +
-          '</div>' +
-          '<div class="hc-desc">' + h.hazard + '</div>' +
-          '<div class="hc-meta">' +
-            '<span>来源 ' + h.source + '</span>' +
-            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
-            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
-          '</div>' +
-          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
-          '<div class="hc-actions">' +
-            (h.status === '已完成' ?
-              '<button class="hc-btn" onclick="showToast(\'复查记录已提交\')"><i data-lucide="check-circle" width="11" height="11"></i> 复查确认</button>' +
-              '<button class="hc-btn" onclick="openHazardDetail(\'' + h.object + '\')"><i data-lucide="file-text" width="11" height="11"></i> 查看详情</button>'
-            :
-              '<button class="hc-btn" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" width="11" height="11"></i> 督办</button>' +
-              '<button class="hc-btn" onclick="openDrawer(\'inspect\')"><i data-lucide="search" width="11" height="11"></i> 现场核查</button>' +
-              '<button class="hc-btn" onclick="showToast(\'已加入持续跟踪\')"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
-            ) +
-          '</div>' +
-        '</div>';
-      }
-      html += '</div></div>';
-
-      // ─── 板块三：核心任务进展 ──────────────────────────────────
+      // ─── 板块二：核心任务进展 ──────────────────────────────────
       var tasks = MOCK.tasks;
       var lagCount = 0;
       for (var ti = 0; ti < tasks.length; ti++) { if (tasks[ti].lag) lagCount++; }
@@ -664,7 +824,7 @@
           var statusBadge = t.lag
             ? '<span class="hc-status ' + t.statusCls + '" style="display:inline-block;width:36px;text-align:center;font-size:10px;padding:1px 0">异常</span>'
             : '<span style="display:inline-block;width:36px"></span>';
-          html += '<tr style="border-bottom:1px solid var(--border)">' +
+          html += '<tr style="border-bottom:1px solid var(--border);cursor:pointer" onclick="openTaskDetail(\'' + t.name.replace(/'/g, "\\'") + '\')" title="点击查看详情">' +
             '<td style="padding:7px 10px;font-weight:500;color:var(--text);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + statusBadge + ' ' + t.name + '</td>' +
             '<td style="padding:7px 10px;text-align:center;white-space:nowrap"><span style="font-size:10px;font-weight:600;color:' + (t.type === '日常' ? '#98a2b3' : 'var(--blue)') + '">' + (t.type === '日常' ? '日常任务' : '专项任务') + '</span></td>' +
             '<td style="padding:7px 10px;text-align:center;font-size:10px;color:var(--muted);white-space:nowrap">' + (t.line || '—') + '</td>' +
@@ -682,101 +842,106 @@
       html += '</tbody></table></div>';
       html += '</div>';
 
-      // ─── 主体责任落实情况 ────────────────────────────────────────
-      (function() {
-        var subs = MOCK.subjects;
-        var total = subs.length;
-        var noSelfCheck = 0, trainingLow = 0, highRisk = 0, noDrill = 0, selfChecked = 0;
-        var trainWarnList = [];
-        for (var si = 0; si < total; si++) {
-          var s = subs[si];
-          if (s.selfCheck === 0 || s.selfCheck === '0 次') {
-            noSelfCheck++;
-          } else {
-            selfChecked++;
-          }
-          var tr = parseInt(s.training);
-          if (!isNaN(tr) && tr < 40) trainingLow++;
-          if (tr < 20) trainWarnList.push(s);
-          if (s.risk === 'high') highRisk++;
-          if (s.drill === '0 次' || s.drill === 0) noDrill++;
-        }
-        var selfCheckRate = Math.round((total - noSelfCheck) / total * 100);
-        var trainingRate = Math.round((total - trainingLow) / total * 100);
-        var drillOk = total - noDrill;
-        var drillRate = Math.round(drillOk / total * 100);
-        // 计算自查-政府检查差异，按差异排序
-        var gapSorted = [];
-        for (var si = 0; si < total; si++) {
-          var s = subs[si];
-          var sc = typeof s.selfCheck === 'number' ? s.selfCheck : (parseInt(s.selfCheck) || 0);
-          var gc = parseInt(s.govCheck) || 0;
-          var gap = gc - sc;
-          if (gap > 0) gapSorted.push({ data: s, gap: gap });
-        }
-        gapSorted.sort(function(a,b){ return b.gap - a.gap; });
-        var sectionHtml =
-        '<div class="info-card">' +
-          '<div class="info-card-head">' +
-            '<h3><i data-lucide="building" aria-hidden="true" style="color:var(--accent)"></i> 企业主体责任落实情况</h3>' +
-            '<span class="info-card-badge danger">' + gapSorted.length + ' 家需督办</span>' +
+      // ─── 板块三：重点跟进 ──────────────────────────────────────
+      var followups = [
+        { name: '北苑商业综合体', source: '消防通道堵塞逾期3天未整改', person: '王志安', days: 3, status: '跟进中', statusCls: 'danger' },
+        { name: '云栖高层住宅', source: '消防设施失效逾期1天未启动', person: '李明', days: 1, status: '跟进中', statusCls: 'danger' },
+        { name: '恒源化工', source: '隐患整改中 · 主体责任异常（自查持续为0）', person: '李安全', days: 9, status: '跟进中', statusCls: 'warning' },
+        { name: '高层小区消防专项', source: '完成率51%，滞后时间进度19pp', person: '张毅', days: 19, status: '待确认', statusCls: 'neutral' },
+        { name: '良渚片区仓储场所', source: '7家主体整改超期，需片区联动', person: '陈芳', days: 5, status: '跟进中', statusCls: 'warning' }
+      ];
+      html += '<div class="info-card">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="list-checks" aria-hidden="true" style="color:var(--accent)"></i> 重点跟进</h3>' +
+          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + followups.length + ' 项</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;overflow-x:auto;padding:4px 0">';
+      for (var fui = 0; fui < followups.length; fui++) {
+        var fu = followups[fui];
+        html += '<div style="flex:0 0 220px;min-width:200px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--fg-soft)">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
+            '<span style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">' + fu.name + '</span>' +
+            '<span class="hc-status ' + fu.statusCls + '" style="font-size:9px;padding:1px 5px;white-space:nowrap">' + fu.status + '</span>' +
           '</div>' +
-          '<div style="display:flex;gap:0">' +
-            '<div style="flex:1;text-align:center;padding:12px 0;border-right:1px solid var(--line)"><div style="font-size:22px;font-weight:800;color:' + (selfCheckRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + selfCheckRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">隐患自查上报率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + noSelfCheck + '/' + total + ' 企业未自查</div></div>' +
-            '<div style="flex:1;text-align:center;padding:12px 0;border-right:1px solid var(--line)"><div style="font-size:22px;font-weight:800;color:' + (trainingRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + trainingRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">员工培训完成率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + trainingLow + '/' + total + ' 企业不达标</div></div>' +
-            '<div style="flex:1;text-align:center;padding:12px 0"><div style="font-size:22px;font-weight:800;color:' + (drillRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + drillRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">应急逃生演练完成率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + noDrill + '/' + total + ' 企业未开展</div></div>' +
-          '</div>';
-        if (gapSorted.length > 0) {
-          sectionHtml +=
-          '<div style="padding:6px 14px 10px">' +
-            '<div style="font-size:10px;font-weight:600;color:var(--weak);margin-bottom:4px;letter-spacing:0.03em">自查与政府检查差异较大的企业（按差异从大到小）</div>' +
-            '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
-            '<thead><tr style="border-bottom:1px solid var(--border);background:var(--fg-soft)">' +
-              '<th style="padding:4px 6px;text-align:left;font-weight:500;color:var(--weak);font-size:9px">企业</th>' +
-              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">自查</th>' +
-              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">政府检查</th>' +
-              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">差异</th>' +
-              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">培训</th>' +
-              '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">演练</th>' +
-            '</tr></thead><tbody>';
-          for (var gi = 0; gi < gapSorted.length; gi++) {
-            var g = gapSorted[gi].data;
-            var gapVal = gapSorted[gi].gap;
-            var gRisk = g.risk === 'high' ? 'var(--red)' : '#d97706';
-            sectionHtml += '<tr style="border-bottom:1px solid var(--line)">' +
-              '<td style="padding:4px 6px;font-weight:500"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + gRisk + ';margin-right:4px;vertical-align:middle"></span>' + g.name + '</td>' +
-              '<td style="padding:4px 6px;text-align:center;color:' + (g.selfCheck === 0 || g.selfCheck === '0 次' ? 'var(--red)' : 'var(--muted)') + '">' + (g.selfCheck || '0 次') + '</td>' +
-              '<td style="padding:4px 6px;text-align:center;color:var(--muted)">' + g.govCheck + '</td>' +
-              '<td style="padding:4px 6px;text-align:center;font-weight:700;color:' + (gapVal > 5 ? 'var(--red)' : '#d97706') + '">' + gapVal + '</td>' +
-              '<td style="padding:4px 6px;text-align:center;color:' + (parseInt(g.training) < 30 ? 'var(--red)' : 'var(--muted)') + '">' + g.training + '</td>' +
-              '<td style="padding:4px 6px;text-align:center;color:' + (g.drill === '0 次' || g.drill === 0 ? 'var(--red)' : 'var(--green)') + '">' + (g.drill || '0 次') + '</td>' +
-            '</tr>';
-          }
-          sectionHtml += '</tbody></table></div>';
-        }
-        sectionHtml += '</div>';
-        html += sectionHtml;
-      })();
-
-      // ─── 规则引擎状态指示 ───────────────────────────────────
-      if (typeof window.getRuleEngineSummary === 'function') {
-        var ruleSummary = window.getRuleEngineSummary();
-        if (ruleSummary) {
-          var ruleColors = { danger: 'var(--red)', warning: '#d97706' };
-          var dots = '';
-          for (var rs = 0; rs < ruleSummary.alerts.length; rs++) {
-            var a = ruleSummary.alerts[rs];
-            dots += '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:' + (ruleColors[a.severity] || 'var(--weak)') + ';margin-right:3px" title="' + a.name + ': ' + a.count + ' 次命中"></span>';
-          }
-          html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;margin-top:8px;font-size:11px;color:var(--weak);border:1px solid var(--line);border-radius:8px;background:#fafbfc">' +
-            '<i data-lucide="settings-2" style="width:12px;height:12px;color:var(--muted)"></i>' +
-            '<span>规则引擎</span>' +
-            '<span style="display:flex;gap:1px">' + dots + '</span>' +
-            '<span>' + ruleSummary.triggered + ' 条规则命中 · ' + ruleSummary.enabled + '/' + ruleSummary.total + ' 启用</span>' +
-            '<a href="#" onclick="window.switchScene(\'rules\');return false" style="color:var(--blue);margin-left:auto;font-weight:500;border-bottom:1px dashed var(--blue)">管理规则 →</a>' +
-            '</div>';
-        }
+          '<div style="font-size:10px;color:var(--muted);line-height:1.4;margin-bottom:5px;min-height:28px">' + fu.source + '</div>' +
+          '<div style="font-size:10px;color:var(--weak);display:flex;gap:10px">' +
+            '<span style="display:inline-flex;align-items:center;gap:3px"><i data-lucide="user" width="10" height="10"></i> ' + fu.person + '</span>' +
+            '<span style="display:inline-flex;align-items:center;gap:3px"><i data-lucide="clock" width="10" height="10"></i> 已跟进 ' + fu.days + ' 天</span>' +
+          '</div>' +
+        '</div>';
       }
+      html += '</div></div>';
+
+      // ─── 板块四：关键风险闭环 ──────────────────────────────────
+      html +=
+      '<div class="info-card">' +
+        '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
+          '<h3><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red)"></i> 关键风险闭环</h3>' +
+          '<div style="margin-left:auto;display:flex;gap:10px;font-size:11px">' +
+            '<span style="color:var(--weak)">本月 <strong style="color:var(--text)">' + totalMajor + '</strong> 个重大隐患</span>' +
+            '<span style="color:var(--weak)">超期未整改 <strong style="color:var(--red)">' + overdueCount + '</strong></span>' +
+            '<span style="color:var(--weak)">已完成 <strong style="color:var(--green)">' + doneCount + '</strong></span>' +
+          '</div>' +
+          '<div style="width:100%;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px">' + riskSummary + '</div>' +
+        '</div>' +
+        '<div class="hc-scroll">';
+      for (var hi = 0; hi < majorHazards.length; hi++) {
+        var h = majorHazards[hi];
+        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + h.overdue + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
+        html += '<div class="hazard-card" style="flex:0 0 270px;min-width:250px;cursor:pointer" onclick="openHazardDetail(\'' + h.object + '\')" title="点击查看详情">' +
+          '<div class="hc-head">' +
+            '<span class="hc-name">' + h.object + '</span>' +
+          '</div>' +
+          '<div class="hc-desc">' + h.hazard + '</div>' +
+          '<div class="hc-meta">' +
+            '<span>来源 ' + h.source + '</span>' +
+            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
+            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
+          '</div>' +
+          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
+          '<div class="hc-actions">' +
+            (h.status === '已完成' ?
+              '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--green);padding:2px 0"><i data-lucide="check-circle-2" width="11" height="11"></i> 已完成</span>'
+            :
+              '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:' + (h.status === '超期未整改' ? 'var(--red)' : '#d97706') + ';padding:2px 0"><i data-lucide="eye" width="11" height="11"></i> 已督办 · 跟进中</span>' +
+              '<button class="hc-btn" onclick="openHazardDetail(\'' + h.object + '\')"><i data-lucide="file-text" width="11" height="11"></i> 查看详情</button>'
+            ) +
+          '</div>' +
+        '</div>';
+      }
+      html += '</div></div>';
+
+
+      // ─── 管理动作记录 ────────────────────────────────────────
+      var actions = [
+        { time: '今日 10:30', type: '督办', typeCls: 'danger', target: '北苑商业综合体', person: '王志安', note: '限24小时反馈整改方案' },
+        { time: '昨日 15:00', type: '提醒', typeCls: 'warning', target: '消防安全组', person: '张毅', note: '复查闭环率持续偏低' },
+        { time: '07-17', type: '约谈', typeCls: 'neutral', target: '恒源化工', person: '李安全', note: '主体责任落实不到位' },
+        { time: '07-16', type: '核查', typeCls: 'blue', target: '良渚街道仓储区', person: '陈芳', note: '现场核查发现3项新问题' },
+        { time: '07-14', type: '升级', typeCls: 'danger', target: '高层小区消防专项', person: '张毅', note: '提请分管副组长介入' }
+      ];
+      var actionColors = { danger: 'var(--red)', warning: '#d97706', neutral: 'var(--weak)', blue: 'var(--blue)' };
+      html += '<div class="info-card">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="clipboard-list" aria-hidden="true" style="color:var(--accent)"></i> 管理动作记录</h3>' +
+          '<span style="font-size:10px;color:var(--muted)">最近 5 条</span>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0">';
+      for (var ai = 0; ai < actions.length; ai++) {
+        var ac = actions[ai];
+        html += '<div style="flex:0 0 200px;min-width:185px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--fg-soft);display:flex;flex-direction:column;gap:3px">' +
+          '<div style="display:flex;align-items:center;gap:6px">' +
+            '<span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;color:#fff;background:' + (actionColors[ac.typeCls] || 'var(--weak)') + '">' + ac.type + '</span>' +
+            '<span style="font-size:10px;color:var(--muted)">' + ac.time + '</span>' +
+          '</div>' +
+          '<div style="font-size:11px;font-weight:500;color:var(--text)">' + ac.target + '</div>' +
+          '<div style="font-size:9px;color:var(--weak);display:flex;gap:4px;align-items:center"><i data-lucide="user" width="9" height="9"></i> ' + ac.person + ' · ' + ac.note + '</div>' +
+        '</div>';
+      }
+      html += '</div></div>';
+
+
+
 
       return html;
     }
@@ -906,7 +1071,7 @@
       for (var i = 0; i < MOCK.subjects.length; i++) {
         var s = MOCK.subjects[i];
         var riskLabel = s.risk === 'high' ? '高度关注' : s.risk === 'mid' ? '需关注' : '观察';
-        rows += '<tr><td>' + s.name + '</td><td>' + s.selfCheck + '</td><td>' + s.govCheck + '</td><td>' + s.training + '</td><td>' + s.drill + '</td><td><span class="st-risk ' + s.risk + '">' + riskLabel + '</span></td><td style="font-size:12px;color:var(--accent);font-weight:500;cursor:pointer" onclick="showToast(\'已记录建议：' + s.suggest + '\')">' + s.suggest + '</td></tr>';
+        rows += '<tr><td><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + s.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + s.name + '</a></td><td>' + s.selfCheck + '</td><td>' + s.govCheck + '</td><td>' + s.training + '</td><td>' + s.drill + '</td><td><span class="st-risk ' + s.risk + '">' + riskLabel + '</span></td><td style="font-size:12px;color:var(--accent);font-weight:500;cursor:pointer" onclick="showToast(\'已记录建议：' + s.suggest + '\')">' + s.suggest + '</td></tr>';
       }
 
       return '' +
@@ -918,6 +1083,80 @@
           '<div class="matrix-card"><div class="matrix-card-icon neutral"><i data-lucide="log-out" aria-hidden="true"></i></div><div class="matrix-card-title">触达失败</div><div class="matrix-card-desc">平台长期不登录，需要培训或依法督促</div></div>' +
         '</div>' +
 
+        // ─── 企业主体责任落实情况（从首页移入） ──────────────────
+        (function() {
+          var subs = MOCK.subjects;
+          var total = subs.length;
+          var noSelfCheck = 0, trainingLow = 0, highRisk = 0, noDrill = 0, selfChecked = 0;
+          var trainWarnList = [];
+          for (var si = 0; si < total; si++) {
+            var s = subs[si];
+            if (s.selfCheck === 0 || s.selfCheck === '0 次') {
+              noSelfCheck++;
+            } else {
+              selfChecked++;
+            }
+            var tr = parseInt(s.training);
+            if (!isNaN(tr) && tr < 40) trainingLow++;
+            if (tr < 20) trainWarnList.push(s);
+            if (s.risk === 'high') highRisk++;
+            if (s.drill === '0 次' || s.drill === 0) noDrill++;
+          }
+          var selfCheckRate = Math.round((total - noSelfCheck) / total * 100);
+          var trainingRate = Math.round((total - trainingLow) / total * 100);
+          var drillOk = total - noDrill;
+          var drillRate = Math.round(drillOk / total * 100);
+          var gapSorted = [];
+          for (var si = 0; si < total; si++) {
+            var s = subs[si];
+            var sc = typeof s.selfCheck === 'number' ? s.selfCheck : (parseInt(s.selfCheck) || 0);
+            var gc = parseInt(s.govCheck) || 0;
+            var gap = gc - sc;
+            if (gap > 0) gapSorted.push({ data: s, gap: gap });
+          }
+          gapSorted.sort(function(a,b){ return b.gap - a.gap; });
+          var sectionHtml =
+          '<div class="info-card">' +
+            '<div class="info-card-head">' +
+              '<h3><i data-lucide="building" aria-hidden="true" style="color:var(--accent)"></i> 企业主体责任落实情况</h3>' +
+              '<span class="info-card-badge danger">' + gapSorted.length + ' 家需督办</span>' +
+            '</div>' +
+            '<div style="display:flex;gap:0">' +
+              '<div style="flex:1;text-align:center;padding:12px 0;border-right:1px solid var(--line)"><div style="font-size:22px;font-weight:800;color:' + (selfCheckRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + selfCheckRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">隐患自查上报率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + noSelfCheck + '/' + total + ' 企业未自查</div></div>' +
+              '<div style="flex:1;text-align:center;padding:12px 0;border-right:1px solid var(--line)"><div style="font-size:22px;font-weight:800;color:' + (trainingRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + trainingRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">员工培训完成率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + trainingLow + '/' + total + ' 企业不达标</div></div>' +
+              '<div style="flex:1;text-align:center;padding:12px 0"><div style="font-size:22px;font-weight:800;color:' + (drillRate < 60 ? 'var(--red)' : 'var(--green)') + '">' + drillRate + '%</div><div style="font-size:10.5px;color:var(--weak);margin-top:2px">应急逃生演练完成率</div><div style="font-size:9px;color:var(--muted);margin-top:1px">' + noDrill + '/' + total + ' 企业未开展</div></div>' +
+            '</div>';
+          if (gapSorted.length > 0) {
+            sectionHtml +=
+            '<div style="padding:6px 14px 10px">' +
+              '<div style="font-size:10px;font-weight:600;color:var(--weak);margin-bottom:4px;letter-spacing:0.03em">自查与政府检查差异较大的企业（按差异从大到小）</div>' +
+              '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
+              '<thead><tr style="border-bottom:1px solid var(--border);background:var(--fg-soft)">' +
+                '<th style="padding:4px 6px;text-align:left;font-weight:500;color:var(--weak);font-size:9px">企业</th>' +
+                '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">自查</th>' +
+                '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">政府检查</th>' +
+                '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">差异</th>' +
+                '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">培训</th>' +
+                '<th style="padding:4px 6px;text-align:center;font-weight:500;color:var(--weak);font-size:9px">演练</th>' +
+              '</tr></thead><tbody>';
+            for (var gi = 0; gi < gapSorted.length; gi++) {
+              var g = gapSorted[gi].data;
+              var gapVal = gapSorted[gi].gap;
+              var gRisk = g.risk === 'high' ? 'var(--red)' : '#d97706';
+              sectionHtml += '<tr style="border-bottom:1px solid var(--line)">' +
+                '<td style="padding:4px 6px;font-weight:500"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + gRisk + ';margin-right:4px;vertical-align:middle"></span><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + g.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + g.name + '</a></td>' +
+                '<td style="padding:4px 6px;text-align:center;color:' + (g.selfCheck === 0 || g.selfCheck === '0 次' ? 'var(--red)' : 'var(--muted)') + '">' + (g.selfCheck || '0 次') + '</td>' +
+                '<td style="padding:4px 6px;text-align:center;color:var(--muted)">' + g.govCheck + '</td>' +
+                '<td style="padding:4px 6px;text-align:center;font-weight:700;color:' + (gapVal > 5 ? 'var(--red)' : '#d97706') + '">' + gapVal + '</td>' +
+                '<td style="padding:4px 6px;text-align:center;color:' + (parseInt(g.training) < 30 ? 'var(--red)' : 'var(--muted)') + '">' + g.training + '</td>' +
+                '<td style="padding:4px 6px;text-align:center;color:' + (g.drill === '0 次' || g.drill === 0 ? 'var(--red)' : 'var(--green)') + '">' + (g.drill || '0 次') + '</td>' +
+              '</tr>';
+            }
+            sectionHtml += '</tbody></table></div>';
+          }
+          sectionHtml += '</div>';
+          return sectionHtml;
+        })() +
         '<div class="section-head" style="margin-bottom:8px;margin-top:4px"><h2 style="font-size:14px"><i data-lucide="list" aria-hidden="true" style="color:var(--accent)"></i> 疑似主体责任异常对象</h2></div>' +
         '<div class="subject-table-wrap">' +
         '<table class="subject-table">' +
@@ -999,7 +1238,7 @@
         sections: [
           { label: '今日判断', value: '总体平稳可控，但重大隐患闭环压力上升。今日需优先处理 2 项已超期重大隐患，随后核查高层小区专项任务滞后原因，并关注 8 家主体对象自查与政府检查不匹配。' },
           { label: '主要依据', value: '新增隐患 12 项（较日均+20%）；村社履职率 76%（目标 80%）；主体责任异常 8 家；重大未闭环 5 项，其中超期 2 项。' },
-          { label: '优先动作', value: '1. 确认北苑商业综合体、云栖高层住宅整改方案\n2. 核查高层小区消防专项滞后原因\n3. 安排恒源化工、鑫盛机械主体责任约谈' },
+          { label: '优先动作', value: '1. 确认北苑商业综合体、云栖高层住宅整改方案\n2. 核查高层小区消防专项滞后原因\n3. 安排杭州恒源化工有限公司、杭州鑫盛机械制造有限公司主体责任约谈' },
           { label: '数据限制', value: '履职率口径尚未统一定义；风险预测数据不足 6 个月，暂不适合强预测。以上判断基于当前可用数据，建议结合实际情况综合研判。' }
         ]
       },
@@ -1019,7 +1258,7 @@
           { label: '议题标题', value: '近期重大隐患整改推进及主体责任约谈计划' },
           { label: '问题背景', value: '当前重大未闭环 5 项，其中 2 项已超期；8 家主体对象自查为 0 但政府检查发现多项隐患，存在敷衍自查迹象。' },
           { label: '需会议确认', value: '1. 北苑商业综合体、云栖高层住宅整改方案\n2. 高层小区消防专项推进计划\n3. 主体责任约谈名单及时间安排' },
-          { label: '建议决策', value: '1. 明确重大隐患整改责任人和完成时限\n2. 同意将恒源化工、鑫盛机械等纳入 C 类重点监管\n3. 启动电动自行车违规停放专项整治' },
+          { label: '建议决策', value: '1. 明确重大隐患整改责任人和完成时限\n2. 同意将杭州恒源化工有限公司、杭州鑫盛机械制造有限公司等纳入 C 类重点监管\n3. 启动电动自行车违规停放专项整治' },
           { label: '会后任务', value: '各责任人认领整改任务，下周三前提交整改方案。' }
         ]
       },
@@ -1036,7 +1275,7 @@
         title: '一键提醒履职',
         sections: [
           { label: '提醒对象', value: '应消站、区域站、第三方专家、村社相关人员' },
-          { label: '提醒事由', value: '东兴机械自查缺失+培训不足、云栖高层住宅消防设施失效，需相关责任人员现场核查隐患整改进展。' },
+          { label: '提醒事由', value: '余杭东兴精密机械厂自查缺失+培训不足、云栖高层住宅消防设施失效，需相关责任人员现场核查隐患整改进展。' },
           { label: '提醒方式', value: '系统自动发送浙政钉通知 + 短信提醒至以下角色：\n• 应消站值班人员\n• 区域站负责人\n• 第三方安全专家\n• 属地村社负责人' },
           { label: '跟踪要求', value: '请于 2 个工作日内反馈现场核查结果。若本周内无反馈，将升级为站长督办事项。' }
         ]
@@ -1090,17 +1329,27 @@
     // HAZARD DETAIL
     // ════════════════════════════════════════════════════════════════
 
-    function openHazardDetail(objectName) {
-      var arr = window.__majorHazards || [];
+    function openHazardDetail(objectName, foundDate) {
+      // 先从全部隐患中查找（按对象 + 日期精确定位）
       var h = null;
-      for (var i = 0; i < arr.length; i++) {
-        if (arr[i].object === objectName) { h = arr[i]; break; }
+      for (var si = 0; si < MOCK.hazards.length; si++) {
+        if (MOCK.hazards[si].object === objectName) {
+          if (foundDate === undefined || MOCK.hazards[si].foundDate === foundDate) {
+            h = MOCK.hazards[si]; break;
+          }
+        }
+      }
+      if (!h) {
+        var arr = window.__majorHazards || [];
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i].object === objectName) { h = arr[i]; break; }
+        }
       }
       if (!h) { showToast('未找到隐患数据'); return; }
       window.__currentHazard = h;
 
       var dotColor = h.level.indexOf('重大') > -1 ? 'var(--red)' : '#d97706';
-      document.getElementById('hazardModalName').textContent = h.object;
+      document.getElementById('hazardModalName').innerHTML = '<a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--text);text-decoration:none;border-bottom:1px dashed var(--blue)">' + h.object + '</a>';
       document.getElementById('hazardModalDot').style.background = dotColor;
 
       // — 顶部状态区 —
@@ -1121,7 +1370,7 @@
       '<div style="font-size:13px;color:#344054;line-height:1.6;margin-bottom:14px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">' + (h.suggestion || '—') + '</div>' +
       // — 基础信息（两列简洁）—
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;margin-bottom:10px">' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">对象</span> ' + h.object + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">对象</span> <a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue)">' + h.object + '</a></div>' +
         '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">责任人</span> ' + (h.person || '—') + '</div>' +
         '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">发现</span> ' + (h.discoverer || '—') + ' / ' + h.foundDate + '</div>' +
         '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">期限</span> ' + h.deadline + '</div>' +
@@ -1157,10 +1406,55 @@
         '</div>' +
         (h.resultText ? '<div style="font-size:12px;color:var(--text);line-height:1.5">' + h.resultText + '</div>' : '') +
       '</div></div>';
-      document.getElementById('hazardModalBody').innerHTML = bodyHtml;
+
+      // 生成 AI 结论
+      var aiHtml = '';
+      var entData = ENTERPRISE_DB[h.object];
+      if (entData) {
+        aiHtml =
+        '<div style="font-size:12px;line-height:1.65;color:#344054">' +
+          generateHazardAnalysis(h, entData) +
+        '</div>';
+      }
+
+      document.getElementById('hazardModalBody').innerHTML =
+        '<div class="hmodal-main">' + bodyHtml + '</div>' +
+        '<div class="hmodal-ai">' + aiHtml + '</div>';
 
       document.getElementById('hazardModalOverlay').style.display = 'block';
       document.getElementById('hazardModal').style.display = 'flex';
+    }
+
+    function generateHazardAnalysis(h, entData) {
+      var allHaz = MOCK.hazards.filter(function(x) { return x.object === h.object; });
+      var prevSame = allHaz.filter(function(x) { return x.hazard.indexOf(h.hazard.slice(0, 6)) > -1 && x !== h; });
+      var overdue = h.overdue > 0;
+      var si = entData.selfInspections || [];
+      var siRate = si.length > 0 ? Math.round(si.filter(function(x) { return x.statusCls === 'done' || x.status === '无异常'; }).length / si.length * 100) : 0;
+      var totalHaz = allHaz.length;
+      var closedHaz = allHaz.filter(function(x) { return x.statusCls === 'done'; }).length;
+
+      var summary = '';
+      if (overdue) {
+        summary = '该隐患已逾期 <strong>' + h.overdue + ' 天</strong>，';
+        summary += h.level.indexOf('重大') > -1 ? '属于重大事故隐患，需站长立即介入。' : '需尽快处置。';
+      }
+
+      // 综合判断：问题出在哪一端
+      var enterpriseWeak = siRate < 60;
+      var repeatIssue = prevSame.length > 0;
+      if (enterpriseWeak || repeatIssue) {
+        summary += '企业自检执行率仅 ' + siRate + '%，隐患闭环率 ' + Math.round(closedHaz / totalHaz * 100) + '%，主体责任落实不到位。';
+      }
+      if (repeatIssue) {
+        summary += '同类隐患反复出现 ' + prevSame.length + ' 次，需深挖根因。';
+      }
+      if (!enterpriseWeak && !repeatIssue && !overdue) {
+        summary = '该企业自检执行率 ' + siRate + '%，隐患闭环率 ' + Math.round(closedHaz / totalHaz * 100) + '%，整体履职基本到位。详情可查看右侧企业侧边栏。';
+      }
+
+      summary += ' 点击上方企业名称查看完整评估报告。';
+      return summary;
     }
 
     function closeHazardModal() {
@@ -1202,6 +1496,244 @@
       } else {
         fallbackCopy(text, msg);
       }
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // 企业详情面板
+    // ════════════════════════════════════════════════════════════════
+
+    function openEnterprisePanel(name) {
+      var data = ENTERPRISE_DB[name];
+      if (!data) {
+        // Fallback: check MOCK.subjects for minimal data
+        var subj = null;
+        for (var si = 0; si < MOCK.subjects.length; si++) {
+          if (MOCK.subjects[si].name === name) { subj = MOCK.subjects[si]; break; }
+        }
+        if (subj) {
+          var riskColor = subj.risk === 'high' ? 'var(--red)' : subj.risk === 'mid' ? '#d97706' : 'var(--green)';
+          var riskLabel = subj.risk === 'high' ? '重大风险' : subj.risk === 'mid' ? '一般风险' : '低风险';
+          data = {
+            region: '—',
+            person: '—',
+            type: '企业',
+            area: '—',
+            riskLevel: riskLabel,
+            score: subj.risk === 'high' ? 'C' : subj.risk === 'mid' ? 'B' : 'A',
+            scorePct: subj.risk === 'high' ? 35 : subj.risk === 'mid' ? 60 : 85,
+            summary: '待完善企业安全评估数据。当前自查 ' + (subj.selfCheck || '0 次') + '，政府检查 ' + (subj.govCheck || '—') + '，培训完成率 ' + (subj.training || '—') + '，应急演练 ' + (subj.drill || '0 次') + '。',
+            dimensions: [
+              { id: 'responsibility', label: '安全责任体系', score: subj.risk === 'high' ? 'C' : subj.risk === 'mid' ? 'B' : 'A', icon: 'shield', text: '待完善。', bar: subj.risk === 'high' ? 'c' : subj.risk === 'mid' ? 'b' : 'a' },
+              { id: 'inspection', label: '隐患排查治理', score: subj.risk === 'high' ? 'D' : subj.risk === 'mid' ? 'C' : 'B', icon: 'search', text: '待完善。', bar: 'c' },
+              { id: 'training', label: '教育培训', score: subj.risk === 'high' ? 'D' : 'C', icon: 'graduation-cap', text: '培训完成率 ' + (subj.training || '—') + '。', bar: 'c' },
+              { id: 'emergency', label: '应急管理能力', score: 'C', icon: 'alert-triangle', text: '应急演练 ' + (subj.drill || '0 次') + '。', bar: 'c' },
+              { id: 'history', label: '历史表现评价', score: subj.risk === 'high' ? 'C' : 'B', icon: 'clock', text: '建议完善企业安全管理档案。', bar: 'b' }
+            ],
+            hazards: [],
+            selfInspections: [],
+            expertRecords: [],
+            trainingRecords: []
+          };
+        } else {
+          showToast('暂无该企业评估数据');
+          return;
+        }
+      }
+
+      // 填充该企业的历史隐患
+      data.hazards = [];
+      for (var ei = 0; ei < MOCK.hazards.length; ei++) {
+        if (MOCK.hazards[ei].object === name) {
+          data.hazards.push(MOCK.hazards[ei]);
+        }
+      }
+
+      document.getElementById('epName').textContent = name;
+      document.getElementById('epFixedTop').innerHTML = epRenderFixedTop(data);
+      window.__epActiveTab = 'hazards';
+      document.getElementById('epTabContent').innerHTML = epRenderTab(data, 'hazards');
+      document.getElementById('epPanel').classList.add('open');
+      window.__epData = data;
+      lucide.createIcons();
+    }
+
+    function closeEnterprisePanel() {
+      document.getElementById('epPanel').classList.remove('open');
+    }
+
+    function epSwitchTab(tab) {
+      var data = window.__epData;
+      if (!data) return;
+      // 更新指标卡高亮
+      var cards = document.querySelectorAll('#epFixedTop .ep-tab-card');
+      cards.forEach(function(c) { c.classList.remove('mc-active'); });
+      cards.forEach(function(c) { if (c.getAttribute('data-tab') === tab) c.classList.add('mc-active'); });
+      // 更新内容区
+      document.getElementById('epTabContent').innerHTML = epRenderTab(data, tab);
+      window.__epActiveTab = tab;
+      lucide.createIcons();
+    }
+
+    function epRenderFixedTop(data) {
+      var riskColor = { '重大风险': 'var(--red)', '较大风险': '#d97706', '一般风险': 'var(--green)', '低风险': '#6b7280' };
+      var riskBg = { '重大风险': '#fff1f2', '较大风险': '#fff7e6', '一般风险': '#eaf8f1', '低风险': '#f2f4f7' };
+      var rColor = riskColor[data.riskLevel] || 'var(--muted)';
+      var rBg = riskBg[data.riskLevel] || '#f2f4f7';
+      var unclosedHaz = data.hazards.filter(function(x) { return x.statusCls !== 'done'; }).length;
+      var activeTab = window.__epActiveTab || 'hazards';
+
+      var html =
+      // 基础信息行：风险标签 + 名称地址 + 责任人
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
+        '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:' + rBg + ';color:' + rColor + ';border:1px solid ' + rColor + ';flex-shrink:0">' + (data.riskLevel || '—') + '</span>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:14px;font-weight:700;color:var(--text)">' + data.type + ' · ' + data.region + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);margin-top:1px">责任人 ' + (data.person || '—') + ' · ' + (data.area || '—') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px;padding:6px 10px;background:#fafbfc;border-radius:8px">' + data.summary + '</div>' +
+      // 指标卡 = Tab
+      '<div class="metric-row" style="margin-bottom:6px">' +
+        '<div class="metric-card ep-tab-card' + (unclosedHaz > 0 ? ' alert-danger' : '') + (activeTab === 'hazards' ? ' mc-active' : '') + '" style="cursor:pointer;position:relative" data-tab="hazards" onclick="epSwitchTab(\'hazards\')">' +
+          (unclosedHaz > 0 ? '<span class="mc-alert-badge">' + unclosedHaz + '</span>' : '') +
+          '<div class="mc-value">' + data.hazards.length + '</div><div class="mc-label">隐患数</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'expert' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="expert" onclick="epSwitchTab(\'expert\')"><div class="mc-value">' + (data.expertRecords || []).length + '</div><div class="mc-label">专家履职</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'selfinspect' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="selfinspect" onclick="epSwitchTab(\'selfinspect\')"><div class="mc-value">' + (data.selfInspections || []).length + '</div><div class="mc-label">自检自查</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'training' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="training" onclick="epSwitchTab(\'training\')"><div class="mc-value">' + (data.trainingRecords || []).length + '</div><div class="mc-label">教育培训</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'dimensions' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="dimensions" onclick="epSwitchTab(\'dimensions\')"><div class="mc-value">' + (data.scorePct || '—') + '%</div><div class="mc-label">主体责任</div></div>' +
+      '</div>';
+      return html;
+    }
+
+    function epRenderTab(data, tab) {
+      if (tab === 'overview') return epRenderRecentHazards(data.hazards);
+      if (tab === 'hazards') return epRenderHazardCards(data.hazards);
+      if (tab === 'selfinspect') return epRenderList(data.selfInspections, '自检自查记录', function(s) {
+        var dotCls = s.statusCls || 'neutral';
+        var issueText = s.issues > 0 ? '<span style="color:' + (s.statusCls === 'danger' ? 'var(--red)' : '#d97706') + ';font-weight:600">问题 ' + s.issues + ' 项</span>' : '<span style="color:var(--green);font-weight:600">无异常</span>';
+        return '<div class="ep-hist-item">' +
+          '<span class="ep-hist-dot ' + dotCls + '"></span>' +
+          '<div style="flex:1;min-width:0;line-height:1.4">' +
+            '<div style="font-size:12px;color:var(--text);font-weight:500">' + s.type + '</div>' +
+            '<div style="font-size:11px;color:var(--muted)">' + (s.detail || '无异常') + '</div></div>' +
+          '<div style="text-align:right;flex-shrink:0">' +
+            '<div style="font-size:11px;color:var(--weak)">' + s.date + '</div>' +
+            '<div style="font-size:10.5px;margin-top:2px">' + issueText + '</div></div></div>';
+      });
+      if (tab === 'expert') return epRenderList(data.expertRecords, '专家履职记录', function(e) {
+        var dotCls = e.statusCls || 'neutral';
+        return '<div class="ep-hist-item">' +
+          '<span class="ep-hist-dot ' + dotCls + '"></span>' +
+          '<div style="flex:1;min-width:0;line-height:1.4">' +
+            '<div style="font-size:12px;color:var(--text);font-weight:500">' + e.expert + ' · ' + e.type + '</div>' +
+            '<div style="font-size:11px;color:var(--muted)">' + e.result + '</div></div>' +
+          '<div style="text-align:right;flex-shrink:0">' +
+            '<div style="font-size:11px;color:var(--weak)">' + e.date + '</div>' +
+            '<div style="font-size:10px;margin-top:2px;color:var(--weak)">' + e.org + '</div></div></div>';
+      });
+      if (tab === 'training') return epRenderList(data.trainingRecords, '培训记录', function(t) {
+        return '<div class="ep-hist-item">' +
+          '<span class="ep-hist-dot done"></span>' +
+          '<div style="flex:1;min-width:0;line-height:1.4">' +
+            '<div style="font-size:12px;color:var(--text);font-weight:500">' + t.type + ' · ' + t.instructor + '</div>' +
+            '<div style="font-size:11px;color:var(--muted)">' + t.detail + '</div></div>' +
+          '<div style="text-align:right;flex-shrink:0">' +
+            '<div style="font-size:11px;color:var(--weak)">' + t.date + '</div>' +
+            '<div style="font-size:10.5px;margin-top:2px;color:var(--green)">' + t.attendees + ' 人</div></div></div>';
+      });
+      if (tab === 'dimensions') {
+        var html =
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+          '<div style="font-size:14px;font-weight:700">主体责任 7 维度评估</div>' +
+          '<button onclick="epSwitchTab(\'overview\')" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--weak);cursor:pointer;display:grid;place-items:center" onmouseover="this.style.background=\'#f2f4f7\'" onmouseout="this.style.background=\'transparent\'"><i data-lucide="x" width="14" height="14"></i></button>' +
+        '</div>';
+        for (var di = 0; di < data.dimensions.length; di++) {
+          var dim = data.dimensions[di];
+          html += '<div class="ep-dim-card"><div class="ep-dim-top"><div class="ep-dim-label"><i data-lucide="' + dim.icon + '" width="14" height="14"></i>' + dim.label + '</div><span class="ep-dim-badge ' + dim.score.toLowerCase() + '">' + dim.score + '</span></div><div class="ep-dim-body">' + dim.text + '</div><div class="ep-dim-bar"><i class="' + dim.bar + '"></i></div></div>';
+        }
+        return html;
+      }
+      return '';
+    }
+
+    function epRenderHazardCards(hazards) {
+      var html =
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+        '<div style="font-size:14px;font-weight:700">隐患记录（' + hazards.length + '）</div>' +
+        '<button onclick="epSwitchTab(\'overview\')" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--weak);cursor:pointer;display:grid;place-items:center" onmouseover="this.style.background=\'#f2f4f7\'" onmouseout="this.style.background=\'transparent\'"><i data-lucide="x" width="14" height="14"></i></button>' +
+      '</div>';
+      for (var i = 0; i < hazards.length; i++) {
+        var h = hazards[i];
+        html += '<div class="hazard-card" style="cursor:pointer;margin-bottom:8px" onclick="openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')">' +
+          '<div class="hc-head"><span class="hc-name">' + h.object + '</span></div>' +
+          '<div class="hc-desc">' + h.hazard + '</div>' +
+          '<div class="hc-meta">' +
+            '<span>来源 ' + h.source + '</span>' +
+            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
+            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
+          '</div>' +
+          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
+          '<div class="hc-actions">' +
+            (h.status === '已完成' ?
+              '<button class="hc-btn" onclick="event.stopPropagation();showToast(\'复查记录已提交\')"><i data-lucide="check-circle" width="11" height="11"></i> 复查确认</button>' +
+              '<button class="hc-btn" onclick="event.stopPropagation();openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')"><i data-lucide="file-text" width="11" height="11"></i> 查看详情</button>'
+            :
+              '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'supervise\')"><i data-lucide="megaphone" width="11" height="11"></i> 督办</button>' +
+              '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'inspect\')"><i data-lucide="search" width="11" height="11"></i> 现场核查</button>' +
+              '<button class="hc-btn" onclick="event.stopPropagation();showToast(\'已加入持续跟踪\')"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
+            ) +
+          '</div>' +
+        '</div>';
+      }
+      return html;
+    }
+
+    function epRenderRecentHazards(hazards) {
+      if (!hazards || hazards.length === 0) return '<div style="text-align:center;padding:20px 0;color:var(--weak);font-size:13px">暂无隐患记录</div>';
+      var sorted = hazards.slice().sort(function(a, b) { return a.foundDate < b.foundDate ? 1 : -1; });
+      var recent = sorted.slice(0, 3);
+      var html = '<div style="font-size:13px;font-weight:700;margin-bottom:8px">最近隐患</div>';
+      for (var i = 0; i < recent.length; i++) {
+        var h = recent[i];
+        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + h.overdue + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
+        html += '<div class="hazard-card" style="cursor:pointer;margin-bottom:8px" onclick="openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')">' +
+          '<div class="hc-head"><span class="hc-name">' + h.object + '</span></div>' +
+          '<div class="hc-desc">' + h.hazard + '</div>' +
+          '<div class="hc-meta">' +
+            '<span>来源 ' + h.source + '</span>' +
+            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
+            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
+          '</div>' +
+          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
+          '<div class="hc-actions">' +
+            (h.status === '已完成' ?
+              '<button class="hc-btn" onclick="event.stopPropagation();showToast(\'复查记录已提交\')"><i data-lucide="check-circle" width="11" height="11"></i> 复查确认</button>' +
+              '<button class="hc-btn" onclick="event.stopPropagation();openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')"><i data-lucide="file-text" width="11" height="11"></i> 查看详情</button>'
+            :
+              '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'supervise\')"><i data-lucide="megaphone" width="11" height="11"></i> 督办</button>' +
+              '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'inspect\')"><i data-lucide="search" width="11" height="11"></i> 现场核查</button>' +
+              '<button class="hc-btn" onclick="event.stopPropagation();showToast(\'已加入持续跟踪\')"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
+            ) +
+          '</div>' +
+        '</div>';
+      }
+      if (hazards.length > 3) {
+        html += '<div style="text-align:center;margin-top:4px;font-size:11px;color:var(--weak)">共 ' + hazards.length + ' 条隐患，点击上方「隐患数」查看全部</div>';
+      }
+      return html;
+    }
+
+    function epRenderList(items, title, itemFn) {
+      var html =
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+        '<div style="font-size:14px;font-weight:700">' + title + '（' + items.length + '）</div>' +
+        '<button onclick="epSwitchTab(\'overview\')" style="width:24px;height:24px;border:none;border-radius:6px;background:transparent;color:var(--weak);cursor:pointer;display:grid;place-items:center" onmouseover="this.style.background=\'#f2f4f7\'" onmouseout="this.style.background=\'transparent\'"><i data-lucide="x" width="14" height="14"></i></button>' +
+      '</div>';
+      for (var i = 0; i < items.length; i++) {
+        html += itemFn(items[i]);
+      }
+      if (items.length === 0) html += '<div style="text-align:center;padding:24px 0;color:var(--weak);font-size:13px">暂无记录</div>';
+      return html;
     }
 
     function fallbackCopy(text, msg) {
@@ -1427,7 +1959,7 @@
                          it.status === '整改中' ? '整改推进中' : '状态待确认';
             return '<strong>' + it.name + '</strong>：' + status;
           }).join('<br>• ') +
-          '<br><br>建议：对长期不配合的企业（如北苑商业综合体、天元纺织），升级为站长约谈或联合执法，避免单个主体拖累整体指标。';
+          '<br><br>建议：对长期不配合的企业（如北苑商业综合体、余杭天元纺织厂），升级为站长约谈或联合执法，避免单个主体拖累整体指标。';
       }
 
       if (ql.indexOf('怎么') > -1 || ql.indexOf('建议') > -1 || ql.indexOf('解决') > -1 || ql.indexOf('措施') > -1) {
@@ -1437,7 +1969,7 @@
           sug.push('• 消防安全组：优先清理北苑商业综合体（超期最久，逾期3天）和云栖高层住宅，建议今日安排现场核查。同时排查复查人力饱和度问题，必要时申请临时增援。');
         }
         if (lineNames.indexOf('企业安全组') > -1) {
-          sug.push('• 企业安全组：恒源化工已有整改方案建议加快审批，鑫盛机械和天元纺织需从企业端推动——建议通知属地村社协助督促。');
+          sug.push('• 企业安全组：杭州恒源化工有限公司已有整改方案建议加快审批，杭州鑫盛机械制造有限公司和余杭天元纺织厂需从企业端推动——建议通知属地村社协助督促。');
         }
         sug.push('• 系统性建议：将良渚片区作为本周重点关注区域，安排一次集中巡查，系统性解决片区企业自查缺失问题。');
         return sug.join('<br><br>');
@@ -1493,16 +2025,17 @@
       }
       if (!task) { showToast('未找到任务数据'); return; }
 
-      document.getElementById('drawerTitle').innerHTML = '<i data-lucide="target" aria-hidden="true"></i> ' + task.name;
+      document.getElementById('taskModalName').textContent = task.name;
 
       var rateNum = parseInt(task.rate) || 0;
       var statusCls = task.statusCls || 'neutral';
       var riskColor = task.risk === '重大风险' ? 'var(--red)' : task.risk === '较大风险' ? '#d97706' : 'var(--muted)';
 
-      var bodyHtml = '';
+      // ── 左栏：任务详情 ──
+      var leftHtml = '';
 
       // 状态 + 进度
-      bodyHtml += '<div class="task-detail-section">' +
+      leftHtml += '<div class="task-detail-section">' +
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
           '<span class="td-status-badge ' + statusCls + '">' + (task.status || task.type + '任务') + '</span>' +
           (task.risk !== '-' && task.risk ? '<span class="td-risk-tag high" style="background:color-mix(in oklch, ' + riskColor + ' 12%, transparent);color:' + riskColor + '">' + task.risk + '</span>' : '') +
@@ -1519,14 +2052,14 @@
 
       // 任务描述
       if (task.desc) {
-        bodyHtml += '<div class="task-detail-section">' +
+        leftHtml += '<div class="task-detail-section">' +
           '<div class="task-detail-label">任务说明</div>' +
           '<div class="task-detail-value">' + task.desc + '</div>' +
         '</div>';
       }
 
       // 基本信息表
-      bodyHtml += '<div class="task-detail-section">' +
+      leftHtml += '<div class="task-detail-section">' +
         '<div class="task-detail-label">基本信息</div>' +
         '<table class="task-detail-table">' +
           '<tr><td>类型</td><td>' + (task.type === '日常' ? '日常任务' : '专项任务') + '</td></tr>' +
@@ -1540,7 +2073,7 @@
       '</div>';
 
       // 覆盖统计
-      bodyHtml += '<div class="task-detail-section">' +
+      leftHtml += '<div class="task-detail-section">' +
         '<div class="task-detail-label">覆盖统计</div>' +
         '<table class="task-detail-table">' +
           '<tr><td>已覆盖</td><td>' + task.covered + ' 家</td></tr>' +
@@ -1549,27 +2082,86 @@
         '</table>' +
       '</div>';
 
-      // 关联事项
+      // 关联事项（变为可点击下钻到隐患详情）
       if (task.relatedItems && task.relatedItems.length > 0) {
-        bodyHtml += '<div class="task-detail-section">' +
+        leftHtml += '<div class="task-detail-section">' +
           '<div class="task-detail-label">关联事项</div>';
         for (var ri = 0; ri < task.relatedItems.length; ri++) {
-          bodyHtml += '<div class="td-related-item"><i data-lucide="chevron-right" width="12" height="12"></i>' + task.relatedItems[ri] + '</div>';
+          var item = task.relatedItems[ri];
+          var hazardName = item.split('·')[0].trim();
+          leftHtml += '<div class="td-related-item" style="cursor:pointer" onclick="closeTaskModal();openHazardDetail(\'' + hazardName.replace(/'/g, "\\'") + '\')">' +
+            '<i data-lucide="chevron-right" width="12" height="12"></i>' + item +
+          '</div>';
         }
-        bodyHtml += '</div>';
+        leftHtml += '</div>';
       }
 
-      document.getElementById('drawerBody').innerHTML = bodyHtml;
-      // 只保留"知道了"按钮
-      document.getElementById('drawerConfirm').textContent = '知道了';
-      document.getElementById('drawerCancel').style.display = 'none';
-      lucide.createIcons();
+      document.getElementById('taskModalLeft').innerHTML = leftHtml;
 
-      document.getElementById('drawerPanel').classList.add('open');
-      document.getElementById('drawerOverlay').classList.add('open');
+      // ── 右栏：AI 分析侧边栏 ──
+      var rightHtml = '';
+
+      // 诊断摘要
+      if (task.lag) {
+        var diagColor = task.statusCls === 'danger' ? 'danger' : 'warning';
+        var diagParts = [];
+        if (rateNum === 0) diagParts.push('完成率为 0%');
+        else if (rateNum < 50) diagParts.push('完成率仅 ' + task.rate);
+        if (parseInt(task.progress) >= 100 && rateNum < 50) diagParts.push('时间进度已到但任务未过半');
+        diagParts.push('需重点关注');
+        rightHtml += '<div class="tma-block ' + diagColor + '">' +
+          '<div class="tma-label">AI 诊断</div>' +
+          '<div class="tma-item" style="font-weight:600;color:' + (task.statusCls === 'danger' ? 'var(--red)' : '#a75605') + '">⚠ ' + diagParts.join('，') + '</div>' +
+        '</div>';
+      } else {
+        rightHtml += '<div class="tma-block" style="border-color:#c8e6c9;background:#f1faf5">' +
+          '<div class="tma-label">AI 诊断</div>' +
+          '<div class="tma-item" style="color:var(--green);font-weight:600">✅ 任务推进正常</div>' +
+        '</div>';
+      }
+
+      // 定位分析：条线 → 区域 → 责任
+      rightHtml += '<div class="tma-block">' +
+        '<div class="tma-label">定位分析</div>';
+      if (task.line) rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>条线：' + task.line + '</div>';
+      if (task.region) rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>区域：' + task.region + '</div>';
+      if (task.person) rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>责任：' + task.person + '</div>';
+      rightHtml += '</div>';
+
+      // 关联对象
+      if (task.relatedItems && task.relatedItems.length > 0) {
+        rightHtml += '<div class="tma-block">' +
+          '<div class="tma-label">关联对象</div>';
+        for (var ri = 0; ri < task.relatedItems.length; ri++) {
+          var item = task.relatedItems[ri];
+          var hazardName = item.split('·')[0].trim();
+          rightHtml += '<span class="tma-chip" onclick="closeTaskModal();openHazardDetail(\'' + hazardName.replace(/'/g, "\\'") + '\')">' + item + '</span>';
+        }
+        rightHtml += '</div>';
+      }
+
+      // 建议动作
+      rightHtml += '<div class="tma-block">' +
+        '<div class="tma-label">建议动作</div>' +
+        (task.lag ? '<div class="tma-item"><span class="tma-dot red"></span>发起督办</div>' : '') +
+        '<div class="tma-item"><span class="tma-dot ' + (task.lag ? 'red' : 'green') + '"></span>现场核查</div>' +
+        '<div class="tma-item"><span class="tma-dot ' + (task.lag ? 'red' : 'green') + '"></span>会议议题</div>' +
+        '<div class="tma-item"><span class="tma-dot orange"></span>持续跟踪</div>' +
+      '</div>';
+
+      document.getElementById('taskModalRight').innerHTML = rightHtml;
+
+      lucide.createIcons();
+      document.getElementById('taskModalOverlay').style.display = 'block';
+      document.getElementById('taskModal').style.display = 'flex';
     }
 
+    function closeTaskModal() {
+      document.getElementById('taskModalOverlay').style.display = 'none';
+      document.getElementById('taskModal').style.display = 'none';
+    }
     window.openTaskDetail = openTaskDetail;
+    window.closeTaskModal = closeTaskModal;
 
     // ════════════════════════════════════════════════════════════════
     // SCENE SWITCHING
@@ -1644,17 +2236,6 @@
         });
       });
 
-      // 右栏 Tab 切换
-      document.querySelectorAll('.tab[data-tab]').forEach(function(tab) {
-        tab.addEventListener('click', function() {
-          document.querySelectorAll('.tab[data-tab]').forEach(function(t) { t.classList.remove('active'); });
-          this.classList.add('active');
-          var tabName = this.getAttribute('data-tab');
-          document.getElementById('chatTab').style.display = tabName === 'chat' ? 'flex' : 'none';
-          document.getElementById('configTab').style.display = tabName === 'config' ? 'block' : 'none';
-        });
-      });
-
       // Drawer overlay close
       document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
       document.getElementById('drawerClose').addEventListener('click', closeDrawer);
@@ -1671,6 +2252,12 @@
         if (e.key === 'Escape') {
           if (document.getElementById('drawerPanel').classList.contains('open')) {
             closeDrawer();
+          }
+          // 关闭浮动对话面板
+          var chatPanel = document.getElementById('chatPanel');
+          if (chatPanel.classList.contains('open')) {
+            chatPanel.classList.remove('open');
+            document.getElementById('chatFab').style.display = 'flex';
           }
         }
       });
@@ -1706,12 +2293,62 @@
       var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环' };
       var name = sceneNames[sceneId] || sceneId;
 
+      // 打开浮动面板
+      openChatPanel();
+
       // 用户消息
       chatBody.innerHTML += '<div class="msg user"><div class="bubble">我想看「' + name + '」</div></div>';
       chatBody.scrollTop = chatBody.scrollHeight;
 
       // 切换到对应场景
       switchScene(sceneId);
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // 发送聊天消息
+    // ════════════════════════════════════════════════════════════════
+
+    function sendChatMsg() {
+      var input = document.getElementById('chatInput');
+      var text = input.value.trim();
+      if (!text) return;
+      var chatBody = document.getElementById('chatBody');
+      openChatPanel();
+      chatBody.innerHTML += '<div class="msg user"><div class="bubble">' + escapeHtml(text) + '</div></div>';
+      chatBody.scrollTop = chatBody.scrollHeight;
+      input.value = '';
+      // 模拟 AI 回复
+      setTimeout(function() {
+        chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已收到你的问题，正在分析「' + escapeHtml(text) + '」…</div></div>';
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }, 400);
+    }
+
+    function escapeHtml(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // 浮动对话面板开关
+    // ════════════════════════════════════════════════════════════════
+
+    function toggleChatPanel() {
+      var panel = document.getElementById('chatPanel');
+      var fab = document.getElementById('chatFab');
+      var opening = !panel.classList.contains('open');
+      panel.classList.toggle('open');
+      fab.style.display = opening ? 'none' : 'flex';
+    }
+
+    function openChatPanel() {
+      var panel = document.getElementById('chatPanel');
+      var fab = document.getElementById('chatFab');
+      if (!panel.classList.contains('open')) {
+        panel.classList.add('open');
+        fab.style.display = 'none';
+      }
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -2675,6 +3312,9 @@
     window.showToast = showToast;
     window.openDrawer = openDrawer;
     window.agentAsk = agentAsk;
+    window.toggleChatPanel = toggleChatPanel;
+    window.openChatPanel = openChatPanel;
+    window.sendChatMsg = sendChatMsg;
     window.openMetricConfig = openMetricConfig;
     window.closeMetricConfig = closeMetricConfig;
     window.saveMetricConfig = saveMetricConfig;
@@ -2694,6 +3334,9 @@
     window.closeDrillFloat = closeDrillFloat;
     window.askAI = askAI;
     window.copyTipContent = copyTipContent;
+    window.openEnterprisePanel = openEnterprisePanel;
+    window.closeEnterprisePanel = closeEnterprisePanel;
+    window.epSwitchTab = epSwitchTab;
 
     // 渲染左栏场景列表
     renderSceneList();
