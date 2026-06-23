@@ -1583,6 +1583,43 @@
     .drawer-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
     .drawer-btn.primary:hover{opacity:.85}
 
+    /* ─── 督办多条目预览 ── */
+    .drawer-supervise-intro {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px; margin-bottom: 12px;
+      background: var(--accent-soft); border-radius: 10px;
+    }
+    .drawer-supervise-item {
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 12px; margin-bottom: 10px;
+      background: var(--card); transition: border-color .15s;
+    }
+    .drawer-supervise-item:hover { border-color: var(--blue); }
+    .dsi-head {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .dsi-num {
+      font-size: 11px; font-weight: 700; color: var(--blue);
+      background: var(--blue-bg); padding: 2px 7px; border-radius: 6px;
+    }
+    .dsi-source {
+      font-size: 10px; color: var(--muted); background: #f3f4f6;
+      padding: 2px 6px; border-radius: 4px;
+    }
+    .dsi-title {
+      font-size: 13px; font-weight: 600; color: var(--text);
+      margin: 0; flex: 1; min-width: 0;
+    }
+    .dsi-section {
+      display: flex; gap: 8px; font-size: 12px; line-height: 1.5; margin-bottom: 4px;
+    }
+    .dsi-label {
+      flex-shrink: 0; width: 56px; color: var(--muted); font-weight: 500;
+    }
+    .dsi-value {
+      color: var(--text); flex: 1; min-width: 0;
+    }
+
     /* ─── Entrance animations ─────────────────────────────────────── */
     @keyframes fade-up {
       from { opacity: 0; transform: translateY(12px); }
@@ -2146,6 +2183,30 @@
     .ai-action-btn.ghost{background:#fff;color:var(--muted);border:1px solid var(--line)}
     .ai-action-btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
 
+    /* ─── 行动项复选框 + 批量栏 ── */
+    .ai-action-check {
+      position: absolute; top: 10px; left: 10px; cursor: pointer; z-index: 2;
+    }
+    .ai-action-check input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;
+    }
+    .ai-action-item { position: relative; padding-left: 36px; }
+    .ai-action-batch-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; margin-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .ai-action-check-all {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; color: var(--text); cursor: pointer; user-select: none;
+    }
+    .ai-action-check-all input[type="checkbox"] {
+      width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer;
+    }
+    .ai-action-batch-count {
+      font-size: 12px; color: var(--muted);
+    }
+
     /* ════════════════════════════════════════════════════════════
        待确认行动面板 (Pending Actions)
        ════════════════════════════════════════════════════════════ */
@@ -2332,6 +2393,40 @@
     .pa-btn-primary:hover { background: #1457c0; border-color: #1457c0; color: #fff; }
     .pa-btn-muted { color: var(--weak); }
     .pa-btn-muted:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+    /* ─── 批量操作栏 ── */
+    .pa-batch-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; margin-bottom: 12px;
+      background: var(--blue-bg); border: 1px solid var(--blue); border-radius: 10px;
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .pa-batch-left { display: flex; align-items: center; gap: 12px; }
+    .pa-batch-check-all {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: var(--ink); cursor: pointer; user-select: none;
+    }
+    .pa-batch-check-all input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
+    .pa-batch-count { font-size: 12px; color: var(--blue); font-weight: 600; }
+    .pa-batch-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    /* ─── 卡片内复选框 ── */
+    .pa-card-checkbox {
+      position: absolute; top: 14px; left: 14px; z-index: 2;
+      display: flex; align-items: center; cursor: pointer;
+    }
+    .pa-card-checkbox input[type="checkbox"] {
+      width: 18px; height: 18px; accent-color: var(--blue); cursor: pointer;
+      border-radius: 4px;
+    }
+    .pa-card { position: relative; padding-left: 42px; }
+    .pa-card-selected {
+      border-color: var(--blue) !important;
+      background: color-mix(in oklch, var(--blue-bg) 50%, transparent) !important;
+      box-shadow: 0 0 0 1px var(--blue);
+    }
+    .pa-section-hint { font-size: 12px; color: var(--weak); font-weight: 400; margin-left: 4px; }
 
     /* ─── 已确认的督办包 ── */
     .pa-confirmed-card {

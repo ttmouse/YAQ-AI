@@ -12,3 +12,6 @@ yang_station_workbench_style_v18.css
 站长访谈调研记录.md
 AGENTS.md
 product-context.md
+
+# Contains credentials
+deploy.sh

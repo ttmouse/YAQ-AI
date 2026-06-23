@@ -877,7 +877,8 @@
     // ════════════════════════════════════════════════════════════════
 
     var state = {
-      activeScene: 'dashboard'
+      activeScene: 'dashboard',
+      selectedPAIds: {}  // { paId: true } — 批量选中的待确认行动
     };
 
     // ════════════════════════════════════════════════════════════════
@@ -899,6 +900,8 @@
       }
       container.innerHTML = html;
       lucide.createIcons();
+      // 同步批量操作栏状态
+      if (sceneId === 'pending-actions') { updateBatchBar(); }
     }
 
     // ─── Dashboard ───────────────────────────────────────────────────
@@ -917,7 +920,7 @@
           '<div class="ai-avatar"><i data-lucide="bot" width="16" height="16"></i></div>' +
         '</div>' +
         '<div class="ai-briefing-body">' +
-          '<div class="ai-briefing-head"><span>' + greeting + '，站长。今天 3 个方向需要关注：安全态势 1 项、风险闭环 1 项、任务进展 1 项。</span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+          '<div class="ai-briefing-head"><span>' + greeting + '，站长。今天 4 个方向需要关注：安全态势 1 项、风险闭环 1 项、任务进展 1 项、待确认行动 ' + (MOCK.actionItems ? MOCK.actionItems.length : 0) + ' 项。</span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
         '</div>' +
       '</div>';
 
@@ -1291,8 +1294,8 @@
     // ─── 重点跟进操作函数 ──────────────────────────────────────
     function doFollowupAction(action, itemName) {
       var map = {
-        '继续督办': function(){ openDrawer('supervise'); },
-        '发起督办': function(){ openDrawer('supervise'); },
+        '继续督办': function(){ openSuperviseDrawer(); },
+        '发起督办': function(){ openSuperviseDrawer(); },
         '提醒责任人': function(){ showToast('已提醒 ' + itemName + ' 责任人'); },
         '提醒履职': function(){ showToast('已提醒 ' + itemName + ' 责任人履职'); },
         '要求反馈': function(){ showToast('已通知 ' + itemName + ' 需反馈进展'); },
@@ -1307,7 +1310,7 @@
     // ─── 今日关注操作函数 ──────────────────────────────────────
     function handleTodayFocusAction(actionType, itemName) {
       switch (actionType) {
-        case 'supervise': openDrawer('supervise'); break;
+        case 'supervise': openSuperviseDrawer(); break;
         case 'remind': showToast('已通知「' + itemName + '」责任人反馈'); break;
         case 'track': showToast('已将「' + itemName + '」加入重点跟进'); break;
         default: showToast('执行动作：' + itemName);
@@ -1317,7 +1320,7 @@
     // ─── 重点跟进操作函数 ──────────────────────────────────────
     function handleFollowupAction(action, itemName) {
       switch (action) {
-        case '继续督办': case '发起督办': openDrawer('supervise'); break;
+        case '继续督办': case '发起督办': openSuperviseDrawer(); break;
         case '提醒责任人': case '提醒履职': showToast('已提醒「' + itemName + '」责任人'); break;
         case '要求反馈': case '要求现场核查': showToast('已通知「' + itemName + '」需反馈进展'); break;
         case '发起约谈': openDrawer('meeting'); break;
@@ -1350,25 +1353,31 @@
           var sec = a.secondaryActions[si];
           secBtns += '<button class="ai-action-btn ghost" onclick="event.stopPropagation();handleActionItemSecondary(\'' + sec + '\',\'' + a.title.replace(/'/g, "\\'") + '\')">' + sec + '</button>';
         }
-        html += '<div class="ai-action-item">' +
+        html += '<div class="ai-action-item" data-ai-idx="' + ai + '">' +
+          '<label class="ai-action-check" onclick="event.stopPropagation()"><input type="checkbox" checked onchange="toggleActionItemCheck(' + ai + ', this.checked)"></label>' +
           '<span class="type-badge ' + a.typeCls + '">' + a.type + '</span>' +
-          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;max-width:calc(100% - 80px)">' + a.title + '</div>' +
-          '<div class="basis"><i data-lucide="file-text" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--muted)"></i>' + a.basis + '</div>' +
-          '<div class="req"><i data-lucide="check-circle" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--accent)"></i>' + a.requirement + '</div>' +
-          '<div style="display:flex;gap:6px;margin-top:4px">' +
-            '<button class="ai-action-btn primary" onclick="event.stopPropagation();handleActionItemPrimary(\'' + a.primaryCallback + '\',\'' + a.title.replace(/'/g, "\\'") + '\')">' + a.primaryAction + '</button>' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;padding-left:28px">' + a.title + '</div>' +
+          '<div class="basis" style="padding-left:28px"><i data-lucide="file-text" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--muted)"></i>' + a.basis + '</div>' +
+          '<div class="req" style="padding-left:28px"><i data-lucide="check-circle" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--accent)"></i>' + a.requirement + '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:4px;padding-left:28px">' +
             secBtns +
           '</div>' +
         '</div>';
       }
-      html += '</div></div>';
+      html += '</div>' +
+        '<div class="ai-action-batch-bar">' +
+          '<label class="ai-action-check-all"><input type="checkbox" id="aiActionSelectAll" checked onchange="toggleActionItemSelectAll(this.checked)"> 全选</label>' +
+          '<span class="ai-action-batch-count" id="aiActionBatchCount">已选 ' + items.length + '/' + items.length + '</span>' +
+          '<button class="ai-action-btn primary" onclick="openSuperviseDrawer()" style="margin-left:auto"><i data-lucide="megaphone" width="13" height="13"></i> 审核并发布全部督办</button>' +
+        '</div>' +
+      '</div>';
       return html;
     }
 
     // ─── AI 行动项操作函数 ────────────────────────────────────
     function handleActionItemPrimary(callback, itemTitle) {
       switch (callback) {
-        case 'doSupervise': openDrawer('supervise'); break;
+        case 'doSupervise': openSuperviseDrawer(); break;
         case 'doTrack': showToast('已将「' + itemTitle + '」加入重点跟进'); break;
         case 'doRequestExplain': showToast('已发送要求说明通知至「' + itemTitle + '」责任人'); break;
         default: showToast('执行：' + itemTitle);
@@ -1379,9 +1388,164 @@
       switch (action) {
         case '忽略': showToast('已忽略「' + itemTitle + '」'); break;
         case '编辑': showToast('编辑「' + itemTitle + '」'); break;
-        case '改为督办': openDrawer('supervise'); break;
+        case '改为督办': openSuperviseDrawer(); break;
         default: showToast('执行：' + action);
       }
+    }
+
+    // ─── 行动项选择管理 ──────────────────────────────────────────
+
+    var selectedActionItemIdx = {};  // { idx: true }
+
+    function initActionItemSelection() {
+      var items = MOCK.actionItems || [];
+      selectedActionItemIdx = {};
+      for (var i = 0; i < items.length; i++) {
+        selectedActionItemIdx[i] = true;
+      }
+    }
+    initActionItemSelection();
+
+    function toggleActionItemCheck(idx, checked) {
+      if (checked) { selectedActionItemIdx[idx] = true; }
+      else { delete selectedActionItemIdx[idx]; }
+      updateActionItemBatchBar();
+    }
+
+    function toggleActionItemSelectAll(checked) {
+      var items = MOCK.actionItems || [];
+      selectedActionItemIdx = {};
+      if (checked) {
+        for (var i = 0; i < items.length; i++) { selectedActionItemIdx[i] = true; }
+      }
+      // 更新所有 checkbox
+      var cards = document.querySelectorAll('.ai-action-item');
+      for (var c = 0; c < cards.length; c++) {
+        var cb = cards[c].querySelector('input[type="checkbox"]');
+        if (cb) cb.checked = checked;
+      }
+      updateActionItemBatchBar();
+    }
+
+    function updateActionItemBatchBar() {
+      var countEl = document.getElementById('aiActionBatchCount');
+      var selectAllCb = document.getElementById('aiActionSelectAll');
+      if (!countEl) return;
+      var items = MOCK.actionItems || [];
+      var n = 0;
+      for (var k in selectedActionItemIdx) { if (selectedActionItemIdx.hasOwnProperty(k)) n++; }
+      countEl.textContent = '已选 ' + n + '/' + items.length;
+      if (selectAllCb) {
+        selectAllCb.checked = (n === items.length);
+        selectAllCb.indeterminate = (n > 0 && n < items.length);
+      }
+    }
+
+    window.toggleActionItemCheck = toggleActionItemCheck;
+    window.toggleActionItemSelectAll = toggleActionItemSelectAll;
+
+    // ─── 全局上下文督办生成 ──────────────────────────────────────
+
+    function generateGlobalSupervisionItems() {
+      var items = [];
+
+      // 1. 从 actionItems 中提取督办类型
+      var actionItems = MOCK.actionItems || [];
+      for (var i = 0; i < actionItems.length; i++) {
+        var ai = actionItems[i];
+        if (ai.type === '发起督办') {
+          items.push({
+            title: ai.title,
+            reason: ai.basis,
+            requirement: ai.requirement,
+            deadline: '3 日内',
+            escalation: '超期后升级为站长约谈',
+            source: 'AI 研判行动项',
+            subjects: [ai.title.split('（')[0]]
+          });
+        }
+      }
+
+      // 2. 从 pendingActions 中提取待确认的督办
+      var pas = MOCK.pendingActions || [];
+      for (var j = 0; j < pas.length; j++) {
+        var pa = pas[j];
+        if (pa.status === 'pending' && pa.actionType === 'supervise') {
+          var subjects = pa.affectedSubjects || [];
+          items.push({
+            title: pa.title,
+            reason: pa.basis,
+            requirement: pa.draftItems && pa.draftItems.length > 0 ? pa.draftItems[0].task : '按要求整改',
+            deadline: pa.draftItems && pa.draftItems.length > 0 ? pa.draftItems[0].deadline : '3 日内',
+            escalation: '超期后升级为站长约谈',
+            source: '待确认行动',
+            subjects: subjects
+          });
+        }
+      }
+
+      // 3. 从重大隐患中提取超期未整改的
+      var hazards = MOCK.hazards || [];
+      for (var k = 0; k < hazards.length; k++) {
+        var h = hazards[k];
+        if (h.level === '重大事故隐患' && h.status === '超期未整改') {
+          var exists = false;
+          for (var e = 0; e < items.length; e++) {
+            if (items[e].title.indexOf(h.object) >= 0) { exists = true; break; }
+          }
+          if (!exists) {
+            items.push({
+              title: h.object + ' · ' + (h.hazard.length > 20 ? h.hazard.substring(0, 20) + '…' : h.hazard),
+              reason: '重大隐患超期 ' + h.overdue + ' 天未整改，责任人：' + h.person,
+              requirement: h.suggestion || '立即整改',
+              deadline: h.deadline || '3 日内',
+              escalation: '超期 7 天联合综合执法部门检查',
+              source: '重大隐患',
+              subjects: [h.object]
+            });
+          }
+        }
+      }
+
+      return items;
+    }
+
+    function openSuperviseDrawer() {
+      var items = generateGlobalSupervisionItems();
+      if (items.length === 0) {
+        showToast('当前无待督办事项');
+        return;
+      }
+
+      currentDrawerAction = 'supervise';
+      document.getElementById('drawerConfirm').textContent = '确认发起全部（' + items.length + ' 条）';
+      document.getElementById('drawerTitle').innerHTML = '<i data-lucide="megaphone" aria-hidden="true"></i> 全局督办预览';
+
+      var bodyHtml = '<div class="drawer-supervise-intro">' +
+        '<div class="dr-ai-icon"><i data-lucide="bot" width="16" height="16"></i></div>' +
+        '<div style="font-size:13px;color:var(--text);line-height:1.5">基于今日全量监管上下文，系统识别出 <strong>' + items.length + ' 项</strong>需督办事项。请逐条确认后批量发起。</div>' +
+      '</div>';
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        bodyHtml += '<div class="drawer-supervise-item" data-si-idx="' + i + '">' +
+          '<div class="dsi-head">' +
+            '<span class="dsi-num">#' + (i + 1) + '</span>' +
+            '<span class="dsi-source">' + item.source + '</span>' +
+            '<h4 class="dsi-title">' + item.title + '</h4>' +
+          '</div>' +
+          '<div class="dsi-section"><span class="dsi-label">督办原因</span><span class="dsi-value">' + item.reason + '</span></div>' +
+          '<div class="dsi-section"><span class="dsi-label">整改要求</span><span class="dsi-value">' + item.requirement + '</span></div>' +
+          '<div class="dsi-section"><span class="dsi-label">截止时间</span><span class="dsi-value">' + item.deadline + '</span></div>' +
+          '<div class="dsi-section"><span class="dsi-label">升级规则</span><span class="dsi-value">' + item.escalation + '</span></div>' +
+          (item.subjects.length > 0 ? '<div class="dsi-section"><span class="dsi-label">关联主体</span><span class="dsi-value">' + item.subjects.join('、') + '</span></div>' : '') +
+        '</div>';
+      }
+
+      document.getElementById('drawerBody').innerHTML = bodyHtml;
+      lucide.createIcons();
+      document.getElementById('drawerPanel').classList.add('open');
+      document.getElementById('drawerOverlay').classList.add('open');
     }
 
     function renderPriorityItem(item) {
@@ -2020,11 +2184,26 @@
         '</div>' +
       '</div>';
 
+      // ─── 批量操作栏 ──────────────────────────────────────────
+      html += '<div class="pa-batch-bar" id="paBatchBar">' +
+        '<div class="pa-batch-left">' +
+          '<label class="pa-batch-check-all"><input type="checkbox" id="paSelectAll" onchange="toggleSelectAllPA(this.checked)"> 全选</label>' +
+          '<span class="pa-batch-count" id="paBatchCount">已选 0 项</span>' +
+        '</div>' +
+        '<div class="pa-batch-actions">' +
+          '<button class="pa-btn pa-btn-primary" onclick="batchConfirmPAs()"><i data-lucide="check" width="14" height="14"></i> 批量确认发起 <span id="paBatchConfirmN"></span></button>' +
+          '<button class="pa-btn" onclick="batchChangePAs(\'track\')"><i data-lucide="eye" width="14" height="14"></i> 批量改为跟进</button>' +
+          '<button class="pa-btn" onclick="batchChangePAs(\'explain\')"><i data-lucide="help-circle" width="14" height="14"></i> 批量要求说明</button>' +
+          '<button class="pa-btn pa-btn-muted" onclick="batchIgnorePAs()"><i data-lucide="x" width="14" height="14"></i> 批量忽略</button>' +
+          '<button class="pa-btn pa-btn-muted" onclick="clearPASelection()"><i data-lucide="rotate-ccw" width="14" height="14"></i> 取消选择</button>' +
+        '</div>' +
+      '</div>';
+
       // ─── 待确认行动列表 ──────────────────────────────────────
       if (pendingPas.length === 0) {
         html += '<div class="pa-empty">所有待确认行动已处理</div>';
       } else {
-        html += '<div class="pa-section-label"><i data-lucide="clock" width="15" height="15"></i> 待确认行动</div>';
+        html += '<div class="pa-section-label"><i data-lucide="clock" width="15" height="15"></i> 待确认行动 <span class="pa-section-hint">（点击卡片左侧复选框可多选批量操作）</span></div>';
         for (var pi = 0; pi < pendingPas.length; pi++) {
           html += renderPendingActionCard(pendingPas[pi]);
         }
@@ -2094,7 +2273,12 @@
         '</div>';
       }
 
-      var html = '<div class="pa-card ' + cfg.cls + '" id="pa-card-' + pa.id + '">' +
+      var isSelected = !!state.selectedPAIds[pa.id];
+      var html = '<div class="pa-card ' + cfg.cls + (isSelected ? ' pa-card-selected' : '') + '" id="pa-card-' + pa.id + '">' +
+        // 复选框
+        '<label class="pa-card-checkbox" onclick="event.stopPropagation()">' +
+          '<input type="checkbox" ' + (isSelected ? 'checked' : '') + ' onchange="togglePASelection(\'' + pa.id + '\', this.checked)">' +
+        '</label>' +
         // 头部：类型标签 + 标题
         '<div class="pa-card-top">' +
           '<div class="pa-card-left">' +
@@ -3272,6 +3456,30 @@
       // Drawer confirm — 动态生成处置文案
       document.getElementById('drawerConfirm').addEventListener('click', function() {
         var action = currentDrawerAction;
+
+        // 督办批量确认 — 特殊处理
+        if (action === 'supervise') {
+          var superviseItems = document.querySelectorAll('.drawer-supervise-item');
+          var count = superviseItems.length;
+          document.getElementById('drawerTitle').innerHTML = '<i data-lucide="check-circle" aria-hidden="true"></i> 督办已全部发起';
+          document.getElementById('drawerConfirm').textContent = '已完成';
+          document.getElementById('drawerConfirm').style.display = 'none';
+
+          var resultHtml = '<div class="drawer-generated">' +
+            '<div class="dr-gen-banner" style="background:var(--green-bg);color:var(--green)"><i data-lucide="check-circle" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 已成功发起 ' + count + ' 条督办</div>' +
+            '<div style="font-size:13px;color:var(--muted);line-height:1.6;padding:8px 0">督办通知已发送至各责任人，系统将自动跟踪反馈进度并在超期时提醒升级。</div>' +
+            '<div class="dr-gen-actions">' +
+              '<button class="dr-action-btn primary" onclick="closeDrawer();switchScene(\'followup\')" style="padding:6px 14px"><i data-lucide="list-checks" width="13" height="13"></i> 查看跟进事项</button>' +
+              '<button class="dr-action-btn" onclick="closeDrawer()" style="padding:6px 14px"><i data-lucide="x" width="13" height="13"></i> 关闭</button>' +
+            '</div>' +
+          '</div>';
+          document.getElementById('drawerBody').innerHTML = resultHtml;
+          document.getElementById('drawerCancel').style.display = 'none';
+          lucide.createIcons();
+          showToast('✅ 已发起 ' + count + ' 条督办，通知已发送');
+          return;
+        }
+
         var content = drawerContent[action];
         if (!content) {
           closeDrawer();
@@ -4370,6 +4578,7 @@
     window.switchScene = switchScene;
     window.showToast = showToast;
     window.openDrawer = openDrawer;
+    window.openSuperviseDrawer = openSuperviseDrawer;
     window.openAgentConfig = openAgentConfig;
     window.saveAgentPrompt = saveAgentPrompt;
     window.agentAsk = agentAsk;
@@ -4469,9 +4678,169 @@
       renderScene('pending-actions');
     }
 
+    // ════════════════════════════════════════════════════════════════
+    // 批量操作 — 待确认行动
+    // ════════════════════════════════════════════════════════════════
+
+    function togglePASelection(paId, checked) {
+      if (checked) {
+        state.selectedPAIds[paId] = true;
+      } else {
+        delete state.selectedPAIds[paId];
+      }
+      updateBatchBar();
+      // 更新卡片选中样式
+      var card = document.getElementById('pa-card-' + paId);
+      if (card) {
+        if (checked) { card.classList.add('pa-card-selected'); }
+        else { card.classList.remove('pa-card-selected'); }
+      }
+    }
+
+    function toggleSelectAllPA(checked) {
+      var pas = MOCK.pendingActions || [];
+      state.selectedPAIds = {};
+      if (checked) {
+        for (var i = 0; i < pas.length; i++) {
+          if (pas[i].status === 'pending') {
+            state.selectedPAIds[pas[i].id] = true;
+          }
+        }
+      }
+      // 更新所有卡片样式和 checkbox
+      var cards = document.querySelectorAll('.pa-card');
+      for (var c = 0; c < cards.length; c++) {
+        var cb = cards[c].querySelector('input[type="checkbox"]');
+        if (checked) {
+          cards[c].classList.add('pa-card-selected');
+          if (cb) cb.checked = true;
+        } else {
+          cards[c].classList.remove('pa-card-selected');
+          if (cb) cb.checked = false;
+        }
+      }
+      updateBatchBar();
+    }
+
+    function clearPASelection() {
+      state.selectedPAIds = {};
+      renderScene('pending-actions');
+    }
+
+    function updateBatchBar() {
+      var bar = document.getElementById('paBatchBar');
+      var countEl = document.getElementById('paBatchCount');
+      var confirmN = document.getElementById('paBatchConfirmN');
+      var selectAllCb = document.getElementById('paSelectAll');
+      if (!bar) return;
+
+      var ids = state.selectedPAIds;
+      var n = 0;
+      for (var k in ids) { if (ids.hasOwnProperty(k)) n++; }
+
+      if (n > 0) {
+        bar.style.display = 'flex';
+        countEl.textContent = '已选 ' + n + ' 项';
+        confirmN.textContent = '(' + n + ')';
+      } else {
+        bar.style.display = 'none';
+      }
+
+      // 同步全选 checkbox 状态
+      if (selectAllCb) {
+        var pas = MOCK.pendingActions || [];
+        var pendingCount = 0;
+        for (var i = 0; i < pas.length; i++) {
+          if (pas[i].status === 'pending') pendingCount++;
+        }
+        selectAllCb.checked = (n === pendingCount && pendingCount > 0);
+        selectAllCb.indeterminate = (n > 0 && n < pendingCount);
+      }
+    }
+
+    function getSelectedPendingActions() {
+      var result = [];
+      var ids = state.selectedPAIds;
+      for (var i = 0; i < MOCK.pendingActions.length; i++) {
+        var pa = MOCK.pendingActions[i];
+        if (ids[pa.id] && pa.status === 'pending') {
+          result.push(pa);
+        }
+      }
+      return result;
+    }
+
+    function batchConfirmPAs() {
+      var selected = getSelectedPendingActions();
+      if (selected.length === 0) { showToast('请先选择待确认行动'); return; }
+
+      var totalItems = 0;
+      for (var i = 0; i < selected.length; i++) {
+        var pa = selected[i];
+        // 复用确认逻辑
+        var sp = {
+          id: 'sp-' + Date.now() + '-' + i,
+          title: pa.title,
+          actionType: pa.actionType,
+          status: '推进中',
+          chain: pa.chain,
+          draftItems: pa.draftItems.concat(),
+          createdAt: new Date().toLocaleDateString('zh-CN'),
+          itemCount: pa.draftItems.length,
+          feedbackCount: 0,
+          doneCount: 0,
+          overdueCount: 0
+        };
+        MOCK.supervisionPackages.push(sp);
+        MOCK.confirmedPackages.unshift(sp);
+        pa.status = 'confirmed';
+        totalItems += pa.draftItems.length;
+      }
+
+      state.selectedPAIds = {};
+      showToast('✅ 已批量确认 ' + selected.length + ' 个督办包，共生成 ' + totalItems + ' 个处理项');
+      renderScene('pending-actions');
+    }
+
+    function batchIgnorePAs() {
+      var selected = getSelectedPendingActions();
+      if (selected.length === 0) { showToast('请先选择待确认行动'); return; }
+
+      for (var i = 0; i < selected.length; i++) {
+        selected[i].status = 'ignored';
+      }
+
+      state.selectedPAIds = {};
+      showToast('已批量忽略 ' + selected.length + ' 项待确认行动');
+      renderScene('pending-actions');
+    }
+
+    function batchChangePAs(newType) {
+      var selected = getSelectedPendingActions();
+      if (selected.length === 0) { showToast('请先选择待确认行动'); return; }
+
+      var typeLabels = { explain: '要求说明', track: '加入跟进', observe: '暂不观察' };
+      var label = typeLabels[newType] || '其他';
+
+      for (var i = 0; i < selected.length; i++) {
+        selected[i].actionType = newType;
+        selected[i].status = 'changed';
+      }
+
+      state.selectedPAIds = {};
+      showToast('已批量改为「' + label + '」共 ' + selected.length + ' 项');
+      renderScene('pending-actions');
+    }
+
     window.confirmPendingAction = confirmPendingAction;
     window.changePendingAction = changePendingAction;
     window.ignorePendingAction = ignorePendingAction;
+    window.togglePASelection = togglePASelection;
+    window.toggleSelectAllPA = toggleSelectAllPA;
+    window.clearPASelection = clearPASelection;
+    window.batchConfirmPAs = batchConfirmPAs;
+    window.batchIgnorePAs = batchIgnorePAs;
+    window.batchChangePAs = batchChangePAs;
 
     // 渲染左栏场景列表
     renderSceneList();
