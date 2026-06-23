@@ -371,6 +371,83 @@
           primaryAction: '发送要求', primaryCallback: 'doRequestExplain',
           secondaryActions: ['编辑', '忽略']
         }
+      ],
+
+      // ═══ AI 处置建议 ═══════════════════════════════════════
+      // 基于诊断结果自动推荐处置动作
+      disposalRecommendations: [
+        {
+          sourceDiagnosisId: 'beiyuan-fire-channel',
+          sourceHazard: '北苑商业综合体 · 消防通道堵塞（超期 3 天）',
+          suggestedLevel: 'external-3',
+          suggestedLevelLabel: '外部第 3 级 · 隐患区域停业整顿',
+          suggestedAction: 'enforce',
+          suggestedActionLabel: '停业整顿 + 督办',
+          rationale: '该主体消防通道堵塞为反复出现项（本月已发生 3 次），且已超期 3 天未整改。仅靠电话提醒已无效，建议直接升级为第 3 级处置——要求存在隐患的区域停业整顿，同时发起专项督办，责任人王志安。',
+          generatedText: '【处置决定】北苑商业综合体消防通道堵塞（超期 3 天，反复出现）。依据《消防法》第二十八条，责令消防通道占用区域立即停业整顿，直至整改验收合格。由消防安全组组长带队现场核查，责任人王志安今日提交整改方案。超期 7 天未完成将联合综合执法部门强制执行。',
+          riskLevel: 'danger',
+          recommendedPerson: '王志安'
+        },
+        {
+          sourceDiagnosisId: 'yunqi-fire-facility',
+          sourceHazard: '云栖高层住宅 · 自动消防设施失效（超期 1 天）',
+          suggestedLevel: 'external-3',
+          suggestedLevelLabel: '外部第 3 级 · 隐患区域停业整顿',
+          suggestedAction: 'enforce',
+          suggestedActionLabel: '停业整顿 + 挂牌督办',
+          rationale: '云栖高层住宅消防设施大面积失效（18-25层），涉及高层建筑公共安全，超期 1 天。建议按第 3 级处置，对失效设施所在区域采取停用措施并挂牌督办。',
+          generatedText: '【处置决定】云栖高层住宅自动消防设施失效（18-25层大面积失效，超期 1 天）。责令失效设施所在区域立即停用，由区域站设置临时管控措施。消防安全组组长牵头修复，责任人李明 2 日内提交修复方案。纳入街道挂牌督办事项。',
+          riskLevel: 'danger',
+          recommendedPerson: '李明'
+        },
+        {
+          sourceDiagnosisId: 'heng-yuan-chemical',
+          sourceHazard: '恒源化工 · 危化品隐患持续超期 + 自查 0 次',
+          suggestedLevel: 'external-4',
+          suggestedLevelLabel: '外部第 4 级 · 联合多部门执法',
+          suggestedAction: 'inspect',
+          suggestedActionLabel: '联合执法 + 约谈',
+          rationale: '恒源化工存在危化品标识缺失隐患超期，同时企业自查持续为 0（近 30 天 0 次登录），政府检查发现 12 项隐患。自查与检查严重不匹配，属于主体责任虚化。建议按第 4 级联合综合执法、市场监管等部门开展联合检查，同时站长约谈企业负责人。',
+          generatedText: '【处置决定】恒源化工危化品隐患超期 + 主体责任虚化（自查 0 次 / 政府检查 12 项隐患）。由应消站牵头，联合综合执法、市场监管等部门于本周五前开展联合执法检查。站长张义约谈企业负责人，明确整改时限和责任人。检查结果通报全片区同类企业。',
+          riskLevel: 'danger',
+          recommendedPerson: '张义'
+        },
+        {
+          sourceDiagnosisId: 'xin-sheng-machinery',
+          sourceHazard: '杭州鑫盛机械制造有限公司 · 自查缺失 + 隐患 8 项',
+          suggestedLevel: 'external-1',
+          suggestedLevelLabel: '外部第 1 级 · 组长带队现场督促',
+          suggestedAction: 'supervise',
+          suggestedActionLabel: '现场督促指导',
+          rationale: '企业自查 0 次但政府发现 8 项隐患，说明企业安全管理人员能力不足。建议先按第 1 级处置——组长带队到现场督促指导，带上专家帮助解决实际问题。',
+          generatedText: '【处置决定】杭州鑫盛机械制造有限公司自查缺失（0 次/近 30 天）+ 政府检查发现隐患 8 项。由企业安全组组长带队（带上安全专家），今日到现场督促指导，帮助企业建立自查机制。3 日内复查自查情况。',
+          riskLevel: 'warning',
+          recommendedPerson: '企业安全组组长'
+        },
+        {
+          sourceDiagnosisId: 'dong-xing-precision',
+          sourceHazard: '余杭东兴精密机械厂 · 自查缺失 + 培训不足',
+          suggestedLevel: 'internal-3',
+          suggestedLevelLabel: '内部第 3 级 · 一键提醒履职',
+          suggestedAction: 'remind',
+          suggestedActionLabel: '一键提醒履职',
+          rationale: '该企业自查缺失且培训完成率仅 28%，涉及应消站、区域站、第三方专家、村社等多角色。建议按内部第 3 级——一键提醒所有相关责任人员现场核查隐患整改进展。',
+          generatedText: '【处置决定】余杭东兴精密机械厂自查缺失 + 培训完成率仅 28%。系统已自动通过浙政钉通知应消站值班人员、区域站负责人、第三方安全专家、属地村社负责人，要求 2 个工作日内反馈现场核查结果。若本周内无反馈，自动升级为站长督办事项。',
+          riskLevel: 'warning',
+          recommendedPerson: '应消站值班人员'
+        },
+        {
+          sourceDiagnosisId: 'tian-yuan-textile',
+          sourceHazard: '余杭天元纺织厂 · 多项异常叠加（自查 0 + 隐患 6 项 + 培训 15%）',
+          suggestedLevel: 'external-2',
+          suggestedLevelLabel: '外部第 2 级 · 站长约谈企业负责人',
+          suggestedAction: 'meeting',
+          suggestedActionLabel: '约谈企业负责人',
+          rationale: '该企业自查 0 次、隐患 6 项、培训完成率仅 15%，且多项异常叠加（疏散通道堵塞、灭火器过期、电气线路私拉乱接），属于系统性安全管理缺失。建议按第 2 级——站长约谈企业负责人，施加压力、明确整改要求。',
+          generatedText: '【处置决定】余杭天元纺织厂系统性安全管理缺失（自查 0 次 / 隐患 6 项 / 培训 15% / 多项异常叠加）。由站长约谈企业负责人，本周内完成约谈。要求企业提交整改方案和时间表，安排安全专家对企业进行全面安全诊断。',
+          riskLevel: 'warning',
+          recommendedPerson: '站长'
+        }
       ]
     };
 
@@ -550,6 +627,252 @@
     };
 
     // ════════════════════════════════════════════════════════════════
+    // 待确认行动 / 督办包 MOCK DATA
+    // ════════════════════════════════════════════════════════════════
+
+    // Agent 识别出的标准化异常
+    MOCK.abnormalEvents = [
+      {
+        id: 'ae-001',
+        anomalyType: '整改超期',
+        sourceType: '隐患', sourceId: 'HZ001',
+        subjectName: '北苑商业综合体', subjectType: '消防重点单位',
+        region: '良渚街道', line: '消防安全线',
+        riskLevel: '重大风险',
+        currentStatus: '超期 3 天，临时管控待确认',
+        chain: { responsible: '王志安', executor: '对应专家', coordinator: '良渚街道办', reviewer: '消防安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'supervise',
+        closureStandard: '整改反馈 + 专家复查通过'
+      },
+      {
+        id: 'ae-002',
+        anomalyType: '整改超期',
+        sourceType: '隐患', sourceId: 'HZ002',
+        subjectName: '云栖高层住宅', subjectType: '高层住宅',
+        region: '五常街道', line: '消防安全线',
+        riskLevel: '较大风险',
+        currentStatus: '超期 1 天，整改证据不足',
+        chain: { responsible: '李明', executor: '对应专家', coordinator: '五常街道办', reviewer: '消防安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'supervise',
+        closureStandard: '整改反馈 + 专家复查通过'
+      },
+      {
+        id: 'ae-003',
+        anomalyType: '整改超期',
+        sourceType: '隐患', sourceId: 'HZ004',
+        subjectName: '杭州华阳包装材料有限公司', subjectType: '生产企业',
+        region: '物流片区', line: '企业安全线',
+        riskLevel: '较大风险',
+        currentStatus: '自查持续为 0，隐患整改逾期',
+        chain: { responsible: '陈芳', executor: '对应专家', coordinator: '物流片区村社', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'supervise',
+        closureStandard: '整改反馈 + 专家复查通过'
+      },
+      {
+        id: 'ae-004',
+        anomalyType: '整改超期',
+        sourceType: '隐患', sourceId: 'HZ005',
+        subjectName: '杭州鑫盛机械制造有限公司', subjectType: '生产企业',
+        region: '良渚街道', line: '企业安全线',
+        riskLevel: '较大风险',
+        currentStatus: '自查 0 次 + 隐患 8 项未整改',
+        chain: { responsible: '张毅', executor: '对应专家', coordinator: '良渚街道办', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'supervise',
+        closureStandard: '整改反馈 + 专家复查通过'
+      },
+      {
+        id: 'ae-005',
+        anomalyType: '复查失败',
+        sourceType: '隐患', sourceId: 'HZ003',
+        subjectName: '恒源化工', subjectType: '危化企业',
+        region: '仓前街道', line: '企业安全线',
+        riskLevel: '较大风险',
+        currentStatus: '整改材料未提交，复查超期 5 天',
+        chain: { responsible: '李安全', executor: '对应专家', coordinator: '仓前街道办', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'supervise',
+        closureStandard: '整改材料提交 + 专家复核通过'
+      },
+      {
+        id: 'ae-006',
+        anomalyType: '进度滞后',
+        sourceType: '专项任务', sourceId: 'ZX001',
+        subjectName: '高层小区消防设施专项检查', subjectType: '专项任务',
+        region: '全片区', line: '消防安全线',
+        riskLevel: '一般风险',
+        currentStatus: '完成率 42%，时间进度 61%，滞后 19pp',
+        chain: { responsible: '张毅', executor: '对应执行组', coordinator: '-', reviewer: '消防安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'track',
+        closureStandard: '专项任务按期完成'
+      },
+      {
+        id: 'ae-007',
+        anomalyType: '同类问题集中上升',
+        sourceType: '趋势', sourceId: 'TR001',
+        subjectName: '物流片区仓储场所', subjectType: '区域趋势',
+        region: '物流片区', line: '企业安全线',
+        riskLevel: '较大风险',
+        currentStatus: '7 家仓储场所整改超期，连续 3 日上升',
+        chain: { responsible: '物流片区组长', executor: '对应专家', coordinator: '相关村社', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'supervise',
+        closureStandard: '整改反馈 + 专家复查通过'
+      },
+      {
+        id: 'ae-008',
+        anomalyType: '主体履职异常',
+        sourceType: '主体对象', sourceId: 'SB001',
+        subjectName: '余杭天元纺织厂', subjectType: '生产企业',
+        region: '良渚街道', line: '企业安全线',
+        riskLevel: '较大风险',
+        currentStatus: '多项异常叠加：自查 0 次、培训 15%、检查隐患 6 项',
+        chain: { responsible: '陈芳', executor: '对应专家', coordinator: '良渚街道办', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'track',
+        closureStandard: '主体责任评估达标'
+      },
+      {
+        id: 'ae-009',
+        anomalyType: '风险等级上调',
+        sourceType: '风险预警', sourceId: 'RW001',
+        subjectName: '杭州永固建材有限公司', subjectType: '生产企业',
+        region: '物流片区', line: '企业安全线',
+        riskLevel: '一般风险',
+        currentStatus: '风险等级由低风险上调为一般风险',
+        chain: { responsible: '物流片区组长', executor: '-', coordinator: '-', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'observe',
+        closureStandard: '持续观察，下一周期评估'
+      },
+      {
+        id: 'ae-010',
+        anomalyType: '复查失败',
+        sourceType: '隐患', sourceId: 'HZ007',
+        subjectName: '余杭东兴精密机械厂', subjectType: '生产企业',
+        region: '良渚街道', line: '企业安全线',
+        riskLevel: '较大风险',
+        currentStatus: '复查未通过，培训不足+自查缺失',
+        chain: { responsible: '张毅', executor: '对应专家', coordinator: '良渚街道办', reviewer: '企业安全线负责人', observer: '站长', escalator: '站长' },
+        suggestedAction: 'explain',
+        closureStandard: '原因说明 + 整改计划提交'
+      }
+    ];
+
+    // Agent 生成的待确认行动（合并去重后的建议）
+    MOCK.pendingActions = [
+      {
+        id: 'pa-001',
+        actionType: 'supervise',
+        title: '物流片区仓储场所整改超期集中督办',
+        basis: '物流片区 7 家仓储场所整改超期，其中 2 家为较大风险主体，同类问题连续 3 日上升，涉及企业安全线。存在区域性风险蔓延态势，需集中督办。',
+        mergedFrom: ['ae-007', 'ae-003', 'ae-004'],
+        affectedSubjects: ['杭州华阳包装材料有限公司', '杭州鑫盛机械制造有限公司', '余杭天元纺织厂'],
+        affectedAnomalies: 7,
+        chain: {
+          responsible: { label: '责任人', person: '物流片区组长', task: '提交超期原因和处置计划' },
+          executor: { label: '执行人', person: '对应专家', task: '完成 2 家较大风险主体复查安排' },
+          coordinator: { label: '协同人', person: '相关村社、主体对象负责人', task: '补交整改反馈材料' },
+          reviewer: { label: '复核人', person: '企业安全线负责人', task: '审核处置计划，确认是否需要调整检查安排' },
+          observer: { label: '关注人', person: '站长', task: '关注督办进展，超期后确认是否升级' }
+        },
+        draftItems: [
+          { role: '责任人', person: '物流片区组长', task: '提交 7 家主体对象整改超期原因和处置计划', deadline: '今日 17:00', status: 'pending' },
+          { role: '执行人', person: '对应专家', task: '完成 2 家较大风险主体复查安排', deadline: '明日 12:00', status: 'pending' },
+          { role: '复核人', person: '企业安全线负责人', task: '审核处置计划，确认是否需要调整检查安排', deadline: '明日 17:00', status: 'pending' },
+          { role: '协同人', person: '主体对象负责人', task: '补交整改反馈材料', deadline: '3 日内', status: 'pending' },
+          { role: '关注人', person: '站长', task: '关注督办进展，超期后确认是否升级', deadline: '持续关注', status: 'pending' }
+        ],
+        status: 'pending',
+        created_at: null
+      },
+      {
+        id: 'pa-002',
+        actionType: 'supervise',
+        title: '良渚街道消防重点单位隐患超期集中督办',
+        basis: '良渚街道 2 家消防重点单位（北苑商业综合体、云栖高层住宅）隐患整改超期，涉及消防安全线。北苑商业综合体消防通道堵塞超期 3 天且反复出现，云栖高层住宅消防设施全面失效超期 1 天。',
+        mergedFrom: ['ae-001', 'ae-002'],
+        affectedSubjects: ['北苑商业综合体', '云栖高层住宅'],
+        affectedAnomalies: 2,
+        chain: {
+          responsible: { label: '责任人', person: '王志安（北苑）/ 李明（云栖）', task: '分别提交整改进展报告' },
+          executor: { label: '执行人', person: '消防安全组', task: '现场核查整改进展并拍照归档' },
+          coordinator: { label: '协同人', person: '良渚/五常街道办', task: '协助推进整改' },
+          reviewer: { label: '复核人', person: '消防安全线负责人', task: '审核整改方案有效性' },
+          observer: { label: '关注人', person: '站长', task: '关注 2 项重大隐患闭环进展' }
+        },
+        draftItems: [
+          { role: '责任人', person: '王志安', task: '提交北苑商业综合体消防通道堵塞整改进展', deadline: '今日 17:00', status: 'pending' },
+          { role: '责任人', person: '李明', task: '提交云栖高层住宅消防设施修复进展', deadline: '今日 17:00', status: 'pending' },
+          { role: '执行人', person: '消防安全组', task: '现场核查整改情况，拍照归档', deadline: '明日 12:00', status: 'pending' },
+          { role: '复核人', person: '消防安全线负责人', task: '审核整改方案', deadline: '明日 17:00', status: 'pending' }
+        ],
+        status: 'pending',
+        created_at: null
+      },
+      {
+        id: 'pa-003',
+        actionType: 'track',
+        title: '高层小区消防专项进度持续跟进',
+        basis: '高层小区消防设施专项检查完成率 42%，时间进度 61%，滞后 19pp。当前不足需要督办级别，但需持续跟进确保不进一步恶化。',
+        mergedFrom: ['ae-006'],
+        affectedSubjects: ['高层小区消防设施专项'],
+        affectedAnomalies: 1,
+        chain: {
+          responsible: { label: '责任人', person: '张毅（消防安全线）', task: '按周反馈专项进度' },
+          executor: { label: '执行人', person: '对应执行组', task: '按计划推进检查' },
+          reviewer: { label: '复核人', person: '消防安全线负责人', task: '审核专项完成质量' },
+          observer: { label: '关注人', person: '站长', task: '每周关注专项进度' }
+        },
+        draftItems: [
+          { role: '责任人', person: '张毅', task: '每周五提交专项进度报告', deadline: '每周五', status: 'pending' },
+          { role: '执行人', person: '对应执行组', task: '按计划推进余下检查', deadline: '月底前', status: 'pending' }
+        ],
+        status: 'pending',
+        created_at: null
+      },
+      {
+        id: 'pa-004',
+        actionType: 'explain',
+        title: '余杭东兴精密机械厂复查失败原因说明',
+        basis: '余杭东兴精密机械厂复查未通过，培训不足+自查缺失。需要先了解具体原因再决定下一步动作。',
+        mergedFrom: ['ae-010'],
+        affectedSubjects: ['余杭东兴精密机械厂'],
+        affectedAnomalies: 1,
+        chain: {
+          responsible: { label: '责任人', person: '张毅', task: '反馈复查失败具体原因' },
+          reviewer: { label: '复核人', person: '企业安全线负责人', task: '判断是否需要调整整改方案' }
+        },
+        draftItems: [
+          { role: '责任人', person: '张毅', task: '反馈复查失败具体原因', deadline: '明日 12:00', status: 'pending' },
+          { role: '复核人', person: '企业安全线负责人', task: '判断后续处理方式', deadline: '明日 17:00', status: 'pending' }
+        ],
+        status: 'pending',
+        created_at: null
+      }
+    ];
+
+    // 确认后的督办包（初始为空，确认后动态填充）
+    MOCK.supervisionPackages = [];
+    MOCK.supervisionItems = [];
+
+    // 已确认的督办包（用于展示历史已确认过的，初始有一些示例）
+    MOCK.confirmedPackages = [
+      {
+        id: 'sp-001',
+        title: '生产企业隐患整改逾期集中督办',
+        actionType: 'supervise',
+        status: '推进中',
+        chain: { responsible: '生产企业条线负责人', executor: '对应专家', coordinator: '相关企业', reviewer: '条线负责人', observer: '站长' },
+        draftItems: [
+          { role: '责任人', person: '生产企业条线负责人', task: '提交逾期处置计划', deadline: '已完成', status: 'done' },
+          { role: '执行人', person: '对应专家', task: '复核高风险主体', deadline: '进行中', status: 'in_progress' },
+          { role: '协同人', person: '相关企业', task: '补交整改材料', deadline: '超期', status: 'overdue' }
+        ],
+        createdAt: '2026-06-22',
+        itemCount: 3,
+        feedbackCount: 1,
+        doneCount: 1,
+        overdueCount: 1
+      }
+    ];
+
+    // ════════════════════════════════════════════════════════════════
     // STATE
     // ════════════════════════════════════════════════════════════════
 
@@ -571,6 +894,7 @@
         case 'responsibility': html = renderResponsibility(); break;
         case 'disposal': html = renderDisposal(); break;
         case 'followup': html = renderFollowup(); break;
+        case 'pending-actions': html = renderPendingActions(); break;
         default: html = renderDashboard();
       }
       container.innerHTML = html;
@@ -593,7 +917,7 @@
           '<div class="ai-avatar"><i data-lucide="bot" width="16" height="16"></i></div>' +
         '</div>' +
         '<div class="ai-briefing-body">' +
-          '<div class="ai-briefing-head">' + greeting + '，站长。今天 3 个方向需要关注：安全态势 1 项、风险闭环 1 项、任务进展 1 项。</div>' +
+          '<div class="ai-briefing-head"><span>' + greeting + '，站长。今天 3 个方向需要关注：安全态势 1 项、风险闭环 1 项、任务进展 1 项。</span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
         '</div>' +
       '</div>';
 
@@ -951,6 +1275,16 @@
       // ─── 待确认行动项 ────────────────────────────────────────
       html += renderActionItems();
 
+      // ─── 处置建议入口 ────────────────────────────────────────
+      var recCount = (MOCK.disposalRecommendations || []).length;
+      if (recCount > 0) {
+        html += '<div class="dr-dashboard-entry" onclick="switchScene(\'disposal\')" title="查看 AI 处置建议">' +
+          '<i data-lucide="sparkles" width="15" height="15" style="color:var(--accent)"></i>' +
+          '<span><strong>处置建议</strong> · <span style="color:var(--accent);font-weight:600">' + recCount + ' 条</span>待确认</span>' +
+          '<i data-lucide="chevron-right" width="14" height="14" style="color:var(--weak);margin-left:auto"></i>' +
+        '</div>';
+      }
+
       return html;
     }
 
@@ -1297,7 +1631,9 @@
         return h;
       }
 
-      var html = '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="git-branch" aria-hidden="true" style="color:var(--accent)"></i> 分级处置闭环</h2></div>';
+      var html = renderDisposalRecommendations();
+
+      html += '<div class="section-head" style="margin-bottom:0;margin-top:32px"><h2><i data-lucide="git-branch" aria-hidden="true" style="color:var(--accent)"></i> 分级处置闭环</h2></div>';
 
       // Two-column layout: internal + external
       html += '<div class="two-col-grid">' +
@@ -1332,7 +1668,216 @@
       return html;
     }
 
-    // ─── 重点跟进场景 ──────────────────────────────────────────
+    // ─── AI 处置建议模块 ──────────────────────────────────────
+    function renderDisposalRecommendations() {
+      var recs = MOCK.disposalRecommendations || [];
+      if (recs.length === 0) return '';
+
+      function getLevelDot(level) {
+        if (level.indexOf('external') >= 0) return 'building-2';
+        return 'user-cog';
+      }
+      function getLevelColor(level) {
+        if (level === 'external-3' || level === 'external-4' || level === 'external-5') return 'var(--red)';
+        if (level === 'external-2' || level === 'internal-4') return 'var(--orange)';
+        if (level === 'external-1' || level === 'internal-3') return 'var(--accent)';
+        return 'var(--green)';
+      }
+      function getLevelBg(level) {
+        if (level === 'external-3' || level === 'external-4' || level === 'external-5') return 'var(--red-soft)';
+        if (level === 'external-2' || level === 'internal-4') return 'var(--orange-soft)';
+        if (level === 'external-1' || level === 'internal-3') return 'var(--accent-soft)';
+        return 'var(--green-soft)';
+      }
+      function getActionIcon(action) {
+        var map = { supervise: 'user-check', inspect: 'search', meeting: 'calendar', remind: 'bell', enforce: 'ban' };
+        return map[action] || 'chevron-right';
+      }
+
+      var html = '<div class="section-head" style="margin-bottom:0;margin-top:24px"><h2><i data-lucide="sparkles" aria-hidden="true" style="color:var(--accent)"></i> AI 处置建议</h2><span class="info-card-badge" style="background:var(--accent);color:#fff">' + recs.length + ' 条待确认</span></div>';
+      html += '<div class="info-card"><div class="info-card-head"><h3><i data-lucide="bot" aria-hidden="true" style="color:var(--accent)"></i> 基于异常诊断自动生成</h3><button class="dl-item-action" onclick="regenerateDisposalRecs()" style="padding:4px 10px;font-size:11px"><i data-lucide="refresh-cw" width="12" height="12"></i> 重新生成</button></div>';
+
+      for (var ri = 0; ri < recs.length; ri++) {
+        var r = recs[ri];
+        var levelColor = getLevelColor(r.suggestedLevel);
+        var levelBg = getLevelBg(r.suggestedLevel);
+        var actionIcon = getActionIcon(r.suggestedAction);
+        var riskBadgeCls = r.riskLevel === 'danger' ? 'danger' : 'warning';
+
+        html += '<div class="dr-card">' +
+          '<div class="dr-card-head">' +
+            '<div class="dr-card-head-left">' +
+              '<span class="dr-hazard-name">' + r.sourceHazard + '</span>' +
+              '<span class="badge ' + riskBadgeCls + '" style="font-size:9px;padding:1px 6px">' + (r.riskLevel === 'danger' ? '危险' : '预警') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dr-card-body">' +
+            '<div class="dr-body-row">' +
+              '<span class="dr-label">建议级别</span>' +
+              '<span class="dr-level-badge" style="background:' + levelBg + ';color:' + levelColor + '"><i data-lucide="' + getLevelDot(r.suggestedLevel) + '" width="11" height="11" style="vertical-align:middle;margin-right:3px"></i>' + r.suggestedLevelLabel + '</span>' +
+            '</div>' +
+            '<div class="dr-body-row">' +
+              '<span class="dr-label">推荐动作</span>' +
+              '<span class="dr-action-badge"><i data-lucide="' + actionIcon + '" width="11" height="11" style="vertical-align:middle;margin-right:3px"></i>' + r.suggestedActionLabel + '</span>' +
+            '</div>' +
+            '<div class="dr-body-row">' +
+              '<span class="dr-label">推荐理由</span>' +
+              '<span class="dr-rationale">' + r.rationale + '</span>' +
+            '</div>' +
+            '<div class="dr-body-row">' +
+              '<span class="dr-label">处置文案</span>' +
+              '<div class="dr-generated-text" id="drText_' + ri + '">' + r.generatedText + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dr-card-actions">' +
+            '<button class="dr-action-btn primary" onclick="copyDisposalRec(' + ri + ')" title="复制文案"><i data-lucide="copy" width="13" height="13"></i> 复制文案</button>' +
+            '<button class="dr-action-btn" onclick="showToast(\'已加入跟踪事项\')" title="加入跟踪"><i data-lucide="pin" width="13" height="13"></i> 加入跟踪</button>' +
+            '<button class="dr-action-btn" onclick="showToast(\'督办已发起\')" title="一键督办"><i data-lucide="megaphone" width="13" height="13"></i> 一键督办</button>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // ─── 规则引擎触发提示 ──────────────────────────────────
+      var ruleResults = (typeof window.getRuleEngineResults === 'function') ? window.getRuleEngineResults() : [];
+      var dangerRules = [];
+      for (var rri = 0; rri < ruleResults.length; rri++) {
+        if (ruleResults[rri].rule && ruleResults[rri].rule.severity === 'danger') {
+          dangerRules.push(ruleResults[rri]);
+        }
+      }
+      if (dangerRules.length > 0) {
+        var ruleDimToLevel = {
+          'timeout': { level: 'external-3', label: '外部第 3 级 · 隐患区域停业整顿', action: 'enforce' },
+          'behavior': { level: 'external-2', label: '外部第 2 级 · 站长约谈企业负责人', action: 'meeting' },
+          'composite': { level: 'external-4', label: '外部第 4 级 · 联合多部门执法', action: 'inspect' },
+          'metric': { level: 'internal-3', label: '内部第 3 级 · 一键提醒履职', action: 'remind' },
+        };
+        html += '<div class="dr-rule-section"><div class="dr-rule-head"><i data-lucide="settings-2" width="15" height="15" style="color:var(--orange)"></i> 规则引擎触发 · ' + dangerRules.length + ' 条危险规则匹配</div>';
+        for (var dri = 0; dri < dangerRules.length; dri++) {
+          var dr = dangerRules[dri];
+          var ruleName = dr.rule.name || dr.rule.dimension || '未知规则';
+          var ruleDim = dr.rule.dimension || '';
+          var levelMap = ruleDimToLevel[ruleDim] || { level: 'internal-3', label: '内部第 3 级 · 一键提醒履职', action: 'remind' };
+          var lvlHtml = '<span class="dr-level-badge" style="background:var(--red-soft);color:var(--red)"><i data-lucide="alert-triangle" width="11" height="11" style="vertical-align:middle;margin-right:3px"></i>' + levelMap.label + '</span>';
+          html += '<div class="dr-rule-item">' +
+            '<div class="dr-rule-item-left"><i data-lucide="zap" width="14" height="14" style="color:var(--red)"></i></div>' +
+            '<div class="dr-rule-item-body">' +
+              '<div class="dr-rule-item-name">' + ruleName + '</div>' +
+              '<div class="dr-rule-item-detail">' + (dr.detail || '') + '</div>' +
+              '<div class="dr-rule-item-level">' + lvlHtml + '</div>' +
+            '</div>' +
+            '<button class="dr-action-btn" onclick="showToast(\'已根据规则发起处置\')" style="flex-shrink:0"><i data-lucide="chevron-right" width="13" height="13"></i> 处置</button>' +
+          '</div>';
+        }
+        html += '</div>';
+      }
+
+      // 底部：生成全部
+      html += '<div class="dr-generate-all">' +
+        '<button class="primary" onclick="generateAllDisposalText()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:500;cursor:pointer"><i data-lucide="file-text" width="15" height="15"></i> 生成全部处置建议</button>' +
+        '<span class="dr-generate-hint">将生成可复制下发的总览处置文案，包含所有 6 项建议</span>' +
+      '</div>';
+
+      html += '</div>';
+      return html;
+    }
+
+    // ─── AI 处置建议：复制单条文案 ──────────────────────────
+    window.copyDisposalRec = function(idx) {
+      var recs = MOCK.disposalRecommendations || [];
+      var r = recs[idx];
+      if (!r) return;
+      var text = r.generatedText;
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('已复制处置文案'); }
+      catch(e) { showToast('复制失败，请手动选择文案复制'); }
+      document.body.removeChild(ta);
+    };
+
+    // ─── AI 处置建议：生成全部 ──────────────────────────────
+    window.generateAllDisposalText = function() {
+      var recs = MOCK.disposalRecommendations || [];
+      if (recs.length === 0) { showToast('暂无处置建议'); return; }
+      var allText = '╔══ 站长处置建议总览（' + new Date().toLocaleDateString('zh-CN') + '）══╗\n\n';
+      for (var i = 0; i < recs.length; i++) {
+        allText += '【建议 ' + (i+1) + '】' + recs[i].sourceHazard + '\n';
+        allText += '级别：' + recs[i].suggestedLevelLabel + '\n';
+        allText += '动作：' + recs[i].suggestedActionLabel + '\n';
+        allText += '文案：' + recs[i].generatedText + '\n\n';
+      }
+      allText += '╚══ 共 ' + recs.length + ' 项处置建议 ══╝';
+      var ta = document.createElement('textarea');
+      ta.value = allText;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('已复制全部 ' + recs.length + ' 条处置建议'); }
+      catch(e) { showToast('复制失败'); }
+      document.body.removeChild(ta);
+    };
+
+    // ─── AI 处置建议：重新生成（模拟） ──────────────────────
+    window.regenerateDisposalRecs = function() {
+      showToast('AI 正在基于最新异常数据重新分析…');
+      setTimeout(function() {
+        // 重新渲染处置场景
+        var container = document.getElementById('sceneContent');
+        if (container && state.activeScene === 'disposal') {
+          container.innerHTML = renderDisposal();
+          lucide.createIcons();
+        }
+        showToast('处置建议已更新（模拟）');
+      }, 800);
+    };
+
+    // ─── Drawer 生成处置文案 ────────────────────────────────
+    function generateDisposalText(action) {
+      var now = new Date();
+      var dateStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
+      var hour = now.getHours();
+      var greeting = hour < 12 ? '上午' : hour < 18 ? '下午' : '晚上';
+
+      // 基于 Drawer 内容 + 当前上下文动态拼接
+      var content = drawerContent[action];
+      if (!content) return '';
+
+      var lines = [];
+      lines.push('╔══ ' + content.title + ' · ' + dateStr + ' ' + greeting + ' ══╗\n');
+
+      for (var si = 0; si < content.sections.length; si++) {
+        var sec = content.sections[si];
+        lines.push('【' + sec.label + '】');
+        lines.push(sec.value);
+        lines.push('');
+      }
+
+      // 追加 AI 建议
+      var recs = MOCK.disposalRecommendations || [];
+      if (recs.length > 0) {
+        lines.push('【AI 关联建议】');
+        for (var ri = 0; ri < Math.min(recs.length, 3); ri++) {
+          lines.push('• ' + recs[ri].sourceHazard + ' → ' + recs[ri].suggestedActionLabel);
+        }
+        lines.push('');
+      }
+
+      lines.push('╚══ 由 AI 工作助手自动生成 ══╝');
+      return lines.join('\n');
+    }
+
+    window.copyDrawerGenerated = function() {
+      var text = window.__lastGeneratedText || '';
+      if (!text) { showToast('暂无生成的文案'); return; }
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('已复制处置文案'); }
+      catch(e) { showToast('复制失败'); }
+      document.body.removeChild(ta);
+    };
     function renderFollowup() {
       var followups = FOLLOWUPS;
       var html = '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="list-checks" aria-hidden="true" style="color:var(--accent)"></i> 重点跟进</h2></div>' +
@@ -1428,9 +1973,217 @@
       },
     };
 
+    // ════════════════════════════════════════════════════════════════
+    // PENDING ACTIONS — 待确认行动面板
+    // ════════════════════════════════════════════════════════════════
+
+    function renderPendingActions() {
+      var pas = MOCK.pendingActions || [];
+      var confirmed = MOCK.confirmedPackages || [];
+
+      // 待确认的（status === 'pending'）
+      var pendingPas = [];
+      // 已处理（ignored/changed）
+      var donePas = [];
+      for (var pi = 0; pi < pas.length; pi++) {
+        if (pas[pi].status === 'pending') {
+          pendingPas.push(pas[pi]);
+        } else {
+          donePas.push(pas[pi]);
+        }
+      }
+
+      var html = '';
+
+      // ─── 页面头 ──────────────────────────────────────────────
+      html += '<div class="section-head" style="margin-bottom:12px">' +
+        '<h2><i data-lucide="clipboard-check" aria-hidden="true" style="color:var(--accent)"></i> 待确认行动</h2>' +
+        '<span class="info-card-badge" style="background:var(--orange);color:#fff">' + pendingPas.length + ' 项待确认</span>' +
+      '</div>';
+
+      // ─── 流程指示条 ──────────────────────────────────────────
+      html += '<div class="pa-flow-bar">' +
+        '<div class="pa-flow-step active"><div class="pa-flow-dot"></div><span>异常识别</span></div>' +
+        '<div class="pa-flow-step active"><div class="pa-flow-dot"></div><span>问题聚合</span></div>' +
+        '<div class="pa-flow-step active"><div class="pa-flow-dot"></div><span>生成待确认</span></div>' +
+        '<div class="pa-flow-step"><div class="pa-flow-dot"></div><span>确认发起</span></div>' +
+        '<div class="pa-flow-step"><div class="pa-flow-dot"></div><span>跟踪闭环</span></div>' +
+      '</div>';
+
+      // ─── AI 简报 ──────────────────────────────────────────────
+      html += '<div class="pa-ai-brief">' +
+        '<div class="pa-ai-icon"><i data-lucide="bot" width="18" height="18"></i></div>' +
+        '<div class="pa-ai-text">' +
+          '<strong>Agent 发现 ' + pas.length + ' 个待确认行动建议</strong>，基于今日全局监管上下文分析：' +
+          '物流片区仓储场所整改超期集中、良渚街道消防重点单位隐患超期、高层小区消防专项进度滞后、生产企业复查失败等异常信号。' +
+          '请对以下行动建议进行确认或调整。' +
+        '</div>' +
+      '</div>';
+
+      // ─── 待确认行动列表 ──────────────────────────────────────
+      if (pendingPas.length === 0) {
+        html += '<div class="pa-empty">所有待确认行动已处理</div>';
+      } else {
+        html += '<div class="pa-section-label"><i data-lucide="clock" width="15" height="15"></i> 待确认行动</div>';
+        for (var pi = 0; pi < pendingPas.length; pi++) {
+          html += renderPendingActionCard(pendingPas[pi]);
+        }
+      }
+
+      // ─── 已确认的督办包 ──────────────────────────────────────
+      if (confirmed.length > 0) {
+        html += '<div class="pa-section-divider"></div>';
+        html += '<div class="pa-section-label" style="margin-top:4px"><i data-lucide="check-circle" width="15" height="15"></i> 已确认的督办包</div>';
+        for (var ci = 0; ci < confirmed.length; ci++) {
+          html += renderConfirmedPackageCard(confirmed[ci]);
+        }
+      }
+
+      // ─── 已忽略/已处理的 ──────────────────────────────────────
+      if (donePas.length > 0) {
+        html += '<div class="pa-section-divider"></div>';
+        html += '<div class="pa-section-label" style="margin-top:4px"><i data-lucide="archive" width="15" height="15"></i> 其他处理记录</div>';
+        for (var di = 0; di < donePas.length; di++) {
+          var d = donePas[di];
+          var dLabel = d.actionType === 'track' ? '已加入跟进' : d.actionType === 'explain' ? '已改为要求说明' : d.actionType === 'observe' ? '暂不处理' : '已忽略';
+          html += '<div class="pa-done-card">' +
+            '<div style="display:flex;align-items:center;gap:8px">' +
+              '<span style="font-size:11px;color:var(--weak)">' + dLabel + '</span>' +
+              '<span style="font-size:13px;font-weight:600;color:var(--muted);text-decoration:line-through">' + d.title + '</span>' +
+            '</div>' +
+          '</div>';
+        }
+      }
+
+      return html;
+    }
+
+    function renderPendingActionCard(pa) {
+      // actionType 对应的样式和 label
+      var actionConfig = {
+        supervise: { label: '建议发起督办', cls: 'pa-type-supervise', icon: 'alert-triangle' },
+        explain: { label: '建议要求说明', cls: 'pa-type-explain', icon: 'help-circle' },
+        track: { label: '建议加入跟进', cls: 'pa-type-track', icon: 'eye' },
+        special: { label: '建议转专项', cls: 'pa-type-special', icon: 'git-merge' },
+        observe: { label: '建议暂不处理', cls: 'pa-type-observe', icon: 'pause-circle' }
+      };
+      var cfg = actionConfig[pa.actionType] || actionConfig.supervise;
+
+      // 合并来源数量
+      var mergedCount = pa.affectedAnomalies || (pa.mergedFrom ? pa.mergedFrom.length : 0);
+      var subjectCount = pa.affectedSubjects ? pa.affectedSubjects.length : 0;
+
+      var chainHtml = '';
+      for (var key in pa.chain) {
+        if (pa.chain.hasOwnProperty(key)) {
+          var role = pa.chain[key];
+          chainHtml += '<span class="pa-chain-badge"><span class="pa-chain-role">' + role.label + '</span>' + role.person + '</span>';
+        }
+      }
+
+      // 处理项 HTML
+      var itemsHtml = '';
+      for (var ii = 0; ii < pa.draftItems.length; ii++) {
+        var di = pa.draftItems[ii];
+        itemsHtml += '<div class="pa-draft-item">' +
+          '<div class="pa-di-left">' +
+            '<span class="pa-di-role">' + di.role + '</span>' +
+            '<span class="pa-di-task">' + di.task + '</span>' +
+          '</div>' +
+          '<span class="pa-di-deadline">' + di.deadline + '</span>' +
+        '</div>';
+      }
+
+      var html = '<div class="pa-card ' + cfg.cls + '" id="pa-card-' + pa.id + '">' +
+        // 头部：类型标签 + 标题
+        '<div class="pa-card-top">' +
+          '<div class="pa-card-left">' +
+            '<span class="pa-type-tag"><i data-lucide="' + cfg.icon + '" width="13" height="13"></i> ' + cfg.label + '</span>' +
+            '<h3 class="pa-card-title">' + pa.title + '</h3>' +
+          '</div>' +
+        '</div>' +
+
+        // 依据
+        '<div class="pa-card-basis"><i data-lucide="file-text" width="13" height="13"></i> ' + pa.basis + '</div>' +
+
+        // 统计
+        '<div class="pa-card-stats">' +
+          '<span class="pa-stat"><i data-lucide="alert-circle" width="13" height="13"></i> 关联异常 ' + mergedCount + ' 条</span>' +
+          (subjectCount > 0 ? '<span class="pa-stat"><i data-lucide="building-2" width="13" height="13"></i> 关联主体 ' + subjectCount + ' 家</span>' : '') +
+        '</div>' +
+
+        // 关联主体列表
+        (pa.affectedSubjects && pa.affectedSubjects.length > 0
+          ? '<div class="pa-card-subjects"><span class="pa-sub-label">关联主体：</span>' + pa.affectedSubjects.join('、') + '</div>'
+          : '') +
+
+        // 责任链
+        '<div class="pa-card-chain">' +
+          '<div class="pa-chain-label">责任链</div>' +
+          '<div class="pa-chain-badges">' + chainHtml + '</div>' +
+        '</div>' +
+
+        // 预生成处理项（可展开）
+        '<div class="pa-card-items">' +
+          '<div class="pa-items-label">预生成处理项 <span class="pa-items-count">' + pa.draftItems.length + ' 项</span></div>' +
+          '<div class="pa-items-list">' + itemsHtml + '</div>' +
+        '</div>' +
+
+        // 操作按钮
+        '<div class="pa-card-actions">' +
+          '<button class="pa-btn pa-btn-primary" onclick="confirmPendingAction(\'' + pa.id + '\')"><i data-lucide="check" width="14" height="14"></i> 确认发起</button>' +
+          '<button class="pa-btn" onclick="showToast(\'编辑功能（建设中）\')"><i data-lucide="pencil" width="14" height="14"></i> 编辑</button>' +
+          '<button class="pa-btn" onclick="changePendingAction(\'' + pa.id + '\', \'explain\')"><i data-lucide="help-circle" width="14" height="14"></i> 改为要求说明</button>' +
+          '<button class="pa-btn" onclick="changePendingAction(\'' + pa.id + '\', \'track\')"><i data-lucide="eye" width="14" height="14"></i> 改为跟进</button>' +
+          '<button class="pa-btn pa-btn-muted" onclick="ignorePendingAction(\'' + pa.id + '\')"><i data-lucide="x" width="14" height="14"></i> 忽略</button>' +
+        '</div>' +
+      '</div>';
+
+      return html;
+    }
+
+    function renderConfirmedPackageCard(sp) {
+      var statusMap = { '推进中': { cls: 'orange', icon: 'loader' }, '已完成': { cls: 'green', icon: 'check-circle' }, '需升级': { cls: 'red', icon: 'alert-triangle' } };
+      var st = statusMap[sp.status] || { cls: 'gray', icon: 'circle' };
+
+      var itemsHtml = '';
+      for (var ii = 0; ii < sp.draftItems.length; ii++) {
+        var di = sp.draftItems[ii];
+        var diCls = di.status === 'done' ? 'pa-cfi-done' : di.status === 'in_progress' ? 'pa-cfi-progress' : di.status === 'overdue' ? 'pa-cfi-overdue' : '';
+        var diIcon = di.status === 'done' ? 'check-circle' : di.status === 'in_progress' ? 'loader' : di.status === 'overdue' ? 'alert-circle' : 'circle';
+        itemsHtml += '<div class="pa-cfi-item ' + diCls + '">' +
+          '<i data-lucide="' + diIcon + '" width="13" height="13"></i>' +
+          '<span class="pa-cfi-role">' + di.role + '</span>' +
+          '<span class="pa-cfi-task">' + di.task + '</span>' +
+          '<span class="pa-cfi-deadline">' + di.deadline + '</span>' +
+        '</div>';
+      }
+
+      var html = '<div class="pa-confirmed-card">' +
+        '<div class="pa-cc-top">' +
+          '<div class="pa-cc-left">' +
+            '<h4>' + sp.title + '</h4>' +
+            '<span class="hc-status ' + st.cls + '">' + sp.status + '</span>' +
+          '</div>' +
+          '<span class="pa-cc-date">' + sp.createdAt + '</span>' +
+        '</div>' +
+        '<div class="pa-cc-stats">' +
+          '<span>处理项 ' + sp.itemCount + ' 项</span>' +
+          '<span class="pa-stat-done">已反馈 ' + sp.doneCount + '</span>' +
+          '<span class="pa-stat-overdue">逾期 ' + sp.overdueCount + '</span>' +
+        '</div>' +
+        '<div class="pa-cc-items">' + itemsHtml + '</div>' +
+      '</div>';
+
+      return html;
+    }
+
+    var currentDrawerAction = '';
+
     function openDrawer(action) {
       var content = drawerContent[action];
       if (!content) return;
+      currentDrawerAction = action;
       // 恢复确认按钮默认文案
       document.getElementById('drawerConfirm').textContent = '确认生成';
       document.getElementById('drawerTitle').innerHTML = '<i data-lucide="' + getDrawerIcon(action) + '" aria-hidden="true"></i> ' + content.title;
@@ -1453,6 +2206,135 @@
       document.getElementById('drawerOverlay').classList.remove('open');
       document.getElementById('drawerConfirm').textContent = '确认生成';
       document.getElementById('drawerCancel').style.display = '';
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // AGENT CONFIG
+    // ════════════════════════════════════════════════════════════════
+
+    var agentSceneNames = {
+      dashboard: '今日监管工作台',
+      'hazard-report': '重大隐患整改日报',
+      efficiency: '履职效能统计',
+      responsibility: '主体责任评估',
+      disposal: '分级处置流程',
+      followup: '跟踪事项汇总'
+    };
+
+    var agentDefaultPrompts = {
+      dashboard: '你是安全监管 AI 助手，为站长生成「今日监管工作台」页面内容。页面由以下四大板块组成：\n\n一、整体安全态势\n展示核心运营数据指标卡，按分组呈现：\n- 监管概况：安全责任主体总数、覆盖户数（累计/期间）、主体覆盖率、风险等级上调数、新增重大/较大风险主体数\n- 监管执法：检查次数（日常+监督）、检查单推送户数/次数、办结数/办结率、未办结数\n- 隐患闭环：新增隐患、累计隐患、未闭环隐患、整改完成（期间/累计）、隐患整改率\n- 重大隐患：新增重大隐患、累计重大隐患、未闭环重大隐患、超期未整改\n同时展示四级风险分布（重大/较大/一般/低风险主体数量）。\nAI 问候语在最顶部，根据时段打招呼，简要说明今日需关注的方向数量。\n\n二、关键风险闭环\n展示当前重大隐患的横向卡片列表，每张卡片包含：\n- 隐患对象名称\n- 隐患描述\n- 来源（政府检查/企业自查/群众举报等）\n- 当前状态（整改中/督办中/已完成等）\n- 逾期天数\n- 发现日期 → 整改截止日期\n顶部有 AI 摘要句，说明当前重大隐患总体情况（如"5 项重大隐患，2 项超期"）。\n\n三、核心任务进展\n展示监管任务的横向卡片列表，每张卡片包含：\n- 任务名称（日常/专项标签）\n- 双环进度图：外环为进度百分比，内环为完成率\n- 覆盖主体数、发现隐患数、未闭环数\n- 起止日期\n顶部有异常任务数量标识。异常任务排在前面，用红/橙色角标标注。\n\n四、待确认行动项\nAI 基于今日数据生成的待确认行动，每项包含：\n- 行动标题\n- 类型标签（督办/约谈/核查等）\n- 法规依据\n- 具体要求\n- 建议动作按钮（主操作+次操作）\n顶部有流程步骤指示（异常识别 → 问题聚合 → 行动生成待确认）和行动总数。\n\n输出语言风格：简洁、专业、面向基层安全管理者，数据驱动，避免过度技术术语。',
+
+      'hazard-report': '你是安全监管 AI 助手，为站长生成重大隐患整改日报。\n\n请按以下结构生成内容：\n\n1. 统计概览：\n   - 重大隐患总数（当前）\n   - 超期未整改数（标红）\n   - 即将到期数（3 天内到期，标橙）\n   - 整改中数\n   - 反复出现数（同一主体同一隐患重复出现）\n\n2. 隐患回头看：对每个重大隐患（状态为危险或预警），列出——\n   - 隐患对象和隐患描述\n   - 所属区域\n   - 当前状态和上期状态（标注改善/恶化/无变化）\n   - 临时管控措施\n   - 整改方案\n   - 时间表和责任人\n\n3. 状态变化表：逐项对比上期与本期状态，标注改善/恶化趋势，对恶化项重点提醒。\n\n4. 整改建议：对超期项给出升级建议（督办、约谈、联合执法），对即将到期项给出催办建议。\n\n输出语言风格：严肃、紧迫感、数据驱动，突出超期和恶化趋势。',
+
+      efficiency: '你是安全监管 AI 助手，为站长生成履职效能分析报告。\n\n请按以下结构生成内容：\n\n1. 分组效能卡片：按监管组别展示以下指标——\n   - 检查完成率（已查/应查）\n   - 复查率（已复查/需复查）\n   - 隐患发现率（发现隐患数/检查数）\n   - 文书合规率（合格文书/总文书）\n   - 闭环率（已闭环隐患/总隐患）\n   每个指标给出达标状态（正常/异常）。\n\n2. 异常偏低提示：列出效能明显偏低的组别和指标，说明偏低原因推测（如"该组检查任务集中在下周"、"新入职人员占比高"等），给出核查建议。\n\n3. 对比分析：与上月同期对比，标注改善/退步的趋势箭头。\n\n4. 改进建议：对落后组别给出具体改进措施（如增加培训、调整排班、优化检查流程等）。\n\n输出语言风格：客观、数据化、可操作，便于站长直接用于组别考核。',
+
+      responsibility: '你是安全监管 AI 助手，为站长生成主体责任评估报告。\n\n请按以下结构生成内容：\n\n1. 主体责任判断矩阵：按两个维度（自查频次 vs 政府检查发现）将主体分为四类——\n   - 主体责任较主动：自查多，政府检查少，安全管理较到位（绿色）\n   - 疑似敷衍自查：自查为 0 或极少，政府检查发现多项隐患（红色）\n   - 管理能力不足：培训低，隐患反复，安全投入不足（橙色）\n   - 触达失败：平台长期不登录，需要培训或依法督促（灰色）\n\n2. 企业主体责任落实表格：逐企业列出——\n   - 企业名称\n   - 自查次数\n   - 政府检查次数\n   - 培训次数\n   - 演练次数\n   - 风险评级（高度关注/需关注/观察）\n   - AI 建议（如"建议约谈"、"纳入重点监管"、"继续观察"等）\n\n3. 统计汇总：自查为 0 的主体数、培训低于 2 次的主体数、高度关注主体数、未演练主体数。\n\n4. 薄弱环节分析：识别共性问题（如"8 家主体自查为 0，占总数 40%"），给出批量处置建议。\n\n输出语言风格：客观、分类清晰、建议具体可执行。',
+
+      disposal: '你是安全监管 AI 助手，为站长生成分级处置闭环报告。\n\n请按以下结构生成内容：\n\n1. 处置建议概览：简要说明当前处置事项总数和各层级分布。\n\n2. 分级处置事项（按三个层级组织）：\n   - L1 内部处置：监管组内部可闭环的事项（如提醒企业自查、补充文书等）\n     每项列出：事项标题、简要描述、建议动作（执行/一键提醒）\n   - L2 外部处置：需跨部门或外部资源的事项（如联合检查、约谈企业负责人等）\n     每项列出：事项标题、涉及部门、简要描述、建议动作\n   - L3 系统性处置：需系统层面优化的事项（如流程优化、制度修订等）\n     每项列出：事项标题、问题分析、优化建议\n\n3. 超期未处置提醒：列出超过处置时限的事项，标注超期天数，给出升级建议。\n\n4. 闭环率统计：各层级的处置闭环率，对比目标值（目标 95%），标识落后层级。\n\n输出语言风格：层次分明、动作导向、便于站长逐项认领和分配。',
+
+      followup: '你是安全监管 AI 助手，为站长生成重点跟进事项汇总。\n\n请按以下结构生成内容：\n\n1. 跟进事项列表：每项包含——\n   - 事项标题\n   - 当前状态（进行中/待处理/已超期/需干预）\n   - 责任人/责任单位\n   - 最新进展描述\n   - 下一步动作建议（如"发起督办"、"升级约谈"、"持续观察"等）\n   - 截止时间和剩余天数\n   - 是否需要站长干预（标红左边框）\n\n2. 状态分类统计：\n   - 进行中 X 项\n   - 待处理 X 项\n   - 已超期 X 项（标红）\n   - 需干预 X 项（标红）\n\n3. 即将到期提醒：3 天内到期的事项单独列出，标注剩余天数。\n\n4. 优先级建议：按紧急程度排序，对需干预项给出具体操作建议（如"建议今日召开专题会议"、"建议联合执法介入"等）。\n\n输出语言风格：紧凑、紧迫感强、每项都有明确的下一步动作，便于站长快速决策。'
+    };
+
+    var agentDefaultCron = {
+      dashboard: '0 8 * * *',
+      'hazard-report': '0 9 * * 1',
+      efficiency: '0 8 1 * *',
+      responsibility: '0 8 1 * *',
+      disposal: '0 8 * * 1-5',
+      followup: '0 17 * * 1-5'
+    };
+
+    var agentSchedulePresets = [
+      { label: '每天早上 8:00',        cron: '0 8 * * *' },
+      { label: '每个工作日早上 8:00',   cron: '0 8 * * 1-5' },
+      { label: '每个工作日早上 9:00',   cron: '0 9 * * 1-5' },
+      { label: '每个工作日下午 5:00',   cron: '0 17 * * 1-5' },
+      { label: '每周一早上 9:00',       cron: '0 9 * * 1' },
+      { label: '每周五下午 5:00',       cron: '0 17 * * 5' },
+      { label: '每月 1 号早上 8:00',    cron: '0 8 1 * *' },
+      { label: '每月 15 号早上 8:00',   cron: '0 8 15 * *' }
+    ];
+
+    function getDefaultPrompt(sceneId) {
+      var saved = localStorage.getItem('yaq_agent_prompt_' + sceneId);
+      return saved || agentDefaultPrompts[sceneId] || '';
+    }
+
+    function openAgentConfig(sceneId) {
+      var name = agentSceneNames[sceneId] || sceneId;
+      var defaultPrompt = agentDefaultPrompts[sceneId] || '';
+      var savedPrompt = localStorage.getItem('yaq_agent_prompt_' + sceneId) || '';
+      var cron = localStorage.getItem('yaq_agent_cron_' + sceneId) || agentDefaultCron[sceneId] || '0 8 * * *';
+
+      document.getElementById('drawerConfirm').style.display = 'none';
+      document.getElementById('drawerCancel').textContent = '关闭';
+      document.getElementById('drawerTitle').innerHTML = '<i data-lucide="settings-2" aria-hidden="true"></i> Agent 配置 — ' + name;
+
+      var promptOptionsHtml = '';
+      for (var p = 0; p < agentSchedulePresets.length; p++) {
+        var preset = agentSchedulePresets[p];
+        var selected = preset.cron === cron ? ' selected' : '';
+        promptOptionsHtml += '<option value="' + escapeHtml(preset.cron) + '"' + selected + '>' + preset.label + '</option>';
+      }
+
+      var bodyHtml =
+        '<div class="agent-config-section">' +
+          '<label><i data-lucide="message-square" width="13" height="13"></i> 提示词</label>' +
+          '<textarea class="agent-prompt-ta" id="agentPromptEditable" placeholder="在此编辑提示词…">' + escapeHtml(savedPrompt || defaultPrompt) + '</textarea>' +
+          '<div class="agent-config-hint">编辑后点击保存；清空内容并保存可恢复默认提示词</div>' +
+        '</div>' +
+        '<div class="agent-config-section">' +
+          '<label><i data-lucide="clock" width="13" height="13"></i> 执行周期</label>' +
+          '<select id="agentScheduleSelect" class="agent-schedule-select">' + promptOptionsHtml + '</select>' +
+          '<div class="agent-config-hint">Cron: <code id="agentCronPreview">' + escapeHtml(cron) + '</code></div>' +
+        '</div>' +
+        '<button class="agent-config-save" onclick="saveAgentPrompt(\'' + sceneId + '\')"><i data-lucide="check" width="14" height="14"></i> 保存配置</button>';
+
+      document.getElementById('drawerBody').innerHTML = bodyHtml;
+      lucide.createIcons();
+
+      // 预览 cron 变化
+      var selectEl = document.getElementById('agentScheduleSelect');
+      if (selectEl) {
+        selectEl.addEventListener('change', function() {
+          var preview = document.getElementById('agentCronPreview');
+          if (preview) preview.textContent = this.value;
+        });
+      }
+
+      // textarea 自适应高度
+      var ta = document.getElementById('agentPromptEditable');
+      if (ta) {
+        var autoResize = function() {
+          this.style.height = 'auto';
+          this.style.height = this.scrollHeight + 'px';
+        };
+        ta.addEventListener('input', autoResize);
+        autoResize.call(ta);
+      }
+
+      document.getElementById('drawerPanel').classList.add('open');
+      document.getElementById('drawerOverlay').classList.add('open');
+    }
+
+    function saveAgentPrompt(sceneId) {
+      var promptEl = document.getElementById('agentPromptEditable');
+      var scheduleEl = document.getElementById('agentScheduleSelect');
+      if (promptEl) {
+        var val = promptEl.value.trim();
+        if (val) {
+          localStorage.setItem('yaq_agent_prompt_' + sceneId, val);
+        } else {
+          localStorage.removeItem('yaq_agent_prompt_' + sceneId);
+        }
+      }
+      if (scheduleEl) localStorage.setItem('yaq_agent_cron_' + sceneId, scheduleEl.value);
+      showToast('Agent 配置已保存');
+      closeDrawer();
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function getDrawerIcon(action) {
@@ -2331,7 +3213,7 @@
 
       // 同步右栏场景提示
       var chatBody = document.getElementById('chatBody');
-      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环' };
+      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
 
       setTimeout(function() {
         // 规则管理页特殊处理
@@ -2387,10 +3269,36 @@
       document.getElementById('drawerClose').addEventListener('click', closeDrawer);
       document.getElementById('drawerCancel').addEventListener('click', closeDrawer);
 
-      // Drawer confirm
+      // Drawer confirm — 动态生成处置文案
       document.getElementById('drawerConfirm').addEventListener('click', function() {
-        closeDrawer();
-        showToast('已生成，可继续编辑');
+        var action = currentDrawerAction;
+        var content = drawerContent[action];
+        if (!content) {
+          closeDrawer();
+          showToast('已生成，可继续编辑');
+          return;
+        }
+        // 根据上下文生成处置文案
+        var generated = generateDisposalText(action);
+        // 替换 Drawer 内容为生成结果
+        document.getElementById('drawerTitle').innerHTML = '<i data-lucide="file-check" aria-hidden="true"></i> 已生成 — ' + content.title;
+        document.getElementById('drawerConfirm').textContent = '已完成';
+
+        var resultHtml = '<div class="drawer-generated">' +
+          '<div class="dr-gen-banner"><i data-lucide="sparkles" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 以下文案可复制使用</div>' +
+          '<div class="dr-gen-text" id="drawerGenText">' + generated.replace(/\n/g, '<br>') + '</div>' +
+          '<div class="dr-gen-actions">' +
+            '<button class="dr-action-btn primary" onclick="copyDrawerGenerated()" style="padding:6px 14px"><i data-lucide="copy" width="13" height="13"></i> 复制文案</button>' +
+            '<button class="dr-action-btn" onclick="showToast(\'已加入跟踪事项\');closeDrawer()" style="padding:6px 14px"><i data-lucide="pin" width="13" height="13"></i> 加入跟踪</button>' +
+            '<button class="dr-action-btn" onclick="showToast(\'通知已发送\');closeDrawer()" style="padding:6px 14px"><i data-lucide="send" width="13" height="13"></i> 发送通知</button>' +
+          '</div>' +
+        '</div>';
+        document.getElementById('drawerBody').innerHTML = resultHtml;
+        document.getElementById('drawerCancel').style.display = 'none';
+        lucide.createIcons();
+
+        // 保存生成的文案供复制
+        window.__lastGeneratedText = generated;
       });
 
       // Escape key
@@ -2436,7 +3344,7 @@
 
     function agentAsk(sceneId) {
       var chatBody = document.getElementById('chatBody');
-      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环' };
+      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
       var name = sceneNames[sceneId] || sceneId;
 
       // 打开浮动面板
@@ -3034,6 +3942,7 @@
         case 'responsibility': html = renderResponsibility(); break;
         case 'disposal': html = renderDisposal(); break;
         case 'followup': html = renderFollowup(); break;
+        case 'pending-actions': html = renderPendingActions(); break;
       }
       container.innerHTML = html;
       lucide.createIcons();
@@ -3418,7 +4327,8 @@
         { id: 'hazard-report', name: '重大隐患整改日报', icon: 'shield-alert', badge: { cls: 'danger', text: '5' } },
         { id: 'efficiency', name: '履职效能分析', icon: 'bar-chart-3', badge: { cls: 'orange', text: '2' } },
         { id: 'responsibility', name: '主体责任评估', icon: 'users', badge: { cls: 'orange', text: '8' } },
-        { id: 'disposal', name: '分级处置闭环', icon: 'git-branch', badge: null }
+        { id: 'disposal', name: '分级处置闭环', icon: 'git-branch', badge: null },
+        { id: 'pending-actions', name: '待确认行动', icon: 'clipboard-check', badge: { cls: 'orange', text: '4' } }
       ];
       var html = '';
       for (var i = 0; i < scenes.length; i++) {
@@ -3460,6 +4370,8 @@
     window.switchScene = switchScene;
     window.showToast = showToast;
     window.openDrawer = openDrawer;
+    window.openAgentConfig = openAgentConfig;
+    window.saveAgentPrompt = saveAgentPrompt;
     window.agentAsk = agentAsk;
     window.toggleChatPanel = toggleChatPanel;
     window.openChatPanel = openChatPanel;
@@ -3491,6 +4403,75 @@
     window.openEnterprisePanel = openEnterprisePanel;
     window.closeEnterprisePanel = closeEnterprisePanel;
     window.epSwitchTab = epSwitchTab;
+
+    // ════════════════════════════════════════════════════════════════
+    // 待确认行动交互
+    // ════════════════════════════════════════════════════════════════
+
+    function confirmPendingAction(paId) {
+      var pa = null;
+      for (var i = 0; i < MOCK.pendingActions.length; i++) {
+        if (MOCK.pendingActions[i].id === paId) { pa = MOCK.pendingActions[i]; break; }
+      }
+      if (!pa) { showToast('未找到待确认行动'); return; }
+
+      // 生成督办包
+      var sp = {
+        id: 'sp-' + Date.now(),
+        title: pa.title,
+        actionType: pa.actionType,
+        status: '推进中',
+        chain: pa.chain,
+        draftItems: pa.draftItems.concat(),
+        createdAt: new Date().toLocaleDateString('zh-CN'),
+        itemCount: pa.draftItems.length,
+        feedbackCount: 0,
+        doneCount: 0,
+        overdueCount: 0
+      };
+      MOCK.supervisionPackages.push(sp);
+      MOCK.confirmedPackages.unshift(sp);
+
+      // 更新待确认行动状态
+      pa.status = 'confirmed';
+
+      showToast('✅ 督办包已生成，已向 ' + pa.draftItems.length + ' 个角色发送处理项');
+
+      // 重新渲染
+      renderScene('pending-actions');
+    }
+
+    function changePendingAction(paId, newType) {
+      var pa = null;
+      for (var i = 0; i < MOCK.pendingActions.length; i++) {
+        if (MOCK.pendingActions[i].id === paId) { pa = MOCK.pendingActions[i]; break; }
+      }
+      if (!pa) { showToast('未找到待确认行动'); return; }
+
+      var typeLabels = { explain: '要求说明', track: '加入跟进', observe: '暂不观察' };
+      var label = typeLabels[newType] || '其他';
+      pa.actionType = newType;
+      pa.status = 'changed';
+
+      showToast('已改为「' + label + '」');
+      renderScene('pending-actions');
+    }
+
+    function ignorePendingAction(paId) {
+      var pa = null;
+      for (var i = 0; i < MOCK.pendingActions.length; i++) {
+        if (MOCK.pendingActions[i].id === paId) { pa = MOCK.pendingActions[i]; break; }
+      }
+      if (!pa) { showToast('未找到待确认行动'); return; }
+
+      pa.status = 'ignored';
+      showToast('已忽略');
+      renderScene('pending-actions');
+    }
+
+    window.confirmPendingAction = confirmPendingAction;
+    window.changePendingAction = changePendingAction;
+    window.ignorePendingAction = ignorePendingAction;
 
     // 渲染左栏场景列表
     renderSceneList();

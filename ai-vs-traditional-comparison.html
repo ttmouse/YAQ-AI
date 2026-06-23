@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>站长工作流程对照 · 传统 vs AI Agent</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --bg:#f5f7fb;--card:#fff;--line:#e6ebf2;--text:#172033;--muted:#667085;--weak:#98a2b3;
+      --blue:#1769e0;--blue-bg:#edf5ff;--red:#dc2626;--red-bg:#fff1f2;
+      --orange:#d97706;--orange-bg:#fff7e6;--green:#15945f;--green-bg:#eaf8f1;
+      --shadow:0 14px 34px rgba(20,40,80,.07);--font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+    .lucide{display:inline-block;vertical-align:middle}
+    a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+    h1,h2,h3,h4,p{margin:0}
+    ul{padding:0 0 0 15px;margin:0;font-size:13px;color:#344054;line-height:1.85}
+    li{margin-bottom:3px}
+
+    .page-header{position:relative;background:#102b5b;color:#fff;padding:36px 24px 40px;overflow:hidden}
+    .page-header::after{content:'';position:absolute;top:-96px;right:-80px;width:384px;height:384px;border-radius:50%;background:radial-gradient(circle,rgba(23,105,224,.25),transparent 70%);pointer-events:none}
+    .header-inner{max-width:1000px;margin:0 auto;position:relative;z-index:1}
+    .page-header h1{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-top:14px;margin-bottom:8px}
+    .page-header p{font-size:13.5px;color:rgba(255,255,255,.7);max-width:620px;line-height:1.7}
+    .back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:4px 10px;transition:all .15s}
+    .back-link:hover{background:rgba(255,255,255,.1);color:#fff;text-decoration:none}
+    .source-badge{display:inline-flex;align-items:center;gap:4px;margin-top:10px;padding:3px 10px;border-radius:999px;font-size:10.5px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7)}
+    .page{max-width:1000px;margin:0 auto;padding:0 24px 60px}
+
+    .legend{display:flex;flex-wrap:wrap;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:0 0 14px 14px;padding:12px 20px;margin:-1px 0 28px;box-shadow:var(--shadow)}
+    .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500}
+    .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+    /* ── Decision Tree ─────────────────────────────── */
+    .dt{display:flex;flex-direction:column;align-items:center;gap:0}
+
+    .dt-node{display:flex;align-items:center;gap:10px;width:100%;max-width:680px;padding:0}
+    .dt-num{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:34px;height:34px;border-radius:50%;
+      background:var(--blue);color:#fff;
+      font-size:14px;font-weight:800;flex-shrink:0;
+    }
+    .dt-title{font-size:16px;font-weight:700}
+    .dt-sub{font-size:11.5px;color:var(--muted);font-style:italic;margin-left:4px}
+    .dt-cap{margin-left:auto;display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:700;white-space:nowrap;background:var(--green-bg);color:var(--green)}
+    .dt-cap.assist{background:var(--blue-bg);color:var(--blue)}
+    .dt-cap.human{background:var(--orange-bg);color:#a75605}
+
+    .dt-vline{width:2px;height:20px;background:var(--line);flex-shrink:0}
+
+    /* Compare card row */
+    .dt-crow{display:flex;gap:12px;width:100%;max-width:680px;margin:8px 0}
+    .dt-cside{width:calc(50% - 6px);min-width:0}
+    .dt-ccard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card);font-size:12.5px;color:#344054;line-height:1.7}
+    .dt-ccard.trad{border-left:3px solid #c8ccd4}
+    .dt-ccard.ai{border-left:3px solid var(--blue)}
+    .dt-cclabel{font-size:11px;font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:5px;color:var(--muted)}
+    .dt-ccard.ai .dt-cclabel{color:var(--blue)}
+    .dt-ccard li strong{color:var(--text)}
+    .dt-ccard .sc-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+    .dt-ccard .tag{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:600;white-space:nowrap;background:#f2f4f7;color:var(--muted)}
+    .dt-ccard .tag-blue{background:var(--blue-bg);color:var(--blue)}
+    .dt-ccard .tag-green{background:var(--green-bg);color:var(--green)}
+    .dt-ccard .tag-orange{background:var(--orange-bg);color:#a75605}
+
+    /* Branch split */
+    .dt-split{display:flex;gap:10px;width:100%;max-width:680px;margin:4px 0}
+    .dt-split-pill{flex:1;display:flex;align-items:center;gap:6px;padding:9px 14px;border-radius:10px;font-size:12.5px;font-weight:600}
+    .dt-split-pill.stop{background:var(--green-bg);color:var(--green);border:1px solid #b8e3d0}
+    .dt-split-pill.go{background:var(--orange-bg);color:#a75605;border:1px solid #f5d9a8}
+    .dt-split-pill .sp-out{font-size:11px;font-weight:400;opacity:.75;margin-left:auto}
+
+    /* Extra dimension pills */
+    .dt-extras{display:flex;flex-wrap:wrap;gap:5px;width:100%;max-width:680px;margin:4px 0}
+    .dt-extra-pill{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:11.5px;font-weight:500}
+    .dt-extra-pill{background:#f2f4f7;color:var(--muted);border:1px solid transparent}
+    .dt-extra-pill.red{background:var(--red-bg);color:var(--red);border-color:#fecaca}
+    .dt-extra-pill.orange{background:var(--orange-bg);color:#a75605;border-color:#fde08b}
+    .dt-extra-pill.blue{background:var(--blue-bg);color:var(--blue);border-color:#d0e2ff}
+    .dt-extra-pill.green{background:var(--green-bg);color:var(--green);border-color:#b8e3d0}
+
+    /* Priority box */
+    .dt-priority{width:100%;max-width:680px;padding:10px 14px;border-radius:8px;background:var(--blue-bg);font-size:11.5px;color:#344054;line-height:1.6;margin:6px 0}
+
+    /* Investigation compare header */
+    .dt-inv-h{width:100%;max-width:680px;font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px;margin:10px 0 4px}
+
+    /* Sub tables */
+    .dt-subarea{width:100%;max-width:680px;margin:10px 0}
+    .sub-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+    .sub-table th{text-align:left;padding:8px 10px;font-size:10.5px;font-weight:600;color:var(--weak);background:#f0f3f8;border-bottom:1px solid var(--line)}
+    .sub-table th:first-child{border-radius:8px 0 0 0}
+    .sub-table th:last-child{border-radius:0 8px 0 0}
+    .sub-table td{padding:9px 10px;border-bottom:1px solid #f2f4f7;vertical-align:top;line-height:1.65;color:#344054}
+    .sub-table tr:last-child td{border-bottom:none}
+    .sub-table .step-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:6px;background:var(--blue-bg);color:var(--blue);font-size:10.5px;font-weight:700;white-space:nowrap}
+    .sub-cap{display:inline-flex;align-items:center;gap:2px;padding:1px 6px;border-radius:4px;font-size:9.5px;font-weight:700;white-space:nowrap}
+    .sub-cap.full{background:var(--green-bg);color:var(--green)}
+    .sub-cap.assist{background:var(--blue-bg);color:var(--blue)}
+    .sub-cap.human{background:var(--orange-bg);color:#a75605}
+
+    /* Reports/Stats/Insight unchanged */
+    .reports-section{margin-top:40px}
+    .section-title{font-size:19px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .section-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+    .section-icon.green{background:var(--green-bg);color:var(--green)}
+    .report-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .report-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:linear-gradient(135deg,#f8faff,#fff);position:relative}
+    .report-card .rn{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+    .report-card h4{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .report-card ul{padding:0 0 0 14px;font-size:11.5px;color:#344054;line-height:1.85;margin:0}
+    .report-card .sc-tags{margin-top:10px}
+    .report-note{margin-top:14px;padding:12px 16px;background:#f8f9fb;border-radius:10px;font-size:11.5px;color:var(--muted);line-height:1.7;display:flex;align-items:flex-start;gap:6px}
+
+    .stats{display:grid;grid-template-columns:1fr;gap:12px;margin-top:32px}
+    .stat-card{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:20px;text-align:center;box-shadow:0 2px 10px rgba(20,40,80,.03);position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+    .stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.orange::before{background:var(--orange)}
+    .stat-pct{font-size:38px;font-weight:900;line-height:1;margin-bottom:4px}
+    .stat-card.green .stat-pct{color:var(--green)}.stat-card.blue .stat-pct{color:var(--blue)}.stat-card.orange .stat-pct{color:var(--orange)}
+    .stat-label{font-size:13px;font-weight:600;margin-bottom:3px}
+    .stat-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+    .insight{margin-top:28px;padding:24px;background:linear-gradient(135deg,#102b5b,#1a3d7a);border-radius:14px;color:#fff;display:flex;gap:14px;align-items:flex-start;box-shadow:0 12px 32px rgba(16,43,91,.2)}
+    .insight-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.12);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .insight h3{font-size:15px;font-weight:800;margin-bottom:6px}
+    .insight p{font-size:12.5px;color:rgba(255,255,255,.8);line-height:1.8}
+    .hl{display:inline-block;padding:1px 6px;border-radius:5px;background:rgba(255,255,255,.12);font-weight:600;margin:0 1px}
+    .footer{text-align:center;margin-top:32px;padding:14px;color:var(--weak);font-size:11px}
+
+    @media(min-width:768px){
+      .report-grid{grid-template-columns:repeat(3,1fr)}
+      .stats{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <div class="header-inner">
+      <a href="index.html" class="back-link"><i data-lucide="arrow-left" width="13" height="13"></i> 返回工作台</a>
+      <h1><i data-lucide="git-compare" width="24" height="24" style="vertical-align:middle;margin-right:6px;opacity:.8"></i>站长工作流程对照</h1>
+      <p>对照杨站长描述的传统线下流程与 AI Agent 方式，理解哪些环节 AI 可替代、哪些需要人工参与。</p>
+      <div class="source-badge"><i data-lucide="file-text" width="10" height="10"></i>数据来源：杨站长访谈调研记录</div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:var(--green)"></span><span><strong>AI 完全替代</strong> · 数据采集/计算/监控</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span><span><strong>AI 辅助 + 人工确认</strong> · 分析/诊断/建议</span></div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span><span><strong>人为主导 + AI 辅助</strong> · 决策/行动/协调</span></div>
+    </div>
+
+    <div class="dt" id="dt"></div>
+
+    <div class="reports-section">
+      <div class="section-title"><span class="section-icon green"><i data-lucide="newspaper" width="16" height="16"></i></span>AI 每日主动推送 · 三份报告<span style="font-size:10.5px;font-weight:600;color:var(--weak);margin-left:4px">来源：访谈第六节</span></div>
+      <div class="report-grid">
+        <div class="report-card"><div class="rn">1</div><h4><i data-lucide="shield-alert" width="13" height="13" style="color:var(--red)"></i>重大隐患整改日报</h4><ul><li>当日新发现重大隐患（位置、单位、描述）</li><li>历史遗留隐患整改进展与状态</li><li>逾期未完成事项高亮标注</li><li>支持一键发起督办提醒</li><li>前后对比分析（vs 上周同期）</li></ul><div class="sc-tags"><span class="tag tag-green">AI 自动生成</span><span class="tag tag-blue">每日推送</span></div></div>
+        <div class="report-card"><div class="rn">2</div><h4><i data-lucide="radar" width="13" height="13" style="color:var(--orange)"></i>重点企业异常预警</h4><ul><li>重点监管名录实时数据监测</li><li>企业自查异常（突然减少/消失）</li><li>隐患数量突增预警</li><li>人员变动风险提示</li><li>企业风险画像自动更新</li></ul><div class="sc-tags"><span class="tag tag-green">AI 实时监控</span><span class="tag tag-orange">异常触发</span></div></div>
+        <div class="report-card"><div class="rn">3</div><h4><i data-lucide="bar-chart-3" width="13" height="13" style="color:var(--blue)"></i>工作效能简报</h4><ul><li>应消站人员：任务完成率、隐患发现数</li><li>区域站/村社：站级和社级汇总</li><li>整改通知书下发与复查闭环率对比</li><li>效率异常低下人员提示</li><li>工作量均衡度分析</li></ul><div class="sc-tags"><span class="tag tag-green">AI 自动统计</span><span class="tag tag-blue">每日推送</span></div></div>
+      </div>
+      <div class="report-note"><i data-lucide="info" width="12" height="12" style="color:var(--blue);flex-shrink:0;margin-top:1px"></i><span><strong>通用要求：</strong>报表无固定格式，简单、易懂、突出重点。需有前后对比分析（如上周一重大隐患 3 个，一周后还是 3 个 → 提示履职可能不到位）。</span></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card green"><div class="stat-pct">57%</div><div class="stat-label">AI 可完全替代</div><div class="stat-desc">态势感知、优先级筛选、自动排查<br>——重复性高、规则明确的工作</div></div>
+      <div class="stat-card blue"><div class="stat-pct">29%</div><div class="stat-label">AI 辅助 + 人工确认</div><div class="stat-desc">异常类型判断、定位查因、复盘优化<br>——需要专业判断但可被 AI 增强</div></div>
+      <div class="stat-card orange"><div class="stat-pct">14%</div><div class="stat-label">人为主导 + AI 辅助</div><div class="stat-desc">约谈、现场执法、制度调整<br>——涉及人际协调和执法权力</div></div>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon"><i data-lucide="lightbulb" width="21" height="21"></i></div>
+      <div><h3>核心洞察</h3><p>杨站长线下完整流程是一个<span class="hl">六步工作流</span>：<span class="hl">① 态势研判 → ② 异常分级 → ③ 责任定位 → ④ 处置建议 → ⑤ 闭环跟踪 → ⑥ 复盘优化</span>。从每日看到什么、到问题出在哪、谁该负责、怎么处理、盯到落地、最后反思改进——形成完整的管理闭环。AI 负责找问题、盯进度、推建议，人负责做判断、定责任、抓落实。</p></div>
+    </div>
+    <div class="footer"><p>应擎 · 安全监管工作台 — 站长工作流程对照分析</p><p style="margin-top:3px">基于杨站长访谈调研记录 · AI 智能体能力设计参考</p></div>
+  </div>
+
+  <script>
+    var invSteps = [
+      {label:'① 确认异常',trad:'通过异常表现判断影响范围、紧急程度，初步定级。涉及重大隐患或核心任务进度受阻→视为紧急事件',ai:'AI 自动计算影响范围和紧急度评分，推荐定级。重大隐患自动触发紧急标记',cap:'full'},
+      {label:'② 等级筛选',trad:'优先处理高风险。红色预警、重大隐患优先。示例：春节前外地发生涉烟花事故→立即将烟花排查放在重要专项任务',ai:'AI 自动风险×紧急度矩阵排序；结合时令/节假日自动提升相关风险权重',cap:'assist'},
+      {label:'③ 定位条线',trad:'定位到具体条线和专项任务（企业安全组/场所安全组/烟花排查等），判断系统性偏差还是个别问题',ai:'AI 自动归类到条线+专项任务；历史对比判断系统性偏差 vs 偶发个案',cap:'assist'},
+      {label:'④ 定位区域',trad:'定位到具体片区（绕城内外、物流等）、村社网格、工业园区或哪条街哪个综合体',ai:'AI 自动标注问题热力分布，识别区域薄弱环节，支持空间下钻',cap:'full'},
+      {label:'⑤ 核查履职',trad:'核查企业自查记录 + 组员/专家/安管员履职记录，确认是否存在失职或主体责任不落实',ai:'AI 自动拉取履职数据，标出异常人员；⚠ "失职"定性仍需人判断',cap:'full'},
+      {label:'⑥ 定位企业',trad:'查看具体企业名单和隐患详情，分析典型个案根本原因（管理缺陷、设备老化、流程漏洞）',ai:'AI 汇总企业隐患档案，交叉分析历史整改记录，推荐根因假设；⚠ 根因判断需人到现场',cap:'assist'}
+    ];
+
+    var steps = [
+      {
+        num:1, title:'今日态势研判', sub:'访谈第一至二节',
+        trad:['先看<strong>整体安全态势</strong>：风险底数、风险区域是否变化、新增了哪些风险隐患','再看<strong>关键风险闭环</strong>：重大隐患闭环处置情况——消防通道堵塞、消防设施失效、电动车违规停放','接着看<strong>核心任务进展</strong>：政府/村社任务是否"时间过半、任务过半"；企业自查 vs 政府检查对比','通过四项指标综合判断：隐患发现率和闭环率、重大隐患处理进度、履职率、企业主体责任落实情况'],
+        ai:['<strong>态势一屏总览</strong>：风险底数变化自动提示，新增隐患实时推送','<strong>闭环看板</strong>：重大隐患自动列表，逾期标红，一键查看详情','<strong>任务追踪</strong>：任务完成率自动计算，企业自查 vs 政府检查对比报告自动生成','四项指标自动拉取，对比历史基线，异常自动标红'],
+        tradTags:[{c:'tag-orange',i:'brain',t:'凭经验比对'},{c:'tag-orange',i:'clock',t:'翻报表耗时'}],
+        aiTags:[{c:'tag-blue',i:'cpu',t:'自动基线比对'},{c:'tag-blue',i:'trending-up',t:'异常自动标红'}]
+      },
+      {
+        num:2, title:'异常识别与分级', sub:'访谈第二至三节',
+        trad:['<strong>判断有无异常</strong>：四项指标逐个看，凭经验判断"今天有没有问题"','<strong>识别异常类型</strong>：当闭环率低→看哪类隐患最多；当专项落后→查哪个环节拖后腿；当企业风险上升→调企业详情','<strong>判断优先级</strong>：红色预警 > 重大隐患 > 任务严重落后 > 轻微偏差；受外部事件影响临时调整（如春节前烟花排查）'],
+        ai:['<strong>异常检测</strong>：自动比对历史基线和同级区域均值，异常自动标红置顶','<strong>自动归类</strong>：多维交叉分析（类型×区域×责任人×时间），推荐根因方向','<strong>优先级矩阵</strong>：AI 自动风险×紧急度排序，结合时令/节假日动态调整权重'],
+        extras:[{label:'风险异常',note:'重大隐患、重点主体、风险上升',style:'red'},{label:'任务异常',note:'日常/专项/复查任务滞后',style:'orange'},{label:'履职异常',note:'人员/专家/村社执行不到位',style:'blue'},{label:'主体异常',note:'自查/培训/整改/平台异常',style:'green'}]
+      },
+      {
+        num:3, title:'责任链定位', sub:'访谈第三节',
+        dims:['条线 / 专项','区域 / 片区 / 村社 / 园区','责任人 / 责任团队 / 专家 / 村社','主体对象 / 场所 / 隐患'],
+        trad:['<strong>六步排查</strong>：确认异常→等级筛选→定位条线→定位区域→核查履职→定位企业','<strong>看类型</strong>：哪类隐患整改困难最多？客观条件限制还是主观不作为？','<strong>看区域</strong>：未闭环集中在哪条街、哪个园区？是否存在区域性监管真空？','<strong>看责任</strong>：哪个片区的组长/组员负责？是否履职不到位？'],
+        ai:['<strong>自动钻取</strong>：街道→片区→网格→企业→隐患，每层自动聚合数据','<strong>交叉分析</strong>：企业自查 vs 政府检查对比、区域横向对比','<strong>归因推荐</strong>：区分系统性偏差 vs 偶发个案，输出置信度','⚠ 定性判断仍需人：客观条件 vs 主观不作为需到现场']
+      },
+      {
+        num:4, title:'处置建议生成', sub:'访谈第五节',
+        trad:['<strong>较轻</strong>（个别指标下滑）→ 微信/浙政钉督促，平台留言提醒加快进度','<strong>中等</strong> → 将组长、村社相关人员叫到办公室谈话','<strong>较重</strong> → 一键提醒应消站、区域站、专家、村社人员履职','<strong>严重</strong> → 约谈/组长带队现场/停业整顿/联合执法/上报立案处罚'],
+        ai:['AI 根据定位结果<strong>自动推荐处置等级</strong>','一键生成：提醒消息 / 督办通知 / 检查清单 / 约谈提纲 / 整改方案 / 通报文件','自动创建跟踪任务，关联隐患→责任人→时限','⚠ 核心决策仍由站长做出：约谈、停业、处罚']
+      },
+      {
+        num:5, title:'闭环跟踪', sub:'访谈第二至三节',
+        trad:['手动记录整改进度，台账分散，复查靠人工排期，容易遗忘','闭环确认需多方签字，流程繁琐','易出现"发了通知就忘了"的断环现象','<strong>无论大小问题</strong>，跟踪至整改完成才关闭'],
+        ai:['<strong>自动创建跟踪</strong>：关联隐患→责任人→时限','<strong>逾期自动升级</strong>：提醒→警告→上报','整改证据自动归档，<strong>全程留痕</strong>','<strong>闭环率实时计算</strong>，按区域/条线/责任人汇总']
+      },
+      {
+        num:6, title:'复盘治理优化', sub:'访谈第五节→新抽象',
+        trad:['会议复盘，召集相关人员讨论问题，经验口传','制度优化靠领导拍脑袋，缺乏数据支撑','同类问题反复出现，缺乏系统性根治','长远期望：变被动处置为主动预防（风险预测模块）'],
+        ai:['<strong>数据驱动复盘</strong>：自动生成周期性分析报告','<strong>共性识别</strong>：从个案中提炼系统性问题和制度缺陷','<strong>趋势预测</strong>：历史数据建模预测高风险区域/类型','⚠ 制度调整和人员培训仍需人来推动']
+      }
+    ];
+
+    // ── Six-step investigation data ──────────────────────
+    var invSteps = [
+      {label:'① 确认异常',trad:'通过异常表现判断影响范围、紧急程度，初步定级。涉及重大隐患或核心任务进度受阻→视为紧急事件',ai:'AI 自动计算影响范围和紧急度评分，推荐定级。重大隐患自动触发紧急标记',cap:'full'},
+      {label:'② 等级筛选',trad:'优先处理高风险。红色预警、重大隐患优先。示例：春节前外地发生涉烟花事故→立即将烟花排查放在重要专项任务',ai:'AI 自动风险×紧急度矩阵排序；结合时令/节假日自动提升相关风险权重',cap:'assist'},
+      {label:'③ 定位条线',trad:'定位到具体条线和专项任务（企业安全组/场所安全组/烟花排查等），判断系统性偏差还是个别问题',ai:'AI 自动归类到条线+专项任务；历史对比判断系统性偏差 vs 偶发个案',cap:'assist'},
+      {label:'④ 定位区域',trad:'定位到具体片区（绕城内外、物流等）、村社网格、工业园区或哪条街哪个综合体',ai:'AI 自动标注问题热力分布，识别区域薄弱环节，支持空间下钻',cap:'full'},
+      {label:'⑤ 核查履职',trad:'核查企业自查记录 + 组员/专家/安管员履职记录，确认是否存在失职或主体责任不落实',ai:'AI 自动拉取履职数据，标出异常人员；⚠ "失职"定性仍需人判断',cap:'full'},
+      {label:'⑥ 定位企业',trad:'查看具体企业名单和隐患详情，分析典型个案根本原因（管理缺陷、设备老化、流程漏洞）',ai:'AI 汇总企业隐患档案，交叉分析历史整改记录，推荐根因假设；⚠ 根因判断需人到现场',cap:'assist'}
+    ];
+
+    // ── Disposal data ─────────────────────────────────────
+    var internalDisposal = [
+      {lv:'轻微',cls:'',trad:'微信（或浙政钉）、电话了解情况，督促进一步落实',ai:'AI 自动发送提醒消息，追踪已读',cap:'full'},
+      {lv:'中等',cls:'tag-orange',trad:'将张义、国生、组长、村社相关人员叫到办公室谈话',ai:'AI 生成谈话提纲+数据支撑；⚠ 谈话需人',cap:'human'},
+      {lv:'较重',cls:'tag-red',trad:'一键提醒应消站、区域站、专家、村社人员履职',ai:'AI 自动多级通知，跟踪响应',cap:'full'},
+      {lv:'严重',cls:'tag-red',trad:'约谈+第三方服务单位考核扣钱',ai:'AI 生成考核报告；⚠ 约谈考核需人',cap:'human'}
+    ];
+    var externalDisposal = [
+      {n:1,trad:'组长带队（带上专家）现场督促指导，了解原因，落实整改',ai:'AI 生成检查清单+历史问题汇总；⚠ 现场需人',cap:'assist'},
+      {n:2,trad:'站长及张义、国生出面约谈企业，施压强调责任',ai:'AI 生成约谈提纲+数据支撑；⚠ 约谈需站长',cap:'human'},
+      {n:3,trad:'要求隐患区域停业整顿',ai:'AI 生成停业通知；⚠ 决策需人',cap:'human'},
+      {n:4,trad:'联合综合执法、市场监管等部门联合检查',ai:'AI 生成联合检查方案；⚠ 协调需人',cap:'human'},
+      {n:5,trad:'上报应急局/消防大队建议立案处罚，通报企业',ai:'AI 生成处罚建议报告+通报文件；⚠ 决策需人',cap:'assist'}
+    ];
+
+    // ── Render ───────────────────────────────────────────
+    function capBadge(cap){
+      if(!cap) return '';
+      var cls=cap==='full'?'dt-cap':cap==='assist'?'dt-cap assist':'dt-cap human';
+      var icon=cap==='full'?'check-circle-2':cap==='assist'?'sparkles':'user';
+      var text=cap==='full'?'AI 完全替代':cap==='assist'?'AI 辅助确认':'人为主导';
+      return '<span class="'+cls+'"><i data-lucide="'+icon+'" width="10" height="10"></i> '+text+'</span>';
+    }
+
+    function tagsHtml(tags){
+      if(!tags||!tags.length)return '';
+      var h='<div class="sc-tags">';
+      for(var i=0;i<tags.length;i++) h+='<span class="tag '+tags[i].c+'"><i data-lucide="'+tags[i].i+'" width="9" height="9"></i> '+tags[i].t+'</span>';
+      return h+'</div>';
+    }
+
+    function listHtml(items){
+      if(!items||!items.length)return '';
+      var h='<ul>';
+      for(var i=0;i<items.length;i++) h+='<li>'+items[i]+'</li>';
+      return h+'</ul>';
+    }
+
+    function compareRow(tradItems, aiItems, tradTags, aiTags){
+      var h='<div class="dt-crow">';
+      h+='<div class="dt-cside"><div class="dt-ccard trad"><div class="dt-cclabel"><i data-lucide="user" width="10" height="10"></i>传统线下</div>'+listHtml(tradItems)+(tradTags?tagsHtml(tradTags):'')+'</div></div>';
+      h+='<div class="dt-cside"><div class="dt-ccard ai"><div class="dt-cclabel"><i data-lucide="bot" width="10" height="10"></i>AI 流程</div>'+listHtml(aiItems)+(aiTags?tagsHtml(aiTags):'')+'</div></div>';
+      h+='</div>';
+      return h;
+    }
+
+    (function(){
+      var c=document.getElementById('dt');
+      var h='';
+
+      for(var i=0;i<steps.length;i++){
+        var n=steps[i];
+        if(i>0) h+='<div class="dt-vline"></div>';
+
+        // Node label line
+        h+='<div class="dt-node">';
+        h+='<span class="dt-num">'+n.num+'</span>';
+        h+='<span class="dt-title">'+n.title+'</span>';
+        if(n.sub) h+='<span class="dt-sub">'+n.sub+'</span>';
+        h+='</div>';
+
+        // Compare cards
+        h+=compareRow(n.trad, n.ai, n.tradTags, n.aiTags);
+
+        // Extras (异常类型 / 问题性质 pills)
+        if(n.extras){
+          h+='<div class="dt-extras">';
+          for(var j=0;j<n.extras.length;j++){
+            var e=n.extras[j];
+            h+='<span class="dt-extra-pill'+(e.style?' '+e.style:'')+'">'+(e.note?'<i data-lucide="tag" width="11" height="11"></i>':'')+e.label+(e.note?' <span style="font-weight:400;opacity:.65">— '+e.note+'</span>':'')+'</span>';
+          }
+          h+='</div>';
+        }
+
+        // Dims (定位维度 tags)
+        if(n.dims){
+          h+='<div class="dt-extras">';
+          for(var j=0;j<n.dims.length;j++){
+            h+='<span class="dt-extra-pill blue"><i data-lucide="crosshair" width="11" height="11"></i>'+n.dims[j]+'</span>';
+          }
+          h+='</div>';
+
+          if(n.num===3){
+            // 责任链定位 → 六步排查
+            h+='<div class="dt-priority"><strong>盯牢高风险点 · 优先级贯穿全程：</strong>红色预警 > 重大隐患 > 核心任务严重落后 > 轻微偏差。决定先看谁、看多深。</div>';
+            h+='<div class="dt-inv-h"><i data-lucide="search" width="12" height="12"></i>六步排查对照 · 从系统到个案（访谈第三节）</div>';
+            for(var j=0;j<invSteps.length;j++){
+              var s=invSteps[j];
+              var capIcon=s.cap==='full'?'check-circle-2':s.cap==='assist'?'sparkles':'user';
+              var capText=s.cap==='full'?'AI 完全替代':s.cap==='assist'?'AI 辅助':'人为主导';
+              h+='<div class="dt-crow">';
+              h+='<div class="dt-cside"><div class="dt-ccard trad"><div class="dt-cclabel"><i data-lucide="user" width="10" height="10"></i><span style="color:var(--muted)">'+s.label+' · 传统</span></div>'+s.trad+'</div></div>';
+              h+='<div class="dt-cside"><div class="dt-ccard ai"><div class="dt-cclabel"><i data-lucide="bot" width="10" height="10"></i>'+s.label+' · AI</div>'+s.ai+'<span class="sub-cap '+s.cap+'"><i data-lucide="'+capIcon+'" width="8" height="8"></i> '+capText+'</span></div></div>';
+              h+='</div>';
+            }
+
+          } else if(n.num===4){
+            // 处置建议生成 → 分级处置表
+            h+='<div class="dt-subarea">';
+            h+='<div style="margin-bottom:12px"><h4 style="font-size:12px;font-weight:700;margin:0 0 8px;color:var(--muted);display:flex;align-items:center;gap:5px"><i data-lucide="building" width="12" height="12"></i>内部管理（街道/村社人员）</h4>';
+            h+='<table class="sub-table"><thead><tr><th style="width:44px">级别</th><th>传统方式</th><th>AI Agent 可做</th><th style="width:76px">AI 能力</th></tr></thead><tbody>';
+            for(var j=0;j<internalDisposal.length;j++){
+              var d=internalDisposal[j];
+              var lvc=d.cls==='tag-red'?'background:var(--red-bg);color:var(--red)':d.cls==='tag-orange'?'background:var(--orange-bg);color:#a75605':'background:#f2f4f7;color:var(--muted)';
+              h+='<tr><td><span style="display:inline-block;padding:2px 7px;border-radius:6px;font-size:10.5px;font-weight:600;'+lvc+'">'+d.lv+'</span></td><td>'+d.trad+'</td><td>'+d.ai+'</td><td>'+capBadge(d.cap)+'</td></tr>';
+            }
+            h+='</tbody></table></div>';
+            h+='<div><h4 style="font-size:12px;font-weight:700;margin:0 0 8px;color:var(--muted);display:flex;align-items:center;gap:5px"><i data-lucide="factory" width="12" height="12"></i>外部管理（经营主体）</h4>';
+            h+='<table class="sub-table"><thead><tr><th style="width:44px">级别</th><th>传统方式</th><th>AI Agent 可做</th><th style="width:76px">AI 能力</th></tr></thead><tbody>';
+            for(var j=0;j<externalDisposal.length;j++){
+              var d=externalDisposal[j];
+              h+='<tr><td><span class="step-pill" style="width:20px;height:20px;font-size:9px">'+d.n+'</span></td><td>'+d.trad+'</td><td>'+d.ai+'</td><td>'+capBadge(d.cap)+'</td></tr>';
+            }
+            h+='</tbody></table></div></div>';
+          }
+        }
+      }
+
+      c.innerHTML=h;
+      if(window.lucide) lucide.createIcons();
+    })();
+  </script>
+</body>
+</html>
