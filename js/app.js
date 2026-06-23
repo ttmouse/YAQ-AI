@@ -248,23 +248,26 @@
 
       // 专项检查任务
       tasks: [
-        // 日常任务（优先级最高）
-        { name: '今日到期整改事项跟进', line: '安全生产组', startDate: '2026-06-29', endDate: '2026-06-29', covered: 3, rate: '33%', progress: '100%', hazards: '-', majorHazards: '-', creator: '系统', region: '全片区', risk: '-', lag: true, type: '日常', priority: 1,
-          desc: '今日有 3 项整改事项到期，涉及北苑商业综合体消防通道堵塞等，需逐项确认整改完成情况，未完成的立即转为督办。',
-          person: '王志安', status: '滞后', statusCls: 'danger', relatedItems: ['北苑商业综合体 · 消防通道堵塞', '杭州恒源化工有限公司 · 危化品标识缺失', '杭州永固建材有限公司 · 培训到期'] },
-        { name: '超期未整改对象督办', line: '安全生产组', startDate: '2026-06-22', endDate: '2026-06-29', covered: 2, rate: '0%', progress: '100%', hazards: 2, majorHazards: 2, creator: '系统', region: '良渚/五常', risk: '-', lag: true, type: '日常', priority: 2,
-          desc: '2 家超期未整改对象（北苑商业综合体逾期 3 天、云栖高层住宅逾期 1 天），需站长督办。均已进行临时管控，但整改方案未正式提交。',
-          person: '王志安 / 李明', status: '超期', statusCls: 'danger', relatedItems: ['北苑商业综合体 · 消防通道堵塞（逾期3天）', '云栖高层住宅 · 自动消防设施失效（逾期1天）'] },
-        { name: '高层小区消防专项核查', line: '消防安全组', startDate: '2026-06-01', endDate: '2026-06-30', covered: 8, rate: '42%', progress: '100%', hazards: 3, majorHazards: 1, creator: '张毅', region: '全片区', risk: '-', lag: true, type: '日常', priority: 3,
-          desc: '截至今日仅完成 42%（8/19），时间进度已达 100%，严重滞后 58pp。张毅条线主责，需排查是否存在其它任务挤占、人手不足或流程问题。',
-          person: '张毅', status: '滞后', statusCls: 'danger', relatedItems: ['消防安全组 · 任务完成率 65%', '复查闭环率 68%'] },
+        // 日常任务
+        { name: '企业消防通道专项检查', line: '消防安全组', startDate: '2026-06-01', endDate: '2026-06-30', covered: 28, rate: '67%', progress: '78%', hazards: 3, majorHazards: 0, creator: '李明', region: '全片区', risk: '-', lag: false, type: '日常', priority: 1,
+          desc: '消防通道专项检查 28 家，完成率 67%，存在 3 项堵塞隐患已通知整改。',
+          person: '李明', status: '正常推进', statusCls: 'stable', relatedItems: [] },
+        { name: '危化品企业日常巡查', line: '企业安全组', startDate: '2026-06-10', endDate: '2026-06-30', covered: 12, rate: '91%', progress: '95%', hazards: 2, majorHazards: 0, creator: '李安全', region: '全片区', risk: '-', lag: false, type: '日常', priority: 2,
+          desc: '危化品企业巡查 12 家，完成率 91%，2 项一般隐患已现场整改。',
+          person: '李安全', status: '正常推进', statusCls: 'stable', relatedItems: [] },
+        { name: '片区隐患排查复查', line: '消防安全组', startDate: '2026-06-15', endDate: '2026-06-30', covered: 24, rate: '55%', progress: '62%', hazards: 6, majorHazards: 1, creator: '张毅', region: '全片区', risk: '-', lag: false, type: '日常', priority: 3,
+          desc: '片区隐患排查复查 24 家，完成率 55%，6 项隐患中 1 项重大。',
+          person: '张毅', status: '正常推进', statusCls: 'stable', relatedItems: [] },
+        { name: '月度安全培训督查', line: '企业安全组', startDate: '2026-06-01', endDate: '2026-06-30', covered: 18, rate: '83%', progress: '80%', hazards: '-', majorHazards: '-', creator: '陈芳', region: '全片区', risk: '-', lag: false, type: '日常', priority: 4,
+          desc: '月度安全培训督查 18 家，完成率 83%，培训档案基本完整。',
+          person: '陈芳', status: '正常推进', statusCls: 'stable', relatedItems: [] },
         // 专项任务
-        { name: '2026年第二季度良渚片重大风险检查任务', line: '企业安全组', startDate: '2026-04-01', endDate: '2026-06-30', covered: 141, rate: '0%', progress: '91%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '良渚片', risk: '重大风险', lag: true, type: '专项',
-          desc: '二季度重大风险检查覆盖 141 家单位，时间进度 91%（即将到期），但完成率为 0%，数据异常，需核实系统统计口径。',
-          person: '范嘉杰', status: '異常', statusCls: 'warning', relatedItems: ['良渚片重大风险单位全覆盖检查'] },
-        { name: '2026年01月-2026年06月物流片较大风险检查任务', line: '企业安全组', startDate: '2026-01-01', endDate: '2026-06-30', covered: 31, rate: '96%', progress: '100%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '物流片', risk: '较大风险', lag: false, type: '专项',
-          desc: '物流片较大风险检查覆盖 31 家单位，完成率 96%，接近尾声。剩余 1-2 家需在月底前完成收尾。',
-          person: '范嘉杰', status: '正常推进', statusCls: 'stable', relatedItems: ['物流片较大风险单位全覆盖检查'] }
+        { name: '2026年第二季度良渚片重大风险检查任务', line: '企业安全组', startDate: '2026-04-01', endDate: '2026-06-30', covered: 141, rate: '42%', progress: '91%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '良渚片', risk: '重大风险', lag: true, type: '专项',
+          desc: '二季度重大风险检查覆盖 141 家，完成率 42%，时间进度 91%，严重滞后。',
+          person: '范嘉杰', status: '滞后', statusCls: 'danger', relatedItems: [] },
+        { name: '2026年01月-2026年06月物流片较大风险检查任务', line: '企业安全组', startDate: '2026-01-01', endDate: '2026-06-30', covered: 31, rate: '96%', progress: '97%', hazards: '-', majorHazards: '-', creator: '范嘉杰', region: '物流片', risk: '较大风险', lag: false, type: '专项',
+          desc: '物流片较大风险检查覆盖 31 家，完成率 96%，接近尾声。',
+          person: '范嘉杰', status: '正常推进', statusCls: 'stable', relatedItems: [] }
       ],
 
       // 分级处置事项（内部管理 + 外部管理双线）
@@ -340,8 +343,84 @@
         { title: '电动自行车违规停放反复出现', desc: '在全街道范围内开展一次专项整治行动', icon: 'refresh-cw' },
         { title: '高层小区消防设施专项滞后', desc: '复盘分析工作流程和责任分工是否存在漏洞，优化工作标准', icon: 'search' },
         { title: '企业自查敷衍问题普遍存在', desc: '加强过程管控和培训指导，完善主体责任考核机制', icon: 'trending-up' }
+      ],
+
+      // AI 研判行动项
+      actionItems: [
+        {
+          type: '发起督办', typeCls: 'danger',
+          title: '物流片区仓储整改超期集中',
+          basis: '7 家主体对象整改超期，其中 2 家为较大风险。',
+          requirement: '今日反馈超期原因及处置计划。',
+          primaryAction: '确认发起', primaryCallback: 'doSupervise',
+          secondaryActions: ['编辑', '忽略']
+        },
+        {
+          type: '加入重点跟进', typeCls: 'warning',
+          title: '勾庄小微园电气线路隐患连续上升',
+          basis: '近 3 日同类隐患持续增加。',
+          requirement: '本周形成专项排查清单。',
+          primaryAction: '加入跟进', primaryCallback: 'doTrack',
+          secondaryActions: ['改为督办', '忽略']
+        },
+        {
+          type: '要求说明', typeCls: 'info',
+          title: '企业安全组专项检查进度滞后',
+          basis: '计划完成率低于时间进度 18%。',
+          requirement: '今日提交滞后原因和补充检查安排。',
+          primaryAction: '发送要求', primaryCallback: 'doRequestExplain',
+          secondaryActions: ['编辑', '忽略']
+        }
       ]
     };
+
+    // ═══ 重点跟进事项（共享数据） ════════════════════════════
+    var FOLLOWUPS = [
+      {
+        title: '北苑商业综合体重大火灾隐患逾期未闭环',
+        status: '已督办 / 待复查', statusCls: 'danger',
+        responsibility: '消防线负责人王志安 / 对应组长 / 专家',
+        latestProgress: '主体对象已提交整改材料，专家今日待复查',
+        nextStep: '今日 17:00 前反馈复查结果',
+        deadline: '逾期 3 天',
+        overdue: 3,
+        needIntervention: true,
+        actions: ['继续督办', '要求反馈', '升级处置']
+      },
+      {
+        title: '物流片区仓储场所整改超期',
+        status: '跟进中', statusCls: 'warning',
+        responsibility: '物流片区组长陈芳',
+        latestProgress: '7 家中 3 家已反馈，2 家待现场核查，2 家未响应',
+        nextStep: '未响应主体需再次提醒或升级',
+        deadline: '2 家今日到期',
+        overdue: 0,
+        needIntervention: true,
+        actions: ['提醒责任人', '要求现场核查', '发起约谈']
+      },
+      {
+        title: '企业安全组专项检查进度滞后',
+        status: '已要求说明', statusCls: 'neutral',
+        responsibility: '生产企业线负责人张毅',
+        latestProgress: '等待条线负责人反馈调整计划',
+        nextStep: '今日内提交补充检查安排',
+        deadline: '已滞后 19 天',
+        overdue: 19,
+        needIntervention: false,
+        actions: ['提醒履职', '要求反馈']
+      },
+      {
+        title: '云栖高层住宅自动消防设施失效',
+        status: '已督办 / 未启动', statusCls: 'danger',
+        responsibility: '消防线负责人李明',
+        latestProgress: '自动喷淋系统18-25层大面积失效，整改未启动',
+        nextStep: '需确认整改方案和启动时间',
+        deadline: '逾期 1 天',
+        overdue: 1,
+        needIntervention: false,
+        actions: ['继续督办', '发起约谈']
+      }
+    ];
 
     // ════════════════════════════════════════════════════════════════
     // 企业主体责任 AI 评估数据（mock）
@@ -491,6 +570,7 @@
         case 'efficiency': html = renderEfficiency(); break;
         case 'responsibility': html = renderResponsibility(); break;
         case 'disposal': html = renderDisposal(); break;
+        case 'followup': html = renderFollowup(); break;
         default: html = renderDashboard();
       }
       container.innerHTML = html;
@@ -505,32 +585,21 @@
       var html = '';
 
       // ─── AI 管家开场 ────────────────────────────────────────────
+      // ─── 问候 ──────────────────────────────────────────────────
       var hour = new Date().getHours();
       var greeting = hour < 12 ? '早上好' : hour < 18 ? '下午好' : '晚上好';
       html += '<div class="ai-briefing">' +
         '<div class="ai-briefing-left">' +
-          '<div class="ai-avatar"><i data-lucide="bot" width="20" height="20"></i></div>' +
+          '<div class="ai-avatar"><i data-lucide="bot" width="16" height="16"></i></div>' +
         '</div>' +
         '<div class="ai-briefing-body">' +
-          '<div class="ai-briefing-head">' + greeting + '，站长</div>' +
-          '<div class="ai-briefing-text">今天重点关注 <b>重大未闭环隐患</b> 和 <b>履职效能</b>，下面是你需要的核心数据——</div>' +
+          '<div class="ai-briefing-head">' + greeting + '，站长。今天 3 个方向需要关注：安全态势 1 项、风险闭环 1 项、任务进展 1 项。</div>' +
         '</div>' +
       '</div>';
 
       // ─── 整体安全态势（指标卡两排） ────────────────────────────
       // 四级风险统计
-      var majorRisk = 0, significantRisk = 0, generalRisk = 0, lowRisk = 0;
-      for (var ri = 0; ri < MOCK.hazards.length; ri++) {
-        var hz = MOCK.hazards[ri];
-        if (hz.status === '超期未整改') majorRisk++;
-        else if (hz.status === '整改中') significantRisk++;
-        else if (hz.status === '已完成') lowRisk++;
-        else generalRisk++;
-      }
-      for (var pi = 0; pi < MOCK.priority.length; pi++) {
-        if (MOCK.priority[pi].tag === '滞后') significantRisk++;
-      }
-      lowRisk = Math.max(0, 12 - majorRisk - significantRisk - generalRisk);
+      var majorRisk = 2, significantRisk = 2, generalRisk = 8, lowRisk = 72;
 
       // ═══ 指标定义：按周期展开 ═══════════════════════════════════
       var metricPrefs = JSON.parse(localStorage.getItem('yaq_metric_prefs') || 'null');
@@ -540,6 +609,13 @@
         { id: 'coverageCum', label: '覆盖户数', value: '2028', group: '监管概况', type: '累计', desc: '从年初到当前累计被检查或监管触达的主体户数' },
         { id: 'coveragePeriod', label: '覆盖户数', value: '368', group: '监管概况', type: '期间', periods: ['今日','本周','本月','本季','本年'], desc: '统计周期内被检查或监管触达过的主体对象数量' },
         { id: 'coverageRate', label: '主体覆盖率', value: '100%', group: '监管概况', type: '闭环率', periods: ['本月','本季','本年'], desc: '已覆盖主体占全部责任主体的比例' },
+        // 新增指标
+        { id: 'riskLevelUp', label: '风险等级上调', value: '3', group: '监管概况', type: '期间', periods: ['本周'], alert: 'warning',
+          desc: '统计周期内风险等级较基准上调的责任主体数量',
+          compare: { baselineLabel: '上周', baselineValue: '2', delta: '+1', isBad: true } },
+        { id: 'newMajorSignificant', label: '新增重大/较大风险主体', value: '2', group: '监管概况', type: '期间', periods: ['本周'], alert: 'warning',
+          desc: '统计周期内新认定的重大或较大风险责任主体数量',
+          compare: { baselineLabel: '上周', baselineValue: '2', delta: '持平', isBad: false } },
         // 检查执法
         { id: 'inspectTotal', label: '检查次数', value: '86', group: '监管执法', type: '期间', periods: ['今日','本周','本月','本季','本年'], desc: '统计周期内完成的检查总次数（日常监管+监督检查）',
           compare: { baselineLabel: '昨日', baselineValue: '72', delta: '▲ 19%', isBad: false } },
@@ -574,7 +650,8 @@
             { label: '风险推演', text: '若今日新增项未在48小时内启动整改，将与现有超期项叠加（消防安全组超期2项→4项），影响本月闭环率目标（当前77.7%→可能跌破70%）。' }
           ] },
         { id: 'majorCum', label: '累计重大隐患', value: '12', group: '重大隐患', type: '累计' },
-        { id: 'majorOpen', label: '未闭环重大隐患', value: '5', group: '重大隐患', type: '时点', alert: 'danger', desc: '截至当前仍未完成整改闭环的重大隐患数量', drilldown: [
+        { id: 'majorOpen', label: '未闭环重大隐患', value: '5', group: '重大隐患', type: '时点', alert: 'danger', desc: '截至当前仍未完成整改闭环的重大隐患数量',
+          compare: { baselineLabel: '上周', baselineValue: '4', delta: '+1', isBad: true }, drilldown: [
             { name: '北苑商业综合体', line: '消防安全组', type: '消防通道堵塞', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '消防通道被货架和杂物严重堵塞，宽度不足1.2米', person: '王志安', foundDate: '2026-06-10', deadline: '2026-06-22', overdue: 3, source: '日常巡查', region: '良渚街道' },
             { name: '云栖高层住宅', line: '消防安全组', type: '消防设施失效', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '自动喷淋系统、烟感探测器大面积失效，覆盖18-25层', person: '李明', foundDate: '2026-06-15', deadline: '2026-06-24', overdue: 1, source: '专项检查', region: '五常街道' },
             { name: '恒源化工', line: '企业安全组', type: '危化品标识缺失', status: '整改中', statusText: '整改推进中', statusCls: 'warning', detail: '危化品存储区警示标识缺失，未设置临时围挡和出入登记', person: '李安全', foundDate: '2026-06-20', deadline: '2026-07-26', overdue: 0, source: '监督检查', region: '仓前街道' },
@@ -586,21 +663,27 @@
             { label: '交叉验证', text: '北苑商业综合体消防通道堵塞为反复出现项（本月已发生第3次），与"重点监管主体异常"中该主体的记录吻合。单一主体的反复问题需从管理机制入手，建议约谈物业管理方而非仅单次整改。' },
             { label: '特征分析', text: '企业安全组3项（杭州恒源化工有限公司、杭州鑫盛机械制造有限公司、余杭天元纺织厂）均位于良渚片区，与"良渚片重大风险检查任务覆盖141家、完成率0%"数据吻合。同片区多家企业同时出问题，存在区域性风险集中特征。良渚片整体自查率仅43%，企业端配合度偏低。' }
           ] },
-        { id: 'majorOverdue', label: '逾期未整改重大隐患', value: '2', group: '重大隐患', type: '时点', alert: 'danger', desc: '已过整改期限仍未完成整改的重大隐患', drilldown: [
-            { name: '北苑商业综合体', line: '消防安全组', type: '消防通道堵塞', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '消防通道被货架和杂物严重堵塞，逾期3天仍未清理', person: '王志安', foundDate: '2026-06-10', deadline: '2026-06-22', overdue: 3, source: '日常巡查', region: '良渚街道' },
-            { name: '云栖高层住宅', line: '消防安全组', type: '消防设施失效', status: '超期', statusText: '超期未整改', statusCls: 'danger', detail: '自动消防设施大面积失效，逾期1天仍未启动维修', person: '李明', foundDate: '2026-06-15', deadline: '2026-06-24', overdue: 1, source: '专项检查', region: '五常街道' }
-          ],
-          aiAnalysis: [
-            { label: '根因分析', text: '2项超期均属消防安全组，责任人分别为王志安（北苑）和李明（云栖）。该组复查闭环率仅68%，低于站均值6pp。超期项均为高层建筑/商业综合体，整改涉及物业、业主、消防维保多方协调，单人推动难度较大。' },
-            { label: '关联分析', text: '云栖高层住宅的消防设施失效项，同期该小区企业自查记录为0次，企业端安全管理配合度存疑。建议联合物业约谈业主委员会，明确整改责任主体。' }
-          ] },
         { id: 'majorFixed', label: '重大隐患整改完成', value: '1', group: '重大隐患', type: '期间', periods: ['今日','本周','本月','本季','本年'] },
         { id: 'majorRectifyRate', label: '重大隐患整改率', value: '58.3%', group: '重大隐患', type: '闭环率', periods: ['本月','本季','本年'] },
         // 风险分类
-        { id: 'majorRisk', label: '重大风险', value: '' + majorRisk, group: '风险分类', type: '期间', periods: ['截至目前', '本月', '本季', '本年'], alert: 'danger', desc: '对公共安全构成直接重大威胁，需每月检查', valueColor: 'var(--red)' },
-        { id: 'significantRisk', label: '较大风险', value: '' + significantRisk, group: '风险分类', type: '期间', periods: ['截至目前', '本月', '本季', '本年'], desc: '风险较高需要重点管控，需每季度检查', valueColor: '#d97706' },
-        { id: 'generalRisk', label: '一般风险', value: '' + generalRisk, group: '风险分类', type: '期间', periods: ['截至目前', '本月', '本季', '本年'], desc: '常规风险正常管控，需每半年检查', valueColor: '#ca8a04' },
-        { id: 'lowRisk', label: '低风险', value: '' + lowRisk, group: '风险分类', type: '期间', periods: ['截至目前', '本月', '本季', '本年'], desc: '风险较低维持日常巡查，抽样检查', valueColor: 'var(--blue)' },
+        { id: 'majorRisk', label: '重大风险', value: '' + majorRisk, group: '风险分类', type: '期间', periods: ['本周', '本月', '本季', '本年'], alert: 'warning', desc: '对公共安全构成直接重大威胁，需每月检查', valueColor: 'var(--red)',
+          compare: { baselineLabel: '上周', baselineValue: '1', delta: '+1', isBad: true } },
+        { id: 'significantRisk', label: '较大风险', value: '' + significantRisk, group: '风险分类', type: '期间', periods: ['本周', '本月', '本季', '本年'], desc: '风险较高需要重点管控，需每季度检查', valueColor: '#d97706',
+          compare: { baselineLabel: '上周', baselineValue: '3', delta: '-1', isBad: false } },
+        { id: 'generalRisk', label: '一般风险', value: '' + generalRisk, group: '风险分类', type: '期间', periods: ['本周', '本月', '本季', '本年'], desc: '常规风险正常管控，需每半年检查', valueColor: '#ca8a04',
+          compare: { baselineLabel: '上周', baselineValue: '7', delta: '+1', isBad: true } },
+        { id: 'lowRisk', label: '低风险', value: '' + lowRisk, group: '风险分类', type: '期间', periods: ['本周', '本月', '本季', '本年'], desc: '风险较低维持日常巡查，抽样检查', valueColor: 'var(--blue)',
+          compare: { baselineLabel: '上周', baselineValue: '74', delta: '-2', isBad: true } },
+        { id: 'areaRiskAbnormal', label: '风险上升片区', value: '2', group: '区域风险', type: '期间', periods: ['今日','本周','本月'], alert: 'warning', desc: '隐患、逾期项环比上升或重大隐患集中复发的片区数量',
+          compare: { baselineLabel: '上周', baselineValue: '1', delta: '+1', isBad: true },
+          drilldown: [
+            { name: '物流片区', line: '企业安全组', type: '风险上升', status: '上升', statusText: '▲ 风险上升', statusCls: 'danger', detail: '新增隐患12项（环比+3），逾期未整改从1项增至4项，重大隐患2项均为本周新认定。杭州华阳包装材料有限公司自查持续为0，为新增重点监管主体。', person: '陈芳', region: '物流片', foundDate: '2026-06-24', deadline: '持续跟进' },
+            { name: '良渚街道', line: '企业安全组 & 消防安全组', type: '风险集中', status: '上升', statusText: '▲ 风险上升', statusCls: 'danger', detail: '新增隐患16项（环比+5），逾期未整改累积5项。企业安全组（杭州鑫盛机械制造有限公司、余杭天元纺织厂）和消防安全组（北苑商业综合体）同区多主体异常叠加。辖区自查率仅43%，企业端配合度偏低。', person: '王志安 / 张毅', region: '良渚街道', foundDate: '2026-06-22', deadline: '持续跟进' }
+          ],
+          aiAnalysis: [
+            { label: '特征分析', text: '2个风险上升片区类型不同：物流片为"自查缺失→检查漏出→逾期蔓延"的单线恶化；良渚为多主体、跨条线异常叠加，且自查率系统性偏低（43%），属于区域性管理缺失。' },
+            { label: '关联分析', text: '物流片区组长陈芳同时出现在重大隐患列表（余杭天元纺织厂），该片区逾期从1项飙升至4项，且同期新增重大隐患，符合"风险上升片区"判定。良渚街道与"重点监管主体异常"的8家中4家重合，异常密度最高。' }
+          ] },
         // 今日聚焦（站长每日必看）
         { id: 'dueToday', label: '到期整改事项', value: '3', group: '今日聚焦', type: '期间', periods: ['今日','本周','本月'], alert: 'warning', desc: '整改期限为今日且需要今日跟进的隐患或整改事项数量',
           compare: { baselineLabel: '昨日', baselineValue: '2', delta: '▲ 1', isBad: true },
@@ -640,7 +723,6 @@
         { id: 'staffAbnormal', label: '一线履职异常数', value: '3', group: '履职效能', type: '期间', periods: ['今日','本周','本月'], alert: 'warning', desc: '任务完成率低、隐患发现率异常低、复查闭环慢的人员或小组数量' },
         { id: 'expertAbnormal', label: '专家履职异常数', value: '1', group: '履职效能', type: '期间', periods: ['本周','本月','本季','本年'], alert: 'warning', desc: '检查、重大隐患发现、复核销号等低于要求的专家数量' },
         // 区域风险
-        { id: 'areaRiskAbnormal', label: '片区风险异常数', value: '2', group: '区域风险', type: '期间', periods: ['今日','本周','本月'], alert: 'warning', desc: '隐患、重大隐患、逾期事项明显高于基准或环比上升的片区数量' },
         // 风险结构
         { id: 'topHazardTypes', label: '高频隐患类型TOP', value: '3', group: '风险结构', type: '期间', periods: ['近7天','今日','本周','本月','本季','本年'], desc: '统计周期内出现频次最高的隐患类型排行' },
         // 专项任务
@@ -652,12 +734,13 @@
       ];
 
       // 展开：每个期间指标按周期拆成独立卡片
-      // 站长每日工作台默认 8 个指标
+      // 站长每日工作台默认 9 个指标
       var dailyDefaults = {
-        majorOpen:1, majorOverdue:1, 'majorNew_今日':1,
-        openHazard:1, 'dueToday_今日':1,
-        unclosedCount:1, abnormalSubject:1, 'taskCompleteRate_今日':1,
-        'majorRisk_截至目前':1, 'significantRisk_截至目前':1, 'generalRisk_截至目前':1, 'lowRisk_截至目前':1
+        majorOpen:1, 'majorNew_今日':1,
+        'taskCompleteRate_今日':1,
+        'majorRisk_本周':1, 'significantRisk_本周':1, 'generalRisk_本周':1, 'lowRisk_本周':1,
+        'areaRiskAbnormal_本周':1,
+        'riskLevelUp_本周':1, 'newMajorSignificant_本周':1
       };
       var allMetrics = [];
       for (var bi = 0; bi < baseMetrics.length; bi++) {
@@ -699,7 +782,7 @@
       }
 
       // 检测存储版本，不匹配则重置（指标结构变了）
-      var STORAGE_VERSION = 2;
+      var STORAGE_VERSION = 4;
       if (localStorage.getItem('yaq_metric_ver') != STORAGE_VERSION) {
         localStorage.removeItem('yaq_metric_prefs');
         localStorage.removeItem('yaq_metric_order');
@@ -717,23 +800,8 @@
       // 写入版本号
       if (!metricPrefs) localStorage.setItem('yaq_metric_ver', STORAGE_VERSION);
 
-      // 统计异常/预警指标数
-      var dangerCount = 0, warningCount = 0;
-      for (var mi = 0; mi < allMetrics.length; mi++) {
-        if (allMetrics[mi].checked && allMetrics[mi].alert === 'danger') dangerCount++;
-        else if (allMetrics[mi].checked && allMetrics[mi].alert === 'warning') warningCount++;
-      }
-
-      // AI 解读文案
-      var summaryText = '';
-      if (dangerCount + warningCount > 0) {
-        var parts = [];
-        if (dangerCount > 0) parts.push(dangerCount + ' 项异常');
-        if (warningCount > 0) parts.push(warningCount + ' 项预警');
-        summaryText = '今天有 ' + parts.join('、') + ' 需要关注。';
-      } else {
-        summaryText = '各项指标均正常，今天态势平稳。';
-      }
+      // 态势摘要
+      var summaryText = '整体可控，重点监管池稳定；物流等 2 个片区出现风险上升信号。';
 
       html += '<div class="info-card" id="situationCard">' +
         '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
@@ -741,7 +809,7 @@
           '<div style="position:relative;margin-left:auto">' +
             '<button class="metric-config-btn" onclick="openMetricConfig()" title="配置指标"><i data-lucide="sliders-horizontal" width="15" height="15"></i></button>' +
           '</div>' +
-          '<div style="width:100%;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px">' + summaryText + '</div>' +
+          '<div style="width:100%;font-size:13px;font-weight:500;color:var(--text);line-height:1.5;margin-top:3px">' + summaryText + '</div>' +
         '</div>' +
         '<div class="metric-row" id="metricRow">' +
           renderSelectedMetrics(allMetrics) +
@@ -777,7 +845,6 @@
       if (totalMajor > 0) {
         if (overdueCount > 0) {
           riskSummary = '本月共 ' + totalMajor + ' 个重大隐患，其中 ' + overdueCount + ' 个已超期未整改';
-          if (overdueNames.length > 0) riskSummary += '——' + overdueNames.join('、');
         } else if (doneCount === totalMajor) {
           riskSummary = '本月 ' + totalMajor + ' 个重大隐患已全部完成整改闭环。';
         } else {
@@ -786,8 +853,55 @@
       } else {
         riskSummary = '本月暂无重大隐患记录。';
       }
+      // ─── 板块二：关键风险闭环 ──────────────────────────────────
+      html +=
+      '<div class="info-card">' +
+        '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
+          '<h3><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red)"></i> 关键风险闭环</h3>' +
+          '<div style="width:100%;font-size:13px;font-weight:500;color:var(--text);line-height:1.5;margin-top:3px">' + riskSummary + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;overflow-x:auto;padding:2px 0">';
+      var shownCount = 0;
+      // 第一轮：未闭环
+      for (var hi = 0; hi < majorHazards.length && shownCount < 3; hi++) {
+        var h = majorHazards[hi];
+        if (h.status === '已完成') continue;
+        shownCount++;
+        html += '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openHazardDetail(\'' + h.object + '\')" title="点击查看详情">' +
+          '<div class="hc-head">' +
+            '<span class="hc-name">' + h.object + '</span>' +
+          '</div>' +
+          '<div class="hc-desc">' + h.hazard.split('\n')[0] + '</div>' +
+          '<div class="hc-meta">' +
+            '<span>来源 ' + h.source + '</span>' +
+            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
+            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
+          '</div>' +
+          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
+        '</div>';
+      }
+      // 第二轮：已完成
+      var doneShown = 0;
+      for (var hi2 = 0; hi2 < majorHazards.length && doneShown < 2; hi2++) {
+        var h2 = majorHazards[hi2];
+        if (h2.status !== '已完成') continue;
+        doneShown++;
+        html += '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer;opacity:0.75" onclick="openHazardDetail(\'' + h2.object + '\')" title="点击查看详情">' +
+          '<div class="hc-head">' +
+            '<span class="hc-name">' + h2.object + '</span>' +
+          '</div>' +
+          '<div class="hc-desc">' + h2.hazard.split('\n')[0] + '</div>' +
+          '<div class="hc-meta">' +
+            '<span>来源 ' + h2.source + '</span>' +
+            '<span class="hc-status done">已闭环</span>' +
+            '<span>—</span>' +
+          '</div>' +
+          '<div class="hc-time">' + h2.foundDate + ' → ' + h2.deadline + '</div>' +
+        '</div>';
+      }
+      html += '</div></div>';
 
-      // ─── 板块二：核心任务进展 ──────────────────────────────────
+      // ─── 板块三：核心任务进展 ────────────────────────────────
       var tasks = MOCK.tasks;
       var lagCount = 0;
       for (var ti = 0; ti < tasks.length; ti++) { if (tasks[ti].lag) lagCount++; }
@@ -795,155 +909,145 @@
       '<div class="info-card">' +
         '<div class="info-card-head">' +
           '<h3><i data-lucide="target" aria-hidden="true" style="color:var(--accent)"></i> 核心任务进展</h3>' +
-          '<span class="info-card-badge warning">' + lagCount + ' 项滞后</span>' +
+          '<span class="info-card-badge danger">' + lagCount + ' 项异常</span>' +
         '</div>' +
-        '<div style="padding:0">' +
-        '<table style="width:100%;border-collapse:collapse;font-size:11px">' +
-        '<thead><tr style="border-bottom:1px solid var(--border);background:var(--fg-soft)">' +
-          '<th style="padding:7px 10px;text-align:left;font-weight:500;color:var(--weak);font-size:9px">任务名称</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">类型</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">条线</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">完成进度</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:60px">时间进度</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:50px">完成率</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;width:50px">覆盖</th>' +
-          '<th style="padding:7px 10px;text-align:center;font-weight:500;color:var(--weak);font-size:9px;white-space:nowrap;width:85px">隐患总数/重大</th>' +
-          '<th style="padding:7px 10px;text-align:right;font-weight:500;color:var(--weak);font-size:9px;width:78px">开始时间</th>' +
-          '<th style="padding:7px 10px;text-align:right;font-weight:500;color:var(--weak);font-size:9px;width:78px">结束时间</th>' +
-          '<th style="padding:7px 10px;text-align:right;font-weight:500;color:var(--weak);font-size:9px;width:50px">创建</th>' +
-        '</tr></thead><tbody>';
-      // 专项任务在上，日常任务在下
-      var taskTypes = ['专项', '日常'];
-      for (var tt = 0; tt < taskTypes.length; tt++) {
-        for (var ti = 0; ti < tasks.length; ti++) {
-          var t = tasks[ti];
-          if (t.type !== taskTypes[tt]) continue;
-          var riskColor = t.risk === '重大风险' ? 'var(--red)' : '#d97706';
-          var rateNum = parseInt(t.rate) || 0;
-          var colorBar = t.lag ? riskColor : (rateNum >= 90 ? 'var(--green)' : rateNum >= 70 ? '#d97706' : riskColor);
-          var statusBadge = t.lag
-            ? '<span class="hc-status ' + t.statusCls + '" style="display:inline-block;width:36px;text-align:center;font-size:10px;padding:1px 0">异常</span>'
-            : '<span style="display:inline-block;width:36px"></span>';
-          html += '<tr style="border-bottom:1px solid var(--border);cursor:pointer" onclick="openTaskDetail(\'' + t.name.replace(/'/g, "\\'") + '\')" title="点击查看详情">' +
-            '<td style="padding:7px 10px;font-weight:500;color:var(--text);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + statusBadge + ' ' + t.name + '</td>' +
-            '<td style="padding:7px 10px;text-align:center;white-space:nowrap"><span style="font-size:10px;font-weight:600;color:' + (t.type === '日常' ? '#98a2b3' : 'var(--blue)') + '">' + (t.type === '日常' ? '日常任务' : '专项任务') + '</span></td>' +
-            '<td style="padding:7px 10px;text-align:center;font-size:10px;color:var(--muted);white-space:nowrap">' + (t.line || '—') + '</td>' +
-            '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + rateNum + '%;height:100%;border-radius:999px;background:' + colorBar + '"></div></div><span style="font-size:11px;font-weight:600;color:' + colorBar + '">' + t.rate + '</span></div></td>' +
-            '<td style="padding:7px 10px;text-align:center"><div style="display:flex;align-items:center;justify-content:center;gap:3px"><div style="width:28px;height:4px;border-radius:999px;background:#f0f2f5;overflow:hidden;flex-shrink:0"><div style="width:' + (parseInt(t.progress) || 0) + '%;height:100%;border-radius:999px;background:#98a2b3"></div></div><span style="font-size:11px;font-weight:600;color:#98a2b3">' + (t.progress || '-') + '</span></div></td>' +
-            '<td style="padding:7px 10px;text-align:center;font-weight:700;color:' + colorBar + '">' + t.rate + '</td>' +
-            '<td style="padding:7px 10px;text-align:center;font-weight:600;color:var(--text)">' + t.covered + '</td>' +
-            '<td style="padding:7px 10px;text-align:center"><span style="font-weight:600">' + t.hazards + '</span><span style="color:var(--weak);margin:0 1px">/</span><span style="font-weight:600;color:var(--red)">' + t.majorHazards + '</span></td>' +
-            '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.startDate + '</td>' +
-            '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.endDate + '</td>' +
-            '<td style="padding:7px 10px;text-align:right;font-size:10px;color:var(--weak);white-space:nowrap">' + t.creator + '</td>' +
-          '</tr>';
-        }
-      }
-      html += '</tbody></table></div>';
-      html += '</div>';
-
-      // ─── 板块三：重点跟进 ──────────────────────────────────────
-      var followups = [
-        { name: '北苑商业综合体', source: '消防通道堵塞逾期3天未整改', person: '王志安', days: 3, status: '跟进中', statusCls: 'danger' },
-        { name: '云栖高层住宅', source: '消防设施失效逾期1天未启动', person: '李明', days: 1, status: '跟进中', statusCls: 'danger' },
-        { name: '恒源化工', source: '隐患整改中 · 主体责任异常（自查持续为0）', person: '李安全', days: 9, status: '跟进中', statusCls: 'warning' },
-        { name: '高层小区消防专项', source: '完成率51%，滞后时间进度19pp', person: '张毅', days: 19, status: '待确认', statusCls: 'neutral' },
-        { name: '良渚片区仓储场所', source: '7家主体整改超期，需片区联动', person: '陈芳', days: 5, status: '跟进中', statusCls: 'warning' }
-      ];
-      html += '<div class="info-card">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="list-checks" aria-hidden="true" style="color:var(--accent)"></i> 重点跟进</h3>' +
-          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + followups.length + ' 项</span>' +
-        '</div>' +
-        '<div style="display:flex;gap:8px;overflow-x:auto;padding:4px 0">';
-      for (var fui = 0; fui < followups.length; fui++) {
-        var fu = followups[fui];
-        html += '<div style="flex:0 0 220px;min-width:200px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--fg-soft)">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">' +
-            '<span style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">' + fu.name + '</span>' +
-            '<span class="hc-status ' + fu.statusCls + '" style="font-size:9px;padding:1px 5px;white-space:nowrap">' + fu.status + '</span>' +
+        '<div style="display:flex;gap:8px;overflow-x:auto;flex-wrap:nowrap;padding:2px 0;scrollbar-width:none;-ms-overflow-style:none">';
+      // 异常任务排前面
+      var sortedTasks = tasks.slice().sort(function(a,b){ return (a.lag === b.lag ? 0 : a.lag ? -1 : 1); });
+      for (var tci = 0; tci < sortedTasks.length; tci++) {
+        var tc = sortedTasks[tci];
+        var tcRate = parseInt(tc.rate) || 0;
+        var tcBar = tc.lag ? (tc.risk === '重大风险' ? 'var(--red)' : '#d97706') : (tcRate >= 90 ? 'var(--green)' : tcRate >= 70 ? '#d97706' : 'var(--muted)');
+        var tcAlert = tc.lag ? (tc.risk === '重大风险' ? '异常' : '警告') : '';
+        var tcAlertCls = tc.lag ? (tc.risk === '重大风险' ? 'danger' : 'warning') : '';
+        html += '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openTaskDetail(\'' + tc.name.replace(/'/g, "\\'") + '\')">' +
+          (tc.lag ? '<div style="position:absolute;top:-1px;right:-1px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:0 10px 0 10px;color:#fff;background:' + (tc.risk === '重大风险' ? 'var(--red)' : '#d97706') + ';line-height:1.5;z-index:1">' + tcAlert + '</div>' : '') +
+          '<div style="display:flex;align-items:center;gap:8px;margin:0 0 4px">' +
+            '<svg width="50" height="50" viewBox="0 0 54 54" style="flex-shrink:0">' +
+              '<circle cx="27" cy="27" r="19" fill="none" stroke="#e5e7eb" stroke-width="5"/>' +
+              '<circle cx="27" cy="27" r="19" fill="none" stroke="#98a2b3" stroke-width="5" stroke-dasharray="119" stroke-dashoffset="' + (119 - 119 * (parseInt(tc.progress) || 0) / 100) + '" transform="rotate(-90 27 27)" stroke-linecap="round"/>' +
+              '<circle cx="27" cy="27" r="12" fill="none" stroke="#e5e7eb" stroke-width="5"/>' +
+              '<circle cx="27" cy="27" r="12" fill="none" stroke="' + tcBar + '" stroke-width="5" stroke-dasharray="75" stroke-dashoffset="' + (75 - 75 * tcRate / 100) + '" transform="rotate(-90 27 27)" stroke-linecap="round"/>' +
+            '</svg>' +
+            '<div style="display:flex;flex-direction:column;gap:2px">' +
+              '<div style="font-size:10.5px;color:var(--text)">覆盖 <strong>' + tc.covered + '</strong> 家</div>' +
+              '<div style="font-size:10.5px;color:var(--text);display:flex;gap:12px">' +
+                '<span>隐患 <strong>' + (tc.hazards && tc.hazards !== '-' ? tc.hazards : '—') + '</strong> 个</span>' +
+                '<span>未闭环 <strong>' + (tc.majorHazards && tc.majorHazards !== '-' ? tc.majorHazards : '—') + '</strong></span>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
-          '<div style="font-size:10px;color:var(--muted);line-height:1.4;margin-bottom:5px;min-height:28px">' + fu.source + '</div>' +
-          '<div style="font-size:10px;color:var(--weak);display:flex;gap:10px">' +
-            '<span style="display:inline-flex;align-items:center;gap:3px"><i data-lucide="user" width="10" height="10"></i> ' + fu.person + '</span>' +
-            '<span style="display:inline-flex;align-items:center;gap:3px"><i data-lucide="clock" width="10" height="10"></i> 已跟进 ' + fu.days + ' 天</span>' +
-          '</div>' +
-        '</div>';
-      }
-      html += '</div></div>';
-
-      // ─── 板块四：关键风险闭环 ──────────────────────────────────
-      html +=
-      '<div class="info-card">' +
-        '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
-          '<h3><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red)"></i> 关键风险闭环</h3>' +
-          '<div style="margin-left:auto;display:flex;gap:10px;font-size:11px">' +
-            '<span style="color:var(--weak)">本月 <strong style="color:var(--text)">' + totalMajor + '</strong> 个重大隐患</span>' +
-            '<span style="color:var(--weak)">超期未整改 <strong style="color:var(--red)">' + overdueCount + '</strong></span>' +
-            '<span style="color:var(--weak)">已完成 <strong style="color:var(--green)">' + doneCount + '</strong></span>' +
-          '</div>' +
-          '<div style="width:100%;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px">' + riskSummary + '</div>' +
-        '</div>' +
-        '<div class="hc-scroll">';
-      for (var hi = 0; hi < majorHazards.length; hi++) {
-        var h = majorHazards[hi];
-        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + h.overdue + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
-        html += '<div class="hazard-card" style="flex:0 0 270px;min-width:250px;cursor:pointer" onclick="openHazardDetail(\'' + h.object + '\')" title="点击查看详情">' +
           '<div class="hc-head">' +
-            '<span class="hc-name">' + h.object + '</span>' +
+            '<div style="display:flex;align-items:center;gap:4px;min-width:0">' +
+            (tc.type === '专项' ? '<span style="color:var(--blue);font-weight:500;flex-shrink:0;font-size:13px">专项</span>' : '') +
+            '<span class="hc-name" style="flex:1;min-width:0">' + tc.name + '</span>' +
+            '</div>' +
           '</div>' +
-          '<div class="hc-desc">' + h.hazard + '</div>' +
-          '<div class="hc-meta">' +
-            '<span>来源 ' + h.source + '</span>' +
-            '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
-            '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
-          '</div>' +
-          '<div class="hc-time">' + h.foundDate + ' → ' + h.deadline + '</div>' +
-          '<div class="hc-actions">' +
-            (h.status === '已完成' ?
-              '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--green);padding:2px 0"><i data-lucide="check-circle-2" width="11" height="11"></i> 已完成</span>'
-            :
-              '<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:' + (h.status === '超期未整改' ? 'var(--red)' : '#d97706') + ';padding:2px 0"><i data-lucide="eye" width="11" height="11"></i> 已督办 · 跟进中</span>' +
-              '<button class="hc-btn" onclick="openHazardDetail(\'' + h.object + '\')"><i data-lucide="file-text" width="11" height="11"></i> 查看详情</button>'
-            ) +
-          '</div>' +
+          '<div class="hc-time" style="margin-top:2px">' + tc.startDate + ' → ' + tc.endDate + '</div>' +
         '</div>';
       }
       html += '</div></div>';
 
-
-      // ─── 管理动作记录 ────────────────────────────────────────
-      var actions = [
-        { time: '今日 10:30', type: '督办', typeCls: 'danger', target: '北苑商业综合体', person: '王志安', note: '限24小时反馈整改方案' },
-        { time: '昨日 15:00', type: '提醒', typeCls: 'warning', target: '消防安全组', person: '张毅', note: '复查闭环率持续偏低' },
-        { time: '07-17', type: '约谈', typeCls: 'neutral', target: '恒源化工', person: '李安全', note: '主体责任落实不到位' },
-        { time: '07-16', type: '核查', typeCls: 'blue', target: '良渚街道仓储区', person: '陈芳', note: '现场核查发现3项新问题' },
-        { time: '07-14', type: '升级', typeCls: 'danger', target: '高层小区消防专项', person: '张毅', note: '提请分管副组长介入' }
-      ];
-      var actionColors = { danger: 'var(--red)', warning: '#d97706', neutral: 'var(--weak)', blue: 'var(--blue)' };
-      html += '<div class="info-card">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="clipboard-list" aria-hidden="true" style="color:var(--accent)"></i> 管理动作记录</h3>' +
-          '<span style="font-size:10px;color:var(--muted)">最近 5 条</span>' +
-        '</div>' +
-        '<div style="display:flex;gap:6px;overflow-x:auto;padding:2px 0">';
-      for (var ai = 0; ai < actions.length; ai++) {
-        var ac = actions[ai];
-        html += '<div style="flex:0 0 200px;min-width:185px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--fg-soft);display:flex;flex-direction:column;gap:3px">' +
-          '<div style="display:flex;align-items:center;gap:6px">' +
-            '<span style="display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;color:#fff;background:' + (actionColors[ac.typeCls] || 'var(--weak)') + '">' + ac.type + '</span>' +
-            '<span style="font-size:10px;color:var(--muted)">' + ac.time + '</span>' +
-          '</div>' +
-          '<div style="font-size:11px;font-weight:500;color:var(--text)">' + ac.target + '</div>' +
-          '<div style="font-size:9px;color:var(--weak);display:flex;gap:4px;align-items:center"><i data-lucide="user" width="9" height="9"></i> ' + ac.person + ' · ' + ac.note + '</div>' +
-        '</div>';
-      }
-      html += '</div></div>';
-
-
-
+      // ─── 待确认行动项 ────────────────────────────────────────
+      html += renderActionItems();
 
       return html;
+    }
+
+    // ─── 重点跟进操作函数 ──────────────────────────────────────
+    function doFollowupAction(action, itemName) {
+      var map = {
+        '继续督办': function(){ openDrawer('supervise'); },
+        '发起督办': function(){ openDrawer('supervise'); },
+        '提醒责任人': function(){ showToast('已提醒 ' + itemName + ' 责任人'); },
+        '提醒履职': function(){ showToast('已提醒 ' + itemName + ' 责任人履职'); },
+        '要求反馈': function(){ showToast('已通知 ' + itemName + ' 需反馈进展'); },
+        '要求现场核查': function(){ showToast('已通知 ' + itemName + ' 需现场核查'); },
+        '发起约谈': function(){ openDrawer('meeting'); },
+        '升级处置': function(){ showToast('已升级处置：' + itemName); }
+      };
+      var fn = map[action];
+      if (fn) fn(); else showToast('执行动作：' + action);
+    }
+
+    // ─── 今日关注操作函数 ──────────────────────────────────────
+    function handleTodayFocusAction(actionType, itemName) {
+      switch (actionType) {
+        case 'supervise': openDrawer('supervise'); break;
+        case 'remind': showToast('已通知「' + itemName + '」责任人反馈'); break;
+        case 'track': showToast('已将「' + itemName + '」加入重点跟进'); break;
+        default: showToast('执行动作：' + itemName);
+      }
+    }
+
+    // ─── 重点跟进操作函数 ──────────────────────────────────────
+    function handleFollowupAction(action, itemName) {
+      switch (action) {
+        case '继续督办': case '发起督办': openDrawer('supervise'); break;
+        case '提醒责任人': case '提醒履职': showToast('已提醒「' + itemName + '」责任人'); break;
+        case '要求反馈': case '要求现场核查': showToast('已通知「' + itemName + '」需反馈进展'); break;
+        case '发起约谈': openDrawer('meeting'); break;
+        case '升级处置': showToast('已升级处置：「' + itemName + '」'); break;
+        default: showToast('执行动作：' + action);
+      }
+    }
+
+    // ─── AI 研判行动项渲染 ────────────────────────────────────
+    function renderActionItems() {
+      var items = MOCK.actionItems || [];
+      if (items.length === 0) return '';
+      var html = '<div class="info-card">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="zap" aria-hidden="true" style="color:var(--accent)"></i> 待确认行动项</h3>' +
+          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + items.length + ' 项</span>' +
+        '</div>' +
+        '<div class="ai-action-flow">' +
+          '<span class="step">数据读取</span><span class="sep">→</span>' +
+          '<span class="step">异常识别</span><span class="sep">→</span>' +
+          '<span class="step">问题聚合</span><span class="sep">→</span>' +
+          '<span class="current">行动生成待确认</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--muted);margin-bottom:10px">基于今日监管数据，系统生成 ' + items.length + ' 项待确认行动</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px">';
+      for (var ai = 0; ai < items.length; ai++) {
+        var a = items[ai];
+        var secBtns = '';
+        for (var si = 0; si < a.secondaryActions.length; si++) {
+          var sec = a.secondaryActions[si];
+          secBtns += '<button class="ai-action-btn ghost" onclick="event.stopPropagation();handleActionItemSecondary(\'' + sec + '\',\'' + a.title.replace(/'/g, "\\'") + '\')">' + sec + '</button>';
+        }
+        html += '<div class="ai-action-item">' +
+          '<span class="type-badge ' + a.typeCls + '">' + a.type + '</span>' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;max-width:calc(100% - 80px)">' + a.title + '</div>' +
+          '<div class="basis"><i data-lucide="file-text" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--muted)"></i>' + a.basis + '</div>' +
+          '<div class="req"><i data-lucide="check-circle" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--accent)"></i>' + a.requirement + '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:4px">' +
+            '<button class="ai-action-btn primary" onclick="event.stopPropagation();handleActionItemPrimary(\'' + a.primaryCallback + '\',\'' + a.title.replace(/'/g, "\\'") + '\')">' + a.primaryAction + '</button>' +
+            secBtns +
+          '</div>' +
+        '</div>';
+      }
+      html += '</div></div>';
+      return html;
+    }
+
+    // ─── AI 行动项操作函数 ────────────────────────────────────
+    function handleActionItemPrimary(callback, itemTitle) {
+      switch (callback) {
+        case 'doSupervise': openDrawer('supervise'); break;
+        case 'doTrack': showToast('已将「' + itemTitle + '」加入重点跟进'); break;
+        case 'doRequestExplain': showToast('已发送要求说明通知至「' + itemTitle + '」责任人'); break;
+        default: showToast('执行：' + itemTitle);
+      }
+    }
+
+    function handleActionItemSecondary(action, itemTitle) {
+      switch (action) {
+        case '忽略': showToast('已忽略「' + itemTitle + '」'); break;
+        case '编辑': showToast('编辑「' + itemTitle + '」'); break;
+        case '改为督办': openDrawer('supervise'); break;
+        default: showToast('执行：' + action);
+      }
     }
 
     function renderPriorityItem(item) {
@@ -1225,6 +1329,48 @@
       }
       html += '</div></div>';
 
+      return html;
+    }
+
+    // ─── 重点跟进场景 ──────────────────────────────────────────
+    function renderFollowup() {
+      var followups = FOLLOWUPS;
+      var html = '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="list-checks" aria-hidden="true" style="color:var(--accent)"></i> 重点跟进</h2></div>' +
+        '<div class="info-card">' +
+        '<div class="info-card-head">' +
+          '<h3>全部跟进项</h3>' +
+          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + followups.length + ' 项</span>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;padding:2px 0">';
+      for (var fui = 0; fui < followups.length; fui++) {
+        var fu = followups[fui];
+        var actionBtnsHtml = '';
+        for (var fua = 0; fua < fu.actions.length; fua++) {
+          var act = fu.actions[fua];
+          var isPrimary = (act.indexOf('督办') >= 0 || act.indexOf('升级') >= 0);
+          actionBtnsHtml += '<button onclick="event.stopPropagation();handleFollowupAction(\'' + act + '\',\'' + fu.title.replace(/'/g, "\\'") + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;white-space:nowrap;' +
+            (isPrimary ? 'background:var(--red);color:#fff;border:1px solid var(--red)' : 'background:#fff;color:var(--text);border:1px solid var(--line)') +
+            '">' + act + '</button>';
+        }
+        html += '<div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--fg-soft);display:flex;flex-direction:column;gap:6px' + (fu.needIntervention ? ';border-left:3px solid var(--red)' : '') + '">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between">' +
+            '<span style="font-size:13px;font-weight:600;color:var(--text)">' + fu.title + '</span>' +
+            '<span class="hc-status ' + fu.statusCls + '" style="font-size:9px;padding:1px 6px;white-space:nowrap">' + fu.status + '</span>' +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--muted);line-height:1.5">' +
+            '<span style="color:var(--weak)">状态：</span>' + fu.status + '<br>' +
+            '<span style="color:var(--weak)">责任：</span>' + fu.responsibility + '<br>' +
+            '<span style="color:var(--weak)">最新进展：</span>' + fu.latestProgress +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--accent);font-weight:500">→ 下一步：' + fu.nextStep + '</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;font-size:10px">' +
+            '<span style="color:var(--weak)">截止：' + fu.deadline + '</span>' +
+            (fu.needIntervention ? '<span style="color:var(--red);font-weight:600">⚠ 需站长介入</span>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:4px;margin-top:2px">' + actionBtnsHtml + '</div>' +
+        '</div>';
+      }
+      html += '</div></div>';
       return html;
     }
 
@@ -2887,6 +3033,7 @@
         case 'efficiency': html = renderEfficiency(); break;
         case 'responsibility': html = renderResponsibility(); break;
         case 'disposal': html = renderDisposal(); break;
+        case 'followup': html = renderFollowup(); break;
       }
       container.innerHTML = html;
       lucide.createIcons();
@@ -3205,6 +3352,7 @@
       var actionMap = {
         // 工作台场景（已实现）
         'dashboard': 'dashboard',
+        'followup': 'followup',
         'hazard-report': 'hazard-report',
         'efficiency': 'efficiency',
         'responsibility': 'responsibility',
@@ -3266,6 +3414,7 @@
     function renderSceneList() {
       var scenes = [
         { id: 'dashboard', name: '今日监管工作台', icon: 'layout-dashboard', badge: { cls: 'danger', text: '3' } },
+        { id: 'followup', name: '重点跟进', icon: 'list-checks', badge: { cls: 'danger', text: '4' } },
         { id: 'hazard-report', name: '重大隐患整改日报', icon: 'shield-alert', badge: { cls: 'danger', text: '5' } },
         { id: 'efficiency', name: '履职效能分析', icon: 'bar-chart-3', badge: { cls: 'orange', text: '2' } },
         { id: 'responsibility', name: '主体责任评估', icon: 'users', badge: { cls: 'orange', text: '8' } },
@@ -3314,6 +3463,11 @@
     window.agentAsk = agentAsk;
     window.toggleChatPanel = toggleChatPanel;
     window.openChatPanel = openChatPanel;
+    window.doFollowupAction = doFollowupAction;
+    window.handleTodayFocusAction = handleTodayFocusAction;
+    window.handleFollowupAction = handleFollowupAction;
+    window.handleActionItemPrimary = handleActionItemPrimary;
+    window.handleActionItemSecondary = handleActionItemSecondary;
     window.sendChatMsg = sendChatMsg;
     window.openMetricConfig = openMetricConfig;
     window.closeMetricConfig = closeMetricConfig;
