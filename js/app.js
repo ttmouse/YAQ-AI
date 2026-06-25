@@ -39,7 +39,7 @@
     };
 
     // ─── 功能占位 — 防止内联 onclick 在依赖文件加载前触发 ReferenceError ──
-    window.toggleDemoMenu = function() {};
+    window.toggleDemoMenu = function() {};  // stub — agent-init.js 加载后替换为真实实现
 
     // ─── 存储版本号 ────────────────────────────────────────────
     var STORAGE_VERSION = 4;
@@ -4405,8 +4405,10 @@
           renderTabs();
           ws.classList.remove('scanning');
           var name = '⚙ 规则引擎';
-          chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已切换到「' + name + '」，你可以在这里配置异常判定规则，或直接告诉 AI 你想加的规则。</div></div>';
-          chatBody.scrollTop = chatBody.scrollHeight;
+          if (chatBody) {
+            chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已切换到「' + name + '」，你可以在这里配置异常判定规则，或直接告诉 AI 你想加的规则。</div></div>';
+            chatBody.scrollTop = chatBody.scrollHeight;
+          }
           showToast('已切换至「规则引擎」');
           return;
         }
@@ -4421,10 +4423,12 @@
         renderTabs();
         ws.classList.remove('scanning');
 
-        // AI 对话追加系统消息
+        // AI 对话追加系统消息（chatBody 可能为 null，如初始化完成前误点）
         var name = sceneNames[sceneId] || sceneId;
-        chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已切换到「' + name + '」，你需要关注什么？</div></div>';
-        chatBody.scrollTop = chatBody.scrollHeight;
+        if (chatBody) {
+          chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已切换到「' + name + '」，你需要关注什么？</div></div>';
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }
 
         showToast('已切换至「' + name + '」');
       }, 250);
@@ -6104,6 +6108,9 @@
       handleActionItemPrimary: handleActionItemPrimary,
       handleActionItemSecondary: handleActionItemSecondary,
 
+      // ─── 工具函数 ───
+      getActionIcon: getActionIcon,
+
       // ─── 指标配置 ───
       openMetricConfig: openMetricConfig,
       saveMetricConfig: saveMetricConfig,
@@ -6128,12 +6135,10 @@
 
       // ─── 企业面板 ───
       openEnterprisePanel: openEnterprisePanel,
-      closeEnterprisePanel: closeEnterprisePanel,
       epSwitchTab: epSwitchTab,
 
       // ─── 隐患详情 ───
       openHazardDetail: openHazardDetail,
-      closeHazardModal: closeHazardModal,
       copyHazardInfo: copyHazardInfo,
 
       // ─── 任务详情 ───
@@ -6146,7 +6151,6 @@
       // ─── 快速启动 (Launcher) ───
       toggleLauncher: toggleLauncher,
       openLauncher: openLauncher,
-      closeLauncher: closeLauncher,
       onLauncherSearch: onLauncherSearch,
       launcherSearchFirst: launcherSearchFirst,
       launcherGo: launcherGo,
@@ -6215,6 +6219,7 @@
     window.closePAModal = window.YAQ.closePAModal;
     window.renderScene = window.YAQ.renderScene;
     window.escapeHtml = window.YAQ.escapeHtml;  // 供 agent-init.js 等后续脚本使用
+    window.switchScene = window.YAQ.switchScene;  // 供移动端底部导航 onclick 使用
 
     // ════════════════════════════════════════════════════════════════
     // 待确认行动交互
