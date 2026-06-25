@@ -953,23 +953,50 @@
     // SCENE RENDERERS
     // ════════════════════════════════════════════════════════════════
 
+    // ─── 状态渲染辅助 ────────────────────────────────────────────
+    function renderLoading(msg) {
+      return '<div class="state-loading"><div class="spinner"></div><div class="state-text">' + (msg || '加载中…') + '</div></div>';
+    }
+    function renderEmpty(msg, desc) {
+      return '<div class="state-empty"><div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4V7"/><path d="M21 3H3v4h18V3Z"/></svg></div><div class="state-title">' + (msg || '暂无数据') + '</div>' + (desc ? '<div class="state-desc">' + desc + '</div>' : '') + '</div>';
+    }
+    function renderError(msg, desc) {
+      return '<div class="state-error"><div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="state-title">' + (msg || '加载失败') + '</div>' + (desc ? '<div class="state-desc">' + desc + '</div>' : '') + '</div>';
+    }
+
     function renderScene(sceneId) {
       var container = $dom.sceneContent;
-      var html = '';
-      switch (sceneId) {
-        case 'dashboard': html = renderDashboard(); break;
-        case 'hazard-report': html = renderHazardReport(); break;
-        case 'efficiency': html = renderEfficiency(); break;
-        case 'responsibility': html = renderResponsibility(); break;
-        case 'disposal': html = renderDisposal(); break;
-        case 'followup': html = renderFollowup(); break;
-        case 'pending-actions': html = renderPendingActions(); break;
-        default: html = renderDashboard();
-      }
-      container.innerHTML = html;
-      lucide.createIcons();
-      // 同步批量操作栏状态
-      if (sceneId === 'pending-actions') { updateBatchBar(); }
+
+      // ─── Loading 状态 ────────────────────────────────────────────
+      container.innerHTML = renderLoading();
+
+      // 用 setTimeout 让 loading 先渲染，再生成实际内容
+      setTimeout(function() {
+        var html = '';
+        try {
+          switch (sceneId) {
+            case 'dashboard': html = renderDashboard(); break;
+            case 'hazard-report': html = renderHazardReport(); break;
+            case 'efficiency': html = renderEfficiency(); break;
+            case 'responsibility': html = renderResponsibility(); break;
+            case 'disposal': html = renderDisposal(); break;
+            case 'followup': html = renderFollowup(); break;
+            case 'pending-actions': html = renderPendingActions(); break;
+            default: html = renderDashboard();
+          }
+          // ─── Empty 状态（内容为空时） ──────────────────────────
+          if (!html || html.trim().length === 0) {
+            html = renderEmpty('暂无内容', '当前场景暂无数据显示');
+          }
+        } catch(e) {
+          // ─── Error 状态 ──────────────────────────────────────────
+          html = renderError('渲染异常', '请尝试刷新页面或切换场景。' + (e.message ? ' (' + e.message + ')' : ''));
+        }
+        container.innerHTML = html;
+        lucide.createIcons();
+        // 同步批量操作栏状态
+        if (sceneId === 'pending-actions') { updateBatchBar(); }
+      }, 80); // 80ms 模拟加载延迟
     }
 
     // ─── Dashboard ───────────────────────────────────────────────────
@@ -1644,6 +1671,7 @@
 
     function renderHazardReport() {
       var h = MOCK.hazards;
+      if (!h || h.length === 0) return renderEmpty('暂无隐患数据', '当前没有登记的隐患记录。');
 
       // Status change indicator
       function statusChange(prev, cur, prevCls, curCls) {
@@ -1708,6 +1736,7 @@
 
     function renderEfficiency() {
       var e = MOCK.efficiency;
+      if (!e || !e.groups || e.groups.length === 0) return renderEmpty('暂无履职数据', '当前没有履职效能分析数据。');
       var cardsHtml = '';
       for (var gi = 0; gi < e.groups.length; gi++) {
         var g = e.groups[gi];
@@ -1737,6 +1766,7 @@
     // ─── Responsibility ──────────────────────────────────────────────
 
     function renderResponsibility() {
+      if (!MOCK.subjects || MOCK.subjects.length === 0) return renderEmpty('暂无主体数据', '当前没有责任主体评估数据。');
       var rows = '';
       for (var i = 0; i < MOCK.subjects.length; i++) {
         var s = MOCK.subjects[i];
@@ -2212,6 +2242,7 @@
     function renderPendingActions() {
       var pas = MOCK.pendingActions || [];
       var confirmed = MOCK.confirmedPackages || [];
+      if (pas.length === 0 && confirmed.length === 0) return renderEmpty('暂无待确认行动', '所有行动已处理完毕。');
 
       // 待确认的（status === 'pending'）
       var pendingPas = [];
