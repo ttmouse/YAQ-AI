@@ -6229,6 +6229,12 @@
     window.onMetricSearch = window.YAQ.onMetricSearch;    // 供指标搜索 oninput 使用 (#53)
     window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)
 
+    // ── 复合命令包装：支持 data-cmd 单命令调用 ──────────────
+    YAQ.resetAndCloseMenu = function() { window.resetInit(); window.closeDemoMenu(); };
+    YAQ.dashboardRedirectAndClose = function() { window.doDashboardRedirect(); window.closeDemoMenu(); };
+    YAQ.normalDashboardAndClose = function() { window.doNormalDashboard(); window.closeDemoMenu(); };
+    YAQ.closeMenuAndOpenComparison = function() { window.closeDemoMenu(); window.open('ai-vs-traditional-comparison.html','_blank'); };
+
     // ════════════════════════════════════════════════════════════════
     // 事件委托：替代 index.html 中的内联 onclick（#42）
     // 渐进式迁移：先用 data-* 属性 + 事件委托消除内联 onclick，
@@ -6255,6 +6261,27 @@
         }
         return;
       }
+    });
+
+    // ── keydown 委托：替代内联 onkeydown (#73) ──────────
+    document.addEventListener('keydown', function(e) {
+      var el = e.target.closest('[data-cmd-key]');
+      if (!el) return;
+      var key = el.getAttribute('data-cmd-key');
+      var fn = el.getAttribute('data-cmd');
+      if (e.key !== key) return;
+      e.preventDefault();
+      var func = (window.YAQ && window.YAQ[fn]) || window[fn];
+      if (typeof func === 'function') func(e);
+    });
+
+    // ── input 委托：替代内联 oninput (#73) ──────────
+    document.addEventListener('input', function(e) {
+      var el = e.target.closest('[data-cmd-input]');
+      if (!el) return;
+      var fn = el.getAttribute('data-cmd-input');
+      var func = (window.YAQ && window.YAQ[fn]) || window[fn];
+      if (typeof func === 'function') func();
     });
 
     // ════════════════════════════════════════════════════════════════
