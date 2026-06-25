@@ -1049,7 +1049,10 @@
 
   function escHtml(s) {
     if (typeof s !== 'string') return '' + s;
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    // DOM createTextNode 方式 — 自动转义 & < > " ' 所有 HTML 特殊字符
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(s));
+    return d.innerHTML;
   }
 
   function severityLabel(sev) {
