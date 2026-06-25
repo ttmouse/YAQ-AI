@@ -6228,6 +6228,34 @@
     window.switchScene = window.YAQ.switchScene;  // 供移动端底部导航 onclick 使用
 
     // ════════════════════════════════════════════════════════════════
+    // 事件委托：替代 index.html 中的内联 onclick（#42）
+    // 渐进式迁移：先用 data-* 属性 + 事件委托消除内联 onclick，
+    // 后续可进一步优化为更细粒度的组件级绑定。
+    // ════════════════════════════════════════════════════════════════
+
+    document.addEventListener('click', function(e) {
+      var el, fn, arg;
+
+      // ── 场景切换：[data-scene] — e.g. <button data-scene="dashboard">
+      el = e.target.closest('[data-scene]');
+      if (el) { switchScene(el.getAttribute('data-scene')); return; }
+
+      // ── 命令分发：[data-cmd] (+ 可选 data-arg) — 通用模式
+      el = e.target.closest('[data-cmd]');
+      if (el) {
+        fn = el.getAttribute('data-cmd');
+        arg = el.getAttribute('data-arg');
+        // 先查 YAQ 命名空间，再查 window
+        var func = (window.YAQ && window.YAQ[fn]) || window[fn];
+        if (typeof func === 'function') {
+          if (arg != null && arg !== '') func(arg);
+          else func();
+        }
+        return;
+      }
+    });
+
+    // ════════════════════════════════════════════════════════════════
     // 待确认行动交互
     // ════════════════════════════════════════════════════════════════
 
