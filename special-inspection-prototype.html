@@ -5,103 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>智能专项检查任务生成 — 交互原型</title>
   <script src="https://unpkg.com/lucide@1.21.0/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ═══ Reset & Base ═══════════════════════════════════════ */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ─── Prototype variables (complement tokens.css) ──────── */
     :root {
-      --bg: #f0f2f5;
-      --surface: #fff;
-      --text: #1e293b;
-      --weak: #94a3b8;
-      --line: #e2e8f0;
-      --accent: #2563eb;
-      --accent-light: #eff6ff;
-      --accent-dark: #1d4ed8;
-      --red: #dc2626;
-      --orange: #ea580c;
-      --green: #16a34a;
-      --amber: #d97706;
-      --blue: #2563eb;
-      --radius: 10px;
+      --accent-light: color-mix(in oklch, var(--accent) 8%, transparent);
+      --accent-dark: oklch(44% 0.17 255);
       --shadow: 0 1px 3px rgba(0,0,0,.08);
-      --font: -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
-    }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      --radius: 10px;
     }
 
-    /* ═══ Top Bar ════════════════════════════════════════════ */
-    .top {
-      background: var(--surface);
-      border-bottom: 1px solid var(--line);
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .brand img { height: 28px; width: auto; }
-    .tab-strip {
-      display: flex;
-      gap: 4px;
-    }
-    .tab-strip span {
-      padding: 4px 14px;
-      border-radius: 999px;
-      font-size: 13px;
-      cursor: default;
-      transition: .15s;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 500;
-    }
-    .tab-strip span:not(.active) {
-      background: transparent;
-      color: var(--weak);
-    }
-    .meta { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-    .pill {
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: #f1f5f9;
-      color: var(--weak);
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .pill i { width: 12px; height: 12px; }
+    /* ─── Prototype layout overrides (differs from main app) ─── */
+    .main { flex:1; display:flex; flex-direction:column; overflow:hidden; position:relative; }
+    .center { flex:1; overflow-y:auto; padding:0; }
+    .workspace { max-width:860px; margin:0 auto; padding:20px 16px 100px; }
 
-    /* ═══ Main Layout ════════════════════════════════════════ */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-    .center {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0;
-    }
-    .workspace {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 20px 16px 100px;
-    }
-
-    /* ═══ Scene Content ══════════════════════════════════════ */
+    /* ─── Prototype-specific components ───────────────────── */
     .scene-header {
       margin-bottom: 20px;
     }
