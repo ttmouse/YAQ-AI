@@ -108,3 +108,44 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ─── Loading / Empty / Error 状态 ───────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.state-loading {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; gap: 16px; animation: fadeIn .3s ease;
+}
+.state-loading .spinner {
+  width: 32px; height: 32px; border: 3px solid var(--line);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite;
+}
+.state-loading .state-text { font-size: var(--fs-sm, 13px); color: var(--weak); }
+
+.state-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; gap: 12px; animation: fadeIn .3s ease;
+}
+.state-empty .state-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: color-mix(in oklch, var(--line) 50%, transparent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--weak); opacity: 0.6;
+}
+.state-empty .state-title { font-size: var(--fs-base, 14px); color: var(--fg); font-weight: 600; }
+.state-empty .state-desc { font-size: var(--fs-sm, 13px); color: var(--weak); text-align: center; max-width: 320px; line-height: 1.5; }
+
+.state-error {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; gap: 12px; animation: fadeIn .3s ease;
+}
+.state-error .state-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: color-mix(in oklch, var(--red) 15%, transparent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--red);
+}
+.state-error .state-title { font-size: var(--fs-base, 14px); color: var(--fg); font-weight: 600; }
+.state-error .state-desc { font-size: var(--fs-sm, 13px); color: var(--weak); text-align: center; max-width: 320px; line-height: 1.5; }
