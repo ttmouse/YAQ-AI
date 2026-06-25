@@ -2009,7 +2009,7 @@
           '<td><span class="ht-status ' + h[i].statusCls + '">' + h[i].status + '</span>' +
             '<div style="margin-top:2px">' + statusChange(h[i].prevStatus, h[i].status, h[i].prevStatusCls, h[i].statusCls) + '</div></td>' +
           '<td>' + h[i].person + '</td>' +
-          '<td><div class="ht-actions"><button class="ht-action-btn primary" title="督办" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" aria-hidden="true"></i></button><button class="ht-action-btn" title="现场核查" onclick="openDrawer(\'inspect\')"><i data-lucide="search" aria-hidden="true"></i></button><button class="ht-action-btn" title="会议议题" onclick="openDrawer(\'meeting\')"><i data-lucide="calendar" aria-hidden="true"></i></button><button class="ht-action-btn" title="持续跟踪" onclick="addTrack({title:\'' + (h[i].object + ' - ' + h[i].hazard).replace(/'/g, "\\'") + '\',source:\'隐患整改日报\',responsibility:\'' + (h[i].person || '').replace(/'/g, "\\'") + '\'})"><i data-lucide="pin" aria-hidden="true"></i></button></div></td></tr>';
+          '<td><div class="ht-actions"><button class="ht-action-btn primary" title="督办" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" aria-hidden="true"></i></button><button class="ht-action-btn" title="现场核查" onclick="openDrawer(\'inspect\')"><i data-lucide="search" aria-hidden="true"></i></button><button class="ht-action-btn" title="会议议题" onclick="openDrawer(\'meeting\')"><i data-lucide="calendar" aria-hidden="true"></i></button><button class="ht-action-btn" title="持续跟踪" data-yaq-track="ht"><i data-lucide="pin" aria-hidden="true"></i></button></div></td></tr>';
       }
 
       // 隐患回头看
@@ -2309,7 +2309,7 @@
           '</div>' +
           '<div class="dr-card-actions">' +
             '<button class="dr-action-btn primary" onclick="copyDisposalRec(' + ri + ')" title="复制文案"><i data-lucide="copy" width="13" height="13"></i> 复制文案</button>' +
-            '<button class="dr-action-btn" onclick="showToast(\'已加入跟踪事项\')" title="加入跟踪"><i data-lucide="pin" width="13" height="13"></i> 加入跟踪</button>' +
+            '<button class="dr-action-btn" data-yaq-track="dr" title="加入跟踪"><i data-lucide="pin" width="13" height="13"></i> 加入跟踪</button>' +
             '<button class="dr-action-btn" onclick="showToast(\'督办已发起\')" title="一键督办"><i data-lucide="megaphone" width="13" height="13"></i> 一键督办</button>' +
           '</div>' +
         '</div>';
@@ -3862,7 +3862,7 @@
             :
               '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'supervise\')"><i data-lucide="megaphone" width="11" height="11"></i> 督办</button>' +
               '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'inspect\')"><i data-lucide="search" width="11" height="11"></i> 现场核查</button>' +
-              '<button class="hc-btn" onclick="event.stopPropagation();showToast(\'已加入持续跟踪\')"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
+              '<button class="hc-btn" data-yaq-track="hc"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
             ) +
           '</div>' +
         '</div>';
@@ -3894,7 +3894,7 @@
             :
               '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'supervise\')"><i data-lucide="megaphone" width="11" height="11"></i> 督办</button>' +
               '<button class="hc-btn" onclick="event.stopPropagation();openDrawer(\'inspect\')"><i data-lucide="search" width="11" height="11"></i> 现场核查</button>' +
-              '<button class="hc-btn" onclick="event.stopPropagation();showToast(\'已加入持续跟踪\')"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
+              '<button class="hc-btn" data-yaq-track="hc"><i data-lucide="pin" width="11" height="11"></i> 跟踪</button>'
             ) +
           '</div>' +
         '</div>';
@@ -4499,7 +4499,7 @@
           '<div class="dr-gen-text" id="drawerGenText">' + generated.replace(/\n/g, '<br>') + '</div>' +
           '<div class="dr-gen-actions">' +
             '<button class="dr-action-btn primary" onclick="copyDrawerGenerated()" style="padding:6px 14px"><i data-lucide="copy" width="13" height="13"></i> 复制文案</button>' +
-            '<button class="dr-action-btn" onclick="showToast(\'已加入跟踪事项\');closeDrawer()" style="padding:6px 14px"><i data-lucide="pin" width="13" height="13"></i> 加入跟踪</button>' +
+            '<button class="dr-action-btn" data-yaq-track="dw" style="padding:6px 14px"><i data-lucide="pin" width="13" height="13"></i> 加入跟踪</button>' +
             '<button class="dr-action-btn" onclick="showToast(\'通知已发送\');closeDrawer()" style="padding:6px 14px"><i data-lucide="send" width="13" height="13"></i> 发送通知</button>' +
           '</div>' +
         '</div>';
@@ -4528,6 +4528,54 @@
 
       // Priority item action buttons (delegated)
       $dom.sceneContent.addEventListener('click', function(e) {
+        // ── 持续跟踪快捷按钮 ──
+        var trackBtn = e.target.closest('[data-yaq-track]');
+        if (trackBtn) {
+          var kind = trackBtn.getAttribute('data-yaq-track');
+          var card = trackBtn.closest('.hazard-card, .ht-actions');
+          var drCard = trackBtn.closest('.dr-card');
+          var drawerGen = trackBtn.closest('.drawer-generated');
+          var trackTitle = '';
+          if (card) {
+            // 从 hazard-card 提取对象名和隐患描述
+            var nameEl = card.querySelector('.hc-name');
+            var descEl = card.querySelector('.hc-desc');
+            trackTitle = (nameEl ? nameEl.textContent.trim() : '') + (descEl ? ' ' + descEl.textContent.trim() : '');
+            // 如果是表格行内按钮(ht)，从表格行提取
+            if (!trackTitle && kind === 'ht') {
+              var row = trackBtn.closest('tr');
+              if (row) {
+                var cells = row.querySelectorAll('td');
+                trackTitle = (cells[0] ? cells[0].textContent.trim() : '') + ' - ' + (cells[1] ? cells[1].textContent.trim() : '');
+                addTrack({ title: trackTitle, source: '隐患整改日报', responsibility: (cells[5] ? cells[5].textContent.trim() : '') });
+              }
+              e.stopPropagation();
+              return;
+            }
+            // 普通 hazard-card：提取已有标题
+            if (trackTitle) {
+              addTrack(trackTitle);
+              e.stopPropagation();
+              return;
+            }
+          } else if (drCard) {
+            var nameEl = drCard.querySelector('.dr-hazard-name');
+            trackTitle = nameEl ? nameEl.textContent.trim() : '跟踪事项';
+            addTrack({ title: trackTitle, source: '诊断处置' });
+            e.stopPropagation();
+            return;
+          } else if (drawerGen) {
+            var drawerPanel = document.getElementById('drawerPanel');
+            var titleEl = drawerPanel ? drawerPanel.querySelector('#drawerTitle') : null;
+            trackTitle = titleEl ? titleEl.textContent.trim() : '跟踪事项';
+            addTrack({ title: trackTitle, source: '处置生成' });
+            closeDrawer();
+            e.stopPropagation();
+            return;
+          }
+          return;
+        }
+
         var btn = e.target.closest('[data-pi-action]');
         if (btn) {
           var action = btn.getAttribute('data-pi-action');
