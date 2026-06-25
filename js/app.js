@@ -1264,7 +1264,7 @@
         shownCount++;
         html += '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openHazardDetail(\'' + h.object + '\')" title="点击查看详情">' +
           '<div class="hc-head">' +
-            '<span class="hc-name">' + h.object + '</span>' +
+            '<span class="hc-name">' + escapeHtml(h.object) + '</span>' +
           '</div>' +
           '<div class="hc-desc">' + h.hazard.split('\n')[0] + '</div>' +
           '<div class="hc-meta">' +
@@ -1283,7 +1283,7 @@
         doneShown++;
         html += '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer;opacity:0.75" onclick="openHazardDetail(\'' + h2.object + '\')" title="点击查看详情">' +
           '<div class="hc-head">' +
-            '<span class="hc-name">' + h2.object + '</span>' +
+            '<span class="hc-name">' + escapeHtml(h2.object) + '</span>' +
           '</div>' +
           '<div class="hc-desc">' + h2.hazard.split('\n')[0] + '</div>' +
           '<div class="hc-meta">' +
@@ -1335,7 +1335,7 @@
           '<div class="hc-head">' +
             '<div style="display:flex;align-items:center;gap:4px;min-width:0">' +
             (tc.type === '专项' ? '<span style="color:var(--blue);font-weight:500;flex-shrink:0;font-size:13px">专项</span>' : '') +
-            '<span class="hc-name" style="flex:1;min-width:0">' + tc.name + '</span>' +
+            '<span class="hc-name" style="flex:1;min-width:0">' + escapeHtml(tc.name) + '</span>' +
             '</div>' +
           '</div>' +
           '<div class="hc-time" style="margin-top:2px">' + tc.startDate + ' → ' + tc.endDate + '</div>' +
@@ -1424,7 +1424,7 @@
         html += '<div class="ai-action-item" data-ai-idx="' + ai + '">' +
           '<label class="ai-action-check" onclick="event.stopPropagation()"><input type="checkbox" checked onchange="toggleActionItemCheck(' + ai + ', this.checked)"></label>' +
           '<span class="type-badge ' + a.typeCls + '">' + a.type + '</span>' +
-          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;padding-left:28px">' + a.title + '</div>' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;padding-left:28px">' + escapeHtml(a.title) + '</div>' +
           '<div class="basis" style="padding-left:28px"><i data-lucide="file-text" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--muted)"></i>' + a.basis + '</div>' +
           '<div class="req" style="padding-left:28px"><i data-lucide="check-circle" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--accent)"></i>' + a.requirement + '</div>' +
           '<div style="display:flex;gap:6px;margin-top:4px;padding-left:28px">' +
@@ -1600,7 +1600,7 @@
           '<div class="dsi-head">' +
             '<span class="dsi-num">#' + (i + 1) + '</span>' +
             '<span class="dsi-source">' + item.source + '</span>' +
-            '<h4 class="dsi-title">' + item.title + '</h4>' +
+            '<h4 class="dsi-title">' + escapeHtml(item.title) + '</h4>' +
           '</div>' +
           '<div class="dsi-section"><span class="dsi-label">督办原因</span><span class="dsi-value">' + item.reason + '</span></div>' +
           '<div class="dsi-section"><span class="dsi-label">整改要求</span><span class="dsi-value">' + item.requirement + '</span></div>' +
@@ -1624,7 +1624,7 @@
       }
       return '<div class="priority-item level-' + item.level + '" data-pi-id="' + item.id + '">' +
         '<div class="pi-left"><span class="pi-index">#' + item.index + '</span><span class="pi-tag ' + item.level + '">' + item.tag + '</span></div>' +
-        '<div class="pi-body"><div class="pi-title">' + item.title + '</div>' +
+        '<div class="pi-body"><div class="pi-title">' + escapeHtml(item.title) + '</div>' +
         '<div class="pi-detail"><span><i data-lucide="clock" aria-hidden="true"></i>' + item.detail.split('·').join('</span><span><i data-lucide="user" aria-hidden="true"></i>') + '</span></div>' +
         '<div class="pi-actions">' + actionsHtml + '</div></div></div>';
     }
@@ -1656,7 +1656,7 @@
 
       var rows = '';
       for (var i = 0; i < h.length; i++) {
-        rows += '<tr><td>' + h[i].object + '</td><td>' + h[i].hazard + '</td><td>' + h[i].region + '</td>' +
+        rows += '<tr><td>' + escapeHtml(h[i].object) + '</td><td>' + escapeHtml(h[i].hazard) + '</td><td>' + h[i].region + '</td>' +
           '<td><span class="ht-status ' + h[i].prevStatusCls + '" style="font-size:10px">' + h[i].prevStatus + '</span></td>' +
           '<td><span class="ht-status ' + h[i].statusCls + '">' + h[i].status + '</span>' +
             '<div style="margin-top:2px">' + statusChange(h[i].prevStatus, h[i].status, h[i].prevStatusCls, h[i].statusCls) + '</div></td>' +
@@ -1669,7 +1669,7 @@
       for (var ri = 0; ri < h.length; ri++) {
         if (h[ri].statusCls === 'danger' || h[ri].statusCls === 'warning') {
           reviewItems += '<div class="info-list-item"><div class="il-left"><i data-lucide="alert-circle" aria-hidden="true" style="color:' + (h[ri].statusCls === 'danger' ? 'var(--red)' : 'var(--orange)') + '"></i>' +
-            '<span class="il-label"><strong>' + h[ri].object + '</strong> · ' + h[ri].hazard + '</span></div></div>' +
+            '<span class="il-label"><strong>' + escapeHtml(h[ri].object) + '</strong> · ' + escapeHtml(h[ri].hazard) + '</span></div></div>' +
             '<div style="padding:2px 0 6px 24px;font-size:11.5px;color:var(--muted);border-bottom:1px solid var(--border)">' +
             '临时管控：' + h[ri].measures + '<br>整改方案：' + h[ri].plan + '<br>时间表：' + h[ri].timeline +
             ' · 责任人：' + h[ri].person +
@@ -1717,7 +1717,7 @@
           metricsHtml += '<div class="eff-metric"><span class="eff-metric-label"><i data-lucide="' + (iconKeys[mi] || 'chevron-right') + '" aria-hidden="true"></i> ' + g.metrics[mi].label + '</span><span class="eff-metric-value ' + g.metrics[mi].cls + '">' + g.metrics[mi].value + '</span></div>';
         }
         cardsHtml += '<div class="eff-card">' +
-          '<div class="eff-head"><h3><i data-lucide="' + g.icon + '" aria-hidden="true"></i> ' + g.name + '</h3><span class="eff-status ' + g.status + '">' + (g.status === 'danger' ? '需关注' : '异常') + '</span></div>' +
+          '<div class="eff-head"><h3><i data-lucide="' + g.icon + '" aria-hidden="true"></i> ' + escapeHtml(g.name) + '</h3><span class="eff-status ' + g.status + '">' + (g.status === 'danger' ? '需关注' : '异常') + '</span></div>' +
           '<div class="eff-metrics">' + metricsHtml + '</div></div>';
       }
 
@@ -1741,7 +1741,7 @@
       for (var i = 0; i < MOCK.subjects.length; i++) {
         var s = MOCK.subjects[i];
         var riskLabel = s.risk === 'high' ? '高度关注' : s.risk === 'mid' ? '需关注' : '观察';
-        rows += '<tr><td><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + s.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + s.name + '</a></td><td>' + s.selfCheck + '</td><td>' + s.govCheck + '</td><td>' + s.training + '</td><td>' + s.drill + '</td><td><span class="st-risk ' + s.risk + '">' + riskLabel + '</span></td><td style="font-size:12px;color:var(--accent);font-weight:500;cursor:pointer" onclick="showToast(\'已记录建议：' + s.suggest + '\')">' + s.suggest + '</td></tr>';
+        rows += '<tr><td><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + s.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + escapeHtml(s.name) + '</a></td><td>' + escapeHtml(s.selfCheck) + '</td><td>' + escapeHtml(s.govCheck) + '</td><td>' + escapeHtml(s.training) + '</td><td>' + escapeHtml(s.drill) + '</td><td><span class="st-risk ' + s.risk + '">' + riskLabel + '</span></td><td style="font-size:12px;color:var(--accent);font-weight:500;cursor:pointer" onclick="showToast(\'已记录建议：' + s.suggest + '\')">' + s.suggest + '</td></tr>';
       }
 
       return '' +
@@ -1814,7 +1814,7 @@
               var gapVal = gapSorted[gi].gap;
               var gRisk = g.risk === 'high' ? 'var(--red)' : '#d97706';
               sectionHtml += '<tr style="border-bottom:1px solid var(--line)">' +
-                '<td style="padding:4px 6px;font-weight:500"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + gRisk + ';margin-right:4px;vertical-align:middle"></span><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + g.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + g.name + '</a></td>' +
+                '<td style="padding:4px 6px;font-weight:500"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + gRisk + ';margin-right:4px;vertical-align:middle"></span><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + g.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + escapeHtml(g.name) + '</a></td>' +
                 '<td style="padding:4px 6px;text-align:center;color:' + (g.selfCheck === 0 || g.selfCheck === '0 次' ? 'var(--red)' : 'var(--muted)') + '">' + (g.selfCheck || '0 次') + '</td>' +
                 '<td style="padding:4px 6px;text-align:center;color:var(--muted)">' + g.govCheck + '</td>' +
                 '<td style="padding:4px 6px;text-align:center;font-weight:700;color:' + (gapVal > 5 ? 'var(--red)' : '#d97706') + '">' + gapVal + '</td>' +
@@ -2586,7 +2586,9 @@
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
     }
 
     function getDrawerIcon(action) {
@@ -2630,7 +2632,7 @@
       window.__currentHazard = h;
 
       var dotColor = h.level.indexOf('重大') > -1 ? 'var(--red)' : '#d97706';
-      $dom.hazardModalName.innerHTML = '<a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--text);text-decoration:none;border-bottom:1px dashed var(--blue)">' + h.object + '</a>';
+      $dom.hazardModalName.innerHTML = '<a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--text);text-decoration:none;border-bottom:1px dashed var(--blue)">' + escapeHtml(h.object) + '</a>';
       $dom.hazardModalDot.style.background = dotColor;
 
       // — 顶部状态区 —
@@ -2651,7 +2653,7 @@
       '<div style="font-size:13px;color:#344054;line-height:1.6;margin-bottom:14px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">' + (h.suggestion || '—') + '</div>' +
       // — 基础信息（两列简洁）—
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;margin-bottom:10px">' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">对象</span> <a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue)">' + h.object + '</a></div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">对象</span> <a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue)">' + escapeHtml(h.object) + '</a></div>' +
         '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">责任人</span> ' + (h.person || '—') + '</div>' +
         '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">发现</span> ' + (h.discoverer || '—') + ' / ' + h.foundDate + '</div>' +
         '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">期限</span> ' + h.deadline + '</div>' +
@@ -2946,10 +2948,10 @@
       for (var i = 0; i < hazards.length; i++) {
         var h = hazards[i];
         html += '<div class="hazard-card" style="cursor:pointer;margin-bottom:8px" onclick="openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')">' +
-          '<div class="hc-head"><span class="hc-name">' + h.object + '</span></div>' +
-          '<div class="hc-desc">' + h.hazard + '</div>' +
+          '<div class="hc-head"><span class="hc-name">' + escapeHtml(h.object) + '</span></div>' +
+          '<div class="hc-desc">' + escapeHtml(h.hazard) + '</div>' +
           '<div class="hc-meta">' +
-            '<span>来源 ' + h.source + '</span>' +
+            '<span>来源 ' + escapeHtml(h.source) + '</span>' +
             '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
             '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
           '</div>' +
@@ -2976,12 +2978,12 @@
       var html = '<div style="font-size:13px;font-weight:700;margin-bottom:8px">最近隐患</div>';
       for (var i = 0; i < recent.length; i++) {
         var h = recent[i];
-        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + h.overdue + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
+        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + escapeHtml(h.overdue) + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
         html += '<div class="hazard-card" style="cursor:pointer;margin-bottom:8px" onclick="openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')">' +
-          '<div class="hc-head"><span class="hc-name">' + h.object + '</span></div>' +
-          '<div class="hc-desc">' + h.hazard + '</div>' +
+          '<div class="hc-head"><span class="hc-name">' + escapeHtml(h.object) + '</span></div>' +
+          '<div class="hc-desc">' + escapeHtml(h.hazard) + '</div>' +
           '<div class="hc-meta">' +
-            '<span>来源 ' + h.source + '</span>' +
+            '<span>来源 ' + escapeHtml(h.source) + '</span>' +
             '<span class="hc-status ' + h.statusCls + '">' + h.status + '</span>' +
             '<span>逾期 ' + (h.overdue > 0 ? h.overdue + '天' : '—') + '</span>' +
           '</div>' +
@@ -3664,12 +3666,6 @@
         chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已收到你的问题，正在分析「' + escapeHtml(text) + '」…</div></div>';
         chatBody.scrollTop = chatBody.scrollHeight;
       }, 400);
-    }
-
-    function escapeHtml(str) {
-      var div = document.createElement('div');
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -4624,7 +4620,7 @@
         var active = s.id === state.activeScene ? ' active' : '';
         html += '<div class="nav-item' + active + '" data-scene="' + s.id + '">' +
           '<i data-lucide="' + s.icon + '" aria-hidden="true"></i>' +
-          '<span>' + s.name + '</span>';
+          '<span>' + escapeHtml(s.name) + '</span>';
         if (s.badge) {
           html += '<span class="badge ' + s.badge.cls + '">' + s.badge.text + '</span>';
         }
