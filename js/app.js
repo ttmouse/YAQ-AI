@@ -797,14 +797,14 @@
     })();
 
     // 对外暴露给 inline onclick 使用
-    window.addTrack = function(opts) {
+    YAQ.addTrack = function(opts) {
       if (typeof opts === 'string') opts = { title: opts };
       var t = TrackStore.add(opts || {});
       showToast('✅ 已加入持续跟踪');
       return t;
     };
     // 更新进展（弹窗输入进展描述）
-    window.updateTrackProgress = function(id) {
+    YAQ.updateTrackProgress = function(id) {
       var note = prompt('请输入最新进展描述：');
       if (note && note.trim()) {
         var t = TrackStore.getActive().filter(function(x) { return x.id === id; })[0];
@@ -819,7 +819,7 @@
       }
     };
     // 标记闭环
-    window.resolveTrack = function(id) {
+    YAQ.resolveTrack = function(id) {
       if (confirm('确认该事项已闭环？')) {
         var note = prompt('闭环说明（可选）：');
         TrackStore.resolve(id, note || '已闭环');
@@ -828,16 +828,16 @@
       }
     };
     // 归档
-    window.closeTrack = function(id) {
+    YAQ.closeTrack = function(id) {
       TrackStore.close(id);
       showToast('已归档');
       switchScene('followup');
     };
     // 便捷入口：从当前上下文快速创建跟踪
-    window.quickTrack = function(title, source, responsibility) {
-      return window.addTrack({ title: title, source: source || '手动添加', responsibility: responsibility || '' });
+    YAQ.quickTrack = function(title, source, responsibility) {
+      return YAQ.addTrack({ title: title, source: source || '手动添加', responsibility: responsibility || '' });
     };
-    window.trackStore = TrackStore;
+    YAQ.trackStore = TrackStore;
 
     // ════════════════════════════════════════════════════════════════
     // 企业主体责任 AI 评估数据（mock）
@@ -1345,8 +1345,8 @@
 
     // ─── 主控 Agent 扩展内容（初始化后总控台顶部显示） ──────────
     function renderDashboardAgentExtras() {
-      if (typeof window.renderAgentEnabledHTML === 'function') {
-        return window.renderAgentEnabledHTML();
+      if (typeof YAQ.renderAgentEnabledHTML === 'function') {
+        return YAQ.renderAgentEnabledHTML();
       }
       return '';
     }
@@ -1851,8 +1851,8 @@
       }
     }
 
-    window.toggleActionItemCheck = toggleActionItemCheck;
-    window.toggleActionItemSelectAll = toggleActionItemSelectAll;
+    YAQ.toggleActionItemCheck = toggleActionItemCheck;
+    YAQ.toggleActionItemSelectAll = toggleActionItemSelectAll;
 
     // ─── 全局上下文督办生成 ──────────────────────────────────────
 
@@ -2361,7 +2361,7 @@
     }
 
     // ─── AI 处置建议：复制单条文案 ──────────────────────────
-    window.copyDisposalRec = function(idx) {
+    YAQ.copyDisposalRec = function(idx) {
       var recs = MOCK.disposalRecommendations || [];
       var r = recs[idx];
       if (!r) return;
@@ -2376,7 +2376,7 @@
     };
 
     // ─── AI 处置建议：生成全部 ──────────────────────────────
-    window.generateAllDisposalText = function() {
+    YAQ.generateAllDisposalText = function() {
       var recs = MOCK.disposalRecommendations || [];
       if (recs.length === 0) { showToast('暂无处置建议'); return; }
       var allText = '╔══ 站长处置建议总览（' + new Date().toLocaleDateString('zh-CN') + '）══╗\n\n';
@@ -2397,7 +2397,7 @@
     };
 
     // ─── AI 处置建议：重新生成（模拟） ──────────────────────
-    window.regenerateDisposalRecs = function() {
+    YAQ.regenerateDisposalRecs = function() {
       showToast('AI 正在基于最新异常数据重新分析…', 'mock');
       setTimeout(function() {
         // 重新渲染处置场景
@@ -2445,7 +2445,7 @@
       return lines.join('\n');
     }
 
-    window.copyDrawerGenerated = function() {
+    YAQ.copyDrawerGenerated = function() {
       var text = window.__lastGeneratedText || '';
       if (!text) { showToast('暂无生成的文案'); return; }
       var ta = document.createElement('textarea');
@@ -2532,13 +2532,13 @@
             // 操作按钮
             '<div style="display:flex;gap:4px;margin-top:2px;flex-wrap:wrap">' +
               (fu.status === 'tracking' ?
-                '<button onclick="event.stopPropagation();window.updateTrackProgress(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--accent);color:#fff;border:none">更新进展</button>' +
-                '<button onclick="event.stopPropagation();window.resolveTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--green);color:#fff;border:none">标记闭环</button>'
+                '<button onclick="event.stopPropagation();YAQ.updateTrackProgress(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--accent);color:#fff;border:none">更新进展</button>' +
+                '<button onclick="event.stopPropagation();YAQ.resolveTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--green);color:#fff;border:none">标记闭环</button>'
               : fu.status === 'progressing' ?
-                '<button onclick="event.stopPropagation();window.updateTrackProgress(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--accent);color:#fff;border:none">更新进展</button>' +
-                '<button onclick="event.stopPropagation();window.resolveTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--green);color:#fff;border:none">确认闭环</button>'
+                '<button onclick="event.stopPropagation();YAQ.updateTrackProgress(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--accent);color:#fff;border:none">更新进展</button>' +
+                '<button onclick="event.stopPropagation();YAQ.resolveTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--green);color:#fff;border:none">确认闭环</button>'
               : fu.status === 'resolved' ?
-                '<button onclick="event.stopPropagation();window.closeTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--weak);color:#fff;border:none">归档</button>'
+                '<button onclick="event.stopPropagation();YAQ.closeTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--weak);color:#fff;border:none">归档</button>'
               : ''
             ) +
             (fu.needIntervention ? '<span style="font-size:10px;color:var(--red);font-weight:600;margin-left:auto">⚠ 需介入</span>' : '') +
@@ -3083,7 +3083,7 @@
         '</div>';
       for (var hi = 0; hi < MR_HISTORY.length; hi++) {
         var h = MR_HISTORY[hi];
-        html += '<div onclick="window.switchMrHistory(\'' + h.id + '\')" style="padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;margin-bottom:4px;border:1px solid ' + (h.active ? 'var(--accent)' : 'transparent') + ';background:' + (h.active ? '#eef2ff' : 'transparent') + ';transition:all .15s" onmouseenter="this.style.background=\'#f2f4f7\'" onmouseleave="this.style.background=\'' + (h.active ? '#eef2ff' : 'transparent') + '\'">' +
+        html += '<div onclick="YAQ.switchMrHistory(\'' + h.id + '\')" style="padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;margin-bottom:4px;border:1px solid ' + (h.active ? 'var(--accent)' : 'transparent') + ';background:' + (h.active ? '#eef2ff' : 'transparent') + ';transition:all .15s" onmouseenter="this.style.background=\'#f2f4f7\'" onmouseleave="this.style.background=\'' + (h.active ? '#eef2ff' : 'transparent') + '\'">' +
           '<div style="font-weight:' + (h.active ? '700' : '500') + ';color:var(--text)">' + h.label + '</div>' +
           '<div style="font-size:10px;color:var(--weak);margin-top:2px">' + h.period + '</div>' +
           (h.active ? '<div style="font-size:9px;color:var(--accent);margin-top:3px">● 当前</div>' : '') +
@@ -3212,7 +3212,7 @@
     }
 
     // ─── 月报模块可见性切换 ──────────────────────────────────
-    window.mrToggleModule = function(sectionId) {
+    YAQ.mrToggleModule = function(sectionId) {
       MR_SECTION_VISIBLE[sectionId] = !MR_SECTION_VISIBLE[sectionId];
       // 更新按钮文字
       var btn = document.getElementById('mr-btn-' + sectionId);
@@ -3233,7 +3233,7 @@
       showToast(MR_SECTION_VISIBLE[sectionId] ? '已显示该模块' : '已隐藏该模块');
     };
 
-    window.mrAddModule = function() {
+    YAQ.mrAddModule = function() {
       // 模拟添加一个"同比分析"模块
       showToast('🤖 小安AI：已收到你的建议，正在生成同比分析模块…');
       // 延迟模拟模块添加
@@ -3270,7 +3270,7 @@
       }, 800);
     };
 
-    window.mrResetModules = function() {
+    YAQ.mrResetModules = function() {
       // 重置所有可见性
       var ids = ['overview','collection','supervision','hazard','five-dim','village','fire','risk-predict','problems','suggestions','yoy-analysis'];
       for (var i = 0; i < ids.length; i++) {
@@ -3293,7 +3293,7 @@
       showToast('已恢复月报默认结构');
     };
 
-    window.switchMrHistory = function(historyId) {
+    YAQ.switchMrHistory = function(historyId) {
       // 更新历史激活状态
       for (var i = 0; i < MR_HISTORY.length; i++) {
         MR_HISTORY[i].active = MR_HISTORY[i].id === historyId;
@@ -3315,7 +3315,7 @@
     };
 
     // ─── 月报章节折叠切换 ────────────────────────────────────
-    window.toggleMrSection = function(header) {
+    YAQ.toggleMrSection = function(header) {
       var body = header.nextElementSibling;
       var toggle = header.querySelector('.mr-toggle');
       if (!body) return;
@@ -3934,9 +3934,9 @@
       document.body.removeChild(ta);
     }
 
-    window.openHazardDetail = openHazardDetail;
-    window.closeHazardModal = closeHazardModal;
-    window.copyHazardInfo = copyHazardInfo;
+    YAQ.openHazardDetail = openHazardDetail;
+    YAQ.closeHazardModal = closeHazardModal;
+    YAQ.copyHazardInfo = copyHazardInfo;
 
 
     // ════════════════════════════════════════════════════════════════
@@ -4190,7 +4190,7 @@
       body.style.display = isOpen ? 'none' : 'block';
       arrow.textContent = isOpen ? '▶' : '▼';
     }
-    window.toggleRegulation = toggleRegulation;
+    YAQ.toggleRegulation = toggleRegulation;
 
     // ════════════════════════════════════════════════════════════════
     // TASK DETAIL
@@ -4342,8 +4342,8 @@
       $dom.taskModalOverlay.style.display = 'none';
       $dom.taskModal.style.display = 'none';
     }
-    window.openTaskDetail = openTaskDetail;
-    window.closeTaskModal = closeTaskModal;
+    YAQ.openTaskDetail = openTaskDetail;
+    YAQ.closeTaskModal = closeTaskModal;
 
     // ════════════════════════════════════════════════════════════════
     // SCENE SWITCHING
@@ -5400,7 +5400,7 @@
       }
       showToast('未找到对应操作');
     }
-    window.executeSearchResult = executeSearchResult;
+    YAQ.executeSearchResult = executeSearchResult;
 
     // ════════════════════════════════════════════════════════════════
     // 启动台 · 站点地图
@@ -5522,7 +5522,7 @@
       renderLauncher();
     }
 
-    window.toggleFavorite = toggleFavorite;
+    YAQ.toggleFavorite = toggleFavorite;
 
     // ════════════════════════════════════════════════════════════════
     // 最近使用
@@ -5900,7 +5900,7 @@
       // 所有未显式映射的 ID 默认用 __todo__
       var target = actionMap[id] || '__todo__';
       if (target === '__metric_config__') {
-        if (window.openMetricConfig) window.openMetricConfig();
+        if (YAQ.openMetricConfig) YAQ.openMetricConfig();
       } else if (target === '__ai_switch__') {
         document.querySelector('.tab[data-tab="chat"]').click();
       } else if (target === '__todo__') {
@@ -5932,13 +5932,34 @@
       }
     });
 
+    // ═══ 移动端汉堡菜单 ═══════════════════════════════════════════
+    function toggleHamburger() {
+      var strip = document.getElementById('tabStrip');
+      if (strip) {
+        strip.classList.toggle('open');
+      }
+    }
+
+    // 绑定汉堡按钮点击（替代 inline onclick，避免加载时序问题）
+    var hBtn = document.getElementById('hamburgerBtn');
+    if (hBtn) hBtn.addEventListener('click', toggleHamburger);
+
+    // 移动端：点击遮罩区域关闭侧边栏
+    document.addEventListener('click', function(e) {
+      var strip = document.getElementById('tabStrip');
+      var btn = document.getElementById('hamburgerBtn');
+      if (!strip || !strip.classList.contains('open')) return;
+      if (strip.contains(e.target) || btn.contains(e.target)) return;
+      strip.classList.remove('open');
+    });
+
     // 暴露全局函数
-    window.toggleLauncher = toggleLauncher;
-    window.openLauncher = openLauncher;
-    window.closeLauncher = closeLauncher;
-    window.onLauncherSearch = onLauncherSearch;
-    window.launcherSearchFirst = launcherSearchFirst;
-    window.launcherGo = launcherGo;
+    YAQ.toggleLauncher = toggleLauncher;
+    YAQ.openLauncher = openLauncher;
+    YAQ.closeLauncher = closeLauncher;
+    YAQ.onLauncherSearch = onLauncherSearch;
+    YAQ.launcherSearchFirst = launcherSearchFirst;
+    YAQ.launcherGo = launcherGo;
 
     // ════════════════════════════════════════════════════════════════
     // 渲染左栏场景列表
@@ -5999,8 +6020,8 @@
       for (var ti = 0; ti < tabs.length; ti++) {
         var t = tabs[ti];
         var active = t.id === state.activeScene ? ' active' : '';
-        var closeBtn = t.id === 'dashboard' ? '' : '<button class="tab-close" onclick="event.stopPropagation();window.closeTab(\'' + t.id + '\')">✕</button>';
-        html += '<div class="tab-item' + active + '" onclick="window.switchTab(\'' + t.id + '\')">' + t.label + closeBtn + '</div>';
+        var closeBtn = t.id === 'dashboard' ? '' : '<button class="tab-close" onclick="event.stopPropagation();YAQ.closeTab(\'' + t.id + '\')">✕</button>';
+        html += '<div class="tab-item' + active + '" onclick="YAQ.switchTab(\'' + t.id + '\')">' + t.label + closeBtn + '</div>';
       }
       strip.innerHTML = html;
     }
@@ -6030,48 +6051,164 @@
     var weekdays = ['日','一','二','三','四','五','六'];
     // $dom.topbarDate.textContent = dateStr + ' 星期' + weekdays[now.getDay()];  // 头部时间已删除
 
-    // Expose for onclick handlers
-    window.switchScene = switchScene;
-    window.switchTab = switchTab;
-    window.closeTab = closeTab;
-    window.renderScene = renderScene;
-    window.showToast = showToast;
-    window.openDrawer = openDrawer;
-    window.openSuperviseDrawer = openSuperviseDrawer;
-    window.openAgentConfig = openAgentConfig;
-    window.saveAgentPrompt = saveAgentPrompt;
-    window.escapeHtml = escapeHtml;
-    window.agentAsk = agentAsk;
-    window.toggleChatPanel = toggleChatPanel;
-    window.openChatPanel = openChatPanel;
-    window.doFollowupAction = doFollowupAction;
-    window.handleTodayFocusAction = handleTodayFocusAction;
-    window.handleFollowupAction = handleFollowupAction;
-    window.handleActionItemPrimary = handleActionItemPrimary;
-    window.handleActionItemSecondary = handleActionItemSecondary;
-    window.sendChatMsg = sendChatMsg;
-    window.openMetricConfig = openMetricConfig;
-    window.closeMetricConfig = closeMetricConfig;
-    window.saveMetricConfig = saveMetricConfig;
-    window.toggleMiniCard = toggleMiniCard;
-    window.cycleMetricPeriod = cycleMetricPeriod;
-    window.setMetricFilter = setMetricFilter;
-    window.setPeriodFilter = setPeriodFilter;
-    window.onDragStart = onDragStart;
-    window.onDragOver = onDragOver;
-    window.onDrop = onDrop;
-    window.onDragEnd = onDragEnd;
-    window.removeSelected = removeSelected;
-    window.onMetricSearch = onMetricSearch;
-    window.showMetricTip = showMetricTip;
-    window.hideMetricTip = hideMetricTip;
-    window.openMetricDrilldown = openMetricDrilldown;
-    window.closeDrillFloat = closeDrillFloat;
-    window.askAI = askAI;
-    window.copyTipContent = copyTipContent;
-    window.openEnterprisePanel = openEnterprisePanel;
-    window.closeEnterprisePanel = closeEnterprisePanel;
-    window.epSwitchTab = epSwitchTab;
+    // ════════════════════════════════════════════════════════════════
+    // YAQ Namespace — 统一命名空间，替代零散 window 导出
+    // 新增代码应使用 YAQ.xxx 而非 window.xxx
+    // ════════════════════════════════════════════════════════════════
+    window.YAQ = {
+      // ─── 场景/导航 ───
+      switchScene: switchScene,
+      switchTab: switchTab,
+      closeTab: closeTab,
+      renderScene: renderScene,
+      renderSceneList: renderSceneList,
+
+      // ─── UI 工具 ───
+      showToast: showToast,
+      escapeHtml: escapeHtml,
+      toggleDemoMenu: window.toggleDemoMenu,
+
+      // ─── 侧边栏/弹窗 ───
+      openDrawer: openDrawer,
+      openSuperviseDrawer: openSuperviseDrawer,
+      closeDrillFloat: closeDrillFloat,
+      closeHazardModal: closeHazardModal,
+      closeLauncher: closeLauncher,
+      closeMetricConfig: closeMetricConfig,
+      closeEnterprisePanel: closeEnterprisePanel,
+      closeTaskModal: closeTaskModal,
+
+      // ─── Agent/AI ───
+      openAgentConfig: openAgentConfig,
+      saveAgentPrompt: saveAgentPrompt,
+      agentAsk: agentAsk,
+      sendChatMsg: sendChatMsg,
+      askAI: askAI,
+
+      // ─── 聊天面板 ───
+      toggleChatPanel: toggleChatPanel,
+      openChatPanel: openChatPanel,
+
+      // ─── 汉堡菜单 ───
+      toggleHamburger: toggleHamburger,
+
+      // ─── 关注/跟进 ───
+      doFollowupAction: doFollowupAction,
+      handleTodayFocusAction: handleTodayFocusAction,
+      handleFollowupAction: handleFollowupAction,
+      handleActionItemPrimary: handleActionItemPrimary,
+      handleActionItemSecondary: handleActionItemSecondary,
+
+      // ─── 指标配置 ───
+      openMetricConfig: openMetricConfig,
+      saveMetricConfig: saveMetricConfig,
+      toggleMiniCard: toggleMiniCard,
+      cycleMetricPeriod: cycleMetricPeriod,
+      setMetricFilter: setMetricFilter,
+      setPeriodFilter: setPeriodFilter,
+
+      // ─── 指标拖拽排序 ───
+      onDragStart: onDragStart,
+      onDragOver: onDragOver,
+      onDrop: onDrop,
+      onDragEnd: onDragEnd,
+      removeSelected: removeSelected,
+      onMetricSearch: onMetricSearch,
+
+      // ─── 指标提示/下钻 ───
+      showMetricTip: showMetricTip,
+      hideMetricTip: hideMetricTip,
+      openMetricDrilldown: openMetricDrilldown,
+      copyTipContent: copyTipContent,
+
+      // ─── 企业面板 ───
+      openEnterprisePanel: openEnterprisePanel,
+      closeEnterprisePanel: closeEnterprisePanel,
+      epSwitchTab: epSwitchTab,
+
+      // ─── 隐患详情 ───
+      openHazardDetail: openHazardDetail,
+      closeHazardModal: closeHazardModal,
+      copyHazardInfo: copyHazardInfo,
+
+      // ─── 任务详情 ───
+      openTaskDetail: openTaskDetail,
+      closeTaskModal: closeTaskModal,
+
+      // ─── 法规 ───
+      toggleRegulation: toggleRegulation,
+
+      // ─── 快速启动 (Launcher) ───
+      toggleLauncher: toggleLauncher,
+      openLauncher: openLauncher,
+      closeLauncher: closeLauncher,
+      onLauncherSearch: onLauncherSearch,
+      launcherSearchFirst: launcherSearchFirst,
+      launcherGo: launcherGo,
+      executeSearchResult: executeSearchResult,
+      toggleFavorite: toggleFavorite,
+      applySearchChip: applySearchChip,
+
+      // ─── 处置建议 ───
+      copyDisposalRec: function(idx) { copyDisposalRec(idx); },
+      generateAllDisposalText: function() { generateAllDisposalText(); },
+      regenerateDisposalRecs: function() { regenerateDisposalRecs(); },
+      copyDrawerGenerated: function() { copyDrawerGenerated(); },
+
+      // ─── 月报 ───
+      mrToggleModule: mrToggleModule,
+      mrAddModule: mrAddModule,
+      mrResetModules: mrResetModules,
+      switchMrHistory: switchMrHistory,
+      toggleMrSection: toggleMrSection,
+
+      // ─── 待确认行动 ───
+      confirmPendingAction: confirmPendingAction,
+      changePendingAction: changePendingAction,
+      ignorePendingAction: ignorePendingAction,
+      togglePASelection: togglePASelection,
+      toggleSelectAllPA: toggleSelectAllPA,
+      clearPASelection: clearPASelection,
+      batchConfirmPAs: batchConfirmPAs,
+      batchIgnorePAs: batchIgnorePAs,
+      batchChangePAs: batchChangePAs,
+
+      // ─── 跟踪 ───
+      addTrack: addTrack,
+      updateTrackProgress: updateTrackProgress,
+      resolveTrack: resolveTrack,
+      closeTrack: closeTrack,
+      quickTrack: quickTrack,
+
+      // ─── 占位：PA Modal ───
+      closePAModal: function() {
+        var overlay = document.getElementById('paModalOverlay');
+        var modal = document.getElementById('paModal');
+        if (overlay) overlay.style.display = 'none';
+        if (modal) modal.style.display = 'none';
+      },
+    };
+
+    // ════════════════════════════════════════════════════════════════
+    // Backward-compatible window aliases (用于内联 onclick 等)
+    // 减少新增，逐步迁移到 YAQ.xxx
+    // ════════════════════════════════════════════════════════════════
+    // 从 index.html onclick 调用的函数（必须保留 window 访问）
+    window.toggleDemoMenu = window.YAQ.toggleDemoMenu;
+    window.showToast = window.YAQ.showToast;
+    window.openDrawer = window.YAQ.openDrawer;
+    window.toggleHamburger = window.YAQ.toggleHamburger;
+    window.openLauncher = window.YAQ.openLauncher;
+    window.closeLauncher = window.YAQ.closeLauncher;
+    window.closeDrillFloat = window.YAQ.closeDrillFloat;
+    window.closeHazardModal = window.YAQ.closeHazardModal;
+    window.closeMetricConfig = window.YAQ.closeMetricConfig;
+    window.closeEnterprisePanel = window.YAQ.closeEnterprisePanel;
+    window.closeTaskModal = window.YAQ.closeTaskModal;
+    window.copyHazardInfo = window.YAQ.copyHazardInfo;
+    window.saveMetricConfig = window.YAQ.saveMetricConfig;
+    window.closePAModal = window.YAQ.closePAModal;
+    window.renderScene = window.YAQ.renderScene;
 
     // ════════════════════════════════════════════════════════════════
     // 待确认行动交互
@@ -6292,15 +6429,6 @@
       renderScene('pending-actions');
     }
 
-    window.confirmPendingAction = confirmPendingAction;
-    window.changePendingAction = changePendingAction;
-    window.ignorePendingAction = ignorePendingAction;
-    window.togglePASelection = togglePASelection;
-    window.toggleSelectAllPA = toggleSelectAllPA;
-    window.clearPASelection = clearPASelection;
-    window.batchConfirmPAs = batchConfirmPAs;
-    window.batchIgnorePAs = batchIgnorePAs;
-    window.batchChangePAs = batchChangePAs;
 
     // 渲染左栏场景列表
     renderSceneList();

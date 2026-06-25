@@ -206,7 +206,7 @@
     setTimeout(function() {
       typeText('我们先完成初始化设置，把日常监管安排起来。准备好了吗？', function() {
         showActions([
-          { label: '准备好了', click: 'window.doWelcomeNext()', primary: true }
+          { label: '准备好了', click: 'YAQ.doWelcomeNext()', primary: true }
         ]);
         lucide.createIcons();
       });
@@ -228,7 +228,7 @@
           '</div>'
         );
         showActions([
-          { label: '好的，继续', click: 'window.doContinueAbility()', primary: true }
+          { label: '好的，继续', click: 'YAQ.doContinueAbility()', primary: true }
         ]);
         lucide.createIcons();
       });
@@ -241,59 +241,79 @@
     showActions([]);
     chatAppend(userMsg('好的，继续'));
     setTimeout(function() {
-      typeText('根据你的岗位，我已整理以下日常关注方向。<br><br><strong>请确认如何处理这些采集维度：</strong>', function() {
+      typeText('根据你的岗位，我已整理以下日常关注方向。<br><br><strong>勾选你需要的即可：</strong>', function() {
         renderPrefCards();
       });
     }, 350);
   }
 
   function renderPrefCards() {
+    // 合并版：第一个卡片的壳 + 第二个卡片的多选内容，一步搞定
     var html = '<div class="pref-card-wrap" id="prefGrid">' +
-      '<div class="step-head">需要你决定 采集维度补充 问题 1/2</div>' +
-      '<div class="step-title">你想怎么处理这些补充维度？</div>' +
-      '<div class="step-desc">根据你的岗位，我已整理以下日常关注方向，请确认处理方式。</div>' +
-      '<div class="choice-list">' +
-        '<div class="choice-card" onclick="window.selectChoice(\'all\')">' +
-          '<div class="choice-num">1</div>' +
-          '<div class="choice-body">' +
-            '<div class="choice-title">以上我全都要 — 全部作为预设选项</div>' +
-            '<div class="choice-desc">把剩下的维度都加到初始化关注项里，让用户多选</div>' +
-          '</div>' +
+      '<div class="step-head-compact"><strong>配置关注方向</strong> — 勾选你需要的，或输入自定义项</div>' +
+      '<div class="attn-list">';
+    // 预设项 — 只渲染已在 selectedModes 中的（默认 4 个）
+    for (var i = 0; i < PREF_OPTIONS.length; i++) {
+      var p = PREF_OPTIONS[i];
+      if (selectedModes.indexOf(p.id) === -1) continue;
+      html += '<div class="attn-card selected" data-id="' + p.id + '" onclick="YAQ.togglePref(\'' + p.id + '\')">' +
+        '<div class="attn-check">✓</div>' +
+        '<div class="attn-body">' +
+          '<div class="attn-title">' + p.label + '</div>' +
+          '<div class="attn-desc">' + p.sub + '</div>' +
         '</div>' +
-        '<div class="choice-card" onclick="window.selectChoice(\'pick\')">' +
-          '<div class="choice-num">2</div>' +
-          '<div class="choice-body">' +
-            '<div class="choice-title">选几个加进去（我来挑）</div>' +
-            '<div class="choice-desc">你从列表中挑选几个你认为最相关的</div>' +
-          '</div>' +
+        '<div class="attn-period">' + p.period + '</div>' +
+      '</div>';
+    }
+    // 自定义项
+    for (var ci = 0; ci < customAttentions.length; ci++) {
+      var ca = customAttentions[ci];
+      html += '<div class="attn-card selected custom-card" data-id="' + ca.id + '" onclick="YAQ.toggleCustom(\'' + ca.id + '\')">' +
+        '<div class="attn-check">✓</div>' +
+        '<div class="attn-body">' +
+          '<div class="attn-title">' + ca.label + '</div>' +
+          '<div class="attn-desc">' + (ca.desc || '自定义关注') + '</div>' +
         '</div>' +
-        '<div class="choice-card" onclick="window.selectChoice(\'improve\')">' +
-          '<div class="choice-num">3</div>' +
-          '<div class="choice-body">' +
-            '<div class="choice-title">先不动预设，优化采集交互方式</div>' +
-            '<div class="choice-desc">现有的维度够用，但采集形式（分类/分组/排序）可以改进</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="choice-card" onclick="window.selectChoice(\'custom\')">' +
-          '<div class="choice-num">4</div>' +
-          '<div class="choice-body">' +
-            '<div class="choice-title">我自己有想法，直接说</div>' +
-            '<div class="choice-desc">你有自己的补充维度想告诉我</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
+        '<div class="attn-period">' + (ca.period || '自定义') + '</div>' +
+        '<button class="attn-remove" onclick="event.stopPropagation();YAQ.removeCustom(\'' + ca.id + '\')" title="移除">✕</button>' +
+      '</div>';
+    }
+    html += '</div>' +
+      '<button class="card-confirm-btn" onclick="YAQ.confirmPref()">确认关注方向</button>' +
     '</div>';
-    chatAppend(html);
-    // 更新 input placeholder
+    // 渲染到浮动卡片（输入框上方），不嵌入聊天流
+    var floatCard = document.getElementById('initFloatCard');
+    if (floatCard) floatCard.innerHTML = html;
+    // 聊天区域底部留出卡片空间，避免内容被遮挡
+    adjustChatPadding();
     var inp = document.getElementById('initChatInput');
-    if (inp) inp.placeholder = '输入你自己的答案...';
+    if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
     lucide.createIcons();
+  }
+
+  /** 根据浮动卡片高度调整聊天区域底部 padding */
+  function adjustChatPadding() {
+    var floatCard = document.getElementById('initFloatCard');
+    var content = document.querySelector('.init-content');
+    if (!content) return;
+    if (floatCard && floatCard.children.length > 0) {
+      // 卡片展开：底部 padding = 卡片高度 + 卡片与输入框间距(74px) + 额外安全边距
+      var cardH = floatCard.offsetHeight || 400;
+      content.style.paddingBottom = (cardH + 90) + 'px';
+    } else {
+      // 卡片收起：恢复默认 padding
+      content.style.paddingBottom = '';
+    }
   }
 
   function confirmPref() {
     showActions([]);
     userMode = 'default';
     chatAppend(userMsg('确认关注方向'));
+    // 清除浮动卡片
+    var floatCard = document.getElementById('initFloatCard');
+    if (floatCard) floatCard.innerHTML = '';
+    adjustChatPadding();
     setTimeout(function() {
       typeResponse('正在生成管理方案…', buildCombinedResponse(), function() {
         setTimeout(function() {
@@ -318,7 +338,7 @@
     } else {
       selectedModes.push(id);
     }
-    // 只更新被点击的卡片
+    // 切换选中状态，卡片保留不消失
     var el = document.querySelector('.attn-card[data-id="' + id + '"]');
     if (el) {
       var sel = selectedModes.indexOf(id) > -1;
@@ -351,9 +371,9 @@
       var card = document.createElement('div');
       card.className = 'attn-card selected custom-card';
       card.setAttribute('data-id', id);
-      card.setAttribute('onclick', "window.toggleCustom('" + id + "')");
+      card.setAttribute('onclick', "YAQ.toggleCustom('" + id + "')");
       card.style.animation = 'fadeUp .35s ease-out both';
-      card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + label + '</div><div class="attn-desc">自定义关注</div></div><div class="attn-period">自定义</div><button class="attn-remove" onclick="event.stopPropagation();window.removeCustom(\'' + id + '\')" title="移除">✕</button>';
+      card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + label + '</div><div class="attn-desc">自定义关注</div></div><div class="attn-period">自定义</div><button class="attn-remove" onclick="event.stopPropagation();YAQ.removeCustom(\'' + id + '\')" title="移除">✕</button>';
       list.appendChild(card);
       var ct = document.querySelector('.init-container');
       if (ct) ct.scrollTop = ct.scrollHeight;
@@ -361,68 +381,6 @@
     lucide.createIcons();
   }
 
-  function renderPickPrefs() {
-    // 显示可切换的预设关注项卡片，供用户选择
-    var html = '<div class="pref-card-wrap" id="prefGrid">' +
-      '<div class="attn-list">';
-    // 预设项
-    for (var i = 0; i < PREF_OPTIONS.length; i++) {
-      var p = PREF_OPTIONS[i];
-      var sel = selectedModes.indexOf(p.id) > -1;
-      html += '<div class="attn-card' + (sel ? ' selected' : '') + '" data-id="' + p.id + '" onclick="window.togglePref(\'' + p.id + '\')">' +
-        '<div class="attn-check">' + (sel ? '✓' : '') + '</div>' +
-        '<div class="attn-body">' +
-          '<div class="attn-title">' + p.label + '</div>' +
-          '<div class="attn-desc">' + p.sub + '</div>' +
-        '</div>' +
-        '<div class="attn-period">' + p.period + '</div>' +
-      '</div>';
-    }
-    // 自定义项
-    for (var ci = 0; ci < customAttentions.length; ci++) {
-      var ca = customAttentions[ci];
-      html += '<div class="attn-card selected custom-card" data-id="' + ca.id + '" onclick="window.toggleCustom(\'' + ca.id + '\')">' +
-        '<div class="attn-check">✓</div>' +
-        '<div class="attn-body">' +
-          '<div class="attn-title">' + ca.label + '</div>' +
-          '<div class="attn-desc">' + (ca.desc || '自定义关注') + '</div>' +
-        '</div>' +
-        '<div class="attn-period">' + (ca.period || '自定义') + '</div>' +
-        '<button class="attn-remove" onclick="event.stopPropagation();window.removeCustom(\'' + ca.id + '\')" title="移除">✕</button>' +
-      '</div>';
-    }
-    html += '</div>' +
-      '<button class="card-confirm-btn" onclick="window.confirmPref()">确认关注方向</button>' +
-    '</div>';
-    chatAppend(html);
-    var inp = document.getElementById('initChatInput');
-    if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
-    lucide.createIcons();
-  }
-
-  function selectChoice(type) {
-    // 移除所有卡片的选中状态，并高亮当前点击的
-    var cards = document.querySelectorAll('.choice-card');
-    cards.forEach(el => el.classList.remove('active'));
-    if (event && event.currentTarget) {
-      event.currentTarget.classList.add('active');
-    }
-
-    setTimeout(() => {
-      if (type === 'all' || type === 'improve') {
-        confirmPref();
-      } else if (type === 'pick') {
-        renderPickPrefs();
-      } else {
-        // custom: 聚焦输入框
-        var inp = document.getElementById('initChatInput');
-        if (inp) {
-          inp.focus();
-          inp.placeholder = '输入你自己的答案...';
-        }
-      }
-    }, 300);
-  }
 
   function showGenTasks(tasks) {
     var i = 0;
@@ -438,7 +396,7 @@
             setTimeout(function() { fireConfetti(); }, 200);
             setTimeout(function() {
               showActions([
-                { label: '进入工作台', click: 'window.doEnter()', primary: true }
+                { label: '进入工作台', click: 'YAQ.doEnter()', primary: true }
               ]);
               lucide.createIcons();
             }, 500);
@@ -505,12 +463,12 @@
           var html = '<div class="attn-list" id="attentionToggles">';
           for (var i = 0; i < attentionItems.length; i++) {
             var a = attentionItems[i];
-            html += '<div class="attn-card' + (a.on ? ' selected' : '') + '" data-id="' + a.id + '" onclick="window.togAttn(\'' + a.id + '\')"><div class="attn-check">' + (a.on ? '✓' : '') + '</div><div class="attn-body"><div class="attn-title">' + a.title + '</div><div class="attn-desc">' + a.desc + '</div></div></div>';
+            html += '<div class="attn-card' + (a.on ? ' selected' : '') + '" data-id="' + a.id + '" onclick="YAQ.togAttn(\'' + a.id + '\')"><div class="attn-check">' + (a.on ? '✓' : '') + '</div><div class="attn-body"><div class="attn-title">' + a.title + '</div><div class="attn-desc">' + a.desc + '</div></div></div>';
           }
           html += '</div>';
           chatAppend(html);
           showActions([
-            { label: '继续设置提醒边界', click: 'window.doContinue("boundary")', primary: true }
+            { label: '继续设置提醒边界', click: 'YAQ.doContinue("boundary")', primary: true }
           ]);
           lucide.createIcons();
         });
@@ -535,7 +493,7 @@
           ruleHtml += '</div>';
           chatAppend(ruleHtml);
           showActions([
-            { label: '生成管理心跳计划', click: 'window.doGenerate()', primary: true, large: true }
+            { label: '生成管理心跳计划', click: 'YAQ.doGenerate()', primary: true, large: true }
           ]);
           lucide.createIcons();
         });
@@ -625,7 +583,7 @@
       '</div></div>';
     chatAppend(html);
     showActions([
-      { label: '进入工作台', click: 'window.doEnter()', primary: true, large: true }
+      { label: '进入工作台', click: 'YAQ.doEnter()', primary: true, large: true }
     ]);
     lucide.createIcons();
     window._initUserMode = userMode;
@@ -741,10 +699,11 @@
               var card = document.createElement('div');
               card.className = 'attn-card selected';
               card.setAttribute('data-id', insertId);
-              card.setAttribute('onclick', "window.togglePref('" + insertId + "')");
+              card.setAttribute('onclick', "YAQ.togglePref('" + insertId + "')");
               card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + p.label + '</div><div class="attn-desc">' + p.sub + '</div></div><div class="attn-period">' + p.period + '</div>';
               card.style.animation = 'fadeUp .35s ease-out both';
               grid.appendChild(card);
+              adjustChatPadding();  // 卡片增高后刷新底部留白
               var ct = document.querySelector('.init-container');
               if (ct) ct.scrollTop = ct.scrollHeight;
             }
@@ -808,8 +767,8 @@
       setTimeout(function() {
         typeResponse('正在按你的要求调整…', MODE_RESPONSES[mode] || MODE_RESPONSES.default, function() {
           showActions([
-            { label: '调整关注重点', click: 'window.doContinue("attention")', primary: true },
-            { label: '直接生成方案', click: 'window.doQuickFinish()' }
+            { label: '调整关注重点', click: 'YAQ.doContinue("attention")', primary: true },
+            { label: '直接生成方案', click: 'YAQ.doQuickFinish()' }
           ]);
           lucide.createIcons();
         });
@@ -893,7 +852,7 @@
     var bar = document.createElement('div');
     bar.id = 'disabledBar';
     bar.className = 'agent-disabled-bar';
-    bar.innerHTML = '<i data-lucide="alert-triangle" width="16" height="16"></i><span>应擎总控尚未启用，当前仅展示基础工作台。</span><button class="adb-btn" onclick="window.reEnable()">启用主控 Agent</button>';
+    bar.innerHTML = '<i data-lucide="alert-triangle" width="16" height="16"></i><span>应擎总控尚未启用，当前仅展示基础工作台。</span><button class="adb-btn" onclick="YAQ.reEnable()">启用主控 Agent</button>';
     ws.insertBefore(bar, ws.firstChild);
     lucide.createIcons();
   }
@@ -918,7 +877,7 @@
     if (oldm) oldm.remove();
     var m = document.createElement('div'); m.id = 'convSheetMask'; m.className = 'conv-sheet-mask'; m.onclick = closeSheet;
     var s = document.createElement('div'); s.id = 'convSheet'; s.className = 'conv-sheet';
-    s.innerHTML = '<div class="conv-sheet-handle"></div><div class="conv-sheet-title">' + title + '</div><div class="conv-sheet-text">' + text + '</div><div class="conv-sheet-result"><div class="conv-sheet-result-label">处理结果</div><p>' + result + '</p></div><button class="c-btn primary sheet-close" onclick="window.closeSheet()">知道了</button>';
+    s.innerHTML = '<div class="conv-sheet-handle"></div><div class="conv-sheet-title">' + title + '</div><div class="conv-sheet-text">' + text + '</div><div class="conv-sheet-result"><div class="conv-sheet-result-label">处理结果</div><p>' + result + '</p></div><button class="c-btn primary sheet-close" onclick="YAQ.closeSheet()">知道了</button>';
     overlay.appendChild(m); overlay.appendChild(s);
     setTimeout(function() { m.classList.add('show'); s.classList.add('show'); }, 10);
   }
@@ -941,10 +900,10 @@
     html += '<div class="agent-enabled-bar"><div class="aeb-left"><i data-lucide="bot" width="18" height="18"></i><span>应擎总控已启用 <span class="aeb-mode">· ' + label + '</span></span></div><div class="aeb-meta"><span><i data-lucide="activity" width="12" height="12"></i> ' + ac + ' 个子 Agent</span><span><i data-lucide="clock" width="12" height="12"></i> 下次巡检：今日 10:00</span></div></div>';
     html += '<div class="intent-section"><div class="intent-label">你可以让我继续看</div><div class="intent-grid">';
     for (var i = 0; i < intents.length; i++) {
-      html += '<div class="intent-chip" onclick="window.doIntent(\'' + intents[i] + '\')"><span>' + intents[i] + '</span></div>';
+      html += '<div class="intent-chip" onclick="YAQ.doIntent(\'' + intents[i] + '\')"><span>' + intents[i] + '</span></div>';
     }
     html += '</div></div>';
-    html += '<div class="agent-input-bar"><input type="text" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降" id="dashboardQuery" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.doDashboardQuery()}"><button class="aib-btn" onclick="window.doDashboardQuery()"><i data-lucide="send" width="16" height="16"></i></button></div>';
+    html += '<div class="agent-input-bar"><input type="text" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降" id="dashboardQuery" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();YAQ.doDashboardQuery()}"><button class="aib-btn" onclick="YAQ.doDashboardQuery()"><i data-lucide="send" width="16" height="16"></i></button></div>';
     return html;
   }
   function doIntent(label) { showToast('正在查看「' + label + '」…（演示回复）'); }
@@ -1015,7 +974,7 @@
       var overlay = document.getElementById('initOverlay');
       if (overlay && overlay.classList.contains('active')) {
         var inp = document.getElementById('initChatInput');
-        if (inp && inp.value.trim()) { e.preventDefault(); window.convChatSend(); return; }
+        if (inp && inp.value.trim()) { e.preventDefault(); YAQ.convChatSend(); return; }
         var primary = document.querySelector('.q-chip.primary');
         if (primary) { e.preventDefault(); primary.click(); }
       }
@@ -1023,34 +982,60 @@
   });
 
   // ═══ 导出 ══════════════════════════════════════════════════════════
-  window.togglePref = togglePref;
-  window.confirmPref = confirmPref;
-  window.selectChoice = selectChoice;
-  window.toggleCustom = toggleCustom;
-  window.removeCustom = removeCustom;
-  window.doContinue = doContinue;
-  window.doQuickFinish = doQuickFinish;
-  window.doGenerate = doGenerate;
-  window.doEnter = doEnter;
-  window.doWelcomeNext = doWelcomeNext;
-  window.doContinueAbility = doContinueAbility;
-  window.togAttn = togAttn;
-  window.convChatSend = convChatSend;
-  window.convChatVoice = convChatVoice;
-  window.convQuickReply = convQuickReply;
-  window.skip = skip;
-  window.reEnable = reEnable;
-  window.resetInit = resetInit;
-  window.closeSheet = closeSheet;
-  window.doIntent = doIntent;
-  window.doDashboardQuery = doDashboardQuery;
-  window.isAgentInitialized = function() { return ls.get(STORAGE_KEY) === 'true'; };
-  window.renderAgentEnabledHTML = renderAgentEnabledHTML;
-  window.doDashboardRedirect = doDashboardRedirect;
-  window.doNormalDashboard = doNormalDashboard;
-  window.globalChatSend = globalChatSend;
-  window.toggleDemoMenu = toggleDemoMenu;
-  window.closeDemoMenu = closeDemoMenu;
+  // ════════════════════════════════════════════════════════════════
+  // YAQ Namespace — 追加到 app.js 定义的 YAQ 命名空间
+  // ════════════════════════════════════════════════════════════════
+  window.YAQ = window.YAQ || {};
+  Object.assign(window.YAQ, {
+    // ─── 初始化流程 ───
+    doContinue: doContinue,
+    doQuickFinish: doQuickFinish,
+    doGenerate: doGenerate,
+    doEnter: doEnter,
+    doWelcomeNext: doWelcomeNext,
+    doContinueAbility: doContinueAbility,
+    skip: skip,
+    resetInit: resetInit,
+    isAgentInitialized: function() { return ls.get(STORAGE_KEY) === 'true'; },
+    renderAgentEnabledHTML: renderAgentEnabledHTML,
+
+    // ─── 聊天交互 ───
+    convChatSend: convChatSend,
+    convChatVoice: convChatVoice,
+    convQuickReply: convQuickReply,
+    globalChatSend: globalChatSend,
+
+    // ─── 关注项选择 ───
+    togglePref: togglePref,
+    confirmPref: confirmPref,
+    toggleCustom: toggleCustom,
+    removeCustom: removeCustom,
+    togAttn: togAttn,
+
+    // ─── 仪表盘操作 ───
+    doDashboardRedirect: doDashboardRedirect,
+    doNormalDashboard: doNormalDashboard,
+    doDashboardQuery: doDashboardQuery,
+    doIntent: doIntent,
+
+    // ─── UI 辅助 ───
+    closeSheet: closeSheet,
+    reEnable: reEnable,
+    toggleDemoMenu: toggleDemoMenu,
+    closeDemoMenu: closeDemoMenu,
+  });
+
+  // ════════════════════════════════════════════════════════════════
+  // Backward-compatible window aliases
+  // ════════════════════════════════════════════════════════════════
+  window.convChatSend = window.YAQ.convChatSend;
+  window.convChatVoice = window.YAQ.convChatVoice;
+  window.globalChatSend = window.YAQ.globalChatSend;
+  window.doDashboardRedirect = window.YAQ.doDashboardRedirect;
+  window.doNormalDashboard = window.YAQ.doNormalDashboard;
+  window.resetInit = window.YAQ.resetInit;
+  window.toggleDemoMenu = window.YAQ.toggleDemoMenu;
+  window.closeDemoMenu = window.YAQ.closeDemoMenu;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
