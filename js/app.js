@@ -797,6 +797,7 @@
     })();
 
     // 对外暴露给 inline onclick 使用
+    var YAQ = window.YAQ = {};
     YAQ.addTrack = function(opts) {
       if (typeof opts === 'string') opts = { title: opts };
       var t = TrackStore.add(opts || {});
@@ -6059,7 +6060,7 @@
     // YAQ Namespace — 统一命名空间，替代零散 window 导出
     // 新增代码应使用 YAQ.xxx 而非 window.xxx
     // ════════════════════════════════════════════════════════════════
-    window.YAQ = {
+    Object.assign(window.YAQ, {
       // ─── 场景/导航 ───
       switchScene: switchScene,
       switchTab: switchTab,
@@ -6160,11 +6161,11 @@
       copyDrawerGenerated: function() { copyDrawerGenerated(); },
 
       // ─── 月报 ───
-      mrToggleModule: mrToggleModule,
-      mrAddModule: mrAddModule,
-      mrResetModules: mrResetModules,
-      switchMrHistory: switchMrHistory,
-      toggleMrSection: toggleMrSection,
+      mrToggleModule: YAQ.mrToggleModule,
+      mrAddModule: YAQ.mrAddModule,
+      mrResetModules: YAQ.mrResetModules,
+      switchMrHistory: YAQ.switchMrHistory,
+      toggleMrSection: YAQ.toggleMrSection,
 
       // ─── 待确认行动 ───
       confirmPendingAction: confirmPendingAction,
@@ -6178,11 +6179,11 @@
       batchChangePAs: batchChangePAs,
 
       // ─── 跟踪 ───
-      addTrack: addTrack,
-      updateTrackProgress: updateTrackProgress,
-      resolveTrack: resolveTrack,
-      closeTrack: closeTrack,
-      quickTrack: quickTrack,
+      addTrack: YAQ.addTrack,
+      updateTrackProgress: YAQ.updateTrackProgress,
+      resolveTrack: YAQ.resolveTrack,
+      closeTrack: YAQ.closeTrack,
+      quickTrack: YAQ.quickTrack,
 
       // ─── 占位：PA Modal ───
       closePAModal: function() {
@@ -6191,7 +6192,7 @@
         if (overlay) overlay.style.display = 'none';
         if (modal) modal.style.display = 'none';
       },
-    };
+    });
 
     // ════════════════════════════════════════════════════════════════
     // Backward-compatible window aliases (用于内联 onclick 等)
