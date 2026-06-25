@@ -6226,6 +6226,8 @@
     window.renderScene = window.YAQ.renderScene;
     window.escapeHtml = window.YAQ.escapeHtml;  // 供 agent-init.js 等后续脚本使用
     window.switchScene = window.YAQ.switchScene;  // 供移动端底部导航 onclick 使用
+    window.onMetricSearch = window.YAQ.onMetricSearch;    // 供指标搜索 oninput 使用 (#53)
+    window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)
 
     // ════════════════════════════════════════════════════════════════
     // 事件委托：替代 index.html 中的内联 onclick（#42）
