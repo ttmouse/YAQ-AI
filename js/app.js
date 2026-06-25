@@ -950,6 +950,26 @@
     };
 
     // ════════════════════════════════════════════════════════════════
+    // SAFE STORAGE — 统一的安全 localStorage 封装，隐私模式下降级运行
+    // ════════════════════════════════════════════════════════════════
+    var STORAGE_VERSION = 4;
+
+    var safeStorage = {
+      get: function(key, fallback) {
+        try { var v = localStorage.getItem(key); return v !== null ? v : fallback; }
+        catch(e) { return fallback; }
+      },
+      set: function(key, value) {
+        try { localStorage.setItem(key, value); return true; }
+        catch(e) { return false; }
+      },
+      remove: function(key) {
+        try { localStorage.removeItem(key); return true; }
+        catch(e) { return false; }
+      }
+    };
+
+    // ════════════════════════════════════════════════════════════════
     // SCENE RENDERERS
     // ════════════════════════════════════════════════════════════════
 
@@ -1024,7 +1044,7 @@
       var majorRisk = 2, significantRisk = 2, generalRisk = 8, lowRisk = 72;
 
       // ═══ 指标定义：按周期展开 ═══════════════════════════════════
-      var metricPrefs = JSON.parse(localStorage.getItem('yaq_metric_prefs') || 'null');
+      var metricPrefs = JSON.parse(safeStorage.get('yaq_metric_prefs') || 'null');
       var baseMetrics = [
         // 运营概览
         { id: 'subjectTotal', label: '安全责任主体总数', value: '2028', group: '监管概况', type: '时点', desc: '当前纳入监管范围的责任主体对象总量' },
@@ -1204,11 +1224,10 @@
       }
 
       // 检测存储版本，不匹配则重置（指标结构变了）
-      var STORAGE_VERSION = 4;
-      if (localStorage.getItem('yaq_metric_ver') != STORAGE_VERSION) {
-        localStorage.removeItem('yaq_metric_prefs');
-        localStorage.removeItem('yaq_metric_order');
-        localStorage.removeItem('yaq_metric_ver');
+      if (safeStorage.get('yaq_metric_ver') != STORAGE_VERSION) {
+        safeStorage.remove('yaq_metric_prefs');
+        safeStorage.remove('yaq_metric_order');
+        safeStorage.remove('yaq_metric_ver');
         metricPrefs = null;
       }
       for (var mi = 0; mi < allMetrics.length; mi++) {
@@ -1217,10 +1236,10 @@
       }
       window.__allMetrics = allMetrics;
       // 加载排序
-      var savedOrder = JSON.parse(localStorage.getItem('yaq_metric_order') || 'null');
+      var savedOrder = JSON.parse(safeStorage.get('yaq_metric_order') || 'null');
       window.__metricOrder = savedOrder || allMetrics.filter(function(m) { return m.checked; }).map(function(m) { return m.id; });
       // 写入版本号
-      if (!metricPrefs) localStorage.setItem('yaq_metric_ver', STORAGE_VERSION);
+      if (!metricPrefs) safeStorage.set('yaq_metric_ver', STORAGE_VERSION);
 
       // 态势摘要
       var summaryText = '整体可控，重点监管池稳定；物流等 2 个片区出现风险上升信号。';
@@ -1657,7 +1676,12 @@
     }
 
     function getActionIcon(name) {
-      var map = { '督办': 'megaphone', '现场核查': 'search', '会议议题': 'calendar', '跟踪': 'pin', '提醒履职': 'bell' };
+      var map = {
+        // 中文 action 名称（用于优先处理队列）
+        '督办': 'megaphone', '现场核查': 'search', '会议议题': 'calendar', '跟踪': 'pin', '提醒履职': 'bell',
+        // 英文 action ID（用于处置建议）
+        supervise: 'user-check', inspect: 'search', meeting: 'calendar', remind: 'bell', enforce: 'ban'
+      };
       return map[name] || 'chevron-right';
     }
 
@@ -1802,10 +1826,10 @@
             if (s.risk === 'high') highRisk++;
             if (s.drill === '0 次' || s.drill === 0) noDrill++;
           }
-          var selfCheckRate = Math.round((total - noSelfCheck) / total * 100);
-          var trainingRate = Math.round((total - trainingLow) / total * 100);
+          var selfCheckRate = total > 0 ? Math.round((total - noSelfCheck) / total * 100) : 0;
+          var trainingRate = total > 0 ? Math.round((total - trainingLow) / total * 100) : 0;
           var drillOk = total - noDrill;
-          var drillRate = Math.round(drillOk / total * 100);
+          var drillRate = total > 0 ? Math.round(drillOk / total * 100) : 0;
           var gapSorted = [];
           for (var si = 0; si < total; si++) {
             var s = subs[si];
@@ -1950,10 +1974,6 @@
         if (level === 'external-2' || level === 'internal-4') return 'var(--orange-soft)';
         if (level === 'external-1' || level === 'internal-3') return 'var(--accent-soft)';
         return 'var(--green-soft)';
-      }
-      function getActionIcon(action) {
-        var map = { supervise: 'user-check', inspect: 'search', meeting: 'calendar', remind: 'bell', enforce: 'ban' };
-        return map[action] || 'chevron-right';
       }
 
       var html = '<div class="section-head" style="margin-bottom:0;margin-top:24px"><h2><i data-lucide="sparkles" aria-hidden="true" style="color:var(--accent)"></i> AI 处置建议</h2><span class="info-card-badge" style="background:var(--accent);color:#fff">' + recs.length + ' 条待确认</span></div>';
@@ -2539,15 +2559,15 @@
     ];
 
     function getDefaultPrompt(sceneId) {
-      var saved = localStorage.getItem('yaq_agent_prompt_' + sceneId);
+      var saved = safeStorage.get('yaq_agent_prompt_' + sceneId);
       return saved || agentDefaultPrompts[sceneId] || '';
     }
 
     function openAgentConfig(sceneId) {
       var name = agentSceneNames[sceneId] || sceneId;
       var defaultPrompt = agentDefaultPrompts[sceneId] || '';
-      var savedPrompt = localStorage.getItem('yaq_agent_prompt_' + sceneId) || '';
-      var cron = localStorage.getItem('yaq_agent_cron_' + sceneId) || agentDefaultCron[sceneId] || '0 8 * * *';
+      var savedPrompt = safeStorage.get('yaq_agent_prompt_' + sceneId) || '';
+      var cron = safeStorage.get('yaq_agent_cron_' + sceneId) || agentDefaultCron[sceneId] || '0 8 * * *';
 
       $dom.drawerConfirm.style.display = 'none';
       $dom.drawerCancel.textContent = '关闭';
@@ -2606,12 +2626,12 @@
       if (promptEl) {
         var val = promptEl.value.trim();
         if (val) {
-          localStorage.setItem('yaq_agent_prompt_' + sceneId, val);
+          safeStorage.set('yaq_agent_prompt_' + sceneId, val);
         } else {
-          localStorage.removeItem('yaq_agent_prompt_' + sceneId);
+          safeStorage.remove('yaq_agent_prompt_' + sceneId);
         }
       }
-      if (scheduleEl) localStorage.setItem('yaq_agent_cron_' + sceneId, scheduleEl.value);
+      if (scheduleEl) safeStorage.set('yaq_agent_cron_' + sceneId, scheduleEl.value);
       showToast('Agent 配置已保存', 'mock');
       closeDrawer();
     }
@@ -2747,6 +2767,7 @@
       var siRate = si.length > 0 ? Math.round(si.filter(function(x) { return x.statusCls === 'done' || x.status === '无异常'; }).length / si.length * 100) : 0;
       var totalHaz = allHaz.length;
       var closedHaz = allHaz.filter(function(x) { return x.statusCls === 'done'; }).length;
+      var closedRate = totalHaz > 0 ? Math.round(closedHaz / totalHaz * 100) : 0;
 
       var summary = '';
       if (overdue) {
@@ -2758,13 +2779,13 @@
       var enterpriseWeak = siRate < 60;
       var repeatIssue = prevSame.length > 0;
       if (enterpriseWeak || repeatIssue) {
-        summary += '企业自检执行率仅 ' + siRate + '%，隐患闭环率 ' + Math.round(closedHaz / totalHaz * 100) + '%，主体责任落实不到位。';
+        summary += '企业自检执行率仅 ' + siRate + '%，隐患闭环率 ' + closedRate + '%，主体责任落实不到位。';
       }
       if (repeatIssue) {
         summary += '同类隐患反复出现 ' + prevSame.length + ' 次，需深挖根因。';
       }
       if (!enterpriseWeak && !repeatIssue && !overdue) {
-        summary = '该企业自检执行率 ' + siRate + '%，隐患闭环率 ' + Math.round(closedHaz / totalHaz * 100) + '%，整体履职基本到位。详情可查看右侧企业侧边栏。';
+        summary = '该企业自检执行率 ' + siRate + '%，隐患闭环率 ' + closedRate + '%，整体履职基本到位。详情可查看右侧企业侧边栏。';
       }
 
       summary += ' 点击上方企业名称查看完整评估报告。';
@@ -4194,28 +4215,7 @@
 
       var text = parts.join('\n\n');
       if (!text) return;
-      fallbackCopy(text);
-    }
-
-    function fallbackCopy(text) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      ta.style.pointerEvents = 'none';
-      ta.style.left = '0';
-      ta.style.top = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try {
-        var ok = document.execCommand('copy');
-        if (ok) showToast('已复制到剪贴板');
-        else showToast('按 Ctrl+C 复制');
-      } catch(e) {
-        showToast('按 Ctrl+C 复制');
-      }
-      document.body.removeChild(ta);
+      copyToClipboard(text, '指标内容已复制');
     }
 
     function toggleMiniCard(el) {
@@ -4239,12 +4239,12 @@
       for (var i = 0; i < metrics.length; i++) {
         prefs[metrics[i].id] = metrics[i].checked;
       }
-      localStorage.setItem('yaq_metric_prefs', JSON.stringify(prefs));
+      safeStorage.set('yaq_metric_prefs', JSON.stringify(prefs));
       // 保存排序
       if (window.__metricOrder) {
-        localStorage.setItem('yaq_metric_order', JSON.stringify(window.__metricOrder));
+        safeStorage.set('yaq_metric_order', JSON.stringify(window.__metricOrder));
       }
-      localStorage.setItem('yaq_metric_ver', 2);
+      safeStorage.set('yaq_metric_ver', STORAGE_VERSION);
       closeMetricConfig();
       // 重新渲染当前场景
       var sceneId = state.activeScene;
@@ -4370,7 +4370,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function getFavorites() {
-      return JSON.parse(localStorage.getItem('yaq_v4_launcher_favs') || '[]');
+      return JSON.parse(safeStorage.get('yaq_v4_launcher_favs') || '[]');
     }
 
     function toggleFavorite(id) {
@@ -4378,7 +4378,7 @@
       var idx = favs.indexOf(id);
       if (idx > -1) { favs.splice(idx, 1); }
       else { favs.push(id); }
-      localStorage.setItem('yaq_v4_launcher_favs', JSON.stringify(favs));
+      safeStorage.set('yaq_v4_launcher_favs', JSON.stringify(favs));
       renderLauncher();
     }
 
@@ -4389,7 +4389,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function recordRecent(id) {
-      var recent = JSON.parse(localStorage.getItem('yaq_v4_launcher_recent') || '[]');
+      var recent = JSON.parse(safeStorage.get('yaq_v4_launcher_recent') || '[]');
       // 移除重复
       for (var i = 0; i < recent.length; i++) {
         if (recent[i].id === id) { recent.splice(i, 1); break; }
@@ -4397,11 +4397,11 @@
       recent.unshift({ id: id, time: Date.now() });
       // 只保留最近 20 条
       if (recent.length > 20) recent.length = 20;
-      localStorage.setItem('yaq_v4_launcher_recent', JSON.stringify(recent));
+      safeStorage.set('yaq_v4_launcher_recent', JSON.stringify(recent));
     }
 
     function getRecentApps(allApps, excludeIds) {
-      var recent = JSON.parse(localStorage.getItem('yaq_v4_launcher_recent') || '[]');
+      var recent = JSON.parse(safeStorage.get('yaq_v4_launcher_recent') || '[]');
       var result = [];
       var excludeSet = {};
       for (var ei = 0; ei < excludeIds.length; ei++) {
