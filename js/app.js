@@ -798,6 +798,7 @@
 
     // 对外暴露给 inline onclick 使用
     var YAQ = window.YAQ = {};
+    YAQ.ls = ls;  // 共享 localStorage 封装，供 agent-init.js 等后续脚本使用
     YAQ.addTrack = function(opts) {
       if (typeof opts === 'string') opts = { title: opts };
       var t = TrackStore.add(opts || {});
