@@ -937,6 +937,76 @@
         feedbackCount: 1,
         doneCount: 1,
         overdueCount: 1
+      },
+      {
+        id: 'sp-002',
+        title: '物流片区仓储场所整改超期集中督办',
+        actionType: 'supervise',
+        status: '推进中',
+        chain: { responsible: '物流片区组长', executor: '对应专家', coordinator: '村社、主体对象负责人', reviewer: '企业安全线负责人', observer: '站长' },
+        draftItems: [
+          { role: '责任人', person: '物流片区组长', task: '提交7家主体整改超期原因和处置计划', deadline: '今日 17:00', status: 'pending' },
+          { role: '执行人', person: '对应专家', task: '完成2家较大风险主体复查安排', deadline: '明日 12:00', status: 'pending' },
+          { role: '复核人', person: '企业安全线负责人', task: '审核处置计划，确认是否需要调整检查安排', deadline: '明日 17:00', status: 'pending' },
+          { role: '协同人', person: '主体对象负责人', task: '补交整改反馈材料', deadline: '3日内', status: 'pending' },
+          { role: '关注人', person: '站长', task: '关注督办进展，超期后确认是否升级', deadline: '持续关注', status: 'pending' }
+        ],
+        createdAt: '2026-06-24',
+        itemCount: 5,
+        feedbackCount: 0,
+        doneCount: 0,
+        overdueCount: 0
+      },
+      {
+        id: 'sp-003',
+        title: '良渚街道消防重点单位隐患超期督办',
+        actionType: 'supervise',
+        status: '推进中',
+        chain: { responsible: '王志安/李明', executor: '消防安全组', coordinator: '良渚/五常街道办', reviewer: '消防安全线负责人', observer: '站长' },
+        draftItems: [
+          { role: '责任人', person: '王志安', task: '提交北苑商业综合体消防通道堵塞整改进展', deadline: '已完成', status: 'done' },
+          { role: '责任人', person: '李明', task: '提交云栖高层住宅消防设施修复进展', deadline: '已完成', status: 'done' },
+          { role: '执行人', person: '消防安全组', task: '现场核查整改情况，拍照归档', deadline: '进行中', status: 'in_progress' },
+          { role: '复核人', person: '消防安全线负责人', task: '审核整改方案有效性', deadline: '明日 17:00', status: 'pending' }
+        ],
+        createdAt: '2026-06-23',
+        itemCount: 4,
+        feedbackCount: 2,
+        doneCount: 2,
+        overdueCount: 0
+      },
+      {
+        id: 'sp-004',
+        title: '余杭东兴精密机械厂复查失败整改',
+        actionType: 'explain',
+        status: '已完成',
+        chain: { responsible: '张毅', reviewer: '企业安全线负责人' },
+        draftItems: [
+          { role: '责任人', person: '张毅', task: '反馈复查失败具体原因', deadline: '已完成', status: 'done' },
+          { role: '复核人', person: '企业安全线负责人', task: '判断后续处理方式', deadline: '已完成', status: 'done' }
+        ],
+        createdAt: '2026-06-20',
+        itemCount: 2,
+        feedbackCount: 2,
+        doneCount: 2,
+        overdueCount: 0
+      },
+      {
+        id: 'sp-005',
+        title: '高层小区消防专项进度跟进',
+        actionType: 'track',
+        status: '需升级',
+        chain: { responsible: '张毅（消防安全线）', executor: '对应执行组', reviewer: '消防安全线负责人', observer: '站长' },
+        draftItems: [
+          { role: '责任人', person: '张毅', task: '每周五提交专项进度报告', deadline: '超期3日', status: 'overdue' },
+          { role: '执行人', person: '对应执行组', task: '按计划推进余下检查（完成率42%）', deadline: '超期', status: 'overdue' },
+          { role: '复核人', person: '消防安全线负责人', task: '审核专项完成质量', deadline: '超期1日', status: 'overdue' }
+        ],
+        createdAt: '2026-06-18',
+        itemCount: 3,
+        feedbackCount: 0,
+        doneCount: 0,
+        overdueCount: 3
       }
     ];
 
@@ -2479,6 +2549,343 @@
 
       return html;
     }
+
+    // ════════════════════════════════════════════════════════════════
+    // 月报场景
+    // ════════════════════════════════════════════════════════════════
+
+    var MONTHLY_REPORT_DATA = {
+      title: '小安AI安全报告',
+      org: '良渚应急消防管理站',
+      date: '2026年06月01日',
+      period: '2026年05月1日—05月31日',
+      summary: {
+        totalSubjects: 14491,
+        enterprises: 951,
+        venues: 13540,
+        collectionRate: '61.08%',
+        enterpriseCollection: '93.48%',
+        venueCollection: '57.36%'
+      },
+      sections: [
+        {
+          id: 'overview',
+          icon: 'layout-dashboard',
+          title: '一、总体情况',
+          content: '本月，良渚街道应急消防管理站共纳入监管的责任主体14491家，其中企业951家、各类场所13540家，场所类责任主体占总数的93.44%，场所类责任主体仍是当前安全监管的重点与难点。',
+          details: [
+            '同比分析：与2025年05月相比，监管主体总数同比增长100%，增加14491家；环比增长18.59%，增加2272家。同比增量全部来源于新增监管主体，其中场所数量为13540家，企业数量为951家，表明新增主体以场所为主，占比达93.4%。当前监管覆盖面持续扩大，主体结构仍以场所类为主导，整体呈稳步扩张态势。',
+            '趋势研判：信息采集总体覆盖率为61.08%，企业采集率93.48%显著高于场所57.36%，需重点提升场所信息采集工作。'
+          ]
+        },
+        {
+          id: 'collection',
+          icon: 'database',
+          title: '二、核心数据分析 — 信息采集完成情况',
+          table: {
+            headers: ['类别', '应采集数', '已采集数', '采集率', '同比采集率', '环比采集率'],
+            rows: [
+              ['企业', '951', '889', '93.48%', '↑100%', '↓2.16%'],
+              ['场所', '8286', '4753', '57.36%', '↑100%', '↑23.04%'],
+              ['合计', '9237', '5642', '61.08%', '↑100%', '↑21.43%']
+            ]
+          },
+          analysis: '信息采集分析：企业采集完成情况良好，采集率达93.48%；场所采集率57.36%，明显偏低。环比分别提升2.16%和23.04%，整体采集率稳步上升。'
+        },
+        {
+          id: 'supervision',
+          icon: 'clipboard-check',
+          title: '二、核心数据分析 — 监管执行情况对比',
+          table: {
+            headers: ['指标', '2026年05月', '同比', '环比', '趋势'],
+            rows: [
+              ['企业待办推送覆盖率', '58.57%', '↑100%', '↓36.97%', '上升'],
+              ['企业整改完成率', '11.13%', '↑100%', '↓85.08%', '上升'],
+              ['场所待办推送覆盖率', '17.05%', '↑100%', '↑81.77%', '上升'],
+              ['场所整改完成率（已推送）', '59.46%', '↑100%', '↑182.34%', '上升']
+            ]
+          },
+          analysis: '监管执行分析：企业待办推送覆盖率（58.57%）显著高于场所（17.05%），但整改完成率（11.13%）远低于场所（59.46%）。环比显示，场所两端指标增速均明显快于企业。'
+        },
+        {
+          id: 'hazard',
+          icon: 'alert-triangle',
+          title: '二、核心数据分析 — 隐患检查与整改情况',
+          table: {
+            headers: ['指标', '2026年05月', '同比', '环比', '趋势'],
+            rows: [
+              ['专家检查任务数', '11', '↑100%', '↓99.14%', '上升'],
+              ['检出隐患总数', '24', '↑100%', '↓99.28%', '上升'],
+              ['隐患整改完成率', '100%', '↑100%', '↑3.1%', '上升']
+            ]
+          },
+          analysis: '情况分析：检查任务量与隐患发现数同比持平，环比微降；隐患整改完成率达100%，整改成效显著。'
+        },
+        {
+          id: 'five-dim',
+          icon: 'grid-3x3',
+          title: '二、核心数据分析 — 五维安全管理体系建设情况',
+          table: {
+            headers: ['维度', '已落实主体数', '占比', '同比', '环比'],
+            rows: [
+              ['安全制度建立', '1137', '7.85%', '↑100%', '↓30.12%'],
+              ['风险点识别', '6270', '43.27%', '↑100%', '↓9.31%'],
+              ['检查计划制定', '1159', '8%', '↑100%', '↓3.26%'],
+              ['日常自查开展', '1140', '7.87%', '↑100%', '↓4.28%'],
+              ['隐患整改优化到位', '3860', '26.64%', '↑100%', '↓10.94%']
+            ]
+          },
+          analysis: '突出问题：风险点识别（43.27%）与隐患整改优化到位（26.64%）占比较低，且环比增速分别仅为9.31%和10.94%，需强化动态风险辨识与闭环整改机制。'
+        },
+        {
+          id: 'village',
+          icon: 'map-pin',
+          title: '二、核心数据分析 — 村社安全管理动态',
+          content: '本月村社巡查活跃度：整体呈现局部下滑态势，10个村社日常检查量下降，31个村社整改率偏低，存在履职风险。',
+          details: [
+            '• 良渚街道纤石村：日常检查次数同比下降96.3%，隐患数减少2项但整改率为0；',
+            '• 良渚街道玉泽社区：日常检查量下降75.0%，登记采集规模居前但整改率持续为0；',
+            '• 良渚街道东莲村：日常检查量下降17.8%，隐患数减少2项且整改率未提升；'
+          ]
+        },
+        {
+          id: 'fire',
+          icon: 'flame',
+          title: '三、街道内部火灾事故情况',
+          content: '良渚街道对照：近期火情以杂草起火、锅烧焦和杂物起火为主，三者合计占比约19.2%。与往年相比，室外可燃物（如杂草、垃圾）起火频次上升，厨房用火及电气类火情仍属常见类型。当前正值干燥季节，需重点防范野外及房前屋后可燃物自燃或引燃风险。',
+          details: ['季节性规律：火情呈季节性集中，秋冬季（10月至次年2月）发生频次较高。主要诱因类型为杂草起火、锅烧焦及杂物起火，合计占比约19.5%。']
+        },
+        {
+          id: 'risk-predict',
+          icon: 'trending-up',
+          title: '四、下月度安全风险预判',
+          items: [
+            '1. 企业整改滞后风险突出：企业整改完成率仅为11.13%，远低于场所的59.46%，叠加企业待办推送覆盖率不足60%，存在隐患闭环管理失效风险。',
+            '2. 村社日常巡查弱化趋势明显：31个村社处于低整改状态，10个村社日常巡查量下降，部分区域风险评分偏高，基层动态监管能力需加强。',
+            '3. 季节性火情风险持续高位：杂草、杂物及厨房类起火占比较高，结合历史数据，春季干燥气候易诱发同类火情，需强化源头清理与用火用电管理。',
+            '4. 场所监管覆盖严重不足：场所待办推送覆盖率仅17.05%，大量场所未纳入有效监管视线，存在风险盲区扩大可能。',
+            '5. 专家检查频次偏低：本月仅开展11项专家检查任务，检出隐患虽已全部整改，但覆盖面有限，专业支撑力度有待提升。'
+          ]
+        },
+        {
+          id: 'problems',
+          icon: 'alert-circle',
+          title: '五、当前存在的主要问题',
+          items: [
+            '1. 场所类主体监管覆盖严重不足：场所采集率仅为57.36%，待办推送覆盖率低至17.05%，监管触达能力薄弱。',
+            '2. 企业整改闭环严重滞后：企业整改完成率仅11.13%，远低于场所整改完成率，风险隐患处置效率低下。',
+            '3. 基层村社整改普遍缺位：31个村社整改率为0%，占比超七成，整改执行流于形式。',
+            '4. 日常监督检查明显弱化：10个村社日检任务量下降，部分社区专项检查缺失，动态监管机制运转不畅。',
+            '5. 数据异常与风险积聚并存：多个村社存在隐患数归零但风险评分偏高现象，数据真实性与风险识别精准性存疑。'
+          ]
+        },
+        {
+          id: 'suggestions',
+          icon: 'lightbulb',
+          title: '六、下阶段重点工作建议',
+          items: [
+            '（一）开展场所信息采集与待办推送双提升行动：6月30日前完成场所采集率和待办推送覆盖率低值村社专项督导，聚焦57.36的场所采集率短板，组织网格力量逐户核实补录，同步优化系统自动推送机制，确保信息应采尽采、任务应达尽达。',
+            '（二）实施企业整改闭环攻坚计划：针对企业整改完成率仅为11.13的问题，7月15日前建立未整改企业清单，由街道安监中队联合村社开展"一对一"帮扶指导，明确整改时限，逾期未完成的纳入重点监管名单并启动执法程序。',
+            '（三）强化高风险村社动态巡查与隐患清零：对风险评分高于1.0且日常检查量下降的村社（如纤石村、玉泽社区等），6月起实行每周不少于2次的加密巡查，重点核查登记主体活跃度与隐患发现能力，杜绝"零隐患"异常现象。',
+            '（四）部署夏季易燃物火灾防控专项行动：针对"杂草起火""杂物起火"等高频火情类型，6月20日前组织村社开展公共区域可燃物清理，加强露天堆放点、绿化带枯草等部位巡查，同步开展居民防火宣传入户。',
+            '（五）优化专家检查任务精准投放机制：自6月起，将有限的专家资源优先配置至整改率低、风险评分高或日常检查薄弱的村社，每项检查任务须形成问题清单并跟踪整改，确保11项专家任务发挥最大风险干预效能。'
+          ]
+        }
+      ]
+    };
+
+    function renderMonthlyReport() {
+      var d = MONTHLY_REPORT_DATA;
+      var html = '';
+
+      // ─── 报告头部 ──────────────────────────────────────────
+      html += '<div style="padding:16px 0 8px">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">' +
+          '<h2 style="margin:0;font-size:18px;font-weight:700;color:var(--text)"><i data-lucide="calendar" aria-hidden="true" style="color:var(--accent);margin-right:6px"></i> ' + d.title + '</h2>' +
+          '<span style="font-size:11px;color:var(--weak);background:var(--bg);padding:2px 10px;border-radius:20px;border:1px solid var(--line)">' + d.period + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--weak);margin-top:2px">' + d.org + ' · ' + d.date + '</div>' +
+      '</div>';
+
+      // ─── 概览统计卡片 ──────────────────────────────────────
+      html += '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">' +
+        '<div class="st-summary-card" style="flex:1;min-width:100px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card)">' +
+          '<div style="font-size:10px;color:var(--weak);margin-bottom:2px">监管主体总数</div>' +
+          '<div style="font-size:20px;font-weight:700;color:var(--text)">' + d.summary.totalSubjects.toLocaleString() + '</div>' +
+          '<div style="font-size:10px;color:var(--weak);margin-top:2px">企业 ' + d.summary.enterprises + ' · 场所 ' + d.summary.venues.toLocaleString() + '</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:100px;padding:12px 14px;border:1px solid var(--blue);border-radius:10px;background:#eff6ff">' +
+          '<div style="font-size:10px;color:var(--weak);margin-bottom:2px">总体采集率</div>' +
+          '<div style="font-size:20px;font-weight:700;color:#2563eb">' + d.summary.collectionRate + '</div>' +
+          '<div style="font-size:10px;color:#64748b;margin-top:2px">企业 ' + d.summary.enterpriseCollection + ' · 场所 ' + d.summary.venueCollection + '</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:100px;padding:12px 14px;border:1px solid var(--orange);border-radius:10px;background:#fff8f0">' +
+          '<div style="font-size:10px;color:var(--weak);margin-bottom:2px">企业整改完成率</div>' +
+          '<div style="font-size:20px;font-weight:700;color:#d97706">11.13%</div>' +
+          '<div style="font-size:10px;color:#64748b;margin-top:2px">场所 59.46%</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:100px;padding:12px 14px;border:1px solid var(--green);border-radius:10px;background:#f0fdf4">' +
+          '<div style="font-size:10px;color:var(--weak);margin-bottom:2px">隐患整改完成率</div>' +
+          '<div style="font-size:20px;font-weight:700;color:#16a34a">100%</div>' +
+          '<div style="font-size:10px;color:#64748b;margin-top:2px">专家检查隐患</div>' +
+        '</div>' +
+      '</div>';
+
+      // ─── 报告章节 ──────────────────────────────────────────
+      for (var si = 0; si < d.sections.length; si++) {
+        var sec = d.sections[si];
+        html += '<div class="mr-section" style="margin-bottom:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden">' +
+          '<div class="mr-section-header" onclick="toggleMrSection(this)" style="padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;transition:background .15s" onmouseenter="this.style.background=\'var(--bg)\'" onmouseleave="this.style.background=\'\'">' +
+            '<i data-lucide="' + sec.icon + '" width="16" height="16" style="color:var(--accent);flex-shrink:0"></i>' +
+            '<span style="font-size:13px;font-weight:600;color:var(--text);flex:1">' + sec.title + '</span>' +
+            '<span class="mr-toggle" style="font-size:12px;color:var(--weak);transition:transform .2s">▼</span>' +
+          '</div>' +
+          '<div class="mr-section-body" style="padding:0 16px 12px;border-top:1px solid var(--line);font-size:13px;color:var(--text);line-height:1.7">';
+
+        // Section content
+        if (sec.content) {
+          html += '<p style="margin:10px 0 6px">' + sec.content + '</p>';
+        }
+
+        // Details
+        if (sec.details) {
+          for (var di = 0; di < sec.details.length; di++) {
+            html += '<p style="margin:4px 0;color:var(--weak);font-size:12.5px;padding-left:8px;border-left:2px solid var(--line)">' + sec.details[di] + '</p>';
+          }
+        }
+
+        // Table
+        if (sec.table) {
+          html += '<div style="overflow-x:auto;margin:8px 0;border-radius:8px;border:1px solid var(--line)">';
+          html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+          html += '<thead><tr style="background:var(--bg)">';
+          for (var hi = 0; hi < sec.table.headers.length; hi++) {
+            html += '<th style="padding:7px 10px;text-align:left;font-weight:600;color:var(--text);border-bottom:1px solid var(--line);white-space:nowrap">' + sec.table.headers[hi] + '</th>';
+          }
+          html += '</tr></thead><tbody>';
+          for (var ri = 0; ri < sec.table.rows.length; ri++) {
+            var row = sec.table.rows[ri];
+            html += '<tr' + (ri === sec.table.rows.length - 1 ? '' : ' style="border-bottom:1px solid var(--line)"') + '>';
+            for (var ci = 0; ci < row.length; ci++) {
+              var cell = row[ci];
+              var isPositive = cell.indexOf('↑') === 0;
+              var isNegative = cell.indexOf('↓') === 0;
+              var cellStyle = 'padding:6px 10px;white-space:nowrap';
+              if (ci === 0) cellStyle += ';font-weight:500';
+              if (isPositive) cellStyle += ';color:#16a34a';
+              else if (isNegative) cellStyle += ';color:#ef4444';
+              html += '<td style="' + cellStyle + '">' + cell + '</td>';
+            }
+            html += '</tr>';
+          }
+          html += '</tbody></table></div>';
+        }
+
+        // Items list
+        if (sec.items) {
+          for (var ii = 0; ii < sec.items.length; ii++) {
+            html += '<p style="margin:5px 0;font-size:12.5px">' + sec.items[ii] + '</p>';
+          }
+        }
+
+        // Analysis
+        if (sec.analysis) {
+          html += '<div style="margin-top:8px;padding:8px 12px;background:var(--bg);border-radius:8px;font-size:12.5px;color:var(--weak);border-left:3px solid var(--accent)">' +
+            '<span style="font-weight:600;color:var(--text)">📊 分析：</span>' + sec.analysis +
+          '</div>';
+        }
+
+        html += '</div></div>';
+      }
+
+      // ─── AI 对话区 ─────────────────────────────────────────
+      html += '<div style="margin-bottom:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden">' +
+        '<div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px">' +
+          '<i data-lucide="bot" width="16" height="16" style="color:var(--accent)"></i>' +
+          '<span style="font-size:13px;font-weight:600;color:var(--text)">💬 与小安AI对话月报</span>' +
+        '</div>' +
+        '<div style="padding:12px 16px">' +
+          '<div class="msg agent" style="margin-bottom:10px"><div class="bubble" style="font-size:13px">📅 <strong>月报已就绪。</strong> 你可以：<br>• 询问某个数据的详细情况<br>• 要求调整报告结构或增减章节<br>• 针对某个问题探讨解决方案<br>• 生成督办建议或会议材料</div></div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' +
+            '<button class="drawer-btn primary" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'企业整改完成率仅11.13%，如何提升？\')">📊 企业整改提升方案</button>' +
+            '<button class="drawer-btn" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'帮我调整报告结构，把问题和建议合并为一章\')">📝 调整报告结构</button>' +
+            '<button class="drawer-btn" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'基于报告内容，生成下周督办建议\')">📋 生成督办建议</button>' +
+            '<button class="drawer-btn" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'列出哪些村社需要重点督导\')">🔍 重点督导清单</button>' +
+          '</div>' +
+          '<div style="display:flex;gap:6px">' +
+            '<input type="text" id="mrChatInput" placeholder="输入关于月报的问题…" style="flex:1;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);outline:none" onkeydown="if(event.key===\'Enter\'){window.monthlyReportSend()}">' +
+            '<button class="global-chat-btn" onclick="window.monthlyReportSend()" title="发送" style="flex-shrink:0"><i data-lucide="arrow-up" width="16" height="16"></i></button>' +
+          '</div>' +
+          '<div id="mrChatHistory" style="margin-top:10px;max-height:200px;overflow-y:auto"></div>' +
+        '</div>' +
+      '</div>';
+
+      return html;
+    }
+
+    // ─── 月报对话交互 ────────────────────────────────────────
+    var MR_CHAT = [];
+
+    window.monthlyReportAsk = function(text) {
+      var history = document.getElementById('mrChatHistory');
+      var input = document.getElementById('mrChatInput');
+      if (!history) return;
+
+      // 用户消息
+      MR_CHAT.push({ role: 'user', text: text });
+      history.innerHTML += '<div class="msg user" style="margin-bottom:6px"><div class="bubble" style="font-size:12.5px">' + escapeHtml(text) + '</div></div>';
+      history.scrollTop = history.scrollHeight;
+
+      if (input) input.value = '';
+
+      // 模拟AI回复
+      setTimeout(function() {
+        var reply = monthlyReportReply(text);
+        MR_CHAT.push({ role: 'agent', text: reply });
+        history.innerHTML += '<div class="msg agent" style="margin-bottom:6px"><div class="bubble" style="font-size:12.5px">' + reply + '</div></div>';
+        history.scrollTop = history.scrollHeight;
+        lucide.createIcons();
+      }, 400);
+    };
+
+    window.monthlyReportSend = function() {
+      var input = document.getElementById('mrChatInput');
+      if (!input || !input.value.trim()) return;
+      window.monthlyReportAsk(input.value.trim());
+    };
+
+    function monthlyReportReply(text) {
+      var t = text;
+      if (/企业整改|提升|11\.13/.test(t)) {
+        return '针对企业整改完成率仅11.13%的问题，建议：<br>1. <strong>建立未整改企业清单</strong> — 7月15日前完成排查<br>2. <strong>"一对一"帮扶指导</strong> — 安监中队联合村社逐企对接<br>3. <strong>逾期执法程序</strong> — 逾期未完成的纳入重点监管名单<br>4. <strong>周报跟踪机制</strong> — 每周通报整改进展<br>是否要我生成一份督办建议？';
+      } else if (/调整|结构|合并|章节/.test(t)) {
+        return '好的，我可以帮你调整报告结构。当前报告包含：总体情况 → 核心数据分析 → 火灾事故 → 风险预判 → 主要问题 → 工作建议。<br><br>你希望合并"问题"和"建议"为一章，还是调整其他部分？也可以增减特定章节。';
+      } else if (/督办|建议/.test(t)) {
+        return '基于报告异常数据，建议下周督办重点：<br>1. 🔴 <strong>纤石村</strong> — 日检下降96.3%，整改率为0<br>2. 🔴 <strong>玉泽社区</strong> — 日检下降75%，整改率持续为0<br>3. 🟡 <strong>企业整改</strong> — 完成率仅11.13%，需集中攻坚<br>4. 🟡 <strong>场所采集</strong> — 采集率57.36%，推送率仅17.05%<br>是否生成一份正式督办单？';
+      } else if (/村社|督导|重点/.test(t)) {
+        return '以下村社需重点督导：<br><br>🔴 <strong>高优先级</strong>（日检下降 + 整改率为0）：<br>• 纤石村（日检↓96.3%，整改率0%）<br>• 玉泽社区（日检↓75%，整改率0%）<br>• 东莲村（日检↓17.8%，整改率未提升）<br><br>🟡 <strong>关注</strong>（31个村社整改率为0%）：<br>• 新港村、石桥村、南庄兜村、东塘河村等<br><br>建议6月起对这些村社实行每周不少于2次加密巡查。';
+      } else if (/场所|采集|推送/.test(t)) {
+        return '场所监管覆盖不足是当前最突出的问题：<br>• 场所采集率仅为 <strong>57.36%</strong><br>• 场所待办推送覆盖率低至 <strong>17.05%</strong><br>• 大量场所未纳入有效监管视线<br><br>建议6月30日前组织网格力量逐户核实补录，同步优化系统自动推送机制。';
+      } else if (/火灾|火情|杂草|季节/.test(t)) {
+        return '季节性火情风险分析：<br>• 近期火情以杂草起火、锅烧焦、杂物起火为主（合计约19.2%）<br>• 秋冬季（10月至次年2月）发生频次较高<br>• 当前干燥季节需重点防范野外及房前屋后可燃物<br><br>建议6月20日前开展公共区域可燃物清理专项行动。';
+      } else {
+        return '好的，已收到你的问题。基于本月报告数据，我可以帮你深入分析采集率、整改率、村社动态、火情风险等维度，也可以调整报告结构或生成督办材料。请具体说明你的需求。';
+      }
+    }
+
+    // ─── 月报章节折叠切换 ────────────────────────────────────
+    window.toggleMrSection = function(header) {
+      var body = header.nextElementSibling;
+      var toggle = header.querySelector('.mr-toggle');
+      if (!body) return;
+      if (body.style.display === 'none') {
+        body.style.display = '';
+        toggle.style.transform = '';
+      } else {
+        body.style.display = 'none';
+        toggle.style.transform = 'rotate(-90deg)';
+      }
+    };
 
     var currentDrawerAction = '';
 
@@ -5015,8 +5422,21 @@
       strip.innerHTML = html;
     }
 
-    // 初始化默认 tab
-    tabs.push({ id: 'dashboard', label: '工作台' });
+    // 初始化默认 tab — 将初始化场景一键变成顶部 Tab
+    var defaultTabs = [
+      { id: 'dashboard', label: '工作台' },
+      { id: 'hazard-report', label: '重大隐患整改' },
+      { id: 'efficiency', label: '履职效能' },
+      { id: 'responsibility', label: '主体责任' },
+      { id: 'disposal', label: '分级处置' },
+      { id: 'followup', label: '重点跟进' },
+      { id: 'pending-actions', label: '待确认行动' },
+      { id: 'supervision-track', label: '督办跟踪' },
+      { id: 'monthly-report', label: '月报' }
+    ];
+    defaultTabs.forEach(function(t) { tabs.push(t); });
+    // 初始渲染 tab 栏（此时 initOverlay 遮罩还在，但 tab 已就绪）
+    renderTabs();
     // ════════════════════════════════════════════════════════════════
     // INIT
     // ════════════════════════════════════════════════════════════════
