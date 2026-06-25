@@ -10,8 +10,11 @@ set -e
 echo "🔨 YAQ-AI Build"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# 1. 安装依赖（如果缺失）
-if [ ! -d "node_modules" ]; then
+# 1. 安装依赖
+if [ -n "$CI" ]; then
+  echo "📦 CI 环境 — 使用 npm ci（快速+可复现）..."
+  npm ci
+elif [ ! -d "node_modules" ]; then
   echo "📦 安装构建依赖..."
   npm install --production=false
 fi
@@ -23,17 +26,6 @@ mkdir -p dist/js dist/css
 # 3. 委托 npm scripts 执行压缩（单一命令定义源）
 echo "📜 压缩 JS..."
 npm run build:js
-
-# 压缩动态 import 的 ES 模块文件（js/data.js, js/state.js, js/modules.js, js/render/*.js）
-echo "📦 压缩动态 ES 模块..."
-for jsfile in js/data.js js/state.js js/modules.js js/render/*.js; do
-  [ -f "$jsfile" ] || continue
-  # 保持相对路径，如 js/render/header.js → dist/js/render/header.js
-  dir="dist/$(dirname "$jsfile")"
-  mkdir -p "$dir"
-  npx terser "$jsfile" -o "$dir/$(basename "$jsfile")" --compress --mangle --comments false 2>/dev/null
-  echo "   $(basename "$jsfile") $(wc -c < "$jsfile" | tr -d ' ')B → $(wc -c < "$dir/$(basename "$jsfile")" | tr -d ' ')B"
-done
 
 echo "🎨 压缩 CSS..."
 npm run build:css
