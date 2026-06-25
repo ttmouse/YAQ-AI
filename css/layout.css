@@ -2,13 +2,6 @@
    Layout — page skeleton (header → goal → main → bottom)
    ═══════════════════════════════════════════════════════════ */
 
-.app {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 /* ── header ── */
 .header {
   height: var(--header-h);

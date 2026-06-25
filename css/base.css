@@ -59,18 +59,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .font-semibold { font-weight: var(--fw-semibold); }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* risk badges */
-.badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: var(--fs-xs); font-weight: var(--fw-semibold);
-  padding: 2px 8px; border-radius: var(--r-full);
-  line-height: 1.3;
-}
-.badge-high   { background: var(--red-soft);   color: var(--red); }
-.badge-medium { background: var(--orange-soft); color: var(--orange); }
-.badge-low    { background: var(--green-soft);  color: var(--green); }
-.badge-info   { background: var(--blue-soft);   color: var(--blue); }
-.badge-neutral { background: var(--fg-soft); color: var(--muted); }
+/* risk badges — moved to style.css, removed duplicate */
 
 /* status dots */
 .dot {
