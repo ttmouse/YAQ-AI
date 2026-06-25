@@ -4213,7 +4213,7 @@
       if (window.__metricOrder) {
         localStorage.setItem('yaq_metric_order', JSON.stringify(window.__metricOrder));
       }
-      localStorage.setItem('yaq_metric_ver', 2);
+      localStorage.setItem('yaq_metric_ver', STORAGE_VERSION);
       closeMetricConfig();
       // 重新渲染当前场景
       var sceneId = state.activeScene;
@@ -4657,6 +4657,7 @@
     window.openSuperviseDrawer = openSuperviseDrawer;
     window.openAgentConfig = openAgentConfig;
     window.saveAgentPrompt = saveAgentPrompt;
+    window.escapeHtml = escapeHtml;
     window.agentAsk = agentAsk;
     window.toggleChatPanel = toggleChatPanel;
     window.openChatPanel = openChatPanel;
