@@ -1,5 +1,73 @@
   (function() {
     'use strict';
+    // ════════════════════════════════════════════════════════════════
+    // DOM CACHE — 缓存常用 DOM 引用，避免重复查询
+    // ════════════════════════════════════════════════════════════════
+
+    var $dom = {
+    agentCronPreview: document.getElementById('agentCronPreview'),
+    agentPromptEditable: document.getElementById('agentPromptEditable'),
+    agentScheduleSelect: document.getElementById('agentScheduleSelect'),
+    aiActionBatchCount: document.getElementById('aiActionBatchCount'),
+    aiActionSelectAll: document.getElementById('aiActionSelectAll'),
+    chatBody: document.getElementById('chatBody'),
+    chatFab: document.getElementById('chatFab'),
+    chatInput: document.getElementById('chatInput'),
+    chatPanel: document.getElementById('chatPanel'),
+    dmsgInput: document.getElementById('dmsgInput'),
+    drawerBody: document.getElementById('drawerBody'),
+    drawerCancel: document.getElementById('drawerCancel'),
+    drawerClose: document.getElementById('drawerClose'),
+    drawerConfirm: document.getElementById('drawerConfirm'),
+    drawerOverlay: document.getElementById('drawerOverlay'),
+    drawerPanel: document.getElementById('drawerPanel'),
+    drawerTitle: document.getElementById('drawerTitle'),
+    drillAiConv: document.getElementById('drillAiConv'),
+    drillBody: document.getElementById('drillBody'),
+    drillFilter: document.getElementById('drillFilter'),
+    drillFloat: document.getElementById('drillFloat'),
+    drillOverlay: document.getElementById('drillOverlay'),
+    drillTitle: document.getElementById('drillTitle'),
+    epFixedTop: document.getElementById('epFixedTop'),
+    epName: document.getElementById('epName'),
+    epPanel: document.getElementById('epPanel'),
+    epTabContent: document.getElementById('epTabContent'),
+    hazardModal: document.getElementById('hazardModal'),
+    hazardModalBody: document.getElementById('hazardModalBody'),
+    hazardModalDot: document.getElementById('hazardModalDot'),
+    hazardModalName: document.getElementById('hazardModalName'),
+    hazardModalOverlay: document.getElementById('hazardModalOverlay'),
+    launcherBody: document.getElementById('launcherBody'),
+    launcherOverlay: document.getElementById('launcherOverlay'),
+    launcherPanel: document.getElementById('launcherPanel'),
+    launcherSearch: document.getElementById('launcherSearch'),
+    metricCheckboxes: document.getElementById('metricCheckboxes'),
+    metricFilterTabs: document.getElementById('metricFilterTabs'),
+    metricModal: document.getElementById('metricModal'),
+    metricModalOverlay: document.getElementById('metricModalOverlay'),
+    metricSearchInput: document.getElementById('metricSearchInput'),
+    metricTip: document.getElementById('metricTip'),
+    mfootCount: document.getElementById('mfootCount'),
+    paBatchBar: document.getElementById('paBatchBar'),
+    paBatchConfirmN: document.getElementById('paBatchConfirmN'),
+    paBatchCount: document.getElementById('paBatchCount'),
+    paSelectAll: document.getElementById('paSelectAll'),
+    regArrow: document.getElementById('regArrow'),
+    regulationBody: document.getElementById('regulationBody'),
+    sceneContent: document.getElementById('sceneContent'),
+    sceneList: document.getElementById('sceneList'),
+    selectedMetricsList: document.getElementById('selectedMetricsList'),
+    taskModal: document.getElementById('taskModal'),
+    taskModalLeft: document.getElementById('taskModalLeft'),
+    taskModalName: document.getElementById('taskModalName'),
+    taskModalOverlay: document.getElementById('taskModalOverlay'),
+    taskModalRight: document.getElementById('taskModalRight'),
+    toast: document.getElementById('toast'),
+    topbarDate: document.getElementById('topbarDate'),
+    workspace: document.getElementById('workspace')
+    };
+
+
 
     // ════════════════════════════════════════════════════════════════
     // MOCK DATA
@@ -886,7 +954,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function renderScene(sceneId) {
-      var container = document.getElementById('sceneContent');
+      var container = $dom.sceneContent;
       var html = '';
       switch (sceneId) {
         case 'dashboard': html = renderDashboard(); break;
@@ -1428,8 +1496,8 @@
     }
 
     function updateActionItemBatchBar() {
-      var countEl = document.getElementById('aiActionBatchCount');
-      var selectAllCb = document.getElementById('aiActionSelectAll');
+      var countEl = $dom.aiActionBatchCount;
+      var selectAllCb = $dom.aiActionSelectAll;
       if (!countEl) return;
       var items = MOCK.actionItems || [];
       var n = 0;
@@ -1518,8 +1586,8 @@
       }
 
       currentDrawerAction = 'supervise';
-      document.getElementById('drawerConfirm').textContent = '确认发起全部（' + items.length + ' 条）';
-      document.getElementById('drawerTitle').innerHTML = '<i data-lucide="megaphone" aria-hidden="true"></i> 全局督办预览';
+      $dom.drawerConfirm.textContent = '确认发起全部（' + items.length + ' 条）';
+      $dom.drawerTitle.innerHTML = '<i data-lucide="megaphone" aria-hidden="true"></i> 全局督办预览';
 
       var bodyHtml = '<div class="drawer-supervise-intro">' +
         '<div class="dr-ai-icon"><i data-lucide="bot" width="16" height="16"></i></div>' +
@@ -1542,10 +1610,10 @@
         '</div>';
       }
 
-      document.getElementById('drawerBody').innerHTML = bodyHtml;
+      $dom.drawerBody.innerHTML = bodyHtml;
       lucide.createIcons();
-      document.getElementById('drawerPanel').classList.add('open');
-      document.getElementById('drawerOverlay').classList.add('open');
+      $dom.drawerPanel.classList.add('open');
+      $dom.drawerOverlay.classList.add('open');
     }
 
     function renderPriorityItem(item) {
@@ -1987,7 +2055,7 @@
       showToast('AI 正在基于最新异常数据重新分析…');
       setTimeout(function() {
         // 重新渲染处置场景
-        var container = document.getElementById('sceneContent');
+        var container = $dom.sceneContent;
         if (container && state.activeScene === 'disposal') {
           container.innerHTML = renderDisposal();
           lucide.createIcons();
@@ -2369,8 +2437,8 @@
       if (!content) return;
       currentDrawerAction = action;
       // 恢复确认按钮默认文案
-      document.getElementById('drawerConfirm').textContent = '确认生成';
-      document.getElementById('drawerTitle').innerHTML = '<i data-lucide="' + getDrawerIcon(action) + '" aria-hidden="true"></i> ' + content.title;
+      $dom.drawerConfirm.textContent = '确认生成';
+      $dom.drawerTitle.innerHTML = '<i data-lucide="' + getDrawerIcon(action) + '" aria-hidden="true"></i> ' + content.title;
 
       var bodyHtml = '';
       for (var i = 0; i < content.sections.length; i++) {
@@ -2378,18 +2446,18 @@
         bodyHtml += '<div class="drawer-section"><div class="drawer-section-label">' + sec.label + '</div><div class="drawer-section-value">' + sec.value.replace(/\n/g, '<br>') + '</div></div>';
         if (i < content.sections.length - 1) bodyHtml += '<div class="drawer-divider"></div>';
       }
-      document.getElementById('drawerBody').innerHTML = bodyHtml;
+      $dom.drawerBody.innerHTML = bodyHtml;
       lucide.createIcons();
 
-      document.getElementById('drawerPanel').classList.add('open');
-      document.getElementById('drawerOverlay').classList.add('open');
+      $dom.drawerPanel.classList.add('open');
+      $dom.drawerOverlay.classList.add('open');
     }
 
     function closeDrawer() {
-      document.getElementById('drawerPanel').classList.remove('open');
-      document.getElementById('drawerOverlay').classList.remove('open');
-      document.getElementById('drawerConfirm').textContent = '确认生成';
-      document.getElementById('drawerCancel').style.display = '';
+      $dom.drawerPanel.classList.remove('open');
+      $dom.drawerOverlay.classList.remove('open');
+      $dom.drawerConfirm.textContent = '确认生成';
+      $dom.drawerCancel.style.display = '';
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -2450,9 +2518,9 @@
       var savedPrompt = localStorage.getItem('yaq_agent_prompt_' + sceneId) || '';
       var cron = localStorage.getItem('yaq_agent_cron_' + sceneId) || agentDefaultCron[sceneId] || '0 8 * * *';
 
-      document.getElementById('drawerConfirm').style.display = 'none';
-      document.getElementById('drawerCancel').textContent = '关闭';
-      document.getElementById('drawerTitle').innerHTML = '<i data-lucide="settings-2" aria-hidden="true"></i> Agent 配置 — ' + name;
+      $dom.drawerConfirm.style.display = 'none';
+      $dom.drawerCancel.textContent = '关闭';
+      $dom.drawerTitle.innerHTML = '<i data-lucide="settings-2" aria-hidden="true"></i> Agent 配置 — ' + name;
 
       var promptOptionsHtml = '';
       for (var p = 0; p < agentSchedulePresets.length; p++) {
@@ -2474,20 +2542,20 @@
         '</div>' +
         '<button class="agent-config-save" onclick="saveAgentPrompt(\'' + sceneId + '\')"><i data-lucide="check" width="14" height="14"></i> 保存配置</button>';
 
-      document.getElementById('drawerBody').innerHTML = bodyHtml;
+      $dom.drawerBody.innerHTML = bodyHtml;
       lucide.createIcons();
 
       // 预览 cron 变化
-      var selectEl = document.getElementById('agentScheduleSelect');
+      var selectEl = $dom.agentScheduleSelect;
       if (selectEl) {
         selectEl.addEventListener('change', function() {
-          var preview = document.getElementById('agentCronPreview');
+          var preview = $dom.agentCronPreview;
           if (preview) preview.textContent = this.value;
         });
       }
 
       // textarea 自适应高度
-      var ta = document.getElementById('agentPromptEditable');
+      var ta = $dom.agentPromptEditable;
       if (ta) {
         var autoResize = function() {
           this.style.height = 'auto';
@@ -2497,13 +2565,13 @@
         autoResize.call(ta);
       }
 
-      document.getElementById('drawerPanel').classList.add('open');
-      document.getElementById('drawerOverlay').classList.add('open');
+      $dom.drawerPanel.classList.add('open');
+      $dom.drawerOverlay.classList.add('open');
     }
 
     function saveAgentPrompt(sceneId) {
-      var promptEl = document.getElementById('agentPromptEditable');
-      var scheduleEl = document.getElementById('agentScheduleSelect');
+      var promptEl = $dom.agentPromptEditable;
+      var scheduleEl = $dom.agentScheduleSelect;
       if (promptEl) {
         var val = promptEl.value.trim();
         if (val) {
@@ -2531,7 +2599,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function showToast(msg) {
-      var el = document.getElementById('toast');
+      var el = $dom.toast;
       el.textContent = msg;
       el.classList.add('show');
       setTimeout(function() { el.classList.remove('show'); }, 2500);
@@ -2561,8 +2629,8 @@
       window.__currentHazard = h;
 
       var dotColor = h.level.indexOf('重大') > -1 ? 'var(--red)' : '#d97706';
-      document.getElementById('hazardModalName').innerHTML = '<a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--text);text-decoration:none;border-bottom:1px dashed var(--blue)">' + h.object + '</a>';
-      document.getElementById('hazardModalDot').style.background = dotColor;
+      $dom.hazardModalName.innerHTML = '<a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--text);text-decoration:none;border-bottom:1px dashed var(--blue)">' + h.object + '</a>';
+      $dom.hazardModalDot.style.background = dotColor;
 
       // — 顶部状态区 —
       var statusBadge = '<span class="hc-status ' + h.statusCls + '" style="font-size:11px;padding:2px 8px">' + h.status + '</span>';
@@ -2629,12 +2697,12 @@
         '</div>';
       }
 
-      document.getElementById('hazardModalBody').innerHTML =
+      $dom.hazardModalBody.innerHTML =
         '<div class="hmodal-main">' + bodyHtml + '</div>' +
         '<div class="hmodal-ai">' + aiHtml + '</div>';
 
-      document.getElementById('hazardModalOverlay').style.display = 'block';
-      document.getElementById('hazardModal').style.display = 'flex';
+      $dom.hazardModalOverlay.style.display = 'block';
+      $dom.hazardModal.style.display = 'flex';
     }
 
     function generateHazardAnalysis(h, entData) {
@@ -2670,8 +2738,8 @@
     }
 
     function closeHazardModal() {
-      document.getElementById('hazardModalOverlay').style.display = 'none';
-      document.getElementById('hazardModal').style.display = 'none';
+      $dom.hazardModalOverlay.style.display = 'none';
+      $dom.hazardModal.style.display = 'none';
     }
 
     // ─── 复制隐患信息 ─────────────────────────────────────────
@@ -2760,17 +2828,17 @@
         }
       }
 
-      document.getElementById('epName').textContent = name;
-      document.getElementById('epFixedTop').innerHTML = epRenderFixedTop(data);
+      $dom.epName.textContent = name;
+      $dom.epFixedTop.innerHTML = epRenderFixedTop(data);
       window.__epActiveTab = 'hazards';
-      document.getElementById('epTabContent').innerHTML = epRenderTab(data, 'hazards');
-      document.getElementById('epPanel').classList.add('open');
+      $dom.epTabContent.innerHTML = epRenderTab(data, 'hazards');
+      $dom.epPanel.classList.add('open');
       window.__epData = data;
       lucide.createIcons();
     }
 
     function closeEnterprisePanel() {
-      document.getElementById('epPanel').classList.remove('open');
+      $dom.epPanel.classList.remove('open');
     }
 
     function epSwitchTab(tab) {
@@ -2781,7 +2849,7 @@
       cards.forEach(function(c) { c.classList.remove('mc-active'); });
       cards.forEach(function(c) { if (c.getAttribute('data-tab') === tab) c.classList.add('mc-active'); });
       // 更新内容区
-      document.getElementById('epTabContent').innerHTML = epRenderTab(data, tab);
+      $dom.epTabContent.innerHTML = epRenderTab(data, tab);
       window.__epActiveTab = tab;
       lucide.createIcons();
     }
@@ -2987,7 +3055,7 @@
       var labelEl = el.querySelector('.mc-label');
       var label = labelEl ? labelEl.textContent.trim() : '详情';
 
-      document.getElementById('drillTitle').innerHTML = '<i data-lucide="list" aria-hidden="true"></i> ' + label;
+      $dom.drillTitle.innerHTML = '<i data-lucide="list" aria-hidden="true"></i> ' + label;
 
       var listHtml = '<div class="drill-list">';
       listHtml += '<div class="drill-list-summary">共 <strong>' + items.length + '</strong> 项</div>';
@@ -3065,10 +3133,10 @@
           '</div>' +
         '</div>';
 
-      document.getElementById('drillBody').innerHTML = listHtml + aiHtml;
+      $dom.drillBody.innerHTML = listHtml + aiHtml;
 
       // 条线筛选
-      var filterEl = document.getElementById('drillFilter');
+      var filterEl = $dom.drillFilter;
       if (filterEl) {
         filterEl.onclick = function(e) {
           var btn = e.target.closest('.df-btn');
@@ -3091,18 +3159,18 @@
 
       lucide.createIcons();
 
-      document.getElementById('drillFloat').classList.add('open');
-      document.getElementById('drillOverlay').classList.add('open');
+      $dom.drillFloat.classList.add('open');
+      $dom.drillOverlay.classList.add('open');
     }
 
     function closeDrillFloat() {
-      document.getElementById('drillFloat').classList.remove('open');
-      document.getElementById('drillOverlay').classList.remove('open');
+      $dom.drillFloat.classList.remove('open');
+      $dom.drillOverlay.classList.remove('open');
     }
 
     // ─── AI 追问 ────────────────────────────────────────────────
     function askAI() {
-      var input = document.getElementById('dmsgInput');
+      var input = $dom.dmsgInput;
       if (!input) return;
       var q = input.value.trim();
       if (!q) return;
@@ -3113,7 +3181,7 @@
       var items = ctx.items || [];
       var aiItems = ctx.aiItems || [];
 
-      var conv = document.getElementById('drillAiConv');
+      var conv = $dom.drillAiConv;
       if (!conv) return;
 
       // 用户消息
@@ -3213,8 +3281,8 @@
     }
 
     function toggleRegulation() {
-      var body = document.getElementById('regulationBody');
-      var arrow = document.getElementById('regArrow');
+      var body = $dom.regulationBody;
+      var arrow = $dom.regArrow;
       if (!body) return;
       var isOpen = body.style.display !== 'none';
       body.style.display = isOpen ? 'none' : 'block';
@@ -3237,7 +3305,7 @@
       }
       if (!task) { showToast('未找到任务数据'); return; }
 
-      document.getElementById('taskModalName').textContent = task.name;
+      $dom.taskModalName.textContent = task.name;
 
       var rateNum = parseInt(task.rate) || 0;
       var statusCls = task.statusCls || 'neutral';
@@ -3308,7 +3376,7 @@
         leftHtml += '</div>';
       }
 
-      document.getElementById('taskModalLeft').innerHTML = leftHtml;
+      $dom.taskModalLeft.innerHTML = leftHtml;
 
       // ── 右栏：AI 分析侧边栏 ──
       var rightHtml = '';
@@ -3361,16 +3429,16 @@
         '<div class="tma-item"><span class="tma-dot orange"></span>持续跟踪</div>' +
       '</div>';
 
-      document.getElementById('taskModalRight').innerHTML = rightHtml;
+      $dom.taskModalRight.innerHTML = rightHtml;
 
       lucide.createIcons();
-      document.getElementById('taskModalOverlay').style.display = 'block';
-      document.getElementById('taskModal').style.display = 'flex';
+      $dom.taskModalOverlay.style.display = 'block';
+      $dom.taskModal.style.display = 'flex';
     }
 
     function closeTaskModal() {
-      document.getElementById('taskModalOverlay').style.display = 'none';
-      document.getElementById('taskModal').style.display = 'none';
+      $dom.taskModalOverlay.style.display = 'none';
+      $dom.taskModal.style.display = 'none';
     }
     window.openTaskDetail = openTaskDetail;
     window.closeTaskModal = closeTaskModal;
@@ -3392,7 +3460,7 @@
 
       state.activeScene = sceneId;
 
-      var ws = document.getElementById('workspace');
+      var ws = $dom.workspace;
       ws.classList.add('scanning');
 
       // 同步左栏场景高亮
@@ -3405,7 +3473,7 @@
       });
 
       // 同步右栏场景提示
-      var chatBody = document.getElementById('chatBody');
+      var chatBody = $dom.chatBody;
       var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
 
       _switchTimer = setTimeout(function() {
@@ -3460,21 +3528,21 @@
       });
 
       // Drawer overlay close
-      document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-      document.getElementById('drawerClose').addEventListener('click', closeDrawer);
-      document.getElementById('drawerCancel').addEventListener('click', closeDrawer);
+      $dom.drawerOverlay.addEventListener('click', closeDrawer);
+      $dom.drawerClose.addEventListener('click', closeDrawer);
+      $dom.drawerCancel.addEventListener('click', closeDrawer);
 
       // Drawer confirm — 动态生成处置文案
-      document.getElementById('drawerConfirm').addEventListener('click', function() {
+      $dom.drawerConfirm.addEventListener('click', function() {
         var action = currentDrawerAction;
 
         // 督办批量确认 — 特殊处理
         if (action === 'supervise') {
           var superviseItems = document.querySelectorAll('.drawer-supervise-item');
           var count = superviseItems.length;
-          document.getElementById('drawerTitle').innerHTML = '<i data-lucide="check-circle" aria-hidden="true"></i> 督办已全部发起';
-          document.getElementById('drawerConfirm').textContent = '已完成';
-          document.getElementById('drawerConfirm').style.display = 'none';
+          $dom.drawerTitle.innerHTML = '<i data-lucide="check-circle" aria-hidden="true"></i> 督办已全部发起';
+          $dom.drawerConfirm.textContent = '已完成';
+          $dom.drawerConfirm.style.display = 'none';
 
           var resultHtml = '<div class="drawer-generated">' +
             '<div class="dr-gen-banner" style="background:var(--green-bg);color:var(--green)"><i data-lucide="check-circle" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 已成功发起 ' + count + ' 条督办</div>' +
@@ -3484,8 +3552,8 @@
               '<button class="dr-action-btn" onclick="closeDrawer()" style="padding:6px 14px"><i data-lucide="x" width="13" height="13"></i> 关闭</button>' +
             '</div>' +
           '</div>';
-          document.getElementById('drawerBody').innerHTML = resultHtml;
-          document.getElementById('drawerCancel').style.display = 'none';
+          $dom.drawerBody.innerHTML = resultHtml;
+          $dom.drawerCancel.style.display = 'none';
           lucide.createIcons();
           showToast('✅ 已发起 ' + count + ' 条督办，通知已发送');
           return;
@@ -3500,8 +3568,8 @@
         // 根据上下文生成处置文案
         var generated = generateDisposalText(action);
         // 替换 Drawer 内容为生成结果
-        document.getElementById('drawerTitle').innerHTML = '<i data-lucide="file-check" aria-hidden="true"></i> 已生成 — ' + content.title;
-        document.getElementById('drawerConfirm').textContent = '已完成';
+        $dom.drawerTitle.innerHTML = '<i data-lucide="file-check" aria-hidden="true"></i> 已生成 — ' + content.title;
+        $dom.drawerConfirm.textContent = '已完成';
 
         var resultHtml = '<div class="drawer-generated">' +
           '<div class="dr-gen-banner"><i data-lucide="sparkles" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 以下文案可复制使用</div>' +
@@ -3512,8 +3580,8 @@
             '<button class="dr-action-btn" onclick="showToast(\'通知已发送\');closeDrawer()" style="padding:6px 14px"><i data-lucide="send" width="13" height="13"></i> 发送通知</button>' +
           '</div>' +
         '</div>';
-        document.getElementById('drawerBody').innerHTML = resultHtml;
-        document.getElementById('drawerCancel').style.display = 'none';
+        $dom.drawerBody.innerHTML = resultHtml;
+        $dom.drawerCancel.style.display = 'none';
         lucide.createIcons();
 
         // 保存生成的文案供复制
@@ -3523,20 +3591,20 @@
       // Escape key
       document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-          if (document.getElementById('drawerPanel').classList.contains('open')) {
+          if ($dom.drawerPanel.classList.contains('open')) {
             closeDrawer();
           }
           // 关闭浮动对话面板
-          var chatPanel = document.getElementById('chatPanel');
+          var chatPanel = $dom.chatPanel;
           if (chatPanel.classList.contains('open')) {
             chatPanel.classList.remove('open');
-            document.getElementById('chatFab').style.display = 'flex';
+            $dom.chatFab.style.display = 'flex';
           }
         }
       });
 
       // Priority item action buttons (delegated)
-      document.getElementById('sceneContent').addEventListener('click', function(e) {
+      $dom.sceneContent.addEventListener('click', function(e) {
         var btn = e.target.closest('[data-pi-action]');
         if (btn) {
           var action = btn.getAttribute('data-pi-action');
@@ -3562,7 +3630,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function agentAsk(sceneId) {
-      var chatBody = document.getElementById('chatBody');
+      var chatBody = $dom.chatBody;
       var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
       var name = sceneNames[sceneId] || sceneId;
 
@@ -3582,10 +3650,10 @@
     // ════════════════════════════════════════════════════════════════
 
     function sendChatMsg() {
-      var input = document.getElementById('chatInput');
+      var input = $dom.chatInput;
       var text = input.value.trim();
       if (!text) return;
-      var chatBody = document.getElementById('chatBody');
+      var chatBody = $dom.chatBody;
       openChatPanel();
       chatBody.innerHTML += '<div class="msg user"><div class="bubble">' + escapeHtml(text) + '</div></div>';
       chatBody.scrollTop = chatBody.scrollHeight;
@@ -3608,16 +3676,16 @@
     // ════════════════════════════════════════════════════════════════
 
     function toggleChatPanel() {
-      var panel = document.getElementById('chatPanel');
-      var fab = document.getElementById('chatFab');
+      var panel = $dom.chatPanel;
+      var fab = $dom.chatFab;
       var opening = !panel.classList.contains('open');
       panel.classList.toggle('open');
       fab.style.display = opening ? 'none' : 'flex';
     }
 
     function openChatPanel() {
-      var panel = document.getElementById('chatPanel');
-      var fab = document.getElementById('chatFab');
+      var panel = $dom.chatPanel;
+      var fab = $dom.chatFab;
       if (!panel.classList.contains('open')) {
         panel.classList.add('open');
         fab.style.display = 'none';
@@ -3698,10 +3766,10 @@
       }
       // 清空搜索
       window.__metricSearch = '';
-      var input = document.getElementById('metricSearchInput');
+      var input = $dom.metricSearchInput;
       if (input) input.value = '';
-      document.getElementById('metricModalOverlay').style.display = 'block';
-      document.getElementById('metricModal').style.display = 'flex';
+      $dom.metricModalOverlay.style.display = 'block';
+      $dom.metricModal.style.display = 'flex';
       renderMetricCheckboxes();
       lucide.createIcons();
     }
@@ -3719,8 +3787,8 @@
           }
         }
       }
-      document.getElementById('metricModalOverlay').style.display = 'none';
-      document.getElementById('metricModal').style.display = 'none';
+      $dom.metricModalOverlay.style.display = 'none';
+      $dom.metricModal.style.display = 'none';
     }
 
     function renderMetricCheckboxes() {
@@ -3746,7 +3814,7 @@
       for (var pf = 0; pf < periodFilters.length; pf++) {
         filterHtml += '<button class="modal-filter-tab' + (periodFilters[pf] === activePeriod ? ' active' : '') + '" onclick="setPeriodFilter(\'' + periodFilters[pf] + '\')">' + periodFilters[pf] + '</button>';
       }
-      document.getElementById('metricFilterTabs').innerHTML = filterHtml;
+      $dom.metricFilterTabs.innerHTML = filterHtml;
 
       // 按业务视角 + 周期 + 搜索过滤
       var activeGroups = activeFilter === '全部' ? null : (filterGroupMap[activeFilter] || null);
@@ -3792,7 +3860,7 @@
         }
         html += '</div>';
       }
-      document.getElementById('metricCheckboxes').innerHTML = html || '<div style="text-align:center;padding:30px 0;color:var(--weak);font-size:13px">该分组暂无指标</div>';
+      $dom.metricCheckboxes.innerHTML = html || '<div style="text-align:center;padding:30px 0;color:var(--weak);font-size:13px">该分组暂无指标</div>';
 
       // 渲染已选指标列表（拖拽排序）
       renderSelectedMetricsList();
@@ -3803,7 +3871,7 @@
       for (var ci = 0; ci < allMet.length; ci++) {
         if (allMet[ci].checked) checkedCount++;
       }
-      var countEl = document.getElementById('mfootCount');
+      var countEl = $dom.mfootCount;
       if (countEl) countEl.innerHTML = '已选 <strong>' + checkedCount + '</strong> 个指标';
     }
 
@@ -3836,7 +3904,7 @@
           '<div class="mc-period ' + bCls + '">' + periodDisp + '</div>' +
         '</div>';
       }
-      document.getElementById('selectedMetricsList').innerHTML = html;
+      $dom.selectedMetricsList.innerHTML = html;
       lucide.createIcons();
     }
 
@@ -3916,7 +3984,7 @@
     }
 
     function onMetricSearch() {
-      var input = document.getElementById('metricSearchInput');
+      var input = $dom.metricSearchInput;
       window.__metricSearch = input ? input.value : '';
       renderMetricCheckboxes();
     }
@@ -3926,7 +3994,7 @@
 
     function showMetricTip(e, arg) {
       if (!arg) return;
-      var tip = document.getElementById('metricTip');
+      var tip = $dom.metricTip;
       var html = '';
 
       if (_tipHideTimer) {
@@ -4040,13 +4108,13 @@
     function hideMetricTip() {
       if (_tipHideTimer) { clearTimeout(_tipHideTimer); _tipHideTimer = null; }
       _tipHideTimer = setTimeout(function() {
-        var tip = document.getElementById('metricTip');
+        var tip = $dom.metricTip;
         doHideTip(tip);
       }, 250);
     }
 
     function doHideTip(tip) {
-      if (!tip) tip = document.getElementById('metricTip');
+      if (!tip) tip = $dom.metricTip;
       tip.onmouseenter = null;
       tip.onmouseleave = null;
       tip.classList.remove('show');
@@ -4054,7 +4122,7 @@
 
     function copyTipContent(e) {
       if (e) e.stopPropagation();
-      var tip = document.getElementById('metricTip');
+      var tip = $dom.metricTip;
       if (!tip) return;
 
       var parts = [];
@@ -4152,7 +4220,7 @@
       closeMetricConfig();
       // 重新渲染当前场景
       var sceneId = state.activeScene;
-      var container = document.getElementById('sceneContent');
+      var container = $dom.sceneContent;
       var html = '';
       switch (sceneId) {
         case 'dashboard': html = renderDashboard(); break;
@@ -4330,7 +4398,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function renderLauncher() {
-      var query = (document.getElementById('launcherSearch').value || '').trim().toLowerCase();
+      var query = ($dom.launcherSearch.value || '').trim().toLowerCase();
       var favs = getFavorites();
       var html = '';
 
@@ -4415,7 +4483,7 @@
       if (!html) {
         html = '<div class="launcher-empty">未找到匹配的功能</div>';
       }
-      document.getElementById('launcherBody').innerHTML = html;
+      $dom.launcherBody.innerHTML = html;
       lucide.createIcons();
     }
 
@@ -4438,8 +4506,8 @@
     }
 
     function toggleLauncher() {
-      var panel = document.getElementById('launcherPanel');
-      var overlay = document.getElementById('launcherOverlay');
+      var panel = $dom.launcherPanel;
+      var overlay = $dom.launcherOverlay;
       var isOpen = panel.classList.contains('open');
       if (isOpen) {
         closeLauncher();
@@ -4449,18 +4517,18 @@
     }
 
     function openLauncher() {
-      document.getElementById('launcherPanel').classList.add('open');
-      document.getElementById('launcherOverlay').classList.add('open');
-      document.getElementById('launcherSearch').value = '';
+      $dom.launcherPanel.classList.add('open');
+      $dom.launcherOverlay.classList.add('open');
+      $dom.launcherSearch.value = '';
       renderLauncher();
       setTimeout(function() {
-        document.getElementById('launcherSearch').focus();
+        $dom.launcherSearch.focus();
       }, 100);
     }
 
     function closeLauncher() {
-      document.getElementById('launcherPanel').classList.remove('open');
-      document.getElementById('launcherOverlay').classList.remove('open');
+      $dom.launcherPanel.classList.remove('open');
+      $dom.launcherOverlay.classList.remove('open');
     }
 
     function onLauncherSearch() {
@@ -4510,7 +4578,7 @@
       // Cmd+K / Ctrl+K 打开启动台
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        var panel = document.getElementById('launcherPanel');
+        var panel = $dom.launcherPanel;
         if (panel && panel.classList.contains('open')) {
           closeLauncher();
         } else {
@@ -4519,7 +4587,7 @@
       }
       // Escape 关闭启动台
       if (e.key === 'Escape') {
-        var panel = document.getElementById('launcherPanel');
+        var panel = $dom.launcherPanel;
         if (panel && panel.classList.contains('open')) {
           closeLauncher();
           return;
@@ -4571,7 +4639,7 @@
         '<span class="badge gray" style="font-size:9px;padding:1px 5px">引擎</span>' +
         '</div>';
 
-      document.getElementById('sceneList').innerHTML = html;
+      $dom.sceneList.innerHTML = html;
       lucide.createIcons();
     }
 
@@ -4583,7 +4651,7 @@
     var now = new Date();
     var dateStr = now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日';
     var weekdays = ['日','一','二','三','四','五','六'];
-    document.getElementById('topbarDate').textContent = dateStr + ' 星期' + weekdays[now.getDay()];
+    $dom.topbarDate.textContent = dateStr + ' 星期' + weekdays[now.getDay()];
 
     // Expose for onclick handlers
     window.switchScene = switchScene;
@@ -4739,10 +4807,10 @@
     }
 
     function updateBatchBar() {
-      var bar = document.getElementById('paBatchBar');
-      var countEl = document.getElementById('paBatchCount');
-      var confirmN = document.getElementById('paBatchConfirmN');
-      var selectAllCb = document.getElementById('paSelectAll');
+      var bar = $dom.paBatchBar;
+      var countEl = $dom.paBatchCount;
+      var confirmN = $dom.paBatchConfirmN;
+      var selectAllCb = $dom.paSelectAll;
       if (!bar) return;
 
       var ids = state.selectedPAIds;
