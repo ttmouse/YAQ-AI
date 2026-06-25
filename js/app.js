@@ -4122,7 +4122,13 @@
           return;
         }
 
-        renderScene(sceneId);
+        try {
+          renderScene(sceneId);
+        } catch(e) {
+          console.error('[YAQ] switchScene 渲染异常:', e);
+          $dom.sceneContent.innerHTML = renderError('渲染异常', '场景切换时发生错误，请刷新页面或重试。' + (e.message ? ' (' + e.message + ')' : ''));
+          lucide.createIcons();
+        }
         renderTabs();
         ws.classList.remove('scanning');
 
