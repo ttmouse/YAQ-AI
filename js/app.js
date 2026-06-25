@@ -5191,7 +5191,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function $_escapeHtml(s) {
-      return (s + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return escapeHtml(s);
     }
     function $_highlight(s, q) {
       if (!q) return $_escapeHtml(s);
