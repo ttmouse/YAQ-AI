@@ -4321,6 +4321,7 @@
           '<div class="mc-value"' + (m.valueColor ? ' style="color:' + m.valueColor + '"' : '') + '>' + m.value +
             (m.compare ? '<span class="mc-delta ' + (m.compare.isBad ? 'bad' : 'good') + '">' + m.compare.delta + '</span>' : '') +
           '</div>' +
+          (m.compare ? '<div class="mc-baseline">vs ' + m.compare.baselineLabel + ' ' + m.compare.baselineValue + '</div>' : '') +
           '<div class="mc-label">' + m.label + '</div>' +
           '<div class="mc-period ' + bCls + '">' + periodDisp + '</div>' +
         '</div>';
@@ -5926,5 +5927,43 @@
     // Render default scene
     renderScene('dashboard');
     bindInteractions();
+
+    // ════════════════════════════════════════════════════════════════
+    // ES6 MODULE SYSTEM — 连接 9 个模块文件到运行时
+    // 通过动态 import() 加载所有模块，暴露到 window.__Modules
+    // ════════════════════════════════════════════════════════════════
+    (function connectES6Modules() {
+      var moduleMap = {
+        state:       { path: './state.js',        name: '状态管理器' },
+        data:        { path: './data.js',         name: '数据层' },
+        modules:     { path: './modules.js',      name: '模块注册表' },
+        header:      { path: './render/header.js',     name: '顶栏渲染' },
+        assistant:   { path: './render/assistant.js',  name: 'AI助手渲染' },
+        blocks:      { path: './render/blocks.js',     name: '区块渲染' },
+        detail:      { path: './render/detail.js',     name: '详情面板渲染' },
+        modal:       { path: './render/modal.js',      name: '弹窗渲染' },
+        workItems:   { path: './render/workItems.js',  name: '工作项渲染' },
+      };
+
+      var keys = Object.keys(moduleMap);
+      var promises = keys.map(function(key) {
+        return import(moduleMap[key].path)
+          .then(function(mod) {
+            window.__Modules = window.__Modules || {};
+            window.__Modules[key] = mod;
+          })
+          .catch(function(err) {
+            console.warn('[YAQ] 模块加载失败: ' + moduleMap[key].name + ' (' + key + ')', err);
+          });
+      });
+
+      Promise.all(promises).then(function() {
+        console.log('[YAQ] ✅ ES6 模块系统已连接 — 9/9 模块加载完成');
+        if (window.__Modules) {
+          console.log('[YAQ] 模块列表:', Object.keys(window.__Modules).join(', '));
+        }
+        window.dispatchEvent(new CustomEvent('modulesReady'));
+      });
+    })();
 
   })();

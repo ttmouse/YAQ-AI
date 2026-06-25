@@ -236,6 +236,12 @@
     .mc-delta.bad { color: var(--red); }
     .mc-delta.good { color: var(--green); }
 
+    /* ─── 指标基线对照行 ─────────────────────────────────── */
+    .mc-baseline {
+      font-size: 9px; color: var(--weak); line-height: 1.2;
+      margin-top: -1px; white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; max-width: 100%;
+    }
     /* ─── 指标配置按钮 + 面板 ──────────────────────────────────── */
     .metric-config-btn{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--muted);display:grid;place-items:center;cursor:pointer}
     .metric-config-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
