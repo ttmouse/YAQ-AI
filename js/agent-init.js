@@ -563,8 +563,23 @@
         lucide.createIcons();
         var container = document.querySelector('.init-container') || document.querySelector('.center');
         if (container) container.scrollTop = container.scrollHeight;
+        // 保存欢迎文本，渲染 dashboard 后重新插入顶部
+        var savedHeader = [];
+        for (var i = 0; i < Math.min(3, sc.children.length); i++) {
+          savedHeader.push(sc.children[i].outerHTML);
+        }
         setTimeout(function() {
-          if (window.renderScene) window.renderScene('dashboard');
+          if (window.renderScene) {
+            window.renderScene('dashboard');
+            // 将欢迎文本重新插入到 sceneContent 顶部
+            if (savedHeader.length > 0) {
+              var headerWrap = document.createElement('div');
+              headerWrap.style.cssText = 'margin-bottom:16px';
+              headerWrap.innerHTML = savedHeader.join('');
+              sc.insertBefore(headerWrap, sc.firstChild);
+              lucide.createIcons();
+            }
+          }
         }, 600);
         return;
       }
