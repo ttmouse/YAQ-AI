@@ -4382,6 +4382,10 @@
       document.querySelectorAll('.nav-item[data-scene]').forEach(function(n) {
         n.classList.toggle('active', n.getAttribute('data-scene') === sceneId);
       });
+      // 同步移动端底部导航高亮
+      document.querySelectorAll('.mb-nav-item[data-scene]').forEach(function(n) {
+        n.classList.toggle('active', n.getAttribute('data-scene') === sceneId);
+      });
       // 同步系统导航高亮
       document.querySelectorAll('.nav-item[data-page]').forEach(function(n) {
         n.classList.toggle('active', n.getAttribute('data-page') === sceneId);
