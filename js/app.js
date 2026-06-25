@@ -972,12 +972,25 @@
       if (sceneId === 'pending-actions') { updateBatchBar(); }
     }
 
+    // ─── 主控 Agent 扩展内容（初始化后总控台顶部显示） ──────────
+    function renderDashboardAgentExtras() {
+      if (typeof window.renderAgentEnabledHTML === 'function') {
+        return window.renderAgentEnabledHTML();
+      }
+      return '';
+    }
+
     // ─── Dashboard ───────────────────────────────────────────────────
 
     function renderDashboard() {
       var p = MOCK.priority;
 
       var html = '';
+
+      // ─── 主控 Agent 已启用状态（仅在初始化后显示） ────────────
+      if (localStorage.getItem('yaq_agent_initialized') === 'true') {
+        html += renderDashboardAgentExtras();
+      }
 
       // ─── AI 管家开场 ────────────────────────────────────────────
       // ─── 问候 ──────────────────────────────────────────────────
@@ -1401,45 +1414,15 @@
     function renderActionItems() {
       var items = MOCK.actionItems || [];
       if (items.length === 0) return '';
-      var html = '<div class="info-card">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="zap" aria-hidden="true" style="color:var(--accent)"></i> 待确认行动项</h3>' +
-          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + items.length + ' 项</span>' +
+      return '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--line);border-radius:14px;background:var(--card);cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,transform .15s" onclick="switchScene(\'pending-actions\')" onmouseover="this.style.boxShadow=\'0 4px 14px rgba(23,105,224,0.12)\';this.style.transform=\'translateY(-1px)\'" onmouseout="this.style.boxShadow=\'\';this.style.transform=\'\'">' +
+        '<div style="position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--blue);border-radius:0 3px 3px 0"></div>' +
+        '<div style="flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center"><i data-lucide="zap" width="18" height="18"></i></div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text)">待确认督办 <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;margin-left:6px">' + items.length + ' 条</span></div>' +
+          '<div style="font-size:12px;color:var(--muted);margin-top:1px">勾选要确认的行动项，批量审核后统一发送</div>' +
         '</div>' +
-        '<div class="ai-action-flow">' +
-          '<span class="step">数据读取</span><span class="sep">→</span>' +
-          '<span class="step">异常识别</span><span class="sep">→</span>' +
-          '<span class="step">问题聚合</span><span class="sep">→</span>' +
-          '<span class="current">行动生成待确认</span>' +
-        '</div>' +
-        '<div style="font-size:12px;color:var(--muted);margin-bottom:10px">基于今日监管数据，系统生成 ' + items.length + ' 项待确认行动</div>' +
-        '<div style="display:flex;flex-direction:column;gap:8px">';
-      for (var ai = 0; ai < items.length; ai++) {
-        var a = items[ai];
-        var secBtns = '';
-        for (var si = 0; si < a.secondaryActions.length; si++) {
-          var sec = a.secondaryActions[si];
-          secBtns += '<button class="ai-action-btn ghost" onclick="event.stopPropagation();handleActionItemSecondary(\'' + sec + '\',\'' + a.title.replace(/'/g, "\\'") + '\')">' + sec + '</button>';
-        }
-        html += '<div class="ai-action-item" data-ai-idx="' + ai + '">' +
-          '<label class="ai-action-check" onclick="event.stopPropagation()"><input type="checkbox" checked onchange="toggleActionItemCheck(' + ai + ', this.checked)"></label>' +
-          '<span class="type-badge ' + a.typeCls + '">' + a.type + '</span>' +
-          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;padding-left:28px">' + escapeHtml(a.title) + '</div>' +
-          '<div class="basis" style="padding-left:28px"><i data-lucide="file-text" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--muted)"></i>' + a.basis + '</div>' +
-          '<div class="req" style="padding-left:28px"><i data-lucide="check-circle" width="11" height="11" style="vertical-align:middle;margin-right:3px;color:var(--accent)"></i>' + a.requirement + '</div>' +
-          '<div style="display:flex;gap:6px;margin-top:4px;padding-left:28px">' +
-            secBtns +
-          '</div>' +
-        '</div>';
-      }
-      html += '</div>' +
-        '<div class="ai-action-batch-bar">' +
-          '<label class="ai-action-check-all"><input type="checkbox" id="aiActionSelectAll" checked onchange="toggleActionItemSelectAll(this.checked)"> 全选</label>' +
-          '<span class="ai-action-batch-count" id="aiActionBatchCount">已选 ' + items.length + '/' + items.length + '</span>' +
-          '<button class="ai-action-btn primary" onclick="openSuperviseDrawer()" style="margin-left:auto"><i data-lucide="megaphone" width="13" height="13"></i> 审核并发布全部督办</button>' +
-        '</div>' +
+        '<i data-lucide="chevron-right" width="18" height="18" style="flex-shrink:0;color:var(--weak)"></i>' +
       '</div>';
-      return html;
     }
 
     // ─── AI 行动项操作函数 ────────────────────────────────────
@@ -4652,6 +4635,7 @@
 
     // Expose for onclick handlers
     window.switchScene = switchScene;
+    window.renderScene = renderScene;
     window.showToast = showToast;
     window.openDrawer = openDrawer;
     window.openSuperviseDrawer = openSuperviseDrawer;
@@ -4925,11 +4909,5 @@
     // Render default scene
     renderScene('dashboard');
     bindInteractions();
-
-    // 添加演示版本提示条
-    var demoNotice = document.createElement('div');
-    demoNotice.className = 'demo-notice';
-    demoNotice.textContent = '🧪 演示版本 — 当前使用模拟数据，所有操作均为功能预览，不涉及真实数据变更';
-    document.body.appendChild(demoNotice);
 
   })();
