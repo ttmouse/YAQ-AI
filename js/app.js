@@ -64,7 +64,8 @@
     taskModalRight: document.getElementById('taskModalRight'),
     toast: document.getElementById('toast'),
     topbarDate: document.getElementById('topbarDate'),
-    workspace: document.getElementById('workspace')
+    launchChips: document.getElementById('launchChips'),
+    workspace: document.getElementById('workspace'),
     };
 
 
@@ -2694,12 +2695,63 @@
       ]
     };
 
+    // ─── 历史月报列表 ──────────────────────────────────────────
+    var MR_HISTORY = [
+      { id: '202605', label: '2026年5月', period: '2026.05.01 - 05.31', active: true },
+      { id: '202604', label: '2026年4月', period: '2026.04.01 - 04.30', active: false },
+      { id: '202603', label: '2026年3月', period: '2026.03.01 - 03.31', active: false },
+      { id: '202602', label: '2026年2月', period: '2026.02.01 - 02.28', active: false },
+      { id: '202601', label: '2026年1月', period: '2026.01.01 - 01.31', active: false }
+    ];
+
+    // ─── 月报模块可见性状态 ────────────────────────────────────
+    var MR_SECTION_VISIBLE = {};
+    // 默认全部可见
+    (function() {
+      var ids = ['overview','collection','supervision','hazard','five-dim','village','fire','risk-predict','problems','suggestions'];
+      for (var i = 0; i < ids.length; i++) MR_SECTION_VISIBLE[ids[i]] = true;
+    })();
+
+    // ─── 月报侧边栏渲染 ────────────────────────────────────────
+    function renderMrSidebar() {
+      var sidebar = document.getElementById('mrSidebar');
+      var content = document.getElementById('mrSidebarContent');
+      if (!sidebar || !content) return;
+
+      // 显示浮动侧边栏
+      sidebar.style.display = 'block';
+
+      var html = '<div style="padding:14px 12px">' +
+        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px">' +
+          '<i data-lucide="calendar" width="14" height="14" style="color:var(--accent)"></i> 历史月报' +
+        '</div>';
+      for (var hi = 0; hi < MR_HISTORY.length; hi++) {
+        var h = MR_HISTORY[hi];
+        html += '<div onclick="window.switchMrHistory(\'' + h.id + '\')" style="padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;margin-bottom:4px;border:1px solid ' + (h.active ? 'var(--accent)' : 'transparent') + ';background:' + (h.active ? '#eef2ff' : 'transparent') + ';transition:all .15s" onmouseenter="this.style.background=\'#f2f4f7\'" onmouseleave="this.style.background=\'' + (h.active ? '#eef2ff' : 'transparent') + '\'">' +
+          '<div style="font-weight:' + (h.active ? '700' : '500') + ';color:var(--text)">' + h.label + '</div>' +
+          '<div style="font-size:10px;color:var(--weak);margin-top:2px">' + h.period + '</div>' +
+          (h.active ? '<div style="font-size:9px;color:var(--accent);margin-top:3px">● 当前</div>' : '') +
+        '</div>';
+      }
+      html += '</div>';
+      content.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function hideMrSidebar() {
+      var sidebar = document.getElementById('mrSidebar');
+      if (sidebar) sidebar.style.display = 'none';
+    }
+
     function renderMonthlyReport() {
       var d = MONTHLY_REPORT_DATA;
       var html = '';
 
+      // 渲染浏览器侧边栏
+      renderMrSidebar();
+
       // ─── 报告头部 ──────────────────────────────────────────
-      html += '<div style="padding:16px 0 8px">' +
+      html += '<div style="padding:0 0 8px">' +
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">' +
           '<h2 style="margin:0;font-size:18px;font-weight:700;color:var(--text)"><i data-lucide="calendar" aria-hidden="true" style="color:var(--accent);margin-right:6px"></i> ' + d.title + '</h2>' +
           '<span style="font-size:11px;color:var(--weak);background:var(--bg);padding:2px 10px;border-radius:20px;border:1px solid var(--line)">' + d.period + '</span>' +
@@ -2731,9 +2783,11 @@
         '</div>' +
       '</div>';
 
-      // ─── 报告章节 ──────────────────────────────────────────
+      // ─── 报告章节（按可见性过滤） ──────────────────────────
       for (var si = 0; si < d.sections.length; si++) {
         var sec = d.sections[si];
+        if (!MR_SECTION_VISIBLE[sec.id]) continue;
+
         html += '<div class="mr-section" style="margin-bottom:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden">' +
           '<div class="mr-section-header" onclick="toggleMrSection(this)" style="padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;transition:background .15s" onmouseenter="this.style.background=\'var(--bg)\'" onmouseleave="this.style.background=\'\'">' +
             '<i data-lucide="' + sec.icon + '" width="16" height="16" style="color:var(--accent);flex-shrink:0"></i>' +
@@ -2759,8 +2813,8 @@
           html += '<div style="overflow-x:auto;margin:8px 0;border-radius:8px;border:1px solid var(--line)">';
           html += '<table style="width:100%;border-collapse:collapse;font-size:12px">';
           html += '<thead><tr style="background:var(--bg)">';
-          for (var hi = 0; hi < sec.table.headers.length; hi++) {
-            html += '<th style="padding:7px 10px;text-align:left;font-weight:600;color:var(--text);border-bottom:1px solid var(--line);white-space:nowrap">' + sec.table.headers[hi] + '</th>';
+          for (var hi2 = 0; hi2 < sec.table.headers.length; hi2++) {
+            html += '<th style="padding:7px 10px;text-align:left;font-weight:600;color:var(--text);border-bottom:1px solid var(--line);white-space:nowrap">' + sec.table.headers[hi2] + '</th>';
           }
           html += '</tr></thead><tbody>';
           for (var ri = 0; ri < sec.table.rows.length; ri++) {
@@ -2798,80 +2852,111 @@
         html += '</div></div>';
       }
 
-      // ─── AI 对话区 ─────────────────────────────────────────
-      html += '<div style="margin-bottom:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden">' +
-        '<div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px">' +
-          '<i data-lucide="bot" width="16" height="16" style="color:var(--accent)"></i>' +
-          '<span style="font-size:13px;font-weight:600;color:var(--text)">💬 与小安AI对话月报</span>' +
-        '</div>' +
-        '<div style="padding:12px 16px">' +
-          '<div class="msg agent" style="margin-bottom:10px"><div class="bubble" style="font-size:13px">📅 <strong>月报已就绪。</strong> 你可以：<br>• 询问某个数据的详细情况<br>• 要求调整报告结构或增减章节<br>• 针对某个问题探讨解决方案<br>• 生成督办建议或会议材料</div></div>' +
-          '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">' +
-            '<button class="drawer-btn primary" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'企业整改完成率仅11.13%，如何提升？\')">📊 企业整改提升方案</button>' +
-            '<button class="drawer-btn" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'帮我调整报告结构，把问题和建议合并为一章\')">📝 调整报告结构</button>' +
-            '<button class="drawer-btn" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'基于报告内容，生成下周督办建议\')">📋 生成督办建议</button>' +
-            '<button class="drawer-btn" style="font-size:12px;padding:6px 14px" onclick="window.monthlyReportAsk(\'列出哪些村社需要重点督导\')">🔍 重点督导清单</button>' +
-          '</div>' +
-          '<div style="display:flex;gap:6px">' +
-            '<input type="text" id="mrChatInput" placeholder="输入关于月报的问题…" style="flex:1;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);outline:none" onkeydown="if(event.key===\'Enter\'){window.monthlyReportSend()}">' +
-            '<button class="global-chat-btn" onclick="window.monthlyReportSend()" title="发送" style="flex-shrink:0"><i data-lucide="arrow-up" width="16" height="16"></i></button>' +
-          '</div>' +
-          '<div id="mrChatHistory" style="margin-top:10px;max-height:200px;overflow-y:auto"></div>' +
-        '</div>' +
-      '</div>';
-
       return html;
     }
 
-    // ─── 月报对话交互 ────────────────────────────────────────
-    var MR_CHAT = [];
-
-    window.monthlyReportAsk = function(text) {
-      var history = document.getElementById('mrChatHistory');
-      var input = document.getElementById('mrChatInput');
-      if (!history) return;
-
-      // 用户消息
-      MR_CHAT.push({ role: 'user', text: text });
-      history.innerHTML += '<div class="msg user" style="margin-bottom:6px"><div class="bubble" style="font-size:12.5px">' + escapeHtml(text) + '</div></div>';
-      history.scrollTop = history.scrollHeight;
-
-      if (input) input.value = '';
-
-      // 模拟AI回复
-      setTimeout(function() {
-        var reply = monthlyReportReply(text);
-        MR_CHAT.push({ role: 'agent', text: reply });
-        history.innerHTML += '<div class="msg agent" style="margin-bottom:6px"><div class="bubble" style="font-size:12.5px">' + reply + '</div></div>';
-        history.scrollTop = history.scrollHeight;
-        lucide.createIcons();
-      }, 400);
-    };
-
-    window.monthlyReportSend = function() {
-      var input = document.getElementById('mrChatInput');
-      if (!input || !input.value.trim()) return;
-      window.monthlyReportAsk(input.value.trim());
-    };
-
-    function monthlyReportReply(text) {
-      var t = text;
-      if (/企业整改|提升|11\.13/.test(t)) {
-        return '针对企业整改完成率仅11.13%的问题，建议：<br>1. <strong>建立未整改企业清单</strong> — 7月15日前完成排查<br>2. <strong>"一对一"帮扶指导</strong> — 安监中队联合村社逐企对接<br>3. <strong>逾期执法程序</strong> — 逾期未完成的纳入重点监管名单<br>4. <strong>周报跟踪机制</strong> — 每周通报整改进展<br>是否要我生成一份督办建议？';
-      } else if (/调整|结构|合并|章节/.test(t)) {
-        return '好的，我可以帮你调整报告结构。当前报告包含：总体情况 → 核心数据分析 → 火灾事故 → 风险预判 → 主要问题 → 工作建议。<br><br>你希望合并"问题"和"建议"为一章，还是调整其他部分？也可以增减特定章节。';
-      } else if (/督办|建议/.test(t)) {
-        return '基于报告异常数据，建议下周督办重点：<br>1. 🔴 <strong>纤石村</strong> — 日检下降96.3%，整改率为0<br>2. 🔴 <strong>玉泽社区</strong> — 日检下降75%，整改率持续为0<br>3. 🟡 <strong>企业整改</strong> — 完成率仅11.13%，需集中攻坚<br>4. 🟡 <strong>场所采集</strong> — 采集率57.36%，推送率仅17.05%<br>是否生成一份正式督办单？';
-      } else if (/村社|督导|重点/.test(t)) {
-        return '以下村社需重点督导：<br><br>🔴 <strong>高优先级</strong>（日检下降 + 整改率为0）：<br>• 纤石村（日检↓96.3%，整改率0%）<br>• 玉泽社区（日检↓75%，整改率0%）<br>• 东莲村（日检↓17.8%，整改率未提升）<br><br>🟡 <strong>关注</strong>（31个村社整改率为0%）：<br>• 新港村、石桥村、南庄兜村、东塘河村等<br><br>建议6月起对这些村社实行每周不少于2次加密巡查。';
-      } else if (/场所|采集|推送/.test(t)) {
-        return '场所监管覆盖不足是当前最突出的问题：<br>• 场所采集率仅为 <strong>57.36%</strong><br>• 场所待办推送覆盖率低至 <strong>17.05%</strong><br>• 大量场所未纳入有效监管视线<br><br>建议6月30日前组织网格力量逐户核实补录，同步优化系统自动推送机制。';
-      } else if (/火灾|火情|杂草|季节/.test(t)) {
-        return '季节性火情风险分析：<br>• 近期火情以杂草起火、锅烧焦、杂物起火为主（合计约19.2%）<br>• 秋冬季（10月至次年2月）发生频次较高<br>• 当前干燥季节需重点防范野外及房前屋后可燃物<br><br>建议6月20日前开展公共区域可燃物清理专项行动。';
-      } else {
-        return '好的，已收到你的问题。基于本月报告数据，我可以帮你深入分析采集率、整改率、村社动态、火情风险等维度，也可以调整报告结构或生成督办材料。请具体说明你的需求。';
+    // ─── 月报模块可见性切换 ──────────────────────────────────
+    window.mrToggleModule = function(sectionId) {
+      MR_SECTION_VISIBLE[sectionId] = !MR_SECTION_VISIBLE[sectionId];
+      // 更新按钮文字
+      var btn = document.getElementById('mr-btn-' + sectionId);
+      if (btn) {
+        var sec = null;
+        for (var i = 0; i < MONTHLY_REPORT_DATA.sections.length; i++) {
+          if (MONTHLY_REPORT_DATA.sections[i].id === sectionId) { sec = MONTHLY_REPORT_DATA.sections[i]; break; }
+        }
+        var shortName = sec ? sec.title.replace(/^[一二三四五]+[、．]\s*/, '').substring(0, 6) : sectionId;
+        btn.innerHTML = MR_SECTION_VISIBLE[sectionId] ? '🙈 隐藏' + shortName : '👁 显示' + shortName;
       }
-    }
+      // 重新渲染
+      var sc = document.getElementById('sceneContent');
+      if (sc) {
+        sc.innerHTML = renderMonthlyReport();
+        lucide.createIcons();
+      }
+      showToast(MR_SECTION_VISIBLE[sectionId] ? '已显示该模块' : '已隐藏该模块');
+    };
+
+    window.mrAddModule = function() {
+      // 模拟添加一个"同比分析"模块
+      showToast('🤖 小安AI：已收到你的建议，正在生成同比分析模块…');
+      // 延迟模拟模块添加
+      setTimeout(function() {
+        // 检查是否已添加
+        var exists = false;
+        for (var i = 0; i < MONTHLY_REPORT_DATA.sections.length; i++) {
+          if (MONTHLY_REPORT_DATA.sections[i].id === 'yoy-analysis') { exists = true; break; }
+        }
+        if (!exists) {
+          MONTHLY_REPORT_DATA.sections.push({
+            id: 'yoy-analysis',
+            icon: 'trending-up',
+            title: '📈 新增：同比趋势分析（AI生成）',
+            table: {
+              headers: ['指标', '2026年5月', '2025年5月', '同比变化'],
+              rows: [
+                ['监管主体总数', '14,491', '0', '新增14,491家'],
+                ['企业采集率', '93.48%', '0%', '↑93.48%'],
+                ['场所采集率', '57.36%', '0%', '↑57.36%'],
+                ['隐患整改完成率', '100%', '0%', '↑100%']
+              ]
+            },
+            analysis: 'AI自动生成的同比分析：与去年同期相比，监管覆盖面大幅提升，各项指标从无到有建立。建议持续关注场所采集率提升空间。'
+          });
+          MR_SECTION_VISIBLE['yoy-analysis'] = true;
+        }
+        var sc = document.getElementById('sceneContent');
+        if (sc) {
+          sc.innerHTML = renderMonthlyReport();
+          lucide.createIcons();
+        }
+        showToast('✅ 同比分析模块已添加至报告底部');
+      }, 800);
+    };
+
+    window.mrResetModules = function() {
+      // 重置所有可见性
+      var ids = ['overview','collection','supervision','hazard','five-dim','village','fire','risk-predict','problems','suggestions','yoy-analysis'];
+      for (var i = 0; i < ids.length; i++) {
+        if (ids[i] === 'yoy-analysis') {
+          // 移除yoy-analysis
+          for (var j = 0; j < MONTHLY_REPORT_DATA.sections.length; j++) {
+            if (MONTHLY_REPORT_DATA.sections[j].id === 'yoy-analysis') {
+              MONTHLY_REPORT_DATA.sections.splice(j, 1);
+              break;
+            }
+          }
+        }
+        MR_SECTION_VISIBLE[ids[i]] = true;
+      }
+      var sc = document.getElementById('sceneContent');
+      if (sc) {
+        sc.innerHTML = renderMonthlyReport();
+        lucide.createIcons();
+      }
+      showToast('已恢复月报默认结构');
+    };
+
+    window.switchMrHistory = function(historyId) {
+      // 更新历史激活状态
+      for (var i = 0; i < MR_HISTORY.length; i++) {
+        MR_HISTORY[i].active = MR_HISTORY[i].id === historyId;
+      }
+      // 更新报告头部信息
+      for (var i = 0; i < MR_HISTORY.length; i++) {
+        if (MR_HISTORY[i].active) {
+          MONTHLY_REPORT_DATA.period = MR_HISTORY[i].period;
+          MONTHLY_REPORT_DATA.date = MR_HISTORY[i].id.replace('20', '20') + '月01日';
+          break;
+        }
+      }
+      var sc = document.getElementById('sceneContent');
+      if (sc) {
+        sc.innerHTML = renderMonthlyReport();
+        lucide.createIcons();
+      }
+      showToast('已切换至' + (MR_HISTORY.filter(function(h){return h.active})[0] || {}).label);
+    };
 
     // ─── 月报章节折叠切换 ────────────────────────────────────
     window.toggleMrSection = function(header) {
@@ -3919,6 +4004,9 @@
       }
 
       state.activeScene = sceneId;
+
+      // 非月报场景时隐藏侧边栏
+      if (sceneId !== 'monthly-report') { hideMrSidebar(); }
 
       // Tab 管理：如果 sceneId 不在 tab 列表中，自动添加
       var found = false;
@@ -5080,7 +5168,7 @@
     }
 
     // ════════════════════════════════════════════════════════════════
-    // 搜索历史 — 关键词记录
+    // 搜索历史 — 输入框底部横向标签
     // ════════════════════════════════════════════════════════════════
 
     var SEARCH_HISTORY_KEY = 'yaq_search_history_v1';
@@ -5089,7 +5177,6 @@
     function getSearchHistory() {
       var h = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || 'null');
       if (!h || !Array.isArray(h) || h.length === 0) {
-        // 首次使用：塞入模拟数据
         h = SEARCH_HISTORY_MOCK.slice();
         localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
       }
@@ -5100,13 +5187,12 @@
       keyword = keyword.trim();
       if (!keyword || keyword.length < 1) return;
       var h = getSearchHistory();
-      // 去重：移到最前
       var idx = h.indexOf(keyword);
       if (idx > -1) h.splice(idx, 1);
       h.unshift(keyword);
-      // 只保留 12 条
       if (h.length > 12) h.length = 12;
       localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+      renderSearchChips();
     }
 
     function removeSearchKeyword(keyword) {
@@ -5115,68 +5201,51 @@
       if (idx > -1) {
         h.splice(idx, 1);
         localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
-        renderSearchHistory();
+        renderSearchChips();
       }
     }
 
     function clearSearchHistory() {
       localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([]));
-      renderSearchHistory();
+      renderSearchChips();
     }
 
-    // 渲染搜索历史下拉
-    function renderSearchHistory() {
-      var el = $dom.launchHistory;
+    // 渲染横向搜索历史标签
+    function renderSearchChips() {
+      var el = $dom.launchChips;
       if (!el) return;
       var h = getSearchHistory();
       if (!h || h.length === 0) {
-        el.classList.remove('open');
+        el.classList.remove('show');
         el.innerHTML = '';
         return;
       }
-      var html = '<div class="launch-history-head">' +
-        '<span>🕐 搜索历史</span>' +
-        '<span class="launch-history-clear" onmousedown="event.preventDefault();clearSearchHistory()">清空</span>' +
-        '</div>';
-      for (var i = 0; i < h.length && i < 8; i++) {
-        var kw = $_escapeHtml(h[i]);
-        html += '<div class="launch-history-item" onmousedown="event.preventDefault();applySearchHistory(\'' + kw.replace(/'/g, "\\'") + '\')">' +
-          '<div class="lhi-icon"><i data-lucide="history" width="13" height="13"></i></div>' +
-          '<span class="lhi-text">' + kw + '</span>' +
-          '<button class="lhi-del" onmousedown="event.stopPropagation();removeSearchKeyword(\'' + kw.replace(/'/g, "\\'") + '\')" title="删除"><i data-lucide="x" width="11" height="11"></i></button>' +
-          '</div>';
+      var html = '';
+      for (var i = 0; i < h.length && i < 10; i++) {
+        var raw = h[i];
+        var jsSafe = raw.replace(/'/g, "\\'");
+        html += '<span class="l-chip" onclick="applySearchChip(\'' + jsSafe + '\')" title="搜索「' + $_escapeHtml(raw) + '」">' +
+          $_escapeHtml(raw) +
+          '<button class="l-chip-del" onmousedown="event.stopPropagation();removeSearchKeyword(\'' + jsSafe + '\')" title="移除">' +
+            '<i data-lucide="x" width="10" height="10"></i>' +
+          '</button>' +
+        '</span>';
+      }
+      if (h.length > 0) {
+        html += '<span class="l-chip l-chip-clear" onclick="clearSearchHistory()" title="清空历史">清空</span>';
       }
       el.innerHTML = html;
-      el.classList.add('open');
+      el.classList.add('show');
       if (window.lucide) lucide.createIcons(el);
     }
 
-    // 点击搜索历史关键词
-    function applySearchHistory(keyword) {
+    // 点击搜索历史标签
+    function applySearchChip(keyword) {
       $dom.launcherSearch.value = keyword;
-      var el = $dom.launchHistory;
-      if (el) el.classList.remove('open');
       onLauncherSearch();
       $dom.launcherSearch.focus();
-      // 光标移到末尾
       var len = $dom.launcherSearch.value.length;
       $dom.launcherSearch.setSelectionRange(len, len);
-    }
-
-    // 搜索框获得焦点
-    function onLauncherFocus() {
-      var query = ($dom.launcherSearch.value || '').trim();
-      if (!query) {
-        renderSearchHistory();
-      }
-    }
-
-    // 搜索框失去焦点（延迟隐藏，让点击能触发）
-    function onLauncherBlur() {
-      setTimeout(function() {
-        var el = $dom.launchHistory;
-        if (el) el.classList.remove('open');
-      }, 200);
     }
 
     // ════════════════════════════════════════════════════════════════
@@ -5190,6 +5259,9 @@
 
       // ─── 搜索模式：多维分组结果 ────────────────────────────
       if (query) {
+        // 搜索时隐藏历史关键词标签
+        var chipsEl = $dom.launchChips;
+        if (chipsEl) chipsEl.classList.remove('show');
         var result = globalSearch(query);
         var hasAny = false;
         for (var _tgi = 0; _tgi < result.typeOrder.length; _tgi++) {
@@ -5371,6 +5443,7 @@
       $dom.launcherOverlay.classList.add('open');
       $dom.launcherSearch.value = '';
       renderLauncher();
+      renderSearchChips();
       setTimeout(function() {
         $dom.launcherSearch.focus();
       }, 100);
@@ -5379,9 +5452,25 @@
     function closeLauncher() {
       $dom.launcherPanel.classList.remove('open');
       $dom.launcherOverlay.classList.remove('open');
+      var chipsEl = $dom.launchChips;
+      if (chipsEl) chipsEl.classList.remove('show');
     }
 
     function onLauncherSearch() {
+      // 隐藏搜索历史标签
+      var chipsEl = $dom.launchChips;
+      if (chipsEl) chipsEl.classList.remove('show');
+      // 记录搜索关键词（只记录不重新渲染，避免干扰）
+      var q = ($dom.launcherSearch.value || '').trim();
+      if (q) {
+        var h = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || 'null');
+        if (!h || !Array.isArray(h) || h.length === 0) h = SEARCH_HISTORY_MOCK.slice();
+        var idx = h.indexOf(q);
+        if (idx > -1) h.splice(idx, 1);
+        h.unshift(q);
+        if (h.length > 12) h.length = 12;
+        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+      }
       renderLauncher();
     }
 
