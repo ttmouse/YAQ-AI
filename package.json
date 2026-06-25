@@ -5,7 +5,7 @@
   "description": "YAQ-AI: 安全监管智能工作台",
   "scripts": {
     "build": "bash build.sh",
-    "build:js": "npx terser js/app.js -o dist/js/app.js --compress --mangle --comments false && npx terser js/rules.js -o dist/js/rules.js --compress --mangle --comments false && npx terser js/agent-init.js -o dist/js/agent-init.js --compress --mangle --comments false",
+    "build:js": "npx terser js/app.js -o dist/js/app.js --compress --mangle --comments false && npx terser js/rules.js -o dist/js/rules.js --compress --mangle --comments false && npx terser js/agent-init.js -o dist/js/agent-init.js --compress --mangle --comments false && for f in js/data.js js/state.js js/modules.js js/render/*.js; do [ -f \"$f\" ] || continue; d=\"dist/$(dirname $f)\"; mkdir -p \"$d\"; npx terser \"$f\" -o \"$d/$(basename $f)\" --compress --mangle --comments false; done",
     "build:css": "for f in css/*.css; do npx cleancss -o \"dist/$f\" \"$f\"; done",
     "build:html": "cp index.html dist/ && cp ai-vs-traditional-comparison.html dist/ && cp special-inspection-prototype.html dist/ && cp favicon.svg dist/ && cp .nojekyll dist/"
   },

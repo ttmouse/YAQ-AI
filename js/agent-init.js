@@ -922,12 +922,14 @@
     showToast('正在分析你的问题…（演示回复）');
     input.value = '';
   }
-  function showToast(text) {
+  // showToast — 复用 YAQ.showToast，保留降级兜底
+  var showToast = function(text) {
+    if (window.YAQ && window.YAQ.showToast) return window.YAQ.showToast(text);
     var t = document.getElementById('toast');
     if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
     t.textContent = text; t.className = 'toast show';
     setTimeout(function() { t.className = 'toast'; }, 2000);
-  }
+  };
 
   // ═══ 启动 ══════════════════════════════════════════════════════════
   function toggleDemoMenu() {
