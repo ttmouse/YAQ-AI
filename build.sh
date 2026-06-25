@@ -33,6 +33,8 @@ cp index.html dist/
 cp ai-vs-traditional-comparison.html dist/ 2>/dev/null || true
 cp special-inspection-prototype.html dist/ 2>/dev/null || true
 cp favicon.svg dist/ 2>/dev/null || true
+# 复制 .nojekyll — 防止 GitHub Pages 用 Jekyll 处理站点
+cp .nojekyll dist/ 2>/dev/null || touch dist/.nojekyll
 
 # 5. 输出统计
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
