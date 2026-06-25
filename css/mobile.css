@@ -51,6 +51,16 @@
 @media (max-width: 768px) {
   .mobile-bottom-nav { display: flex; }
   .top { padding: 0 10px; min-height: 46px; gap: 6px; }
+  /* Init 内容区底部留足空间，避开底部导航与聊天栏 */
+  .init-content { padding-bottom: 200px; }
+
+  /* ─── Init overlay 适配：对齐压缩后的顶部栏 ────────────── */
+  .init-overlay { top: 46px; }
+
+  /* ─── Init 聊天栏避开底部导航 ──────────────────────────── */
+  .init-chat-bar { bottom: calc(24px + 50px + env(safe-area-inset-bottom, 0)); }
+  #initFloatCard { bottom: calc(82px + 50px + env(safe-area-inset-bottom, 0)); }
+  .init-quick-wrap { bottom: calc(82px + 50px + env(safe-area-inset-bottom, 0)); }
   .brand { gap: 6px; }
   .brand img { height: 22px !important; }
   .meta .pill { font-size: 11px; padding: 4px 8px; }
@@ -181,6 +191,9 @@
 
   .top { min-height: 40px; padding: 0 8px; }
   .brand img { height: 20px !important; }
+
+  /* ─── Init overlay 适配更小的顶部栏 ────────────── */
+  .init-overlay { top: 40px; }
   .meta .pill { font-size: 10px; padding: 3px 6px; }
   .tab-strip { gap: 2px; }
   .tab-strip .tab { font-size: 11px; padding: 4px 8px; }
@@ -261,10 +274,24 @@
   /* 责任矩阵卡片 */
   .matrix-card { padding: 10px; font-size: 12px; }
 
+  /* 能力卡片网格在手机上变为 2 列 */
+  .ability-grid { grid-template-columns: 1fr 1fr; }
+
   /* 隐患弹窗按钮 */
   .hmodal-foot .hmfoot-copy { font-size: 12px; padding: 8px 10px; }
   .hmfoot-action span { display: none; }  /* 只显示图标 */
   .hmfoot-action { padding: 8px; }
+}
+
+/* ─── 超小屏（≤400px）特殊适配 ────────────────────────────── */
+@media (max-width: 400px) {
+  /* 能力卡片网格在极小屏变回 1 列 */
+  .ability-grid { grid-template-columns: 1fr; }
+  /* 偏好选择网格变为 1 列 */
+  .pref-grid { grid-template-columns: 1fr; }
+  /* 调整底部导航项间距 */
+  .mb-nav-item { padding: 2px 4px; }
+  .mb-nav-item span { font-size: 8.5px; }
 }
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
