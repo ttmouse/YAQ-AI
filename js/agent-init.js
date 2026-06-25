@@ -241,7 +241,7 @@
     showActions([]);
     chatAppend(userMsg('好的，继续'));
     setTimeout(function() {
-      typeText('根据你的岗位，我已整理以下日常关注方向，请确认。<br><br><strong>💡 你也可以告诉我还有哪些想关注的维度</strong>——比如：帮我盯着消防通道堵塞。', function() {
+      typeText('根据你的岗位，我已整理以下日常关注方向。<br><br><strong>请确认如何处理这些采集维度：</strong>', function() {
         renderPrefCards();
       });
     }, 350);
@@ -249,42 +249,65 @@
 
   function renderPrefCards() {
     var html = '<div class="pref-card-wrap" id="prefGrid">' +
-      '<div class="attn-list">';
-    // 预设项
-    for (var i = 0; i < PREF_OPTIONS.length; i++) {
-      var p = PREF_OPTIONS[i];
-      var sel = selectedModes.indexOf(p.id) > -1;
-      if (!sel) continue;
-      html += '<div class="attn-card selected" data-id="' + p.id + '" onclick="window.togglePref(\'' + p.id + '\')">' +
-        '<div class="attn-check">✓</div>' +
-        '<div class="attn-body">' +
-          '<div class="attn-title">' + p.label + '</div>' +
-          '<div class="attn-desc">' + p.sub + '</div>' +
+      '<div class="step-head">需要你决定 采集维度补充 问题 1/2</div>' +
+      '<div class="step-title">你想怎么处理这些补充维度？</div>' +
+      '<div class="step-desc">根据你的岗位，我已整理以下日常关注方向，请确认处理方式。</div>' +
+      '<div class="choice-list">' +
+        '<div class="choice-card" onclick="window.selectChoice(\'all\')">' +
+          '<div class="choice-num">1</div>' +
+          '<div class="choice-body">' +
+            '<div class="choice-title">以上我全都要 — 全部作为预设选项</div>' +
+            '<div class="choice-desc">把剩下的维度都加到初始化关注项里，让用户多选</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="attn-period">' + p.period + '</div>' +
-      '</div>';
-    }
-    // 自定义项
-    for (var ci = 0; ci < customAttentions.length; ci++) {
-      var ca = customAttentions[ci];
-      html += '<div class="attn-card selected custom-card" data-id="' + ca.id + '" onclick="window.toggleCustom(\'' + ca.id + '\')">' +
-        '<div class="attn-check">✓</div>' +
-        '<div class="attn-body">' +
-          '<div class="attn-title">' + ca.label + '</div>' +
-          '<div class="attn-desc">' + (ca.desc || '自定义关注') + '</div>' +
+        '<div class="choice-card" onclick="window.selectChoice(\'pick\')">' +
+          '<div class="choice-num">2</div>' +
+          '<div class="choice-body">' +
+            '<div class="choice-title">选几个加进去（我来挑）</div>' +
+            '<div class="choice-desc">你从列表中挑选几个你认为最相关的</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="attn-period">' + (ca.period || '自定义') + '</div>' +
-        '<button class="attn-remove" onclick="event.stopPropagation();window.removeCustom(\'' + ca.id + '\')" title="移除">✕</button>' +
-      '</div>';
-    }
-    html += '</div>' +
-      '<button class="card-confirm-btn" onclick="window.confirmPref()">确认关注方向</button>' +
+        '<div class="choice-card" onclick="window.selectChoice(\'improve\')">' +
+          '<div class="choice-num">3</div>' +
+          '<div class="choice-body">' +
+            '<div class="choice-title">先不动预设，优化采集交互方式</div>' +
+            '<div class="choice-desc">现有的维度够用，但采集形式（分类/分组/排序）可以改进</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="choice-card" onclick="window.selectChoice(\'custom\')">' +
+          '<div class="choice-num">4</div>' +
+          '<div class="choice-body">' +
+            '<div class="choice-title">我自己有想法，直接说</div>' +
+            '<div class="choice-desc">你有自己的补充维度想告诉我</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
     '</div>';
     chatAppend(html);
     // 更新 input placeholder
     var inp = document.getElementById('initChatInput');
-    if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
+    if (inp) inp.placeholder = '输入你自己的答案...';
     lucide.createIcons();
+  }
+
+  function confirmPref() {
+    showActions([]);
+    userMode = 'default';
+    chatAppend(userMsg('确认关注方向'));
+    setTimeout(function() {
+      typeResponse('正在生成管理方案…', buildCombinedResponse(), function() {
+        setTimeout(function() {
+          // 直接进入生成阶段，基于已选方向生成个性化消息
+          // 基于已选方向生成任务列表
+          var genTasks = [];
+          for (var si = 0; si < selectedModes.length; si++) {
+            var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[si]; })[0];
+            if (p) genTasks.push({ label: p.label, time: p.period });
+          }
+          showGenTasks(genTasks);
+        }, 600);
+      });
+    }, 350);
   }
 
   function togglePref(id) {
@@ -338,24 +361,67 @@
     lucide.createIcons();
   }
 
-  function confirmPref() {
-    showActions([]);
-    userMode = 'default';
-    chatAppend(userMsg('确认关注方向'));
-    setTimeout(function() {
-      typeResponse('正在生成管理方案…', buildCombinedResponse(), function() {
-        setTimeout(function() {
-          // 直接进入生成阶段，基于已选方向生成个性化消息
-          // 基于已选方向生成任务列表
-          var genTasks = [];
-          for (var si = 0; si < selectedModes.length; si++) {
-            var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[si]; })[0];
-            if (p) genTasks.push({ label: p.label, time: p.period });
-          }
-          showGenTasks(genTasks);
-        }, 600);
-      });
-    }, 350);
+  function renderPickPrefs() {
+    // 显示可切换的预设关注项卡片，供用户选择
+    var html = '<div class="pref-card-wrap" id="prefGrid">' +
+      '<div class="attn-list">';
+    // 预设项
+    for (var i = 0; i < PREF_OPTIONS.length; i++) {
+      var p = PREF_OPTIONS[i];
+      var sel = selectedModes.indexOf(p.id) > -1;
+      html += '<div class="attn-card' + (sel ? ' selected' : '') + '" data-id="' + p.id + '" onclick="window.togglePref(\'' + p.id + '\')">' +
+        '<div class="attn-check">' + (sel ? '✓' : '') + '</div>' +
+        '<div class="attn-body">' +
+          '<div class="attn-title">' + p.label + '</div>' +
+          '<div class="attn-desc">' + p.sub + '</div>' +
+        '</div>' +
+        '<div class="attn-period">' + p.period + '</div>' +
+      '</div>';
+    }
+    // 自定义项
+    for (var ci = 0; ci < customAttentions.length; ci++) {
+      var ca = customAttentions[ci];
+      html += '<div class="attn-card selected custom-card" data-id="' + ca.id + '" onclick="window.toggleCustom(\'' + ca.id + '\')">' +
+        '<div class="attn-check">✓</div>' +
+        '<div class="attn-body">' +
+          '<div class="attn-title">' + ca.label + '</div>' +
+          '<div class="attn-desc">' + (ca.desc || '自定义关注') + '</div>' +
+        '</div>' +
+        '<div class="attn-period">' + (ca.period || '自定义') + '</div>' +
+        '<button class="attn-remove" onclick="event.stopPropagation();window.removeCustom(\'' + ca.id + '\')" title="移除">✕</button>' +
+      '</div>';
+    }
+    html += '</div>' +
+      '<button class="card-confirm-btn" onclick="window.confirmPref()">确认关注方向</button>' +
+    '</div>';
+    chatAppend(html);
+    var inp = document.getElementById('initChatInput');
+    if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
+    lucide.createIcons();
+  }
+
+  function selectChoice(type) {
+    // 移除所有卡片的选中状态，并高亮当前点击的
+    var cards = document.querySelectorAll('.choice-card');
+    cards.forEach(el => el.classList.remove('active'));
+    if (event && event.currentTarget) {
+      event.currentTarget.classList.add('active');
+    }
+
+    setTimeout(() => {
+      if (type === 'all' || type === 'improve') {
+        confirmPref();
+      } else if (type === 'pick') {
+        renderPickPrefs();
+      } else {
+        // custom: 聚焦输入框
+        var inp = document.getElementById('initChatInput');
+        if (inp) {
+          inp.focus();
+          inp.placeholder = '输入你自己的答案...';
+        }
+      }
+    }, 300);
   }
 
   function showGenTasks(tasks) {
@@ -959,6 +1025,7 @@
   // ═══ 导出 ══════════════════════════════════════════════════════════
   window.togglePref = togglePref;
   window.confirmPref = confirmPref;
+  window.selectChoice = selectChoice;
   window.toggleCustom = toggleCustom;
   window.removeCustom = removeCustom;
   window.doContinue = doContinue;

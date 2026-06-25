@@ -24,7 +24,7 @@
   min-height: 100%;
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px 16px 130px;
+  padding: 16px 16px 160px; /* 增加底部留白，防止内容被输入框遮挡 */
 }
 .init-container::-webkit-scrollbar { width: 6px; }
 .init-container::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
@@ -74,13 +74,25 @@
 /* ─── 底部浮动输入条 ──────────────────────────────────────────── */
 .init-chat-bar {
   position: absolute;
-  left: 0; right: 0; bottom: 24px;
+  left: 50%; transform: translateX(-50%);
+  bottom: 24px;
   width: calc(100% - 32px);
   margin: 0 auto;
   max-width: 720px;
   height: 46px;
   display: flex;
   align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.96);
+  border: 1px solid #e2eaf8;
+  border-radius: 23px;
+  padding: 0 4px 0 16px;
+  box-shadow: 0 4px 20px rgba(17,24,39,.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10;
+  box-sizing: border-box;
+}
   gap: 6px;
   background: rgba(255,255,255,.96);
   border: 1px solid #e2eaf8;
@@ -325,8 +337,6 @@
   padding: 14px;
   max-width: 540px;
 }
-  max-width: 540px;
-}
 .pref-card-wrap .attn-list {
   gap: 4px;
 }
@@ -350,6 +360,88 @@
 /* ─── 自定义关注项 ────────────────────────────────────── */
 .attn-card.custom-card { background: #f0f9ff; border-left: 2px solid #38bdf8; }
 .attn-card.custom-card .attn-check { background: #38bdf8; border-color: #38bdf8; }
+
+/* ─── 卡片选择器样式（参考图） ────────────────────────────── */
+.pref-card-wrap .step-head {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.pref-card-wrap .step-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+.step-desc {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.choice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.choice-card:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+.choice-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.choice-card:hover .choice-num {
+  background: #cbd5e1;
+}
+.choice-body {
+  flex: 1;
+  min-width: 0;
+}
+.choice-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+.choice-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* 选中态 */
+.choice-card.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+.choice-card.active .choice-num {
+  background: #2563eb;
+  color: #fff;
+}
 .attn-remove {
   flex-shrink: 0;
   width: 20px; height: 20px;
