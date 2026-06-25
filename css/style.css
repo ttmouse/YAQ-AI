@@ -1,16 +1,17 @@
     :root{
-      --bg:#f5f7fb;--card:#fff;--line:#e6ebf2;--text:#172033;--muted:#667085;--weak:#98a2b3;
-      --blue:#1769e0;--blue-bg:#edf5ff;--red:#dc2626;--red-bg:#fff1f2;--orange:#d97706;--orange-bg:#fff7e6;
-      --green:#15945f;--green-bg:#eaf8f1;--purple:#7c3aed;--purple-bg:#f4edff;--shadow:0 14px 34px rgba(20,40,80,.07);
-      --radius:22px;--radius-sm:8px;
+      /* ─── 唯一变量（JS/HTML 引用，不在 tokens.css 中） ──────────── */
+      --card:#fff;--line:#e6ebf2;--text:#172033;--weak:#98a2b3;
+      --blue-bg:#edf5ff;--green-bg:#eaf8f1;
+      /* ─── 旧版渲染兼容变量（仅 style.css 内部使用） ─────────────── */
+      --red-bg:#fff1f2;--orange-bg:#fff7e6;
+      --purple:#7c3aed;--purple-bg:#f4edff;
+      --accent-light:#f2f7ff;
       --font:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
-      /* ─── 兼容别名（旧 render 函数引用） ───────────────────────── */
-      --surface:var(--card);--border:var(--line);--fg:var(--text);--fg-soft:#f2f4f7;
-      --accent:var(--blue);--accent-soft:var(--blue-bg);--accent-light:#f2f7ff;
-      --orange-soft:var(--orange-bg);--green-soft:var(--green-bg);--red-soft:var(--red-bg);
-      --font-body:var(--font);--font-display:var(--font);--font-mono:ui-monospace,Menlo,monospace;
-      --fs-h2:16px;--fs-h3:13.5px;--fs-body:13px;--fs-meta:11.5px;--fs-xs:10.5px;
-      --radius-lg:20px;--gap-sm:8px;--gap-md:16px;--gap-lg:24px;
+      --radius:22px;--radius-sm:8px;--radius-lg:20px;
+      --fs-h2:16px;--fs-h3:13.5px;--fs-meta:11.5px;
+      --gap-md:16px;
+      /* ⚠️ 以下变量仅 style.css 内部使用（旧渲染代码），未被 tokens.css 覆盖。
+         颜色/主题核心变量已迁移至 css/tokens.css（oklch 色域），新代码请引用之。 */
     }
 
     /* ─── Reset ─────────────────────────────────────────────────────── */
@@ -37,12 +38,6 @@
 
     /* ─── 左栏：侧边导航 ─────────────────────────────────────────── */
     .left.card{border-radius:14px 0 0 14px;border-right:none}
-    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:18px 16px 14px;border-bottom:1px solid var(--line);flex-shrink:0}
-    .sidebar-brand .logo{width:32px;height:32px;border-radius:10px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex-shrink:0}
-    .sidebar-brand span{font-size:16px;font-weight:700;color:var(--text)}
-    .sidebar-nav{flex:1;min-height:0;overflow-y:auto;padding:10px 8px;display:flex;flex-direction:column;gap:2px}
-    .sidebar-foot{padding:8px;border-top:1px solid var(--line);flex-shrink:0}
-    .sidebar-foot .nav-item{font-size:12px;color:var(--weak)}
     .nav-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;transition:background .1s,color .1s}
     .nav-item:hover{background:#f2f4f7;color:var(--text)}
     .nav-item.active{background:var(--blue-bg);color:var(--blue);font-weight:600}
@@ -58,80 +53,17 @@
     /* ─── 中栏：内容区 ─────────────────────────────────────────── */
     .center{overflow-y:auto;scrollbar-gutter:stable}
     .result{flex:1;min-height:0;max-width:840px;margin:0 auto;padding:0}
-    .result-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:18px}
-    .result-top h2{margin:0 0 7px;font-size:30px;letter-spacing:-.5px}
-    .result-top p{margin:0;font-size:13px;color:var(--muted)}
 
-    /* ─── 组件：KPI 网格 ────────────────────────────────────────── */
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-    .kpi{border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px}
-    .kpi .label{font-size:12px;color:var(--muted);margin-bottom:8px}
-    .kpi .value{font-size:25px;font-weight:950}
-    .kpi .note{font-size:12px;color:var(--weak);margin-top:6px;line-height:1.35}
 
-    /* ─── 组件：内容块 ──────────────────────────────────────────── */
-    .block{border:1px solid var(--line);border-radius:20px;background:#fff;padding:16px;margin-bottom:14px}
-    .block.bluebox{border-color:#d7e6ff;background:linear-gradient(135deg,#f2f7ff,#fff)}
-    .block h3{margin:0 0 10px;font-size:16px}.block p{margin:0;color:#344054;font-size:14.5px;line-height:1.7}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 
-    /* ─── 组件：表格 ────────────────────────────────────────────── */
-    .table{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:12.8px}
-    .table th{text-align:left;color:var(--weak);font-size:12px;padding:0 8px}
-    .table td{background:#fbfcff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 8px;color:#344054}
-    .table td:first-child{border-left:1px solid var(--line);border-radius:11px 0 0 11px;font-weight:850;color:#172033}
-    .table td:last-child{border-right:1px solid var(--line);border-radius:0 11px 11px 0}
-    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 
-    /* ─── 组件：进度条 ──────────────────────────────────────────── */
-    .progress{display:flex;flex-direction:column;gap:12px}.prow{font-size:13px}
-    .ptop{display:flex;justify-content:space-between;margin-bottom:7px;font-weight:850}
-    .bar{height:10px;background:#eef2f6;border-radius:99px;overflow:hidden}
-    .bar i{display:block;height:100%;background:var(--blue);border-radius:99px}
-    .bar.warn i{background:#d97706}.bar.red i{background:#dc2626}
 
-    /* ─── 右下角浮动对话入口 ───────────────────────────────────── */
-    .chat-fab{
-      position:fixed;right:24px;bottom:24px;z-index:200;
-      width:50px;height:50px;border-radius:50%;
-      background:var(--blue);color:#fff;
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 6px 20px rgba(23,105,224,.35);
-      cursor:pointer;transition:transform .2s,box-shadow .2s;
-    }
-    .chat-fab:hover{transform:scale(1.06);box-shadow:0 8px 26px rgba(23,105,224,.45)}
-    .chat-fab svg{width:24px;height:24px}
-
-    .chat-panel{
-      position:fixed;right:24px;bottom:86px;z-index:200;
-      width:360px;height:480px;
-      background:var(--card);border:1px solid var(--line);
-      border-radius:16px;box-shadow:0 12px 40px rgba(20,40,80,.12);
-      display:flex;flex-direction:column;overflow:hidden;
-      opacity:0;visibility:hidden;transform:translateY(8px);
-      transition:opacity .2s,transform .2s,visibility .2s;
-    }
-    .chat-panel.open{opacity:1;visibility:visible;transform:translateY(0)}
-    .cp-head{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px 16px;border-bottom:1px solid var(--line);flex-shrink:0;
-      font-size:14px;color:var(--text);
-    }
-    .cp-head svg{color:var(--blue)}
-    .cp-close{
-      width:28px;height:28px;border-radius:8px;border:none;
-      background:transparent;color:var(--muted);cursor:pointer;
-      display:grid;place-items:center;
-    }
-    .cp-close:hover{background:#f2f4f7;color:var(--text)}
 
     /* ─── 对话气泡（浮动面板通用） ──────────────────────────────── */
     .chat-body{flex:1;min-height:0;overflow:auto;padding:12px;background:#fafbfc}
     .msg{display:flex;margin-bottom:9px}.msg.agent{justify-content:flex-start}.msg.user{justify-content:flex-end}
     .bubble{max-width:92%;border-radius:15px;padding:9px 11px;font-size:12.8px;line-height:1.55}
     .agent .bubble{background:#fff;border:1px solid var(--line)}.user .bubble{background:var(--blue);color:#fff}
-    .quick{display:flex;gap:7px;flex-wrap:wrap;padding:10px;border-top:1px solid var(--line);background:#fff;flex-shrink:0}
-    .quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 9px;font-size:12px;cursor:pointer;color:#344054;display:flex;align-items:center;gap:4px}
 
     /* ─── 对话输入框 ──────────────────────────────────────────────── */
     .chat-input{
@@ -715,30 +647,8 @@
       margin-left: 5px;
     }
 
-    /* ─── 四级风险底数 ──────────────────────────────────────────── */
-    .risk-four{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-    .risk-four-item{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 8px;text-align:center}
-    .risk-four-item .rf-value{font-size:26px;font-weight:950;line-height:1.1;display:flex;align-items:baseline;justify-content:center;gap:4px}
-    .risk-four-item .rf-delta{font-size:11px;font-weight:700;line-height:1}
-    .risk-four-item .rf-delta.up{color:var(--red)}.risk-four-item .rf-delta.down{color:var(--green)}.risk-four-item .rf-delta.stable{color:var(--weak)}
-    .risk-four-item .rf-label{font-size:12px;font-weight:600;margin-top:4px}
-    .risk-four-item .rf-sub{font-size:10.5px;color:var(--weak);margin-top:2px}
-    .risk-major .rf-value{color:var(--red)}.risk-major{border-top:3px solid var(--red)}
-    .risk-significant .rf-value{color:#d97706}.risk-significant{border-top:3px solid #d97706}
-    .risk-general .rf-value{color:var(--blue)}.risk-general{border-top:3px solid var(--blue)}
-    .risk-low .rf-value{color:var(--green)}.risk-low{border-top:3px solid var(--green)}
 
-    /* ─── 区域风险变化 ──────────────────────────────────────────── */
-    .region-list{display:flex;flex-direction:column;gap:6px}
-    .region-item{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f2f5;font-size:12.5px}
-    .region-item:last-child{border-bottom:none}
-    .region-name{color:var(--text);font-weight:500}
-    .region-trend{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600}
-    .region-trend.up{color:var(--red)}.region-trend.warn{color:#d97706}.region-trend.stable{color:var(--weak)}
 
-    /* ─── 今日新增隐患 ──────────────────────────────────────────── */
-    .new-hazards{display:flex;flex-direction:column;gap:7px}
-    .new-hazard-item{display:flex;align-items:flex-start;gap:6px;font-size:12.5px;color:#344054;line-height:1.4}
 
     /* priority-section → .block */
     .priority-section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;margin-bottom:16px}
