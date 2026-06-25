@@ -506,7 +506,7 @@
     var overlay = document.getElementById('initOverlay');
     if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
     var mainEl = document.querySelector('.main');
-    if (mainEl) mainEl.style.display = 'flex';
+    if (mainEl) mainEl.style.display = '';
     // 清空工作区，播放首次诊断
     var sc = document.getElementById('sceneContent');
     if (sc) sc.innerHTML = '';
