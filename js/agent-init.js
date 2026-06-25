@@ -524,15 +524,15 @@
 
     // 欢迎
     var welcome = document.createElement('div');
-    welcome.style.cssText = 'font-size:17px;font-weight:700;color:#1e293b;padding:4px 0 2px';
+    welcome.style.cssText = 'font-size:17px;font-weight:700;color:#1e293b;padding:4px 0 2px;text-align:left';
     welcome.textContent = '杨站长，欢迎来到应急监管工作台';
     sc.appendChild(welcome);
     var sub = document.createElement('div');
-    sub.style.cssText = 'font-size:13px;color:#64748b;margin-bottom:6px';
+    sub.style.cssText = 'font-size:13px;color:#64748b;margin-bottom:6px;text-align:left';
     sub.textContent = '所有日常监管工作将从这里展开。';
     sc.appendChild(sub);
     var diagNote = document.createElement('div');
-    diagNote.style.cssText = 'font-size:13px;color:#64748b;margin-bottom:6px';
+    diagNote.style.cssText = 'font-size:13px;color:#64748b;margin-bottom:6px;text-align:left';
     diagNote.textContent = '我将为您进行首次系统诊断。';
     sc.appendChild(diagNote);
 
