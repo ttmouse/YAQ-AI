@@ -347,6 +347,24 @@
 }
 .card-confirm-btn:hover { background: #1d4ed8; }
 
+/* ─── 自定义关注项 ────────────────────────────────────── */
+.attn-card.custom-card { background: #f0f9ff; border-left: 2px solid #38bdf8; }
+.attn-card.custom-card .attn-check { background: #38bdf8; border-color: #38bdf8; }
+.attn-remove {
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  align-self: center;
+  transition: all .12s;
+}
+.attn-remove:hover { background: #fee2e2; color: #dc2626; }
+
 /* ═════ 推送规则 ═══════════════════════════════════════════════ */
 .rule-list {
   display: flex; flex-direction: column; gap: 6px;

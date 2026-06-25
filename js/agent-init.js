@@ -34,6 +34,8 @@
     { id:'team_duty',      label:'团队履职是否异常',             sub:'应消站、区域站、村社、专家履职情况是否异常。', period:'每天 16:30' },
     { id:'monthly_report', label:'帮我生成每月的安全月报',        sub:'月末自动整理日常监管数据，生成月度报告草稿。', period:'每月 25 日' }
   ];
+  var customAttentions = [];  // 自定义关注项 { id:'c_xxx', label:'...', desc:'...', period:'自定义' }
+  var customIdCounter = 0;
   var MODE_RESPONSES = {
     major_hazard: '已将<span class="hl">重大隐患闭环</span>设为优先关注。<br><br>我会重点检查：<br>• 是否超期未整改<br>• 是否有临时管控措施<br>• 整改方案是否可行<br>• 责任人是否履职到位<br><br>其他日常巡检——安全态势、专项行动进度、重点主体异常、团队履职——继续保持正常运行。',
     special_task: '已将<span class="hl">专项行动进度</span>纳入本周重点关注。<br><br>我会每天检查：<br>• 任务完成率与时间进度对比<br>• 滞后超过 15% 的进入待我确认<br>• 责任条线是否存在掉队情况<br><br>其他日常巡检——安全态势、重大隐患、重点主体异常、团队履职——继续保持正常运行。',
@@ -224,7 +226,7 @@
     showActions([]);
     chatAppend(userMsg('好的，继续'));
     setTimeout(function() {
-      typeText('根据你的岗位，我已整理以下日常关注方向，请确认。', function() {
+      typeText('根据你的岗位，我已整理以下日常关注方向，请确认。<strong>你也可以告诉我还有哪些想关注的维度</strong>——比如：帮我盯着消防通道堵塞。', function() {
         renderPrefCards();
       });
     }, 350);
@@ -233,6 +235,7 @@
   function renderPrefCards() {
     var html = '<div class="pref-card-wrap" id="prefGrid">' +
       '<div class="attn-list">';
+    // 预设项
     for (var i = 0; i < PREF_OPTIONS.length; i++) {
       var p = PREF_OPTIONS[i];
       var sel = selectedModes.indexOf(p.id) > -1;
@@ -246,10 +249,26 @@
         '<div class="attn-period">' + p.period + '</div>' +
       '</div>';
     }
+    // 自定义项
+    for (var ci = 0; ci < customAttentions.length; ci++) {
+      var ca = customAttentions[ci];
+      html += '<div class="attn-card selected custom-card" data-id="' + ca.id + '" onclick="window.toggleCustom(\'' + ca.id + '\')">' +
+        '<div class="attn-check">✓</div>' +
+        '<div class="attn-body">' +
+          '<div class="attn-title">' + ca.label + '</div>' +
+          '<div class="attn-desc">' + (ca.desc || '自定义关注') + '</div>' +
+        '</div>' +
+        '<div class="attn-period">' + (ca.period || '自定义') + '</div>' +
+        '<button class="attn-remove" onclick="event.stopPropagation();window.removeCustom(\'' + ca.id + '\')" title="移除">✕</button>' +
+      '</div>';
+    }
     html += '</div>' +
       '<button class="card-confirm-btn" onclick="window.confirmPref()">确认关注方向</button>' +
     '</div>';
     chatAppend(html);
+    // 更新 input placeholder
+    var inp = document.getElementById('initChatInput');
+    if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
     lucide.createIcons();
   }
 
@@ -269,6 +288,39 @@
       var chk = el.querySelector('.attn-check');
       if (chk) chk.textContent = sel ? '✓' : '';
     }
+  }
+
+  // ─── 自定义关注项 ──────────────────────────────────────────
+  function toggleCustom(id) {
+    for (var i = 0; i < customAttentions.length; i++) {
+      if (customAttentions[i].id === id) {
+        customAttentions.splice(i, 1);
+        break;
+      }
+    }
+    var el = document.querySelector('.attn-card[data-id="' + id + '"]');
+    if (el) el.remove();
+  }
+  function removeCustom(id) { toggleCustom(id); }
+
+  function addCustomAttention(label) {
+    customIdCounter++;
+    var id = 'c_' + customIdCounter;
+    customAttentions.push({ id: id, label: label, desc: '自定义关注', period: '自定义' });
+    // 渲染新卡片
+    var list = document.querySelector('#prefGrid .attn-list');
+    if (list) {
+      var card = document.createElement('div');
+      card.className = 'attn-card selected custom-card';
+      card.setAttribute('data-id', id);
+      card.setAttribute('onclick', "window.toggleCustom('" + id + "')");
+      card.style.animation = 'fadeUp .35s ease-out both';
+      card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + label + '</div><div class="attn-desc">自定义关注</div></div><div class="attn-period">自定义</div><button class="attn-remove" onclick="event.stopPropagation();window.removeCustom(\'' + id + '\')" title="移除">✕</button>';
+      list.appendChild(card);
+      var ct = document.querySelector('.init-container');
+      if (ct) ct.scrollTop = ct.scrollHeight;
+    }
+    lucide.createIcons();
   }
 
   function confirmPref() {
@@ -656,6 +708,15 @@
       processVoiceInsert(insertId);
       return;
     }
+    // ═══ 自定义关注项：在关注确认屏输入任意文本 → 添加为自定义关注 ═══
+    var prefGrid = document.getElementById('prefGrid');
+    if (prefGrid) {
+      // 清理词汇：去掉"帮我""帮我盯着""看看""关注"等前缀
+      var clean = val.replace(/^(帮我|帮我盯着|帮我看看|帮我留意|看看|关注|盯紧|盯住|盯着|留意|注意)\s*/,'');
+      if (clean.length < 2) clean = val;
+      addCustomAttention(clean);
+      return;
+    }
     if (/隐患|超期|闭环|重大/.test(val)) mode = 'major_hazard';
     else if (/专项|任务|进度|滞后/.test(val)) mode = 'special_task';
     else if (/少|别烦|安静|轻|低/.test(val)) mode = 'low_interrupt';
@@ -883,6 +944,8 @@
   // ═══ 导出 ══════════════════════════════════════════════════════════
   window.togglePref = togglePref;
   window.confirmPref = confirmPref;
+  window.toggleCustom = toggleCustom;
+  window.removeCustom = removeCustom;
   window.doContinue = doContinue;
   window.doQuickFinish = doQuickFinish;
   window.doGenerate = doGenerate;
