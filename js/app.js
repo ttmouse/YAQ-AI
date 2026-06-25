@@ -3379,8 +3379,17 @@
     // SCENE SWITCHING
     // ════════════════════════════════════════════════════════════════
 
+    var _switchTimer = null;  // 场景切换防重入定时器
+
     function switchScene(sceneId) {
       if (sceneId === state.activeScene) return;
+
+      // 取消上一次未完成的切换，防止竞态
+      if (_switchTimer !== null) {
+        clearTimeout(_switchTimer);
+        _switchTimer = null;
+      }
+
       state.activeScene = sceneId;
 
       var ws = document.getElementById('workspace');
@@ -3399,7 +3408,9 @@
       var chatBody = document.getElementById('chatBody');
       var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
 
-      setTimeout(function() {
+      _switchTimer = setTimeout(function() {
+        _switchTimer = null;
+
         // 规则管理页特殊处理
         if (sceneId === 'rules') {
           if (window.renderRulesPage) window.renderRulesPage();
