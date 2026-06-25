@@ -31,9 +31,11 @@
       <div class="init-content" id="chatBox"></div>
     </div>
     <div class="init-quick-wrap" id="initQuickWrap"></div>
+    <!-- 浮动卡片容器：渲染勾选面板（attn-card）、Agent开关等，位于聊天内容区与输入框之间 -->
+    <div id="initFloatCard"></div>
     <div class="init-chat-bar">
       <input type="text" class="init-chat-input" id="initChatInput" placeholder="直接对话，例如：帮我看好重大隐患"
-        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.convChatSend()}">
+        onkeydown="if(event.key==='Enter'){event.preventDefault();window.convChatSend()}">
       <button class="init-chat-btn" onclick="window.convChatVoice()" title="语音输入">
         <i data-lucide="mic" width="16" height="16"></i>
       </button>
@@ -99,7 +101,7 @@
     <div class="global-chat-bar">
       <div class="global-chat-inner">
         <input type="text" id="globalChatInput" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降"
-          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.globalChatSend()}">
+          onkeydown="if(event.key==='Enter'){event.preventDefault();window.globalChatSend()}">
         <button class="global-chat-mic" onclick="window.convChatVoice()" title="语音输入">
           <i data-lucide="mic" width="16" height="16"></i>
         </button>

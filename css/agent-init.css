@@ -31,6 +31,18 @@
 .init-container::-webkit-scrollbar-track { background: transparent; }
 
 /* ─── 快捷操作芯片（输入框上方居中） ──────────────────────────── */
+/* ─── 浮动卡片（复选框选择面板等，位于聊天内容区与输入框之间） ─────*/
+#initFloatCard {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  bottom: 82px;
+  width: calc(100% - 32px);
+  max-width: 540px;
+  z-index: 15;
+  pointer-events: auto;
+  animation: fadeUp .35s ease-out both;
+}
+
 .init-quick-wrap {
   position: absolute;
   left: 0; right: 0; bottom: 82px;

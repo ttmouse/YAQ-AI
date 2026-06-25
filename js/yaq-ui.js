@@ -746,7 +746,7 @@ var currentDrawerAction = '';
 
     // ─── AI 追问 ────────────────────────────────────────────────
     function askAI() {
-      var input = $dom.dmsgInput;
+      var input = document.getElementById('dmsgInput');
       if (!input) return;
       var q = input.value.trim();
       if (!q) return;

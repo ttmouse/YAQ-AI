@@ -280,9 +280,3 @@
     .main { padding-bottom: calc(50px + env(safe-area-inset-bottom)); }
   }
 }
-
-/* ─── 暗色模式预备 — 保留现有色值，仅微调 ──────────────────── */
-@media (prefers-color-scheme: dark) {
-  /* 当前设计以浅色为主，暗色模式下保留原有色值确保可读性 */
-  /* 后续可根据 tokens.css 的 oklch 色域做系统级暗色适配 */
-}
