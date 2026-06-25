@@ -38,6 +38,9 @@
       }
     };
 
+    // ─── 功能占位 — 防止内联 onclick 在依赖文件加载前触发 ReferenceError ──
+    window.toggleDemoMenu = function() {};
+
     // ─── 存储版本号 ────────────────────────────────────────────
     var STORAGE_VERSION = 4;
 
@@ -608,6 +611,233 @@
         actions: ['继续督办', '发起约谈']
       }
     ];
+
+    // ════════════════════════════════════════════════════════════════
+    // 🆕 持续跟踪引擎（第4层闭环）— 诊断即创建，跟踪至闭环
+    // ════════════════════════════════════════════════════════════════
+    var TrackStore = {
+      _key: 'yaq_tracks',
+      _tracks: null,
+
+      // 获取所有跟踪记录（惰性加载，支持外部同步更新）
+      getAll: function() {
+        if (!this._tracks) { this._load(); }
+        return this._tracks;
+      },
+
+      // 按状态筛选
+      getByStatus: function(status) {
+        return this.getAll().filter(function(t) { return t.status === status; });
+      },
+
+      // 获取活跃跟踪（未关闭）
+      getActive: function() {
+        return this.getAll().filter(function(t) { return t.status !== 'closed'; });
+      },
+
+      // 创建一个跟踪记录
+      add: function(opts) {
+        var tracks = this.getAll();
+        var now = new Date();
+        var track = {
+          id: 'trk_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+          title: opts.title || '未命名跟踪项',
+          source: opts.source || '',
+          sourceId: opts.sourceId || '',
+          responsibility: opts.responsibility || '',
+          status: 'tracking',           // tracking → progressing → resolved → closed
+          createdAt: now.toISOString(),
+          updatedAt: now.toISOString(),
+          daysTracked: 0,
+          progress: 0,                  // 0-100
+          updates: [{                    // 第一条更新 = 创建记录
+            at: now.toISOString(),
+            text: '已加入持续跟踪' + (opts.initNote ? '：' + opts.initNote : '')
+          }],
+          deadline: opts.deadline || '',
+          needIntervention: opts.needIntervention || false,
+          tags: opts.tags || []
+        };
+        tracks.unshift(track);
+        this._save();
+        return track;
+      },
+
+      // 更新进展
+      update: function(id, opts) {
+        var tracks = this.getAll();
+        for (var i = 0; i < tracks.length; i++) {
+          if (tracks[i].id === id) {
+            var t = tracks[i];
+            if (opts.progress !== undefined) t.progress = Math.min(100, Math.max(0, opts.progress));
+            if (opts.status) t.status = opts.status;
+            if (opts.note) {
+              t.updates.push({ at: new Date().toISOString(), text: opts.note });
+            }
+            if (opts.responsibility) t.responsibility = opts.responsibility;
+            t.updatedAt = new Date().toISOString();
+            // 自动推进：progress=100 → resolved
+            if (t.progress >= 100 && t.status === 'progressing') t.status = 'resolved';
+            this._save();
+            return t;
+          }
+        }
+        return null;
+      },
+
+      // 标记为已解决
+      resolve: function(id, note) {
+        return this.update(id, { status: 'resolved', progress: 100, note: note || '已闭环确认' });
+      },
+
+      // 关闭（归档）
+      close: function(id, note) {
+        return this.update(id, { status: 'closed', progress: 100, note: note || '已归档' });
+      },
+
+      // 删除跟踪
+      remove: function(id) {
+        var tracks = this.getAll();
+        for (var i = 0; i < tracks.length; i++) {
+          if (tracks[i].id === id) {
+            tracks.splice(i, 1);
+            this._save();
+            return true;
+          }
+        }
+        return false;
+      },
+
+      // 从诊断/处置上下文自动创建跟踪
+      autoCreateFromContext: function(title, source, responsibility, deadline) {
+        return this.add({
+          title: title,
+          source: source,
+          sourceId: '',
+          responsibility: responsibility || '',
+          deadline: deadline || '',
+          initNote: '来自「' + source + '」自动创建'
+        });
+      },
+
+      // 计算各状态数量
+      stats: function() {
+        var tracks = this.getAll();
+        var s = { total: tracks.length, tracking: 0, progressing: 0, resolved: 0, closed: 0 };
+        for (var i = 0; i < tracks.length; i++) {
+          if (s[tracks[i].status] !== undefined) s[tracks[i].status]++;
+        }
+        return s;
+      },
+
+      // 重新计算所有活跃跟踪的天数
+      recalcDays: function() {
+        var tracks = this.getAll();
+        var now = new Date();
+        for (var i = 0; i < tracks.length; i++) {
+          if (tracks[i].status !== 'closed') {
+            var created = new Date(tracks[i].createdAt);
+            tracks[i].daysTracked = Math.floor((now - created) / (86400000));
+          }
+        }
+        this._save();
+      },
+
+      _load: function() {
+        var raw = ls.get(this._key);
+        if (raw) {
+          try { this._tracks = JSON.parse(raw); } catch(e) { this._tracks = []; }
+        } else {
+          this._tracks = [];
+        }
+      },
+
+      _save: function() {
+        ls.set(this._key, JSON.stringify(this._tracks));
+      }
+    };
+
+    // 启动时填充示例跟踪数据（首次使用的用户能看到演示）
+    (function() {
+      var t = TrackStore.getAll();
+      if (t.length === 0) {
+        // 从 FOLLOWUPS 静态数据迁移为动态跟踪
+        var staticFu = FOLLOWUPS;
+        for (var si = 0; si < staticFu.length; si++) {
+          var sf = staticFu[si];
+          var days = sf.overdue > 0 ? 7 + sf.overdue : 7;
+          var progress = sf.statusCls === 'danger' ? 25 : sf.statusCls === 'warning' ? 50 : 75;
+          var track = TrackStore.add({
+            title: sf.title,
+            source: '系统初始化',
+            responsibility: sf.responsibility,
+            deadline: sf.deadline,
+            needIntervention: sf.needIntervention,
+            initNote: sf.latestProgress
+          });
+          // 模拟几天前的创建时间
+          var oldDate = new Date();
+          oldDate.setDate(oldDate.getDate() - days);
+          track.createdAt = oldDate.toISOString();
+          track.daysTracked = days;
+          track.progress = progress;
+          if (progress >= 100) track.status = 'resolved';
+          else if (progress >= 50) track.status = 'progressing';
+          // 添加模拟更新记录
+          if (days > 3) {
+            var midDate = new Date(oldDate);
+            midDate.setDate(midDate.getDate() + Math.floor(days / 2));
+            track.updates.push({ at: midDate.toISOString(), text: '责任方已反馈初步整改方案' });
+          }
+          TrackStore._save();
+        }
+      }
+      // 每天首次加载时重算天数
+      TrackStore.recalcDays();
+    })();
+
+    // 对外暴露给 inline onclick 使用
+    window.addTrack = function(opts) {
+      if (typeof opts === 'string') opts = { title: opts };
+      var t = TrackStore.add(opts || {});
+      showToast('✅ 已加入持续跟踪');
+      return t;
+    };
+    // 更新进展（弹窗输入进展描述）
+    window.updateTrackProgress = function(id) {
+      var note = prompt('请输入最新进展描述：');
+      if (note && note.trim()) {
+        var t = TrackStore.getActive().filter(function(x) { return x.id === id; })[0];
+        var currentProgress = t ? t.progress : 50;
+        // 用户大致评估进展百分比
+        var pct = prompt('当前完成进度（0-100%）：', Math.min(100, currentProgress + 15));
+        var progress = parseInt(pct, 10);
+        if (isNaN(progress)) progress = Math.min(100, currentProgress + 15);
+        TrackStore.update(id, { note: note.trim(), progress: progress });
+        showToast('✅ 进展已更新');
+        switchScene('followup');
+      }
+    };
+    // 标记闭环
+    window.resolveTrack = function(id) {
+      if (confirm('确认该事项已闭环？')) {
+        var note = prompt('闭环说明（可选）：');
+        TrackStore.resolve(id, note || '已闭环');
+        showToast('✅ 已标记为闭环');
+        switchScene('followup');
+      }
+    };
+    // 归档
+    window.closeTrack = function(id) {
+      TrackStore.close(id);
+      showToast('已归档');
+      switchScene('followup');
+    };
+    // 便捷入口：从当前上下文快速创建跟踪
+    window.quickTrack = function(title, source, responsibility) {
+      return window.addTrack({ title: title, source: source || '手动添加', responsibility: responsibility || '' });
+    };
+    window.trackStore = TrackStore;
 
     // ════════════════════════════════════════════════════════════════
     // 企业主体责任 AI 评估数据（mock）
@@ -1779,7 +2009,7 @@
           '<td><span class="ht-status ' + h[i].statusCls + '">' + h[i].status + '</span>' +
             '<div style="margin-top:2px">' + statusChange(h[i].prevStatus, h[i].status, h[i].prevStatusCls, h[i].statusCls) + '</div></td>' +
           '<td>' + h[i].person + '</td>' +
-          '<td><div class="ht-actions"><button class="ht-action-btn primary" title="督办" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" aria-hidden="true"></i></button><button class="ht-action-btn" title="现场核查" onclick="openDrawer(\'inspect\')"><i data-lucide="search" aria-hidden="true"></i></button><button class="ht-action-btn" title="会议议题" onclick="openDrawer(\'meeting\')"><i data-lucide="calendar" aria-hidden="true"></i></button><button class="ht-action-btn" title="持续跟踪" onclick="showToast(\'已加入持续跟踪\')"><i data-lucide="pin" aria-hidden="true"></i></button></div></td></tr>';
+          '<td><div class="ht-actions"><button class="ht-action-btn primary" title="督办" onclick="openDrawer(\'supervise\')"><i data-lucide="megaphone" aria-hidden="true"></i></button><button class="ht-action-btn" title="现场核查" onclick="openDrawer(\'inspect\')"><i data-lucide="search" aria-hidden="true"></i></button><button class="ht-action-btn" title="会议议题" onclick="openDrawer(\'meeting\')"><i data-lucide="calendar" aria-hidden="true"></i></button><button class="ht-action-btn" title="持续跟踪" onclick="addTrack({title:\'' + (h[i].object + ' - ' + h[i].hazard).replace(/'/g, "\\'") + '\',source:\'隐患整改日报\',responsibility:\'' + (h[i].person || '').replace(/'/g, "\\'") + '\'})"><i data-lucide="pin" aria-hidden="true"></i></button></div></td></tr>';
       }
 
       // 隐患回头看
@@ -2227,41 +2457,95 @@
       document.body.removeChild(ta);
     };
     function renderFollowup() {
-      var followups = FOLLOWUPS;
+      // 使用动态跟踪数据而非静态 FOLLOWUPS
+      var tracks = TrackStore.getActive();
+      var stats = TrackStore.stats();
       var html = '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="list-checks" aria-hidden="true" style="color:var(--accent)"></i> 重点跟进</h2></div>' +
+
+        // ── 跟踪统计概览 ──────────────────────────────
+        '<div style="display:flex;gap:8px;margin-bottom:12px">' +
+          '<div class="info-card-badge" style="flex:1;text-align:center;background:var(--accent);color:#fff;font-size:12px;padding:6px 4px">跟踪中 ' + stats.tracking + '</div>' +
+          '<div class="info-card-badge" style="flex:1;text-align:center;background:var(--orange);color:#fff;font-size:12px;padding:6px 4px">推进中 ' + stats.progressing + '</div>' +
+          '<div class="info-card-badge" style="flex:1;text-align:center;background:var(--green);color:#fff;font-size:12px;padding:6px 4px">已闭环 ' + stats.resolved + '</div>' +
+        '</div>' +
+
         '<div class="info-card">' +
         '<div class="info-card-head">' +
-          '<h3>全部跟进项</h3>' +
-          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + followups.length + ' 项</span>' +
+          '<h3>跟踪事项</h3>' +
+          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + tracks.length + ' 项进行中</span>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:8px;padding:2px 0">';
-      for (var fui = 0; fui < followups.length; fui++) {
-        var fu = followups[fui];
-        var actionBtnsHtml = '';
-        for (var fua = 0; fua < fu.actions.length; fua++) {
-          var act = fu.actions[fua];
-          var isPrimary = (act.indexOf('督办') >= 0 || act.indexOf('升级') >= 0);
-          actionBtnsHtml += '<button onclick="event.stopPropagation();handleFollowupAction(\'' + act + '\',\'' + fu.title.replace(/'/g, "\\'") + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;white-space:nowrap;' +
-            (isPrimary ? 'background:var(--red);color:#fff;border:1px solid var(--red)' : 'background:#fff;color:var(--text);border:1px solid var(--line)') +
-            '">' + act + '</button>';
+      if (tracks.length === 0) {
+        html += '<div style="text-align:center;padding:24px 0;color:var(--muted);font-size:13px">暂无跟踪事项。<br>在诊断或处置页面点击「加入跟踪」即可开始跟踪。</div>';
+      } else {
+        for (var fui = 0; fui < tracks.length; fui++) {
+          var fu = tracks[fui];
+          // 进度条颜色
+          var barColor = fu.progress < 30 ? 'var(--red)' : fu.progress < 70 ? 'var(--orange)' : 'var(--green)';
+          // 状态标签
+          var statusLabels = { tracking: '跟踪中', progressing: '推进中', resolved: '已闭环', closed: '已归档' };
+          var statusColors = { tracking: 'var(--accent)', progressing: 'var(--orange)', resolved: 'var(--green)', closed: 'var(--weak)' };
+          var statusLabel = statusLabels[fu.status] || fu.status;
+
+          html += '<div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--fg-soft);display:flex;flex-direction:column;gap:6px' + (fu.needIntervention ? ';border-left:3px solid var(--red)' : '') + '">' +
+
+            // 标题行
+            '<div style="display:flex;align-items:center;justify-content:space-between">' +
+              '<span style="font-size:13px;font-weight:600;color:var(--text)">' + escapeHtml(fu.title) + '</span>' +
+              '<span style="font-size:10px;padding:1px 6px;border-radius:3px;white-space:nowrap;background:' + statusColors[fu.status] + '15;color:' + statusColors[fu.status] + ';font-weight:500">' + statusLabel + '</span>' +
+            '</div>' +
+
+            // 进度条
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<div style="flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden">' +
+                '<div style="height:100%;width:' + fu.progress + '%;background:' + barColor + ';border-radius:3px;transition:width .3s"></div>' +
+              '</div>' +
+              '<span style="font-size:10px;color:var(--weak);min-width:32px;text-align:right">' + fu.progress + '%</span>' +
+            '</div>' +
+
+            // 元信息
+            '<div style="font-size:11px;color:var(--muted);line-height:1.5">' +
+              '<span style="color:var(--weak)">跟踪天数：</span>' + (fu.daysTracked || 0) + ' 天' +
+              (fu.responsibility ? ' · <span style="color:var(--weak)">责任：</span>' + escapeHtml(fu.responsibility) : '') +
+              (fu.deadline ? ' · <span style="color:var(--weak)">截止：</span>' + escapeHtml(fu.deadline) : '') +
+            '</div>' +
+
+            // 最新进展
+            (fu.updates && fu.updates.length > 0 ?
+              '<div style="font-size:11px;color:var(--muted);line-height:1.5;background:var(--bg);padding:6px 8px;border-radius:4px">' +
+                '<span style="color:var(--weak)">最新：</span>' + escapeHtml(fu.updates[fu.updates.length - 1].text) +
+              '</div>'
+            : '') +
+
+            // 时间线（最近2条）
+            (fu.updates && fu.updates.length > 1 ?
+              '<div style="font-size:10px;color:var(--weak);line-height:1.4;padding-left:4px">' +
+                (fu.updates.slice(-2).map(function(u) {
+                  var d = new Date(u.at);
+                  return '<div style="display:flex;gap:4px">' +
+                    '<span style="color:var(--muted)">' + (d.getMonth()+1) + '/' + d.getDate() + '</span>' +
+                    '<span>' + escapeHtml(u.text) + '</span></div>';
+                }).join('')) +
+              '</div>'
+            : '') +
+
+            // 操作按钮
+            '<div style="display:flex;gap:4px;margin-top:2px;flex-wrap:wrap">' +
+              (fu.status === 'tracking' ?
+                '<button onclick="event.stopPropagation();window.updateTrackProgress(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--accent);color:#fff;border:none">更新进展</button>' +
+                '<button onclick="event.stopPropagation();window.resolveTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--green);color:#fff;border:none">标记闭环</button>'
+              : fu.status === 'progressing' ?
+                '<button onclick="event.stopPropagation();window.updateTrackProgress(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--accent);color:#fff;border:none">更新进展</button>' +
+                '<button onclick="event.stopPropagation();window.resolveTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--green);color:#fff;border:none">确认闭环</button>'
+              : fu.status === 'resolved' ?
+                '<button onclick="event.stopPropagation();window.closeTrack(\'' + fu.id + '\')" style="font-size:10px;padding:3px 8px;border-radius:4px;cursor:pointer;background:var(--weak);color:#fff;border:none">归档</button>'
+              : ''
+            ) +
+            (fu.needIntervention ? '<span style="font-size:10px;color:var(--red);font-weight:600;margin-left:auto">⚠ 需介入</span>' : '') +
+            '</div>' +
+
+          '</div>';
         }
-        html += '<div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--fg-soft);display:flex;flex-direction:column;gap:6px' + (fu.needIntervention ? ';border-left:3px solid var(--red)' : '') + '">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between">' +
-            '<span style="font-size:13px;font-weight:600;color:var(--text)">' + fu.title + '</span>' +
-            '<span class="hc-status ' + fu.statusCls + '" style="font-size:9px;padding:1px 6px;white-space:nowrap">' + fu.status + '</span>' +
-          '</div>' +
-          '<div style="font-size:11px;color:var(--muted);line-height:1.5">' +
-            '<span style="color:var(--weak)">状态：</span>' + fu.status + '<br>' +
-            '<span style="color:var(--weak)">责任：</span>' + fu.responsibility + '<br>' +
-            '<span style="color:var(--weak)">最新进展：</span>' + fu.latestProgress +
-          '</div>' +
-          '<div style="font-size:11px;color:var(--accent);font-weight:500">→ 下一步：' + fu.nextStep + '</div>' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;font-size:10px">' +
-            '<span style="color:var(--weak)">截止：' + fu.deadline + '</span>' +
-            (fu.needIntervention ? '<span style="color:var(--red);font-weight:600">⚠ 需站长介入</span>' : '') +
-          '</div>' +
-          '<div style="display:flex;gap:4px;margin-top:2px">' + actionBtnsHtml + '</div>' +
-        '</div>';
       }
       html += '</div></div>';
       return html;
