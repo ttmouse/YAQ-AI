@@ -965,6 +965,7 @@
         case 'followup': html = renderFollowup(); break;
         case 'pending-actions': html = renderPendingActions(); break;
         case 'supervision-track': html = renderSupervisionTrack(); break;
+        case 'monthly-report': html = renderMonthlyReport(); break;
         default: html = renderDashboard();
       }
       container.innerHTML = html;
@@ -3536,7 +3537,7 @@
 
       // 同步右栏场景提示
       var chatBody = $dom.chatBody;
-      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动', 'supervision-track': '🔍 督办跟踪' };
+      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动', 'supervision-track': '🔍 督办跟踪', 'monthly-report': '📅 月报' };
 
       _switchTimer = setTimeout(function() {
         _switchTimer = null;
@@ -3695,7 +3696,7 @@
 
     function agentAsk(sceneId) {
       var chatBody = $dom.chatBody;
-      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动', 'supervision-track': '🔍 督办跟踪' };
+      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动', 'supervision-track': '🔍 督办跟踪', 'monthly-report': '📅 月报' };
       var name = sceneNames[sceneId] || sceneId;
 
       // 打开浮动面板
@@ -4289,11 +4290,228 @@
         case 'followup': html = renderFollowup(); break;
         case 'pending-actions': html = renderPendingActions(); break;
         case 'supervision-track': html = renderSupervisionTrack(); break;
+        case 'monthly-report': html = renderMonthlyReport(); break;
       }
       container.innerHTML = html;
       lucide.createIcons();
       showToast('指标配置已保存');
     }
+
+    // ════════════════════════════════════════════════════════════════
+    // 全局搜索索引 — 从系统各数据源构建可搜索对象
+    // ════════════════════════════════════════════════════════════════
+
+    function $_escapeHtml(s) {
+      return (s + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function $_highlight(s, q) {
+      if (!q) return $_escapeHtml(s);
+      var re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      return $_escapeHtml(s).replace(re, '<mark>$1</mark>');
+    }
+
+    // 构建统一搜索索引
+    var SEARCH_INDEX = null;
+    function buildSearchIndex() {
+      if (SEARCH_INDEX) return SEARCH_INDEX;
+      SEARCH_INDEX = [];
+      var seen = {};
+
+      function add(type, id, label, subtitle, matchTexts, action, meta) {
+        if (seen[id]) return;
+        seen[id] = true;
+        SEARCH_INDEX.push({
+          type: type, id: id, label: label, subtitle: subtitle || '',
+          matchTexts: typeof matchTexts === 'string' ? [matchTexts] : matchTexts,
+          action: action,
+          meta: meta || {}
+        });
+      }
+
+      // ── 1. 人员 ──
+      for (var hi = 0; hi < MOCK.hazards.length; hi++) {
+        var h = MOCK.hazards[hi];
+        if (h.person) {
+          add('person', 'p-' + h.person, h.person, '责任人',
+            [h.person, h.object],
+            function(name) { return function(){ openEnterprisePanel(name); }}(h.object),
+            { enterpriseCount: 0, hazardCount: 0 });
+        }
+        if (h.discoverer) {
+          add('person', 'pd-' + h.discoverer, h.discoverer, '检查人',
+            [h.discoverer],
+            function(name){ return function(){ showToast('检查人：' + name); }}(h.discoverer),
+            {});
+        }
+      }
+      for (var ti = 0; ti < MOCK.tasks.length; ti++) {
+        var t = MOCK.tasks[ti];
+        if (t.person) {
+          add('person', 'tp-' + t.person, t.person, '任务负责人',
+            [t.person, t.name],
+            function(name){ return function(){ showPersonTasks(name); }}(t.person),
+            {});
+        }
+        if (t.creator && t.creator !== t.person) {
+          add('person', 'tc-' + t.creator, t.creator, '任务创建人',
+            [t.creator],
+            function(name){ return function(){ showPersonTasks(name); }}(t.creator),
+            {});
+        }
+      }
+      for (var ei = 0; ei < MOCK.abnormalEvents.length; ei++) {
+        var ae = MOCK.abnormalEvents[ei];
+        if (ae.chain && ae.chain.responsible) {
+          add('person', 'ae-' + ae.chain.responsible, ae.chain.responsible, '异常责任人',
+            [ae.chain.responsible, ae.subjectName],
+            function(name){ return function(){ openEnterprisePanel(name); }}(ae.subjectName),
+            {});
+        }
+      }
+
+      // ── 2. 企业/场所 ──
+      for (var hi2 = 0; hi2 < MOCK.hazards.length; hi2++) {
+        var h2 = MOCK.hazards[hi2];
+        add('enterprise', 'eh-' + h2.object, h2.object,
+          (h2.level || '') + (h2.status === '超期未整改' ? ' · 超期未整改' : ''),
+          [h2.object, h2.hazard, h2.region],
+          function(name){ return function(){ openEnterprisePanel(name); }}(h2.object),
+          { region: h2.region || '', level: h2.level || '', status: h2.status || '' });
+      }
+      for (var si = 0; si < MOCK.subjects.length; si++) {
+        var s = MOCK.subjects[si];
+        add('enterprise', 'es-' + s.name, s.name,
+          '主体责任异常 · ' + (s.risk === 'high' ? '高风险' : s.risk === 'mid' ? '一般风险' : '低风险'),
+          [s.name],
+          function(name){ return function(){ openEnterprisePanel(name); }}(s.name),
+          { risk: s.risk });
+      }
+      for (var dbKey in ENTERPRISE_DB) {
+        if (ENTERPRISE_DB.hasOwnProperty(dbKey)) {
+          var ed = ENTERPRISE_DB[dbKey];
+          add('enterprise', 'ed-' + dbKey, dbKey,
+            ed.type + ' · ' + ed.region,
+            [dbKey, ed.type, ed.region, ed.person],
+            function(name){ return function(){ openEnterprisePanel(name); }}(dbKey),
+            { region: ed.region || '', type: ed.type || '' });
+        }
+      }
+
+      // ── 3. 专项任务 ──
+      for (var ti2 = 0; ti2 < MOCK.tasks.length; ti2++) {
+        var t2 = MOCK.tasks[ti2];
+        add('task', 'task-' + t2.name, t2.name,
+          (t2.type || '日常') + ' · ' + t2.line + ' · ' + (t2.status || ''),
+          [t2.name, t2.line, t2.person, t2.creator, t2.region],
+          function(name){ return function(){ openTaskDetail(name); }}(t2.name),
+          { line: t2.line, status: t2.status, progress: t2.rate, region: t2.region });
+      }
+
+      // ── 4. 工作事项 ──
+      if (MOCK.priority) {
+        for (var pi = 0; pi < MOCK.priority.length; pi++) {
+          var p = MOCK.priority[pi];
+          add('workItem', 'pri-' + p.id, p.title, (p.riskLevel || '') + ' · ' + (p.status || ''),
+            [p.title, p.region || '', p.line || ''],
+            function(){ return function(){ switchScene('dashboard'); }}());
+        }
+      }
+      if (typeof FOLLOWUPS !== 'undefined' && FOLLOWUPS) {
+        for (var fi2 = 0; fi2 < FOLLOWUPS.length; fi2++) {
+          var f = FOLLOWUPS[fi2];
+          add('workItem', 'fol-' + f.id, f.title, '重点跟进 · ' + (f.status || ''),
+            [f.title, f.responsibility || ''],
+            function(){ return function(){ switchScene('dashboard'); }}());
+        }
+      }
+      if (MOCK.pendingActions) {
+        for (var pai = 0; pai < MOCK.pendingActions.length; pai++) {
+          var pa = MOCK.pendingActions[pai];
+          add('workItem', 'pa-' + pa.id, pa.title, '待确认 · ' + (pa.actionType || ''),
+            [pa.title],
+            function(id){ return function(){ switchScene('pending-actions'); }}(pa.id),
+            {});
+        }
+      }
+
+      // ── 5. 功能入口（保留原有） ──
+      for (var gi = 0; gi < LAUNCHER_DATA.length; gi++) {
+        var group = LAUNCHER_DATA[gi];
+        for (var ai = 0; ai < group.apps.length; ai++) {
+          var a = group.apps[ai];
+          add('function', 'fn-' + a.id, a.name, a.desc || group.title,
+            [a.name, a.desc || '', group.title],
+            function(id){ return function(){ launcherGo(id); }}(a.id),
+            { icon: a.icon, group: group.title });
+        }
+      }
+
+      return SEARCH_INDEX;
+    }
+
+    // 搜索函数：输入关键词，返回按类型分组的结果
+    function globalSearch(query) {
+      query = query.trim().toLowerCase();
+      if (!query) return {};
+      var index = buildSearchIndex();
+      var groups = {
+        person:    { icon: '👤', label: '人员',     items: [] },
+        enterprise:{ icon: '🏢', label: '企业/场所', items: [] },
+        task:      { icon: '📋', label: '专项任务',  items: [] },
+        workItem:  { icon: '📌', label: '工作事项',  items: [] },
+        function:  { icon: '⚡', label: '功能入口',  items: [] }
+      };
+
+      for (var i = 0; i < index.length; i++) {
+        var entry = index[i];
+        var matched = false;
+        for (var mi = 0; mi < entry.matchTexts.length; mi++) {
+          if (entry.matchTexts[mi].toLowerCase().indexOf(query) > -1) {
+            matched = true; break;
+          }
+        }
+        if (!matched) continue;
+
+        var g = groups[entry.type];
+        if (g && g.items.length < 8) {
+          g.items.push({ entry: entry });
+        }
+      }
+
+      return { groups: groups, typeOrder: ['person','enterprise','task','workItem','function'] };
+    }
+
+    // 查看人员相关任务
+    function showPersonTasks(name) {
+      closeLauncher();
+      var relatedHazards = [];
+      for (var i = 0; i < MOCK.hazards.length; i++) {
+        if (MOCK.hazards[i].person === name || MOCK.hazards[i].discoverer === name) {
+          relatedHazards.push(MOCK.hazards[i]);
+        }
+      }
+      if (relatedHazards.length > 0) {
+        openEnterprisePanel(relatedHazards[0].object);
+      } else {
+        showToast(name + ' 的相关事项');
+      }
+    }
+
+    // 执行搜索结果点击
+    function executeSearchResult(id) {
+      var index = buildSearchIndex();
+      for (var i = 0; i < index.length; i++) {
+        if (index[i].id === id) {
+          closeLauncher();
+          var fn = index[i].action;
+          if (typeof fn === 'function') { fn(); }
+          else { showToast('跳转中…'); }
+          return;
+        }
+      }
+      showToast('未找到对应操作');
+    }
+    window.executeSearchResult = executeSearchResult;
 
     // ════════════════════════════════════════════════════════════════
     // 启动台 · 站点地图
@@ -4463,7 +4681,42 @@
       var favs = getFavorites();
       var html = '';
 
-      // 收集所有 app 的扁平列表（用于搜索匹配 + 收藏组）
+      // ─── 搜索模式：多维分组结果 ────────────────────────────
+      if (query) {
+        var result = globalSearch(query);
+        var hasAny = false;
+        for (var _tgi = 0; _tgi < result.typeOrder.length; _tgi++) {
+          var gk = result.typeOrder[_tgi];
+          var g = result.groups[gk];
+          if (!g || !g.items || g.items.length === 0) continue;
+          hasAny = true;
+          html += '<div class="sg-group">' +
+            '<div class="sg-group-head">' +
+              '<span class="sg-group-icon">' + g.icon + '</span>' +
+              '<span class="sg-group-title">' + g.label + '</span>' +
+              '<span class="sg-group-count">' + g.items.length + '</span>' +
+              '<span class="lgh-line"></span>' +
+            '</div>' +
+            '<div class="sg-list">';
+          for (var _ii = 0; _ii < g.items.length; _ii++) {
+            var item = g.items[_ii];
+            var entry = item.entry;
+            html += renderSearchResultItem(entry, query);
+          }
+          html += '</div></div>';
+        }
+
+        if (!hasAny) {
+          html = '<div class="launcher-empty">未找到 "<strong>' + $_escapeHtml(query) + '</strong>" 相关的结果</div>';
+        }
+        $dom.launcherBody.innerHTML = html;
+        lucide.createIcons();
+        return;
+      }
+
+      // ─── 默认模式：常用功能 + 最近使用 + 分类浏览 ────────
+
+      // 收集所有 app 的扁平列表
       var allApps = [];
       for (var gi = 0; gi < LAUNCHER_DATA.length; gi++) {
         for (var ai = 0; ai < LAUNCHER_DATA[gi].apps.length; ai++) {
@@ -4472,8 +4725,8 @@
         }
       }
 
-      // ─── 常用功能（仅非搜索时展示） ─────────────────────────
-      if (!query && favs.length > 0) {
+      // ⭐ 常用功能
+      if (favs.length > 0) {
         var favApps = [];
         for (var fi = 0; fi < favs.length; fi++) {
           for (var aj = 0; aj < allApps.length; aj++) {
@@ -4498,54 +4751,83 @@
         }
       }
 
-      // ─── 最近使用（仅非搜索时展示，排除已收藏） ────────────
-      if (!query) {
-        var recentApps = getRecentApps(allApps, favs);
-        if (recentApps.length > 0) {
-          html += '<div class="launcher-group">' +
-            '<div class="launcher-group-head">' +
-              '<span class="launcher-group-title">🕐 最近使用</span>' +
-              '<span class="launcher-group-count">' + recentApps.length + '</span>' +
-              '<span class="lgh-line"></span>' +
-            '</div>' +
-            '<div class="launcher-grid">';
-          for (var rk = 0; rk < recentApps.length; rk++) {
-            html += buildLauncherItem(recentApps[rk], false);
-          }
-          html += '</div></div>';
-        }
-      }
-
-      // ─── 分类分组 ─────────────────────────────────────────────
-      for (var gi = 0; gi < LAUNCHER_DATA.length; gi++) {
-        var group = LAUNCHER_DATA[gi];
-        var filtered = [];
-        for (var ai = 0; ai < group.apps.length; ai++) {
-          var a = group.apps[ai];
-          if (!query || a.name.indexOf(query) > -1 || (a.desc && a.desc.indexOf(query) > -1)) {
-            filtered.push(a);
-          }
-        }
-        if (filtered.length === 0) continue;
-
+      // 🕐 最近使用
+      var recentApps = getRecentApps(allApps, favs);
+      if (recentApps.length > 0) {
         html += '<div class="launcher-group">' +
           '<div class="launcher-group-head">' +
-            '<span class="launcher-group-title">' + group.title + '</span>' +
-            '<span class="launcher-group-count">' + filtered.length + '</span>' +
+            '<span class="launcher-group-title">🕐 最近使用</span>' +
+            '<span class="launcher-group-count">' + recentApps.length + '</span>' +
             '<span class="lgh-line"></span>' +
           '</div>' +
           '<div class="launcher-grid">';
-        for (var aj = 0; aj < filtered.length; aj++) {
-          html += buildLauncherItem(filtered[aj], false);
+        for (var rk = 0; rk < recentApps.length; rk++) {
+          html += buildLauncherItem(recentApps[rk], false);
         }
         html += '</div></div>';
       }
 
-      if (!html) {
-        html = '<div class="launcher-empty">未找到匹配的功能</div>';
+      // 分类浏览
+      for (var gi = 0; gi < LAUNCHER_DATA.length; gi++) {
+        var group = LAUNCHER_DATA[gi];
+        html += '<div class="launcher-group">' +
+          '<div class="launcher-group-head">' +
+            '<span class="launcher-group-title">' + group.title + '</span>' +
+            '<span class="launcher-group-count">' + group.apps.length + '</span>' +
+            '<span class="lgh-line"></span>' +
+          '</div>' +
+          '<div class="launcher-grid">';
+        for (var ai = 0; ai < group.apps.length; ai++) {
+          html += buildLauncherItem(group.apps[ai], false);
+        }
+        html += '</div></div>';
       }
+
       $dom.launcherBody.innerHTML = html;
       lucide.createIcons();
+    }
+
+    // 渲染搜索结果项（带类型图标、高亮、摘要）
+    function renderSearchResultItem(entry, query) {
+      var typeIconMap = {
+        person:     '<div class="sri-icon sri-icon-person"><i data-lucide="user" width="16" height="16"></i></div>',
+        enterprise: '<div class="sri-icon sri-icon-enterprise"><i data-lucide="building-2" width="16" height="16"></i></div>',
+        task:       '<div class="sri-icon sri-icon-task"><i data-lucide="clipboard-list" width="16" height="16"></i></div>',
+        workItem:   '<div class="sri-icon sri-icon-workitem"><i data-lucide="flag" width="16" height="16"></i></div>',
+        function:   '<div class="sri-icon sri-icon-function"><i data-lucide="zap" width="16" height="16"></i></div>'
+      };
+      var iconHtml = typeIconMap[entry.type] || '<div class="sri-icon"><i data-lucide="search" width="16" height="16"></i></div>';
+
+      var labelHtml = $_highlight(entry.label, query);
+      var subHtml = entry.subtitle ? '<span class="sri-sub">' + $_escapeHtml(entry.subtitle) + '</span>' : '';
+
+      // 附加元信息标签
+      var metaHtml = '';
+      var meta = entry.meta;
+      if (entry.type === 'enterprise') {
+        if (meta.region) metaHtml += '<span class="sri-tag sri-tag-region">' + $_escapeHtml(meta.region) + '</span>';
+        if (meta.level && meta.level.indexOf('重大') > -1) metaHtml += '<span class="sri-tag sri-tag-danger">重大</span>';
+        else if (meta.level && meta.level.indexOf('一般') > -1) metaHtml += '<span class="sri-tag sri-tag-warn">一般</span>';
+        if (meta.status === '超期未整改') metaHtml += '<span class="sri-tag sri-tag-danger">超期</span>';
+      } else if (entry.type === 'task') {
+        if (meta.region) metaHtml += '<span class="sri-tag sri-tag-region">' + $_escapeHtml(meta.region) + '</span>';
+        if (meta.status) metaHtml += '<span class="sri-tag sri-tag-info">' + $_escapeHtml(meta.status) + '</span>';
+        if (meta.progress) metaHtml += '<span class="sri-tag sri-tag-progress">' + $_escapeHtml(meta.progress) + '</span>';
+      } else if (entry.type === 'workItem') {
+        if (meta.risk && meta.risk.indexOf('重大') > -1) metaHtml += '<span class="sri-tag sri-tag-danger">重大</span>';
+        if (meta.status) metaHtml += '<span class="sri-tag sri-tag-info">' + $_escapeHtml(meta.status) + '</span>';
+      } else if (entry.type === 'function') {
+        if (meta.group) metaHtml += '<span class="sri-tag sri-tag-group">' + $_escapeHtml(meta.group) + '</span>';
+      }
+
+      return '<div class="sri-item" onclick="executeSearchResult(\'' + $_escapeHtml(entry.id) + '\')">' +
+        iconHtml +
+        '<div class="sri-body">' +
+          '<div class="sri-label">' + labelHtml + subHtml + '</div>' +
+          '<div class="sri-meta">' + metaHtml + '</div>' +
+        '</div>' +
+        '<i data-lucide="chevron-right" width="14" height="14" class="sri-arrow"></i>' +
+      '</div>';
     }
 
     function buildLauncherItem(app, isFaved) {
@@ -4597,7 +4879,7 @@
     }
 
     function launcherSearchFirst() {
-      var first = document.querySelector('.launcher-item:first-child');
+      var first = document.querySelector('.sri-item:first-child, .launcher-item:first-child');
       if (first) { first.click(); }
     }
 
@@ -4614,6 +4896,10 @@
         'efficiency': 'efficiency',
         'responsibility': 'responsibility',
         'disposal': 'disposal',
+        'pending-actions': 'pending-actions',
+        'supervision-track': 'supervision-track',
+        // 月报
+        'monthly-report': 'monthly-report',
         // 工具
         'metric-config': '__metric_config__',
         'rules-engine': 'rules',
@@ -4686,7 +4972,8 @@
       'disposal': '分级处置',
       'followup': '重点跟进',
       'pending-actions': '待确认行动',
-      'supervision-track': '督办跟踪'
+      'supervision-track': '督办跟踪',
+      'monthly-report': '月报'
     };
 
     function switchTab(sceneId) {
