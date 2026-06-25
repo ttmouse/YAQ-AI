@@ -459,7 +459,7 @@
     return null;
   }
 
-  // 评估所有规则
+  // 评估所有规则（纯净版 — 不修改规则状态，仅返回评估结果）
   function evaluateAllRules() {
     var ctx = getMockContext();
     var results = [];
@@ -467,13 +467,17 @@
       var r = evaluateRule(rules[i], ctx);
       if (r) {
         results.push(r);
-        rules[i].stats.hitCount++;
-        rules[i].stats.lastHit = getNow();
-        rules[i].stats.recentHits.unshift({ time: getNow(), context: getTriggerContext(rules[i]), detail: r.detail });
-        if (rules[i].stats.recentHits.length > 10) rules[i].stats.recentHits.pop();
       }
     }
     return results;
+  }
+
+  // 持久化单条规则评估结果（由调用方在需要时主动调用）
+  function persistRuleEvaluation(ruleIdx, result) {
+    rules[ruleIdx].stats.hitCount++;
+    rules[ruleIdx].stats.lastHit = getNow();
+    rules[ruleIdx].stats.recentHits.unshift({ time: getNow(), context: getTriggerContext(rules[ruleIdx]), detail: result.detail });
+    if (rules[ruleIdx].stats.recentHits.length > 10) rules[ruleIdx].stats.recentHits.pop();
   }
 
   function getTriggerContext(rule) {
@@ -855,7 +859,16 @@
     saveRules();
     showRulesToast('✅ 规则已添加，将在下一次评估中生效');
     // 立即评估一次
-    evaluateAllRules();
+    var freshResults = evaluateAllRules();
+    // 为新触发的规则持久化统计
+    for (var ri = 0; ri < freshResults.length; ri++) {
+      for (var rj = 0; rj < rules.length; rj++) {
+        if (rules[rj].id === freshResults[ri].rule.id) {
+          persistRuleEvaluation(rj, freshResults[ri]);
+          break;
+        }
+      }
+    }
     // 如果新规则属于当前维度，刷新规则列表
     var newRule = rules[rules.length - 1];
     if (newRule.dimension === dimFilter || dimFilter === 'all') {
