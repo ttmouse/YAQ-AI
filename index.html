@@ -235,10 +235,13 @@
       <div class="launcher-search-wrap">
         <i data-lucide="search" width="18" height="18" class="launcher-search-icon"></i>
         <input class="launcher-search" id="launcherSearch" type="text"
-          placeholder="搜索功能名称…"
+          placeholder="搜索人员、企业、任务、功能…"
           autocomplete="off"
           oninput="onLauncherSearch()"
+          onfocus="onLauncherFocus()"
+          onblur="onLauncherBlur()"
           onkeydown="if(event.key==='Enter')launcherSearchFirst();if(event.key==='Escape')closeLauncher()">
+        <div class="launch-history" id="launchHistory"></div>
       </div>
     </div>
     <div class="launcher-body" id="launcherBody">

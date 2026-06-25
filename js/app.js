@@ -2515,23 +2515,23 @@
 
       // ─── 概览统计 ──────────────────────────────────────────────
       html += '<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">' +
-        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)">' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border-radius:12px;background:#f8fafc">' +
           '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">督办总数</div>' +
           '<div style="font-size:24px;font-weight:700;color:var(--text)">' + totalCount + '</div>' +
         '</div>' +
-        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--orange);border-radius:12px;background:#fff8f0">' +
-          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">推进中</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border-radius:12px;background:#fffbeb">' +
+          '<div style="font-size:11px;color:#92400e;margin-bottom:4px">推进中</div>' +
           '<div style="font-size:24px;font-weight:700;color:#d97706">' + progressingCount + '</div>' +
         '</div>' +
-        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--green);border-radius:12px;background:#f0fdf4">' +
-          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">已完成</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border-radius:12px;background:#ecfdf5">' +
+          '<div style="font-size:11px;color:#065f46;margin-bottom:4px">已完成</div>' +
           '<div style="font-size:24px;font-weight:700;color:var(--green)">' + doneCount + '</div>' +
         '</div>' +
-        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--red);border-radius:12px;background:#fef2f2">' +
-          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">需升级/逾期</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border-radius:12px;background:#fef2f2">' +
+          '<div style="font-size:11px;color:#991b1b;margin-bottom:4px">需升级/逾期</div>' +
           '<div style="font-size:24px;font-weight:700;color:var(--red)">' + overdueCount + '</div>' +
         '</div>' +
-        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)">' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border-radius:12px;background:#f8fafc">' +
           '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">处理项总计</div>' +
           '<div style="font-size:24px;font-weight:700;color:var(--text)">' + totalItems + '</div>' +
         '</div>' +
@@ -5077,6 +5077,106 @@
         }
       }
       return result;
+    }
+
+    // ════════════════════════════════════════════════════════════════
+    // 搜索历史 — 关键词记录
+    // ════════════════════════════════════════════════════════════════
+
+    var SEARCH_HISTORY_KEY = 'yaq_search_history_v1';
+    var SEARCH_HISTORY_MOCK = ['王志安', '北苑', '消防通道', '恒源化工', '检查'];
+
+    function getSearchHistory() {
+      var h = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || 'null');
+      if (!h || !Array.isArray(h) || h.length === 0) {
+        // 首次使用：塞入模拟数据
+        h = SEARCH_HISTORY_MOCK.slice();
+        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+      }
+      return h;
+    }
+
+    function recordSearchKeyword(keyword) {
+      keyword = keyword.trim();
+      if (!keyword || keyword.length < 1) return;
+      var h = getSearchHistory();
+      // 去重：移到最前
+      var idx = h.indexOf(keyword);
+      if (idx > -1) h.splice(idx, 1);
+      h.unshift(keyword);
+      // 只保留 12 条
+      if (h.length > 12) h.length = 12;
+      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+    }
+
+    function removeSearchKeyword(keyword) {
+      var h = getSearchHistory();
+      var idx = h.indexOf(keyword);
+      if (idx > -1) {
+        h.splice(idx, 1);
+        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+        renderSearchHistory();
+      }
+    }
+
+    function clearSearchHistory() {
+      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([]));
+      renderSearchHistory();
+    }
+
+    // 渲染搜索历史下拉
+    function renderSearchHistory() {
+      var el = $dom.launchHistory;
+      if (!el) return;
+      var h = getSearchHistory();
+      if (!h || h.length === 0) {
+        el.classList.remove('open');
+        el.innerHTML = '';
+        return;
+      }
+      var html = '<div class="launch-history-head">' +
+        '<span>🕐 搜索历史</span>' +
+        '<span class="launch-history-clear" onmousedown="event.preventDefault();clearSearchHistory()">清空</span>' +
+        '</div>';
+      for (var i = 0; i < h.length && i < 8; i++) {
+        var kw = $_escapeHtml(h[i]);
+        html += '<div class="launch-history-item" onmousedown="event.preventDefault();applySearchHistory(\'' + kw.replace(/'/g, "\\'") + '\')">' +
+          '<div class="lhi-icon"><i data-lucide="history" width="13" height="13"></i></div>' +
+          '<span class="lhi-text">' + kw + '</span>' +
+          '<button class="lhi-del" onmousedown="event.stopPropagation();removeSearchKeyword(\'' + kw.replace(/'/g, "\\'") + '\')" title="删除"><i data-lucide="x" width="11" height="11"></i></button>' +
+          '</div>';
+      }
+      el.innerHTML = html;
+      el.classList.add('open');
+      if (window.lucide) lucide.createIcons(el);
+    }
+
+    // 点击搜索历史关键词
+    function applySearchHistory(keyword) {
+      $dom.launcherSearch.value = keyword;
+      var el = $dom.launchHistory;
+      if (el) el.classList.remove('open');
+      onLauncherSearch();
+      $dom.launcherSearch.focus();
+      // 光标移到末尾
+      var len = $dom.launcherSearch.value.length;
+      $dom.launcherSearch.setSelectionRange(len, len);
+    }
+
+    // 搜索框获得焦点
+    function onLauncherFocus() {
+      var query = ($dom.launcherSearch.value || '').trim();
+      if (!query) {
+        renderSearchHistory();
+      }
+    }
+
+    // 搜索框失去焦点（延迟隐藏，让点击能触发）
+    function onLauncherBlur() {
+      setTimeout(function() {
+        var el = $dom.launchHistory;
+        if (el) el.classList.remove('open');
+      }, 200);
     }
 
     // ════════════════════════════════════════════════════════════════

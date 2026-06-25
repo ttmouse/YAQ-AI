@@ -1138,6 +1138,61 @@
     /* ─── 搜索模式下的空状态覆盖 ───────────────────────────────── */
     .launcher-empty strong { color: rgba(255,255,255,.8); }
 
+    /* ─── 搜索历史下拉列表 ─────────────────────────────────────── */
+    .launch-history {
+      position: absolute; top: 100%; left: 0; right: 0; margin-top: 6px;
+      background: rgba(30,35,50,.95);
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+      display: none;
+      overflow: hidden;
+      z-index: 20;
+    }
+    .launch-history.open { display: block; }
+    .launch-history-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px 6px;
+      font-size: 10.5px; font-weight: 600;
+      color: rgba(255,255,255,.35);
+      letter-spacing: .04em;
+    }
+    .launch-history-clear {
+      cursor: pointer; color: rgba(255,255,255,.25);
+      transition: color .1s;
+    }
+    .launch-history-clear:hover { color: rgba(255,255,255,.6); }
+    .launch-history-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background .1s;
+      font-size: 13px; color: rgba(255,255,255,.8);
+    }
+    .launch-history-item:hover { background: rgba(255,255,255,.08); }
+    .launch-history-item .lhi-icon {
+      width: 24px; height: 24px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.4);
+      flex-shrink: 0;
+    }
+    .launch-history-item .lhi-icon svg { width: 13px; height: 13px; }
+    .launch-history-item .lhi-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .launch-history-item .lhi-del {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: rgba(255,255,255,.25); cursor: pointer;
+      padding: 0; flex-shrink: 0;
+      transition: background .1s, color .1s;
+    }
+    .launch-history-item:hover .lhi-del { display: flex; }
+    .launch-history-item .lhi-del:hover { background: rgba(255,255,255,.12); color: rgba(255,255,255,.6); }
+    .launch-history-item .lhi-del svg { width: 11px; height: 11px; }
+
     .priority-list {
       display: flex;
       flex-direction: column;
@@ -2586,8 +2641,9 @@
 
     /* ─── 已确认的督办包 ── */
     .pa-confirmed-card {
-      border: 1px solid var(--line); border-radius: 12px;
-      padding: 14px; background: #fafbfc; margin-bottom: 10px;
+      border-radius: 12px;
+      padding: 14px 16px; margin-bottom: 10px;
+      background: var(--card);
     }
     .pa-cc-top {
       display: flex; align-items: flex-start; justify-content: space-between;
@@ -2598,20 +2654,20 @@
     .pa-cc-date { font-size: 11px; color: var(--weak); flex-shrink: 0; }
     .pa-cc-stats {
       display: flex; gap: 10px; font-size: 12px; color: var(--muted);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .pa-stat-done { color: var(--green); }
     .pa-stat-overdue { color: var(--red); }
-    .pa-cc-items { display: flex; flex-direction: column; gap: 3px; }
+    .pa-cc-items { display: flex; flex-direction: column; gap: 4px; }
     .pa-cfi-item {
       display: flex; align-items: center; gap: 6px;
-      padding: 5px 8px; border-radius: 6px; font-size: 11.5px;
-      background: #fff; border: 1px solid var(--line);
+      padding: 6px 10px; border-radius: 6px; font-size: 11.5px;
     }
-    .pa-cfi-done { opacity: .65; }
+    .pa-cfi-done { background: #ecfdf5; }
     .pa-cfi-done svg { color: var(--green); }
+    .pa-cfi-progress { background: #eff6ff; }
     .pa-cfi-progress svg { color: var(--blue); }
-    .pa-cfi-overdue { border-left: 2px solid var(--red); }
+    .pa-cfi-overdue { background: #fef2f2; }
     .pa-cfi-overdue svg { color: var(--red); }
     .pa-cfi-role {
       font-weight: 600; color: var(--muted); white-space: nowrap; flex-shrink: 0;
