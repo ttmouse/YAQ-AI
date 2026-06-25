@@ -563,9 +563,9 @@
         lucide.createIcons();
         var container = document.querySelector('.init-container') || document.querySelector('.center');
         if (container) container.scrollTop = container.scrollHeight;
-        // 保存欢迎文本，渲染 dashboard 后重新插入顶部
+        // 保存所有文案（欢迎语 + 诊断完成消息），渲染 dashboard 后重新插入顶部
         var savedHeader = [];
-        for (var i = 0; i < Math.min(3, sc.children.length); i++) {
+        for (var i = 0; i < sc.children.length; i++) {
           savedHeader.push(sc.children[i].outerHTML);
         }
         setTimeout(function() {
