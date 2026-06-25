@@ -987,12 +987,11 @@
 
       var html = '';
 
-      // ─── 主控 Agent 已启用状态（仅在初始化后显示） ────────────
+      // ─── 首次诊断后跳过 Agent 扩展内容和问候 ──────────────
       if (localStorage.getItem('yaq_agent_initialized') === 'true') {
-        html += renderDashboardAgentExtras();
+        // 初始化后直接显示日报，不展示扩展条和问候
       }
 
-      // ─── AI 管家开场 ────────────────────────────────────────────
       // ─── 问候 ──────────────────────────────────────────────────
       var hour = new Date().getHours();
       var greeting = hour < 12 ? '早上好' : hour < 18 ? '下午好' : '晚上好';
@@ -3435,8 +3434,8 @@
 
     var _switchTimer = null;  // 场景切换防重入定时器
 
-    function switchScene(sceneId) {
-      if (sceneId === state.activeScene) return;
+    function switchScene(sceneId, force) {
+      if (sceneId === state.activeScene && !force) return;
 
       // 取消上一次未完成的切换，防止竞态
       if (_switchTimer !== null) {
@@ -3445,6 +3444,16 @@
       }
 
       state.activeScene = sceneId;
+
+      // Tab 管理：如果 sceneId 不在 tab 列表中，自动添加
+      var found = false;
+      for (var _ti = 0; _ti < tabs.length; _ti++) {
+        if (tabs[_ti].id === sceneId) { found = true; break; }
+      }
+      if (!found) {
+        tabs.push({ id: sceneId, label: sceneLabels[sceneId] || sceneId });
+      }
+      renderTabs();
 
       var ws = $dom.workspace;
       ws.classList.add('scanning');
@@ -3468,6 +3477,7 @@
         // 规则管理页特殊处理
         if (sceneId === 'rules') {
           if (window.renderRulesPage) window.renderRulesPage();
+          renderTabs();
           ws.classList.remove('scanning');
           var name = '⚙ 规则引擎';
           chatBody.innerHTML += '<div class="msg agent"><div class="bubble">已切换到「' + name + '」，你可以在这里配置异常判定规则，或直接告诉 AI 你想加的规则。</div></div>';
@@ -3477,6 +3487,7 @@
         }
 
         renderScene(sceneId);
+        renderTabs();
         ws.classList.remove('scanning');
 
         // AI 对话追加系统消息
@@ -4588,41 +4599,66 @@
     // ════════════════════════════════════════════════════════════════
 
     function renderSceneList() {
-      var scenes = [
-        { id: 'dashboard', name: '今日监管工作台', icon: 'layout-dashboard', badge: { cls: 'danger', text: '3' } },
-        { id: 'followup', name: '重点跟进', icon: 'list-checks', badge: { cls: 'danger', text: '4' } },
-        { id: 'hazard-report', name: '重大隐患整改日报', icon: 'shield-alert', badge: { cls: 'danger', text: '5' } },
-        { id: 'efficiency', name: '履职效能分析', icon: 'bar-chart-3', badge: { cls: 'orange', text: '2' } },
-        { id: 'responsibility', name: '主体责任评估', icon: 'users', badge: { cls: 'orange', text: '8' } },
-        { id: 'disposal', name: '分级处置闭环', icon: 'git-branch', badge: null },
-        { id: 'pending-actions', name: '待确认行动', icon: 'clipboard-check', badge: { cls: 'orange', text: '4' } }
-      ];
-      var html = '';
-      for (var i = 0; i < scenes.length; i++) {
-        var s = scenes[i];
-        var active = s.id === state.activeScene ? ' active' : '';
-        html += '<div class="nav-item' + active + '" data-scene="' + s.id + '">' +
-          '<i data-lucide="' + s.icon + '" aria-hidden="true"></i>' +
-          '<span>' + escapeHtml(s.name) + '</span>';
-        if (s.badge) {
-          html += '<span class="badge ' + s.badge.cls + '">' + s.badge.text + '</span>';
-        }
-        html += '</div>';
-      }
-
-      // 分隔线 + 系统管理
-      html += '<div class="nav-divider"></div>';
-      var rulesActive = state.activeScene === 'rules' ? ' active' : '';
-      html += '<div class="nav-item' + rulesActive + '" data-page="rules">' +
-        '<i data-lucide="settings-2" aria-hidden="true"></i>' +
-        '<span>规则管理</span>' +
-        '<span class="badge gray" style="font-size:9px;padding:1px 5px">引擎</span>' +
-        '</div>';
-
-      $dom.sceneList.innerHTML = html;
-      lucide.createIcons();
+      // 侧边导航已移除，无需渲染
     }
 
+    // ════════════════════════════════════════════════════════════════
+    // TAB 管理
+    // ════════════════════════════════════════════════════════════════
+
+    var tabs = [];
+    var sceneLabels = {
+      dashboard: '工作台',
+      'rules': '规则管理',
+      'hazard-report': '重大隐患整改',
+      'efficiency': '履职效能',
+      'responsibility': '主体责任',
+      'disposal': '分级处置',
+      'followup': '重点跟进',
+      'pending-actions': '待确认行动'
+    };
+
+    function switchTab(sceneId) {
+      if (!sceneId) return;
+      switchScene(sceneId, true);
+    }
+
+    function closeTab(sceneId) {
+      if (sceneId === 'dashboard') return; // 默认 tab 不可关闭
+      var idx = -1;
+      for (var ti = 0; ti < tabs.length; ti++) {
+        if (tabs[ti].id === sceneId) { idx = ti; break; }
+      }
+      if (idx === -1) return;
+      tabs.splice(idx, 1);
+      // 切到相邻 tab
+      if (state.activeScene === sceneId) {
+        var next = tabs[Math.min(idx, tabs.length - 1)];
+        if (next) {
+          state.activeScene = next.id;
+          renderTabs();
+          switchScene(next.id);
+        }
+      } else {
+        renderTabs();
+      }
+    }
+
+    function renderTabs() {
+      var strip = document.getElementById('tabStrip');
+      if (!strip) return;
+      var html = '';
+      for (var ti = 0; ti < tabs.length; ti++) {
+        var t = tabs[ti];
+        var active = t.id === state.activeScene ? ' active' : '';
+        var closeBtn = t.id === 'dashboard' ? '' : '<button class="tab-close" onclick="event.stopPropagation();window.closeTab(\'' + t.id + '\')">✕</button>';
+        html += '<div class="tab-item' + active + '" onclick="window.switchTab(\'' + t.id + '\')">' + t.label + closeBtn + '</div>';
+      }
+      strip.innerHTML = html;
+    }
+
+    // 初始化默认 tab
+    tabs.push({ id: 'dashboard', label: '工作台' });
     // ════════════════════════════════════════════════════════════════
     // INIT
     // ════════════════════════════════════════════════════════════════
@@ -4635,6 +4671,8 @@
 
     // Expose for onclick handlers
     window.switchScene = switchScene;
+    window.switchTab = switchTab;
+    window.closeTab = closeTab;
     window.renderScene = renderScene;
     window.showToast = showToast;
     window.openDrawer = openDrawer;

@@ -3,7 +3,7 @@
    ═════════════════════════════════════════════════════════════════════ */
 
 .init-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 52px; left: 0; right: 0; bottom: 0;
   z-index: 900;
   background: linear-gradient(180deg, #f2f6fe 0%, #f5f7fb 100%);
   display: none;
@@ -162,6 +162,19 @@
   border: none;
   border-radius: 16px 16px 4px 16px;
 }
+.c-bubble.user.voice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.c-bubble.user.voice svg {
+  flex-shrink: 0;
+  display: block;
+}
+.c-bubble.user svg {
+  display: inline-block;
+  vertical-align: middle;
+}
 .c-bubble .hl { color: #2563eb; font-weight: 700; }
 .td { display: inline-flex; align-items: center; gap: 2px; }
 .td span {
@@ -258,10 +271,10 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 10px 12px;
-  background: #f8fafc;
+  padding: 9px 12px;
+  background: #fafbfc;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all .15s;
   animation: fadeUp .35s ease-out both;
@@ -273,9 +286,9 @@
 .attn-card:nth-child(5) { animation-delay: .32s; }
 .attn-card:nth-child(6) { animation-delay: .40s; }
 .attn-card:nth-child(7) { animation-delay: .48s; }
-.attn-card:hover { background: #e8ecf2; }
+.attn-card:hover { background: #eef0f2; }
 .attn-card.selected {
-  background: #eef2f6;
+  background: #f5f6f7;
   border: none;
 }
 .attn-check {
@@ -292,18 +305,30 @@
 .attn-body { flex: 1; min-width: 0; }
 .attn-title { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 2px; }
 .attn-desc { font-size: 11.5px; color: #64748b; line-height: 1.45; }
+.attn-period {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #94a3b8;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: #f0f2f5;
+  margin-left: auto;
+  align-self: center;
+}
 
 /* ─── 待选项大卡片 ────────────────────────────────────────── */
 .pref-card-wrap {
   background: #fff;
-  border: 1px solid #e2eaf8;
-  border-radius: 18px;
-  padding: 16px 14px 14px;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  max-width: 540px;
+}
   max-width: 540px;
 }
 .pref-card-wrap .attn-list {
-  max-width: none;
-  padding: 0;
+  gap: 4px;
 }
 .card-confirm-btn {
   display: block;
@@ -377,6 +402,40 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
   max-width: 540px;
+}
+
+/* ═════ 生成任务卡片 ═══════════════════════════════════════════ */
+.gen-task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-radius: 10px;
+  max-width: 540px;
+}
+.gen-task-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: .4; transform: scale(.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+.gen-task-body { flex: 1; min-width: 0; }
+.gen-task-name { font-size: 13px; font-weight: 600; color: #1e293b; }
+.gen-task-time { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+.gen-task-status {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #16a34a;
+  background: #ecfdf5;
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 .ability-card {
   background: #fff;
@@ -516,3 +575,76 @@
 .agent-disabled-bar svg { color: #d97706; flex-shrink: 0; }
 .adb-btn { margin-left: auto; padding: 4px 12px; border-radius: 9px; border: 1px solid #fed7aa; background: #fff; color: #9a3412; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; white-space: nowrap; }
 .adb-btn:hover { background: #fff7ed; }
+
+/* ─── 彩带庆祝效果 ────────────────────────────────────────── */
+.confetti-wrap {
+  position: relative;
+  height: 0;
+  overflow: visible;
+  max-width: 540px;
+}
+.cf {
+  position: absolute;
+  top: -10px;
+  border-radius: 2px;
+  animation: cfFall ease-out forwards;
+  opacity: 0;
+}
+@keyframes cfFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(80px) rotate(360deg); opacity: 0; }
+}
+
+/* ─── 诊断报告卡片 ────────────────────────────────────────── */
+.diag-section {
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-radius: 14px;
+  padding: 14px 16px;
+  border-left: 3px solid #2563eb;
+  max-width: 540px;
+}
+.diag-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+.diag-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+.diag-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+.diag-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.diag-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.diag-label { color: #64748b; }
+.diag-warn { color: #d97706; font-weight: 600; }
+.diag-danger { color: #dc2626; font-weight: 600; }
+.diag-chip {
+  display: inline-block;
+  font-size: 11.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #fef2f2;
+  color: #dc2626;
+  margin-left: auto;
+}

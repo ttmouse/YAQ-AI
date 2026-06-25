@@ -27,12 +27,12 @@
     { id:'g8', name:'系统性复盘 Agent',   schedule:'异常反复时触发', output:'复盘建议',             push:'进入建议复盘', on:true }
   ];
   var PREF_OPTIONS = [
-    { id:'daily_risk',     label:'今天有没有必须处理的安全风险', sub:'整体安全态势、风险区域、新增隐患变化。' },
-    { id:'major_hazard',   label:'重大隐患是否闭环',             sub:'新增重大隐患、历史遗留隐患、逾期未整改、临时管控措施。' },
-    { id:'special_task',   label:'专项行动是否滞后',             sub:'日常任务、专项任务是否时间过半、任务过半。' },
-    { id:'key_subject',    label:'重点主体对象是否异常',         sub:'重点企业/场所风险上升、整改反复、平台使用异常。' },
-    { id:'team_duty',      label:'团队履职是否异常',             sub:'应消站、区域站、村社、专家履职情况是否异常。' },
-    { id:'monthly_report', label:'帮我生成每月的安全月报',        sub:'月末自动整理日常监管数据，生成月度报告草稿。' }
+    { id:'daily_risk',     label:'今天有没有必须处理的安全风险', sub:'整体安全态势、风险区域、新增隐患变化。', period:'每天 08:30' },
+    { id:'major_hazard',   label:'重大隐患是否闭环',             sub:'新增重大隐患、历史遗留隐患、逾期未整改、临时管控措施。', period:'每天 10:00' },
+    { id:'special_task',   label:'专项行动是否滞后',             sub:'日常任务、专项任务是否时间过半、任务过半。', period:'每天 14:00' },
+    { id:'key_subject',    label:'重点主体对象是否异常',         sub:'重点企业/场所风险上升、整改反复、平台使用异常。', period:'每天 11:00' },
+    { id:'team_duty',      label:'团队履职是否异常',             sub:'应消站、区域站、村社、专家履职情况是否异常。', period:'每天 16:30' },
+    { id:'monthly_report', label:'帮我生成每月的安全月报',        sub:'月末自动整理日常监管数据，生成月度报告草稿。', period:'每月 25 日' }
   ];
   var MODE_RESPONSES = {
     major_hazard: '已将<span class="hl">重大隐患闭环</span>设为优先关注。<br><br>我会重点检查：<br>• 是否超期未整改<br>• 是否有临时管控措施<br>• 整改方案是否可行<br>• 责任人是否履职到位<br><br>其他日常巡检——安全态势、专项行动进度、重点主体异常、团队履职——继续保持正常运行。',
@@ -59,6 +59,9 @@
   }
   function userMsg(text) {
     return '<div class="c-row user"><div class="c-bubble user">' + text + '</div></div>';
+  }
+  function voiceMsg(text) {
+    return '<div class="c-row user"><div class="c-bubble user voice"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-4"/><path d="M7 16V8"/><path d="M11 18V6"/><path d="M15 16V8"/><path d="M19 14v-4"/></svg><span>' + text + '</span></div></div>';
   }
   function thinkingDots(text) {
     var t = text || '正在处理';
@@ -112,9 +115,9 @@
         setTimeout(typeToken, 0);
         return;
       }
-      // 纯文本：每次追加 2-3 个字符
+      // 纯文本：每次追加 4-6 个字符
       var chunk = '';
-      for (var c = 0; c < 2 + Math.round(Math.random()) && ci < tok.v.length; c++, ci++) {
+      for (var c = 0; c < 4 + Math.round(Math.random() * 2) && ci < tok.v.length; c++, ci++) {
         chunk += tok.v[ci];
       }
       output += chunk;
@@ -125,7 +128,7 @@
         ci = 0;
         ti++;
       }
-      setTimeout(typeToken, 20 + Math.random() * 15);
+      setTimeout(typeToken, 10 + Math.random() * 8);
     }
     typeToken();
   }
@@ -193,6 +196,7 @@
     }, 600);
   }
   function doWelcomeNext() {
+    showActions([]);
     chatAppend(userMsg('准备好了'));
     setTimeout(function() {
       typeText('好的。在正式开始之前，我先介绍一下我能在哪些方面协助你的日常工作。', function() {
@@ -217,6 +221,7 @@
   var selectedModes = ['daily_risk', 'major_hazard', 'special_task', 'key_subject'];
 
   function doContinueAbility() {
+    showActions([]);
     chatAppend(userMsg('好的，继续'));
     setTimeout(function() {
       typeText('根据你的岗位，我已整理以下日常关注方向，请确认。', function() {
@@ -238,6 +243,7 @@
           '<div class="attn-title">' + p.label + '</div>' +
           '<div class="attn-desc">' + p.sub + '</div>' +
         '</div>' +
+        '<div class="attn-period">' + p.period + '</div>' +
       '</div>';
     }
     html += '</div>' +
@@ -266,38 +272,99 @@
   }
 
   function confirmPref() {
-    // 根据选择生成响应
+    showActions([]);
     userMode = 'default';
-    var labels = [];
-    for (var i = 0; i < selectedModes.length; i++) {
-      var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[i]; })[0];
-      if (p) labels.push(p.label);
-    }
-    chatAppend(userMsg(labels.join('、')));
-    var thinkTexts = '正在按你的选择生成管理方案…';
+    chatAppend(userMsg('确认关注方向'));
     setTimeout(function() {
-      typeResponse(thinkTexts, buildCombinedResponse(), function() {
-        showActions([
-          { label: '调整关注重点', click: 'window.doContinue("attention")', primary: true },
-          { label: '直接生成方案', click: 'window.doQuickFinish()' }
-        ]);
-        lucide.createIcons();
+      typeResponse('正在生成管理方案…', buildCombinedResponse(), function() {
+        setTimeout(function() {
+          // 直接进入生成阶段，基于已选方向生成个性化消息
+          // 基于已选方向生成任务列表
+          var genTasks = [];
+          for (var si = 0; si < selectedModes.length; si++) {
+            var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[si]; })[0];
+            if (p) genTasks.push({ label: p.label, time: p.period });
+          }
+          showGenTasks(genTasks);
+        }, 600);
       });
     }, 350);
   }
 
+  function showGenTasks(tasks) {
+    var i = 0;
+    function nextTask() {
+      if (i >= tasks.length) {
+        // 全部任务展示完成后，出总结
+        setTimeout(function() {
+          chatAppend(agentMsg('异常提醒规则已配置——普通波动进入动态，重大风险主动提醒。'));
+          setTimeout(function() {
+            chatAppend('<div class="c-row agent"><div class="agent-text" style="font-size:15px;font-weight:700;color:#1e293b;padding:4px 0">🎉 智能化监管已开启！' + tasks.length + ' 个巡检任务已启动，日常监管工作已安排就绪。</div></div>');
+            // 简洁庆祝彩带效果
+            chatAppend('<div class="confetti-wrap" id="confettiEffect"></div>');
+            setTimeout(function() { fireConfetti(); }, 200);
+            setTimeout(function() {
+              showActions([
+                { label: '进入工作台', click: 'window.doEnter()', primary: true }
+              ]);
+              lucide.createIcons();
+            }, 500);
+          }, 500);
+        }, 400);
+        return;
+      }
+      var t = tasks[i];
+      chatAppend(
+        '<div class="gen-task" style="animation:fadeUp .3s ease-out both;animation-delay:0s">' +
+          '<div class="gen-task-dot"></div>' +
+          '<div class="gen-task-body">' +
+            '<div class="gen-task-name">' + t.label + '</div>' +
+            '<div class="gen-task-time">' + t.time + '</div>' +
+          '</div>' +
+          '<div class="gen-task-status">已开启</div>' +
+        '</div>'
+      );
+      lucide.createIcons();
+      i++;
+      setTimeout(nextTask, 350);
+    }
+    // 先出一条总起消息
+    chatAppend(agentMsg('正在启动日常巡检任务…'));
+    setTimeout(nextTask, 400);
+  }
+
+  // ─── 简易彩带庆祝效果 ────────────────────────────────────
+  function fireConfetti() {
+    var wrap = document.getElementById('confettiEffect');
+    if (!wrap) return;
+    var colors = ['#2563eb','#16a34a','#d97706','#dc2626','#7c3aed'];
+    var html = '';
+    for (var i = 0; i < 20; i++) {
+      var c = colors[i % colors.length];
+      html += '<div class="cf" style="left:' + (10 + Math.random() * 80) + '%;width:' + (4 + Math.random() * 4) + 'px;height:' + (4 + Math.random() * 4) + 'px;background:' + c + ';animation-delay:' + (Math.random() * 0.8) + 's;animation-duration:' + (1.2 + Math.random() * 0.8) + 's"></div>';
+    }
+    wrap.innerHTML = html;
+    setTimeout(function() { if (wrap) wrap.innerHTML = ''; }, 3000);
+  }
+
   function buildCombinedResponse() {
-    var combined = '好的，我将重点关注以下方向：<br><br>';
+    var items = [];
     for (var i = 0; i < selectedModes.length; i++) {
       var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[i]; })[0];
-      if (p) combined += '• <strong>' + p.label + '</strong><br>' + p.sub + '<br><br>';
+      if (p) items.push(p);
     }
-    combined += '其他日常巡检项继续保持正常运行。需要调整时随时告诉我。';
-    return combined;
+    if (items.length === 0) return '已记录，后续可随时调整。';
+    var html = '已确认 ' + items.length + ' 个关注方向，将按以下节奏自动巡检：<br><br>';
+    for (var i = 0; i < items.length; i++) {
+      html += '• <strong>' + items[i].label + '</strong><br><span style="color:#64748b;font-size:12px">' + items[i].period + ' — ' + items[i].sub + '</span><br><br>';
+    }
+    html += '巡检结果会自动汇总到总控台，发现异常会按规则推送到对应区域。<br>关注项和巡检节奏后续可随时调整。';
+    return html;
   }
 
   // ═══ 关注项 / 提醒边界 ═════════════════════════════════════════════
   function doContinue(phase) {
+    showActions([]);
     if (phase === 'attention') {
       chatAppend(userMsg('调整关注重点'));
       setTimeout(function() {
@@ -356,6 +423,7 @@
     }
   }
   function doQuickFinish() {
+    showActions([]);
     chatAppend(userMsg('直接生成方案'));
     typeText('好的，跳过微调，直接按你的偏好生成方案。', function() {
       setTimeout(function() { doGenerate(); }, 400);
@@ -364,23 +432,26 @@
 
   // ═══ 生成 ══════════════════════════════════════════════════════════
   function doGenerate() {
+    showActions([]);
     chatAppend(userMsg('生成管理心跳计划'));
-    var msgs = [
-      '正在确认你的角色和管辖范围…',
-      '正在生成管理心跳计划…',
-      '正在配置日常巡检任务…',
-      '正在设置 ' + (userMode === 'low_interrupt' ? '低打扰' : '4 级') + ' 推送边界…',
-      '管理心跳计划已生成。'
-    ];
-    var i = 0;
-    function nextGenMsg() {
-      if (i >= msgs.length) { setTimeout(showDone, 400); return; }
-      typeText(msgs[i], function() {
-        i++;
-        setTimeout(nextGenMsg, 200);
-      });
+    // 使用已选方向或默认任务
+    var modeTasks = [];
+    if (selectedModes && selectedModes.length > 0) {
+      for (var si = 0; si < selectedModes.length; si++) {
+        var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[si]; })[0];
+        if (p) modeTasks.push({ label: p.label, time: p.period });
+      }
     }
-    setTimeout(nextGenMsg, 350);
+    if (modeTasks.length === 0) {
+      modeTasks = [
+        { label: '今天有没有必须处理的安全风险', time: '每天 08:30' },
+        { label: '重大隐患是否闭环', time: '每天 10:00' },
+        { label: '专项行动是否滞后', time: '每天 14:00' },
+        { label: '重点主体对象是否异常', time: '每天 11:00' },
+        { label: '团队履职是否异常', time: '每天 16:30' }
+      ];
+    }
+    showGenTasks(modeTasks);
   }
 
   // ═══ 完成 ══════════════════════════════════════════════════════════
@@ -429,16 +500,123 @@
 
   // ═══ 进入总控台 ═══════════════════════════════════════════════════
   function doEnter() {
-    chatAppend(userMsg('进入工作台'));
+    showActions([]);
     localStorage.setItem(STORAGE_KEY, 'true');
+    // 关闭初始化遮罩，显示工作台
     var overlay = document.getElementById('initOverlay');
     if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
-    var appEl = document.querySelector('.app');
-    if (appEl) appEl.style.display = 'flex';
-    if (window.renderScene) window.renderScene('dashboard');
+    var mainEl = document.querySelector('.main');
+    if (mainEl) mainEl.style.display = 'flex';
+    // 清空工作区，播放首次诊断
+    var sc = document.getElementById('sceneContent');
+    if (sc) sc.innerHTML = '';
+    var centerEl = document.querySelector('.center');
+    if (centerEl) centerEl.scrollTop = 0;
+    setTimeout(startFirstDiagnosis, 300);
+  }
+
+  // ═══ 首次全局诊断序列 ─────────────────────────────────────
+  function startFirstDiagnosis() {
+    var sc = document.getElementById('sceneContent');
+    if (!sc) return;
+    sc.innerHTML = '';
+    sc.style.cssText = 'display:flex;flex-direction:column;gap:8px;padding:0 0 14px 0';
+
+    // 欢迎
+    var welcome = document.createElement('div');
+    welcome.style.cssText = 'font-size:17px;font-weight:700;color:#1e293b;padding:4px 0 2px';
+    welcome.textContent = '杨站长，欢迎来到应急监管工作台';
+    sc.appendChild(welcome);
+    var sub = document.createElement('div');
+    sub.style.cssText = 'font-size:13px;color:#64748b;margin-bottom:6px';
+    sub.textContent = '所有日常监管工作将从这里展开。';
+    sc.appendChild(sub);
+    var diagNote = document.createElement('div');
+    diagNote.style.cssText = 'font-size:13px;color:#64748b;margin-bottom:6px';
+    diagNote.textContent = '我将为您进行首次系统诊断。';
+    sc.appendChild(diagNote);
+
+    // 单行动态状态行
+    var statusLine = document.createElement('div');
+    statusLine.style.cssText = 'font-size:13px;color:#94a3b8;line-height:1.6;padding:6px 0;display:flex;align-items:center;gap:6px';
+    statusLine.id = 'diagStatusLine';
+    sc.appendChild(statusLine);
+
+    var thinkSteps = [
+      { icon: 'folder-open', text: '正在读取辖区基础数据…' },
+      { icon: 'search', text: '正在分析隐患信息和整改进展…' },
+      { icon: 'settings-2', text: '正在加载规则引擎和异常判定模型…' },
+      { icon: 'clipboard-list', text: '正在加载历史监管记录和专项任务数据…' },
+      { icon: 'brain', text: '正在关联分析主体责任和履职情况…' },
+      { icon: 'bar-chart-3', text: '正在生成全局诊断报告…' }
+    ];
+
+    var idx = 0;
+    function updateStatus() {
+      if (idx >= thinkSteps.length) {
+        statusLine.style.display = 'none';
+        // 完成
+        var doneMsg = document.createElement('div');
+        doneMsg.style.cssText = 'padding:8px 0 4px;font-size:13px;font-weight:600;color:#16a34a;display:flex;align-items:center;gap:6px';
+        doneMsg.innerHTML = '<i data-lucide="check-circle" width="16" height="16" style="color:#16a34a"></i> 首次诊断完成，报告已生成。';
+        sc.appendChild(doneMsg);
+        lucide.createIcons();
+        var container = document.querySelector('.init-container') || document.querySelector('.center');
+        if (container) container.scrollTop = container.scrollHeight;
+        setTimeout(function() {
+          if (window.renderScene) window.renderScene('dashboard');
+        }, 600);
+        return;
+      }
+      var step = thinkSteps[idx];
+      statusLine.innerHTML = '<i data-lucide="' + step.icon + '" width="14" height="14" style="flex-shrink:0"></i> ' + step.text;
+      lucide.createIcons();
+      var ct = document.querySelector('.center') || document.querySelector('.init-container');
+      if (ct) ct.scrollTop = ct.scrollHeight;
+      idx++;
+      setTimeout(updateStatus, 600 + Math.random() * 300);
+    }
+    setTimeout(updateStatus, 400);
   }
 
   // ═══ 全局输入处理 ═════════════════════════════════════════════════
+  function processVoiceInsert(insertId) {
+    setTimeout(function() {
+      chatAppend('<div class="c-row agent"><div class="agent-text" style="color:#94a3b8">正在更新关注项⋯</div></div>');
+      setTimeout(function() {
+        if (selectedModes.indexOf(insertId) === -1) {
+          selectedModes.push(insertId);
+          var grid = document.querySelector('#prefGrid .attn-list');
+          if (grid) {
+            var p = PREF_OPTIONS.filter(function(x) { return x.id === insertId; })[0];
+            if (p) {
+              var card = document.createElement('div');
+              card.className = 'attn-card selected';
+              card.setAttribute('data-id', insertId);
+              card.setAttribute('onclick', "window.togglePref('" + insertId + "')");
+              card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + p.label + '</div><div class="attn-desc">' + p.sub + '</div></div><div class="attn-period">' + p.period + '</div>';
+              card.style.animation = 'fadeUp .35s ease-out both';
+              grid.appendChild(card);
+              var ct = document.querySelector('.init-container');
+              if (ct) ct.scrollTop = ct.scrollHeight;
+            }
+          }
+        }
+        var statusEls = document.querySelectorAll('.c-row.agent .agent-text');
+        if (statusEls.length > 0) {
+          var last = statusEls[statusEls.length - 1];
+          if (last && last.textContent.indexOf('正在更新') === 0) {
+            last.style.color = '';
+            last.innerHTML = '更新关注项 <span style="color:#16a34a">✓</span>';
+          }
+        }
+        typeText('好的，已加上。', function() {
+          lucide.createIcons();
+        });
+      }, 500);
+    }, 600);
+  }
+
   function convChatSend() {
     var input = document.getElementById('initChatInput');
     if (!input || !input.value.trim()) return;
@@ -460,44 +638,7 @@
     }
     var insertId = focusMatch || reportMatch;
     if (insertId) {
-      setTimeout(function() {
-        // 1. 先出状态消息
-        chatAppend('<div class="c-row agent"><div class="agent-text" style="color:#94a3b8">正在更新关注项⋯</div></div>');
-        // 2. 再插入卡片（带延迟有逐个出现的效果）
-        setTimeout(function() {
-          if (selectedModes.indexOf(insertId) === -1) {
-            selectedModes.push(insertId);
-            var grid = document.querySelector('#prefGrid .attn-list');
-            if (grid) {
-              var p = PREF_OPTIONS.filter(function(x) { return x.id === insertId; })[0];
-              if (p) {
-                var card = document.createElement('div');
-                card.className = 'attn-card selected';
-                card.setAttribute('data-id', insertId);
-                card.setAttribute('onclick', "window.togglePref('" + insertId + "')");
-                card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + p.label + '</div><div class="attn-desc">' + p.sub + '</div></div>';
-                card.style.animation = 'fadeUp .35s ease-out both';
-                grid.appendChild(card);
-                var ct = document.querySelector('.init-container');
-                if (ct) ct.scrollTop = ct.scrollHeight;
-              }
-            }
-          }
-          // 3. 状态变为完成
-          var statusEls = document.querySelectorAll('.c-row.agent .agent-text');
-          if (statusEls.length > 0) {
-            var last = statusEls[statusEls.length - 1];
-            if (last && last.textContent.indexOf('正在更新') === 0) {
-              last.style.color = '';
-              last.innerHTML = '更新关注项 <span style="color:#16a34a">✓</span>';
-            }
-          }
-          // 4. 打出确认文案
-          typeText('好的，已加上。现在关注 ' + selectedModes.length + ' 个方向。', function() {
-            lucide.createIcons();
-          });
-        }, 500);
-      }, 600);
+      processVoiceInsert(insertId);
       return;
     }
     if (/隐患|超期|闭环|重大/.test(val)) mode = 'major_hazard';
@@ -536,17 +677,36 @@
     // 检测当前页面上下文，决定模拟内容
     var prefGrid = document.getElementById('prefGrid');
     if (prefGrid) {
-      // 在偏好选择页：模拟语音输入添加关注项
       var stepVoice = window._voiceStep || 0;
-      if (stepVoice === 0) {
-        window._voiceStep = 1;
-        input.value = '我还想关注 团队履职是否异常';
-        window.convChatSend();
+      // 前两步：添加关注项
+      if (stepVoice < 2) {
+        var voiceTexts = ['我还想关注 团队履职是否异常', '帮我生成每月的安全月报'];
+        var voiceIds = ['team_duty', 'monthly_report'];
+        window._voiceStep = stepVoice + 1;
+        chatAppend(voiceMsg(voiceTexts[stepVoice]));
+        processVoiceInsert(voiceIds[stepVoice]);
         return;
-      } else if (stepVoice === 1) {
-        window._voiceStep = 2;
-        input.value = '帮我生成每月的安全月报';
-        window.convChatSend();
+      }
+      // 第三步：修改月报时间
+      if (stepVoice === 2) {
+        window._voiceStep = 3;
+        chatAppend(voiceMsg('把月报的那个汇报时间改成每个月的28号'));
+        setTimeout(function() {
+          // 更新数据
+          for (var i = 0; i < PREF_OPTIONS.length; i++) {
+            if (PREF_OPTIONS[i].id === 'monthly_report') {
+              PREF_OPTIONS[i].period = '每月 28 日';
+              break;
+            }
+          }
+          // 更新 DOM 中的卡片
+          var periodEl = document.querySelector('.attn-card[data-id="monthly_report"] .attn-period');
+          if (periodEl) periodEl.textContent = '每月 28 日';
+          // 回复
+          typeText('好的，已调整。月报改为每月 28 日生成。', function() {
+            lucide.createIcons();
+          });
+        }, 600);
         return;
       }
     }
@@ -562,11 +722,12 @@
 
   // ═══ Skip ══════════════════════════════════════════════════════════
   function skip() {
+    showActions([]);
     chatAppend(userMsg('稍后再说'));
     var overlay = document.getElementById('initOverlay');
     if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
-    var appEl = document.querySelector('.app');
-    if (appEl) appEl.style.display = 'flex';
+    var mainEl = document.querySelector('.main');
+    if (mainEl) mainEl.style.display = 'flex';
     showDisabledBar();
   }
   function showDisabledBar() {
@@ -617,25 +778,28 @@
     var mode = window._initUserMode || 'default';
     var ac = 0;
     for (var i = 0; i < agents.length; i++) { if (agents[i].on) ac++; }
-    var feeds = FEEDS[mode] || FEEDS.default;
     var label = MODE_LABELS[mode] || MODE_LABELS.default;
     var intents = ['今天有没有必须处理的事','看重大隐患有没有超期','看专项行动是否滞后','看重点主体对象有没有异常','看团队履职有没有异常','准备明天会议材料','生成本月监管报告草稿'];
     var html = '';
     html += '<div class="agent-enabled-bar"><div class="aeb-left"><i data-lucide="bot" width="18" height="18"></i><span>应擎总控已启用 <span class="aeb-mode">· ' + label + '</span></span></div><div class="aeb-meta"><span><i data-lucide="activity" width="12" height="12"></i> ' + ac + ' 个子 Agent</span><span><i data-lucide="clock" width="12" height="12"></i> 下次巡检：今日 10:00</span></div></div>';
-    html += '<div class="control-feed"><h3><i data-lucide="activity" width="16" height="16"></i> 主控动态</h3>';
-    for (var i = 0; i < feeds.length; i++) {
-      html += '<div class="feed-item"><span class="feed-time">' + feeds[i][0] + '</span><div class="feed-body"><div class="feed-title">' + feeds[i][1] + '</div><div class="feed-desc">' + feeds[i][2] + '</div><div class="feed-source"><i data-lucide="bot" width="11" height="11"></i> ' + feeds[i][3] + '</div></div><span class="feed-status done">已完成</span></div>';
-    }
-    html += '</div>';
     html += '<div class="intent-section"><div class="intent-label">你可以让我继续看</div><div class="intent-grid">';
     for (var i = 0; i < intents.length; i++) {
       html += '<div class="intent-chip" onclick="window.doIntent(\'' + intents[i] + '\')"><span>' + intents[i] + '</span></div>';
     }
     html += '</div></div>';
-    html += '<div class="agent-input-bar"><input type="text" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降" id="dashboardQuery" onkeydown="if(event.key===\'Enter\')window.doDashboardQuery()"><button class="aib-btn" onclick="window.doDashboardQuery()"><i data-lucide="send" width="16" height="16"></i></button></div>';
+    html += '<div class="agent-input-bar"><input type="text" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降" id="dashboardQuery" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.doDashboardQuery()}"><button class="aib-btn" onclick="window.doDashboardQuery()"><i data-lucide="send" width="16" height="16"></i></button></div>';
     return html;
   }
   function doIntent(label) { showToast('正在查看「' + label + '」…（演示回复）'); }
+  function doDashboardRedirect() {
+    // 进入初始化工作台（诊断视图）
+    var sc = document.getElementById('sceneContent');
+    if (sc) sc.innerHTML = '';
+    setTimeout(function() { startFirstDiagnosis(); }, 200);
+  }
+  function doNormalDashboard() {
+    if (window.renderScene) window.renderScene('dashboard');
+  }
   function doDashboardQuery() {
     var input = document.getElementById('dashboardQuery');
     if (!input || !input.value.trim()) return;
@@ -650,6 +814,28 @@
   }
 
   // ═══ 启动 ══════════════════════════════════════════════════════════
+  function toggleDemoMenu() {
+    var menu = document.getElementById('demoMenu');
+    if (menu) menu.classList.toggle('open');
+  }
+  function closeDemoMenu() {
+    var menu = document.getElementById('demoMenu');
+    if (menu) menu.classList.remove('open');
+  }
+  // 点击外部关闭菜单
+  document.addEventListener('click', function(e) {
+    var wrap = document.getElementById('demoMenuWrap');
+    if (wrap && !wrap.contains(e.target)) {
+      var menu = document.getElementById('demoMenu');
+      if (menu) menu.classList.remove('open');
+    }
+  });
+  function globalChatSend() {
+    var input = document.getElementById('globalChatInput');
+    if (!input || !input.value.trim()) return;
+    showToast('正在分析你的问题…（演示回复）');
+    input.value = '';
+  }
   function init() {
     if (localStorage.getItem(STORAGE_KEY) === 'true') {
       setTimeout(function() { if (window.renderScene) window.renderScene('dashboard'); }, 50);
@@ -657,14 +843,27 @@
     }
     var overlay = document.getElementById('initOverlay');
     if (overlay) {
-      var appEl = document.querySelector('.app');
-      if (appEl) appEl.style.display = 'none';
+      var mainEl = document.querySelector('.main');
+      if (mainEl) mainEl.style.display = 'none';
       overlay.style.display = 'flex'; overlay.classList.add('active');
       var box = document.getElementById('chatBox');
       if (box) box.innerHTML = '';
       startConversation();
     }
   }
+
+  // 全局空格触发：快捷输入可见时，空格点击主按钮
+  document.addEventListener('keydown', function(e) {
+    if (e.key === ' ' || e.key === 'Spacebar') {
+      var overlay = document.getElementById('initOverlay');
+      if (overlay && overlay.classList.contains('active')) {
+        var inp = document.getElementById('initChatInput');
+        if (inp && inp.value.trim()) { e.preventDefault(); window.convChatSend(); return; }
+        var primary = document.querySelector('.q-chip.primary');
+        if (primary) { e.preventDefault(); primary.click(); }
+      }
+    }
+  });
 
   // ═══ 导出 ══════════════════════════════════════════════════════════
   window.togglePref = togglePref;
@@ -687,6 +886,11 @@
   window.doDashboardQuery = doDashboardQuery;
   window.isAgentInitialized = function() { return localStorage.getItem(STORAGE_KEY) === 'true'; };
   window.renderAgentEnabledHTML = renderAgentEnabledHTML;
+  window.doDashboardRedirect = doDashboardRedirect;
+  window.doNormalDashboard = doNormalDashboard;
+  window.globalChatSend = globalChatSend;
+  window.toggleDemoMenu = toggleDemoMenu;
+  window.closeDemoMenu = closeDemoMenu;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
