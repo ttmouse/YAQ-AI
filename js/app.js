@@ -1,6 +1,43 @@
   (function() {
     'use strict';
 
+    // ════════════════════════════════════════════════════════════════
+    // 全局错误处理 — 防止白屏
+    // ════════════════════════════════════════════════════════════════
+    window.addEventListener('error', function(e) {
+      console.error('[YAQ] 未捕获错误:', e.error || e.message);
+      var el = document.getElementById('toast');
+      if (el) { el.textContent = '发生异常，请刷新页面重试'; el.className = 'toast show'; setTimeout(function() { el.classList.remove('show'); }, 2500); }
+    });
+
+    window.addEventListener('unhandledrejection', function(e) {
+      console.error('[YAQ] 未处理的 Promise 拒绝:', e.reason);
+    });
+
+    // 安全渲染包装 — 捕获任意渲染函数中的异常，避免白屏
+    function safeRender(fn, fallbackMsg) {
+      try { return fn(); }
+      catch(e) {
+        console.error('[YAQ] 渲染异常:', e);
+        return '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" style="color:var(--red)"></i><h3>' + (fallbackMsg || '渲染异常') + '</h3><p>请刷新页面重试。' + (e.message ? ' (' + e.message + ')' : '') + '</p></div>';
+      }
+    }
+
+    // ─── 安全的 localStorage 封装（防隐私模式/配额超限崩溃） ──
+    var ls = {
+      get: function(key, fallback) {
+        try { var v = localStorage.getItem(key); return v !== null ? v : fallback; }
+        catch(e) { return fallback !== undefined ? fallback : null; }
+      },
+      set: function(key, val) {
+        try { localStorage.setItem(key, val); return true; }
+        catch(e) { console.warn('[YAQ] localStorage 写入失败:', key); return false; }
+      },
+      remove: function(key) {
+        try { localStorage.removeItem(key); } catch(e) {}
+      }
+    };
+
     // ─── 存储版本号 ────────────────────────────────────────────
     var STORAGE_VERSION = 4;
 
@@ -1092,7 +1129,7 @@
       var html = '';
 
       // ─── 首次诊断后跳过 Agent 扩展内容和问候 ──────────────
-      if (localStorage.getItem('yaq_agent_initialized') === 'true') {
+      if (ls.get('yaq_agent_initialized') === 'true') {
         // 初始化后直接显示日报，不展示扩展条和问候
       }
 
@@ -1113,7 +1150,7 @@
       var majorRisk = 2, significantRisk = 2, generalRisk = 8, lowRisk = 72;
 
       // ═══ 指标定义：按周期展开 ═══════════════════════════════════
-      var metricPrefs = JSON.parse(localStorage.getItem('yaq_metric_prefs') || 'null');
+      var metricPrefs = JSON.parse(ls.get('yaq_metric_prefs', 'null'));
       var baseMetrics = [
         // 运营概览
         { id: 'subjectTotal', label: '安全责任主体总数', value: '2028', group: '监管概况', type: '时点', desc: '当前纳入监管范围的责任主体对象总量' },
@@ -1293,10 +1330,10 @@
       }
 
       // 检测存储版本，不匹配则重置（指标结构变了）
-      if (localStorage.getItem('yaq_metric_ver') != STORAGE_VERSION) {
-        localStorage.removeItem('yaq_metric_prefs');
-        localStorage.removeItem('yaq_metric_order');
-        localStorage.removeItem('yaq_metric_ver');
+      if (ls.get('yaq_metric_ver') != STORAGE_VERSION) {
+        ls.remove('yaq_metric_prefs');
+        ls.remove('yaq_metric_order');
+        ls.remove('yaq_metric_ver');
         metricPrefs = null;
       }
       for (var mi = 0; mi < allMetrics.length; mi++) {
@@ -1305,10 +1342,10 @@
       }
       window.__allMetrics = allMetrics;
       // 加载排序
-      var savedOrder = JSON.parse(localStorage.getItem('yaq_metric_order') || 'null');
+      var savedOrder = JSON.parse(ls.get('yaq_metric_order', 'null'));
       window.__metricOrder = savedOrder || allMetrics.filter(function(m) { return m.checked; }).map(function(m) { return m.id; });
       // 写入版本号
-      if (!metricPrefs) localStorage.setItem('yaq_metric_ver', STORAGE_VERSION);
+      if (!metricPrefs) ls.set('yaq_metric_ver', STORAGE_VERSION);
 
       // 态势摘要
       var summaryText = '整体可控，重点监管池稳定；物流等 2 个片区出现风险上升信号。';
@@ -3084,15 +3121,15 @@
     ];
 
     function getDefaultPrompt(sceneId) {
-      var saved = localStorage.getItem('yaq_agent_prompt_' + sceneId);
+      var saved = ls.get('yaq_agent_prompt_' + sceneId);
       return saved || agentDefaultPrompts[sceneId] || '';
     }
 
     function openAgentConfig(sceneId) {
       var name = agentSceneNames[sceneId] || sceneId;
       var defaultPrompt = agentDefaultPrompts[sceneId] || '';
-      var savedPrompt = localStorage.getItem('yaq_agent_prompt_' + sceneId) || '';
-      var cron = localStorage.getItem('yaq_agent_cron_' + sceneId) || agentDefaultCron[sceneId] || '0 8 * * *';
+      var savedPrompt = ls.get('yaq_agent_prompt_' + sceneId) || '';
+      var cron = ls.get('yaq_agent_cron_' + sceneId) || agentDefaultCron[sceneId] || '0 8 * * *';
 
       $dom.drawerConfirm.style.display = 'none';
       $dom.drawerCancel.textContent = '关闭';
@@ -3151,12 +3188,12 @@
       if (promptEl) {
         var val = promptEl.value.trim();
         if (val) {
-          localStorage.setItem('yaq_agent_prompt_' + sceneId, val);
+          ls.set('yaq_agent_prompt_' + sceneId, val);
         } else {
-          localStorage.removeItem('yaq_agent_prompt_' + sceneId);
+          ls.remove('yaq_agent_prompt_' + sceneId);
         }
       }
-      if (scheduleEl) localStorage.setItem('yaq_agent_cron_' + sceneId, scheduleEl.value);
+      if (scheduleEl) ls.set('yaq_agent_cron_' + sceneId, scheduleEl.value);
       showToast('Agent 配置已保存', 'mock');
       closeDrawer();
     }
@@ -4778,18 +4815,19 @@
       for (var i = 0; i < metrics.length; i++) {
         prefs[metrics[i].id] = metrics[i].checked;
       }
-      localStorage.setItem('yaq_metric_prefs', JSON.stringify(prefs));
+      ls.set('yaq_metric_prefs', JSON.stringify(prefs));
       // 保存排序
       if (window.__metricOrder) {
-        localStorage.setItem('yaq_metric_order', JSON.stringify(window.__metricOrder));
+        ls.set('yaq_metric_order', JSON.stringify(window.__metricOrder));
       }
-      localStorage.setItem('yaq_metric_ver', STORAGE_VERSION);
+      ls.set('yaq_metric_ver', STORAGE_VERSION);
       closeMetricConfig();
-      // 重新渲染当前场景
+      // 重新渲染当前场景（用 try/catch 包裹，防止白屏）
       var sceneId = state.activeScene;
       var container = $dom.sceneContent;
-      var html = '';
-      switch (sceneId) {
+      try {
+        var html = '';
+        switch (sceneId) {
         case 'dashboard': html = renderDashboard(); break;
         case 'hazard-report': html = renderHazardReport(); break;
         case 'efficiency': html = renderEfficiency(); break;
@@ -4802,6 +4840,10 @@
       }
       container.innerHTML = html;
       lucide.createIcons();
+      } catch(e) {
+        console.error('[YAQ] saveMetricConfig 渲染异常:', e);
+        container.innerHTML = '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" style="color:var(--red)"></i><h3>渲染异常</h3><p>指标配置已保存，但渲染场景时发生错误，请刷新页面。</p></div>';
+      }
       showToast('指标配置已保存');
     }
 
@@ -5129,7 +5171,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function getFavorites() {
-      return JSON.parse(localStorage.getItem('yaq_v4_launcher_favs') || '[]');
+      return JSON.parse(ls.get('yaq_v4_launcher_favs', '[]'));
     }
 
     function toggleFavorite(id) {
@@ -5137,7 +5179,7 @@
       var idx = favs.indexOf(id);
       if (idx > -1) { favs.splice(idx, 1); }
       else { favs.push(id); }
-      localStorage.setItem('yaq_v4_launcher_favs', JSON.stringify(favs));
+      ls.set('yaq_v4_launcher_favs', JSON.stringify(favs));
       renderLauncher();
     }
 
@@ -5148,7 +5190,7 @@
     // ════════════════════════════════════════════════════════════════
 
     function recordRecent(id) {
-      var recent = JSON.parse(localStorage.getItem('yaq_v4_launcher_recent') || '[]');
+      var recent = JSON.parse(ls.get('yaq_v4_launcher_recent', '[]'));
       // 移除重复
       for (var i = 0; i < recent.length; i++) {
         if (recent[i].id === id) { recent.splice(i, 1); break; }
@@ -5156,11 +5198,11 @@
       recent.unshift({ id: id, time: Date.now() });
       // 只保留最近 20 条
       if (recent.length > 20) recent.length = 20;
-      localStorage.setItem('yaq_v4_launcher_recent', JSON.stringify(recent));
+      ls.set('yaq_v4_launcher_recent', JSON.stringify(recent));
     }
 
     function getRecentApps(allApps, excludeIds) {
-      var recent = JSON.parse(localStorage.getItem('yaq_v4_launcher_recent') || '[]');
+      var recent = JSON.parse(ls.get('yaq_v4_launcher_recent', '[]'));
       var result = [];
       var excludeSet = {};
       for (var ei = 0; ei < excludeIds.length; ei++) {
@@ -5188,10 +5230,10 @@
     var SEARCH_HISTORY_MOCK = ['王志安', '北苑', '消防通道', '恒源化工', '检查'];
 
     function getSearchHistory() {
-      var h = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || 'null');
+      var h = JSON.parse(ls.get(SEARCH_HISTORY_KEY, 'null'));
       if (!h || !Array.isArray(h) || h.length === 0) {
         h = SEARCH_HISTORY_MOCK.slice();
-        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+        ls.set(SEARCH_HISTORY_KEY, JSON.stringify(h));
       }
       return h;
     }
@@ -5204,7 +5246,7 @@
       if (idx > -1) h.splice(idx, 1);
       h.unshift(keyword);
       if (h.length > 12) h.length = 12;
-      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+      ls.set(SEARCH_HISTORY_KEY, JSON.stringify(h));
       renderSearchChips();
     }
 
@@ -5213,13 +5255,13 @@
       var idx = h.indexOf(keyword);
       if (idx > -1) {
         h.splice(idx, 1);
-        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+        ls.set(SEARCH_HISTORY_KEY, JSON.stringify(h));
         renderSearchChips();
       }
     }
 
     function clearSearchHistory() {
-      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify([]));
+      ls.set(SEARCH_HISTORY_KEY, JSON.stringify([]));
       renderSearchChips();
     }
 
@@ -5476,13 +5518,13 @@
       // 记录搜索关键词（只记录不重新渲染，避免干扰）
       var q = ($dom.launcherSearch.value || '').trim();
       if (q) {
-        var h = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || 'null');
+        var h = JSON.parse(ls.get(SEARCH_HISTORY_KEY, 'null'));
         if (!h || !Array.isArray(h) || h.length === 0) h = SEARCH_HISTORY_MOCK.slice();
         var idx = h.indexOf(q);
         if (idx > -1) h.splice(idx, 1);
         h.unshift(q);
         if (h.length > 12) h.length = 12;
-        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(h));
+        ls.set(SEARCH_HISTORY_KEY, JSON.stringify(h));
       }
       renderLauncher();
     }

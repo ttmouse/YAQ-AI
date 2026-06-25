@@ -5,6 +5,21 @@
 (function() {
   'use strict';
 
+  // ─── 安全的 localStorage 封装（防隐私模式/配额超限崩溃） ──
+  var ls = {
+    get: function(key, fallback) {
+      try { var v = localStorage.getItem(key); return v !== null ? v : fallback; }
+      catch(e) { return fallback !== undefined ? fallback : null; }
+    },
+    set: function(key, val) {
+      try { localStorage.setItem(key, val); return true; }
+      catch(e) { console.warn('[YAQ] localStorage 写入失败:', key); return false; }
+    },
+    remove: function(key) {
+      try { localStorage.removeItem(key); } catch(e) {}
+    }
+  };
+
   // ─── HTML 转义（防止 XSS） ────────────────────────────────────────
   function escapeHtml(str) {
     var div = document.createElement('div');
@@ -560,7 +575,7 @@
   // ═══ 进入总控台 ═══════════════════════════════════════════════════
   function doEnter() {
     showActions([]);
-    localStorage.setItem(STORAGE_KEY, 'true');
+    ls.set(STORAGE_KEY, 'true');
     // 关闭初始化遮罩，显示工作台
     var overlay = document.getElementById('initOverlay');
     if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
@@ -826,11 +841,11 @@
   function reEnable() {
     var bar = document.getElementById('disabledBar');
     if (bar) bar.remove();
-    localStorage.removeItem(STORAGE_KEY);
+    ls.remove(STORAGE_KEY);
     location.reload();
   }
   function resetInit() {
-    localStorage.removeItem(STORAGE_KEY);
+    ls.remove(STORAGE_KEY);
     location.reload();
   }
 
@@ -920,7 +935,7 @@
     input.value = '';
   }
   function init() {
-    if (localStorage.getItem(STORAGE_KEY) === 'true') {
+    if (ls.get(STORAGE_KEY) === 'true') {
       setTimeout(function() { if (window.renderScene) window.renderScene('dashboard'); }, 50);
       return;
     }
@@ -969,7 +984,7 @@
   window.closeSheet = closeSheet;
   window.doIntent = doIntent;
   window.doDashboardQuery = doDashboardQuery;
-  window.isAgentInitialized = function() { return localStorage.getItem(STORAGE_KEY) === 'true'; };
+  window.isAgentInitialized = function() { return ls.get(STORAGE_KEY) === 'true'; };
   window.renderAgentEnabledHTML = renderAgentEnabledHTML;
   window.doDashboardRedirect = doDashboardRedirect;
   window.doNormalDashboard = doNormalDashboard;

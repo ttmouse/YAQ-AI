@@ -8,6 +8,21 @@
 (function() {
   'use strict';
 
+  // ─── 安全的 localStorage 封装（防隐私模式/配额超限崩溃） ──
+  var ls = {
+    get: function(key, fallback) {
+      try { var v = localStorage.getItem(key); return v !== null ? v : fallback; }
+      catch(e) { return fallback !== undefined ? fallback : null; }
+    },
+    set: function(key, val) {
+      try { localStorage.setItem(key, val); return true; }
+      catch(e) { console.warn('[YAQ] localStorage 写入失败:', key); return false; }
+    },
+    remove: function(key) {
+      try { localStorage.removeItem(key); } catch(e) {}
+    }
+  };
+
   // ═══════════════════════════════════════════════════════════
   // 规则维度定义
   // ═══════════════════════════════════════════════════════════
@@ -1083,7 +1098,7 @@
   // 初始化规则引擎
   function initRulesEngine() {
     // 从 localStorage 加载，或使用默认
-    var saved = localStorage.getItem('yaq_rules');
+    var saved = ls.get('yaq_rules');
     if (saved) {
       try {
         rules = JSON.parse(saved);
@@ -1097,7 +1112,7 @@
 
   // 保存规则到 localStorage
   function saveRules() {
-    localStorage.setItem('yaq_rules', JSON.stringify(rules));
+    ls.set('yaq_rules', JSON.stringify(rules));
   }
 
   // 暴露到 window
