@@ -6209,6 +6209,7 @@
     window.saveMetricConfig = window.YAQ.saveMetricConfig;
     window.closePAModal = window.YAQ.closePAModal;
     window.renderScene = window.YAQ.renderScene;
+    window.escapeHtml = window.YAQ.escapeHtml;  // 供 agent-init.js 等后续脚本使用
 
     // ════════════════════════════════════════════════════════════════
     // 待确认行动交互
