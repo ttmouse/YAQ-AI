@@ -373,7 +373,7 @@
       card.setAttribute('data-id', id);
       card.setAttribute('onclick', "YAQ.toggleCustom('" + id + "')");
       card.style.animation = 'fadeUp .35s ease-out both';
-      card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + label + '</div><div class="attn-desc">自定义关注</div></div><div class="attn-period">自定义</div><button class="attn-remove" onclick="event.stopPropagation();YAQ.removeCustom(\'' + id + '\')" title="移除">✕</button>';
+      card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + escapeHtml(label) + '</div><div class="attn-desc">自定义关注</div></div><div class="attn-period">自定义</div><button class="attn-remove" onclick="event.stopPropagation();YAQ.removeCustom(\'' + id + '\')" title="移除">✕</button>';
       list.appendChild(card);
       var ct = document.querySelector('.init-container');
       if (ct) ct.scrollTop = ct.scrollHeight;
@@ -700,7 +700,7 @@
               card.className = 'attn-card selected';
               card.setAttribute('data-id', insertId);
               card.setAttribute('onclick', "YAQ.togglePref('" + insertId + "')");
-              card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + p.label + '</div><div class="attn-desc">' + p.sub + '</div></div><div class="attn-period">' + p.period + '</div>';
+              card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + escapeHtml(p.label) + '</div><div class="attn-desc">' + escapeHtml(p.sub) + '</div></div><div class="attn-period">' + escapeHtml(p.period) + '</div>';
               card.style.animation = 'fadeUp .35s ease-out both';
               grid.appendChild(card);
               adjustChatPadding();  // 卡片增高后刷新底部留白
@@ -877,7 +877,7 @@
     if (oldm) oldm.remove();
     var m = document.createElement('div'); m.id = 'convSheetMask'; m.className = 'conv-sheet-mask'; m.onclick = closeSheet;
     var s = document.createElement('div'); s.id = 'convSheet'; s.className = 'conv-sheet';
-    s.innerHTML = '<div class="conv-sheet-handle"></div><div class="conv-sheet-title">' + title + '</div><div class="conv-sheet-text">' + text + '</div><div class="conv-sheet-result"><div class="conv-sheet-result-label">处理结果</div><p>' + result + '</p></div><button class="c-btn primary sheet-close" onclick="YAQ.closeSheet()">知道了</button>';
+    s.innerHTML = '<div class="conv-sheet-handle"></div><div class="conv-sheet-title">' + escapeHtml(title) + '</div><div class="conv-sheet-text">' + escapeHtml(text) + '</div><div class="conv-sheet-result"><div class="conv-sheet-result-label">处理结果</div><p>' + escapeHtml(result) + '</p></div><button class="c-btn primary sheet-close" onclick="YAQ.closeSheet()">知道了</button>';
     overlay.appendChild(m); overlay.appendChild(s);
     setTimeout(function() { m.classList.add('show'); s.classList.add('show'); }, 10);
   }

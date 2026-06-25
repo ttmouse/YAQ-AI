@@ -2092,7 +2092,7 @@
       for (var i = 0; i < MOCK.subjects.length; i++) {
         var s = MOCK.subjects[i];
         var riskLabel = s.risk === 'high' ? '高度关注' : s.risk === 'mid' ? '需关注' : '观察';
-        rows += '<tr><td><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + s.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + escapeHtml(s.name) + '</a></td><td>' + escapeHtml(s.selfCheck) + '</td><td>' + escapeHtml(s.govCheck) + '</td><td>' + escapeHtml(s.training) + '</td><td>' + escapeHtml(s.drill) + '</td><td><span class="st-risk ' + s.risk + '">' + riskLabel + '</span></td><td style="font-size:12px;color:var(--accent);font-weight:500;cursor:pointer" onclick="showToast(\'已记录建议：' + s.suggest + '\')">' + s.suggest + '</td></tr>';
+        rows += '<tr><td><a href="javascript:void(0)" onclick="openEnterprisePanel(\'' + s.name.replace(/'/g,"\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue);cursor:pointer">' + escapeHtml(s.name) + '</a></td><td>' + escapeHtml(s.selfCheck) + '</td><td>' + escapeHtml(s.govCheck) + '</td><td>' + escapeHtml(s.training) + '</td><td>' + escapeHtml(s.drill) + '</td><td><span class="st-risk ' + s.risk + '">' + riskLabel + '</span></td><td style="font-size:12px;color:var(--accent);font-weight:500;cursor:pointer" onclick="showToast(\'已记录建议：' + s.suggest.replace(/'/g,"\\'") + '\')">' + escapeHtml(s.suggest) + '</td></tr>';
       }
 
       return '' +
@@ -2188,11 +2188,12 @@
     // ─── Disposal ────────────────────────────────────────────────────
 
     function renderDisposal() {
-      var dInt = MOCK.disposalInternal;
-      var dExt = MOCK.disposalExternal;
-      var dSys = MOCK.disposalSystemic;
+      var dInt = MOCK.disposalInternal || [];
+      var dExt = MOCK.disposalExternal || [];
+      var dSys = MOCK.disposalSystemic || [];
 
       function renderLevels(arr, tagPrefix) {
+        if (!arr || arr.length === 0) return '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无分级处置数据</div>';
         var h = '';
         for (var li = 0; li < arr.length; li++) {
           var lv = arr[li];
@@ -2203,12 +2204,12 @@
             var btnIcon = btnAction === 'remind-all' ? 'bell' : 'chevron-right';
             itemsHtml += '<div class="dl-item">' +
               '<div class="dl-item-icon ' + lv.tag + '"><i data-lucide="' + lv.icon + '" aria-hidden="true"></i></div>' +
-              '<div class="dl-item-body"><div class="dl-item-title">' + lv.items[ii].title + '</div><div class="dl-item-desc">' + lv.items[ii].desc + '</div></div>' +
+              '<div class="dl-item-body"><div class="dl-item-title">' + escapeHtml(lv.items[ii].title) + '</div><div class="dl-item-desc">' + escapeHtml(lv.items[ii].desc) + '</div></div>' +
               '<button class="dl-item-action" onclick="' + (btnAction === 'remind-all' ? 'openDrawer(\'remind\')' : 'showToast(\'动作已记录，将跟踪闭环\')') + '"><i data-lucide="' + btnIcon + '" aria-hidden="true"></i> ' + btnLabel + '</button>' +
             '</div>';
           }
           h += '<div class="disposal-level">' +
-            '<div class="dl-head"><span class="dl-tag ' + lv.tag + '">L' + lv.level + '</span><span class="dl-title">' + lv.levelName + '</span></div>' +
+            '<div class="dl-head"><span class="dl-tag ' + lv.tag + '">L' + lv.level + '</span><span class="dl-title">' + escapeHtml(lv.levelName) + '</span></div>' +
             '<div class="dl-list">' + itemsHtml + '</div></div>';
         }
         return h;
@@ -2239,12 +2240,16 @@
       html += '<div class="info-card">' +
         '<div class="info-card-head"><h3><i data-lucide="refresh-cw" aria-hidden="true" style="color:var(--accent)"></i> 系统性改进 · 复盘与优化</h3></div>' +
         '<div class="dl-list">';
-      for (var si = 0; si < dSys.length; si++) {
-        html += '<div class="dl-item">' +
-          '<div class="dl-item-icon level-5"><i data-lucide="' + dSys[si].icon + '" aria-hidden="true"></i></div>' +
-          '<div class="dl-item-body"><div class="dl-item-title">' + dSys[si].title + '</div><div class="dl-item-desc">' + dSys[si].desc + '</div></div>' +
-          '<button class="dl-item-action" onclick="showToast(\'已记录复盘建议\')"><i data-lucide="chevron-right" aria-hidden="true"></i> 查看</button>' +
-        '</div>';
+      if (dSys.length === 0) {
+        html += '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无系统性改进建议</div>';
+      } else {
+        for (var si = 0; si < dSys.length; si++) {
+          html += '<div class="dl-item">' +
+            '<div class="dl-item-icon level-5"><i data-lucide="' + dSys[si].icon + '" aria-hidden="true"></i></div>' +
+            '<div class="dl-item-body"><div class="dl-item-title">' + escapeHtml(dSys[si].title) + '</div><div class="dl-item-desc">' + escapeHtml(dSys[si].desc) + '</div></div>' +
+            '<button class="dl-item-action" onclick="showToast(\'已记录复盘建议\')"><i data-lucide="chevron-right" aria-hidden="true"></i> 查看</button>' +
+          '</div>';
+        }
       }
       html += '</div></div>';
 
@@ -4088,7 +4093,7 @@
       if (!conv) return;
 
       // 用户消息
-      conv.innerHTML += '<div class="dmsg user"><div class="dmsg-bubble">' + q + '</div></div>';
+      conv.innerHTML += '<div class="dmsg user"><div class="dmsg-bubble">' + escapeHtml(q) + '</div></div>';
       conv.scrollTop = conv.scrollHeight;
 
       // 生成上下文相关的 mock 回答
