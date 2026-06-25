@@ -5946,23 +5946,33 @@
       };
 
       var keys = Object.keys(moduleMap);
-      var promises = keys.map(function(key) {
-        return import(moduleMap[key].path)
+      var total = keys.length;
+      var loaded = [];
+      var failed = [];
+
+      keys.forEach(function(key) {
+        import(moduleMap[key].path)
           .then(function(mod) {
             window.__Modules = window.__Modules || {};
             window.__Modules[key] = mod;
+            loaded.push(key);
           })
           .catch(function(err) {
+            failed.push({ key: key, name: moduleMap[key].name, error: err });
             console.warn('[YAQ] 模块加载失败: ' + moduleMap[key].name + ' (' + key + ')', err);
+          })
+          .finally(function() {
+            // 所有模块加载完毕（无论成功失败）后派发事件
+            if (loaded.length + failed.length === total) {
+              var detail = { loaded: loaded.slice(), failed: failed.slice() };
+              console.log('[YAQ] ✅ ES6 模块系统已连接 — ' + loaded.length + '/' + total + ' 模块加载完成' + (failed.length > 0 ? ' (' + failed.length + ' 个失败)' : ''));
+              if (loaded.length > 0) {
+                console.log('[YAQ] 已加载模块:', loaded.join(', '));
+              }
+              // 派发 modulesReady 事件供后续模块化迁移使用（预留 API，当前无消费方）
+              window.dispatchEvent(new CustomEvent('modulesReady', { detail: detail }));
+            }
           });
-      });
-
-      Promise.all(promises).then(function() {
-        console.log('[YAQ] ✅ ES6 模块系统已连接 — 9/9 模块加载完成');
-        if (window.__Modules) {
-          console.log('[YAQ] 模块列表:', Object.keys(window.__Modules).join(', '));
-        }
-        window.dispatchEvent(new CustomEvent('modulesReady'));
       });
     })();
 
