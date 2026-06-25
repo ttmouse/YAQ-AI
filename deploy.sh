@@ -20,8 +20,8 @@ echo "📦 打包站点文件（使用构建产物）..."
 tar -czf dist.tar.gz \
   -C dist \
   index.html \
-  css/style.min.css css/agent-init.min.css \
-  js/app.min.js js/rules.min.js js/agent-init.min.js \
+  css/style.css css/agent-init.css css/tokens.css css/base.css css/layout.css css/blocks.css css/detail.css css/modal.css css/work-items.css css/assistant.css css/mobile.css \
+  js/app.js js/rules.js js/agent-init.js \
   ai-vs-traditional-comparison.html \
   special-inspection-prototype.html
 
