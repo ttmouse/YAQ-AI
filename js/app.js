@@ -19,7 +19,7 @@
       try { return fn(); }
       catch(e) {
         console.error('[YAQ] 渲染异常:', e);
-        return '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" style="color:var(--red)"></i><h3>' + (fallbackMsg || '渲染异常') + '</h3><p>请刷新页面重试。' + (e.message ? ' (' + e.message + ')' : '') + '</p></div>';
+        return '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" class="c-red"></i><h3>' + (fallbackMsg || '渲染异常') + '</h3><p>请刷新页面重试。' + (e.message ? ' (' + e.message + ')' : '') + '</p></div>';
       }
     }
 
@@ -1584,7 +1584,7 @@
 
       html += '<div class="info-card" id="situationCard">' +
         '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
-          '<h3><i data-lucide="activity" aria-hidden="true" style="color:var(--accent)"></i> 整体安全态势</h3>' +
+          '<h3><i data-lucide="activity" aria-hidden="true" class="c-accent"></i> 整体安全态势</h3>' +
           '<div style="position:relative;margin-left:auto">' +
             '<button class="metric-config-btn" onclick="openMetricConfig()" title="配置指标"><i data-lucide="sliders-horizontal" width="15" height="15"></i></button>' +
           '</div>' +
@@ -1636,7 +1636,7 @@
       html +=
       '<div class="info-card">' +
         '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
-          '<h3><i data-lucide="shield-alert" aria-hidden="true" style="color:var(--red)"></i> 关键风险闭环</h3>' +
+          '<h3><i data-lucide="shield-alert" aria-hidden="true" class="c-red"></i> 关键风险闭环</h3>' +
           '<div style="width:100%;font-size:13px;font-weight:500;color:var(--text);line-height:1.5;margin-top:3px">' + riskSummary + '</div>' +
         '</div>' +
         '<div style="display:flex;gap:8px;overflow-x:auto;padding:2px 0">';
@@ -1687,7 +1687,7 @@
       html +=
       '<div class="info-card">' +
         '<div class="info-card-head">' +
-          '<h3><i data-lucide="target" aria-hidden="true" style="color:var(--accent)"></i> 核心任务进展</h3>' +
+          '<h3><i data-lucide="target" aria-hidden="true" class="c-accent"></i> 核心任务进展</h3>' +
           '<span class="info-card-badge danger">' + lagCount + ' 项异常</span>' +
         '</div>' +
         '<div style="display:flex;gap:8px;overflow-x:auto;flex-wrap:nowrap;padding:2px 0;scrollbar-width:none;-ms-overflow-style:none">';
@@ -2037,7 +2037,7 @@
 
         // 隐患回头看
         '<div class="info-card">' +
-          '<div class="info-card-head"><h3><i data-lucide="eye" aria-hidden="true" style="color:var(--red)"></i> 重大隐患回头看</h3><span class="info-card-badge danger">需确认 ' + countByStatus(h, '超期未整改') + '</span></div>' +
+          '<div class="info-card-head"><h3><i data-lucide="eye" aria-hidden="true" class="c-red"></i> 重大隐患回头看</h3><span class="info-card-badge danger">需确认 ' + countByStatus(h, '超期未整改') + '</span></div>' +
           '<div class="info-list">' + reviewItems + '</div>' +
         '</div>' +
 
@@ -2079,9 +2079,9 @@
       }
 
       return '' +
-        '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="bar-chart-3" aria-hidden="true" style="color:var(--accent)"></i> 履职效能分析</h2></div>' +
+        '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="bar-chart-3" aria-hidden="true" class="c-accent"></i> 履职效能分析</h2></div>' +
         '<div class="efficiency-grid">' + cardsHtml +
-        '<div class="eff-card full-width"><div class="eff-head"><h3><i data-lucide="alert-triangle" aria-hidden="true" style="color:var(--orange)"></i> 异常偏低提示</h3></div>' + alertsHtml + '</div>' +
+        '<div class="eff-card full-width"><div class="eff-head"><h3><i data-lucide="alert-triangle" aria-hidden="true" class="c-orange"></i> 异常偏低提示</h3></div>' + alertsHtml + '</div>' +
         '</div>';
     }
 
@@ -2097,7 +2097,7 @@
       }
 
       return '' +
-        '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="users" aria-hidden="true" style="color:var(--accent)"></i> 主体责任判断矩阵</h2></div>' +
+        '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="users" aria-hidden="true" class="c-accent"></i> 主体责任判断矩阵</h2></div>' +
         '<div class="matrix-grid">' +
           '<div class="matrix-card"><div class="matrix-card-icon green"><i data-lucide="check-circle-2" aria-hidden="true"></i></div><div class="matrix-card-title">主体责任较主动</div><div class="matrix-card-desc">自查多，政府检查少，安全管理较到位</div></div>' +
           '<div class="matrix-card"><div class="matrix-card-icon red"><i data-lucide="alert-triangle" aria-hidden="true"></i></div><div class="matrix-card-title">疑似敷衍自查</div><div class="matrix-card-desc">自查为 0，政府检查发现多项隐患</div></div>' +
@@ -2140,7 +2140,7 @@
           var sectionHtml =
           '<div class="info-card">' +
             '<div class="info-card-head">' +
-              '<h3><i data-lucide="building" aria-hidden="true" style="color:var(--accent)"></i> 企业主体责任落实情况</h3>' +
+              '<h3><i data-lucide="building" aria-hidden="true" class="c-accent"></i> 企业主体责任落实情况</h3>' +
               '<span class="info-card-badge danger">' + gapSorted.length + ' 家需督办</span>' +
             '</div>' +
             '<div style="display:flex;gap:0">' +
@@ -2179,7 +2179,7 @@
           sectionHtml += '</div>';
           return sectionHtml;
         })() +
-        '<div class="section-head" style="margin-bottom:8px;margin-top:4px"><h2 style="font-size:14px"><i data-lucide="list" aria-hidden="true" style="color:var(--accent)"></i> 疑似主体责任异常对象</h2></div>' +
+        '<div class="section-head" style="margin-bottom:8px;margin-top:4px"><h2 style="font-size:14px"><i data-lucide="list" aria-hidden="true" class="c-accent"></i> 疑似主体责任异常对象</h2></div>' +
         '<div class="subject-table-wrap">' +
         '<table class="subject-table">' +
         '<thead><tr><th>主体对象</th><th>自查</th><th>政府检查</th><th>培训</th><th>演练</th><th>风险提示</th><th>建议动作</th></tr></thead>' +
@@ -2218,20 +2218,20 @@
 
       var html = renderDisposalRecommendations();
 
-      html += '<div class="section-head" style="margin-bottom:0;margin-top:32px"><h2><i data-lucide="git-branch" aria-hidden="true" style="color:var(--accent)"></i> 分级处置闭环</h2></div>';
+      html += '<div class="section-head" style="margin-bottom:0;margin-top:32px"><h2><i data-lucide="git-branch" aria-hidden="true" class="c-accent"></i> 分级处置闭环</h2></div>';
 
       // Two-column layout: internal + external
       html += '<div class="two-col-grid">' +
 
         // Internal management
         '<div class="info-card">' +
-          '<div class="info-card-head"><h3><i data-lucide="user-cog" aria-hidden="true" style="color:var(--accent)"></i> 内部管理 · 街道/村社人员</h3></div>' +
+          '<div class="info-card-head"><h3><i data-lucide="user-cog" aria-hidden="true" class="c-accent"></i> 内部管理 · 街道/村社人员</h3></div>' +
           renderLevels(dInt, 'int') +
         '</div>' +
 
         // External management
         '<div class="info-card">' +
-          '<div class="info-card-head"><h3><i data-lucide="building-2" aria-hidden="true" style="color:var(--orange)"></i> 外部管理 · 经营主体</h3></div>' +
+          '<div class="info-card-head"><h3><i data-lucide="building-2" aria-hidden="true" class="c-orange"></i> 外部管理 · 经营主体</h3></div>' +
           renderLevels(dExt, 'ext') +
         '</div>' +
 
@@ -2239,7 +2239,7 @@
 
       // Systemic improvement section
       html += '<div class="info-card">' +
-        '<div class="info-card-head"><h3><i data-lucide="refresh-cw" aria-hidden="true" style="color:var(--accent)"></i> 系统性改进 · 复盘与优化</h3></div>' +
+        '<div class="info-card-head"><h3><i data-lucide="refresh-cw" aria-hidden="true" class="c-accent"></i> 系统性改进 · 复盘与优化</h3></div>' +
         '<div class="dl-list">';
       if (dSys.length === 0) {
         html += '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无系统性改进建议</div>';
@@ -2279,8 +2279,8 @@
         return 'var(--green-soft)';
       }
 
-      var html = '<div class="section-head" style="margin-bottom:0;margin-top:24px"><h2><i data-lucide="sparkles" aria-hidden="true" style="color:var(--accent)"></i> AI 处置建议</h2><span class="info-card-badge" style="background:var(--accent);color:#fff">' + recs.length + ' 条待确认</span></div>';
-      html += '<div class="info-card"><div class="info-card-head"><h3><i data-lucide="bot" aria-hidden="true" style="color:var(--accent)"></i> 基于异常诊断自动生成</h3><button class="dl-item-action" onclick="regenerateDisposalRecs()" style="padding:4px 10px;font-size:11px"><i data-lucide="refresh-cw" width="12" height="12"></i> 重新生成</button></div>';
+      var html = '<div class="section-head" style="margin-bottom:0;margin-top:24px"><h2><i data-lucide="sparkles" aria-hidden="true" class="c-accent"></i> AI 处置建议</h2><span class="info-card-badge" style="background:var(--accent);color:#fff">' + recs.length + ' 条待确认</span></div>';
+      html += '<div class="info-card"><div class="info-card-head"><h3><i data-lucide="bot" aria-hidden="true" class="c-accent"></i> 基于异常诊断自动生成</h3><button class="dl-item-action" onclick="regenerateDisposalRecs()" style="padding:4px 10px;font-size:11px"><i data-lucide="refresh-cw" width="12" height="12"></i> 重新生成</button></div>';
 
       for (var ri = 0; ri < recs.length; ri++) {
         var r = recs[ri];
@@ -2299,11 +2299,11 @@
           '<div class="dr-card-body">' +
             '<div class="dr-body-row">' +
               '<span class="dr-label">建议级别</span>' +
-              '<span class="dr-level-badge" style="background:' + levelBg + ';color:' + levelColor + '"><i data-lucide="' + getLevelDot(r.suggestedLevel) + '" width="11" height="11" style="vertical-align:middle;margin-right:3px"></i>' + r.suggestedLevelLabel + '</span>' +
+              '<span class="dr-level-badge" style="background:' + levelBg + ';color:' + levelColor + '"><i data-lucide="' + getLevelDot(r.suggestedLevel) + '" width="11" height="11" class="v-middle"></i>' + r.suggestedLevelLabel + '</span>' +
             '</div>' +
             '<div class="dr-body-row">' +
               '<span class="dr-label">推荐动作</span>' +
-              '<span class="dr-action-badge"><i data-lucide="' + actionIcon + '" width="11" height="11" style="vertical-align:middle;margin-right:3px"></i>' + r.suggestedActionLabel + '</span>' +
+              '<span class="dr-action-badge"><i data-lucide="' + actionIcon + '" width="11" height="11" class="v-middle"></i>' + r.suggestedActionLabel + '</span>' +
             '</div>' +
             '<div class="dr-body-row">' +
               '<span class="dr-label">推荐理由</span>' +
@@ -2337,15 +2337,15 @@
           'composite': { level: 'external-4', label: '外部第 4 级 · 联合多部门执法', action: 'inspect' },
           'metric': { level: 'internal-3', label: '内部第 3 级 · 一键提醒履职', action: 'remind' },
         };
-        html += '<div class="dr-rule-section"><div class="dr-rule-head"><i data-lucide="settings-2" width="15" height="15" style="color:var(--orange)"></i> 规则引擎触发 · ' + dangerRules.length + ' 条危险规则匹配</div>';
+        html += '<div class="dr-rule-section"><div class="dr-rule-head"><i data-lucide="settings-2" width="15" height="15" class="c-orange"></i> 规则引擎触发 · ' + dangerRules.length + ' 条危险规则匹配</div>';
         for (var dri = 0; dri < dangerRules.length; dri++) {
           var dr = dangerRules[dri];
           var ruleName = dr.rule.name || dr.rule.dimension || '未知规则';
           var ruleDim = dr.rule.dimension || '';
           var levelMap = ruleDimToLevel[ruleDim] || { level: 'internal-3', label: '内部第 3 级 · 一键提醒履职', action: 'remind' };
-          var lvlHtml = '<span class="dr-level-badge" style="background:var(--red-soft);color:var(--red)"><i data-lucide="alert-triangle" width="11" height="11" style="vertical-align:middle;margin-right:3px"></i>' + levelMap.label + '</span>';
+          var lvlHtml = '<span class="dr-level-badge" style="background:var(--red-soft);color:var(--red)"><i data-lucide="alert-triangle" width="11" height="11" class="v-middle"></i>' + levelMap.label + '</span>';
           html += '<div class="dr-rule-item">' +
-            '<div class="dr-rule-item-left"><i data-lucide="zap" width="14" height="14" style="color:var(--red)"></i></div>' +
+            '<div class="dr-rule-item-left"><i data-lucide="zap" width="14" height="14" class="c-red"></i></div>' +
             '<div class="dr-rule-item-body">' +
               '<div class="dr-rule-item-name">' + ruleName + '</div>' +
               '<div class="dr-rule-item-detail">' + (dr.detail || '') + '</div>' +
@@ -2467,7 +2467,7 @@
       // 使用动态跟踪数据而非静态 FOLLOWUPS
       var tracks = TrackStore.getActive();
       var stats = TrackStore.stats();
-      var html = '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="list-checks" aria-hidden="true" style="color:var(--accent)"></i> 重点跟进</h2></div>' +
+      var html = '<div class="section-head" style="margin-bottom:0"><h2><i data-lucide="list-checks" aria-hidden="true" class="c-accent"></i> 重点跟进</h2></div>' +
 
         // ── 跟踪统计概览 ──────────────────────────────
         '<div style="display:flex;gap:8px;margin-bottom:12px">' +
@@ -2512,15 +2512,15 @@
 
             // 元信息
             '<div style="font-size:11px;color:var(--muted);line-height:1.5">' +
-              '<span style="color:var(--weak)">跟踪天数：</span>' + (fu.daysTracked || 0) + ' 天' +
-              (fu.responsibility ? ' · <span style="color:var(--weak)">责任：</span>' + escapeHtml(fu.responsibility) : '') +
-              (fu.deadline ? ' · <span style="color:var(--weak)">截止：</span>' + escapeHtml(fu.deadline) : '') +
+              '<span class="c-weak">跟踪天数：</span>' + (fu.daysTracked || 0) + ' 天' +
+              (fu.responsibility ? ' · <span class="c-weak">责任：</span>' + escapeHtml(fu.responsibility) : '') +
+              (fu.deadline ? ' · <span class="c-weak">截止：</span>' + escapeHtml(fu.deadline) : '') +
             '</div>' +
 
             // 最新进展
             (fu.updates && fu.updates.length > 0 ?
               '<div style="font-size:11px;color:var(--muted);line-height:1.5;background:var(--bg);padding:6px 8px;border-radius:4px">' +
-                '<span style="color:var(--weak)">最新：</span>' + escapeHtml(fu.updates[fu.updates.length - 1].text) +
+                '<span class="c-weak">最新：</span>' + escapeHtml(fu.updates[fu.updates.length - 1].text) +
               '</div>'
             : '') +
 
@@ -2530,7 +2530,7 @@
                 (fu.updates.slice(-2).map(function(u) {
                   var d = new Date(u.at);
                   return '<div style="display:flex;gap:4px">' +
-                    '<span style="color:var(--muted)">' + (d.getMonth()+1) + '/' + d.getDate() + '</span>' +
+                    '<span class="c-muted">' + (d.getMonth()+1) + '/' + d.getDate() + '</span>' +
                     '<span>' + escapeHtml(u.text) + '</span></div>';
                 }).join('')) +
               '</div>'
@@ -2637,7 +2637,7 @@
 
       // ─── 页面头 ──────────────────────────────────────────────
       html += '<div class="section-head" style="margin-bottom:12px">' +
-        '<h2><i data-lucide="clipboard-check" aria-hidden="true" style="color:var(--accent)"></i> 待确认行动</h2>' +
+        '<h2><i data-lucide="clipboard-check" aria-hidden="true" class="c-accent"></i> 待确认行动</h2>' +
         '<span class="info-card-badge" style="background:var(--orange);color:#fff">' + pendingPas.length + ' 项待确认</span>' +
       '</div>';
 
@@ -2873,7 +2873,7 @@
 
       // ─── 页面头 ──────────────────────────────────────────────
       html += '<div class="section-head" style="margin-bottom:12px">' +
-        '<h2><i data-lucide="alert-circle" aria-hidden="true" style="color:var(--accent)"></i> 督办跟踪</h2>' +
+        '<h2><i data-lucide="alert-circle" aria-hidden="true" class="c-accent"></i> 督办跟踪</h2>' +
         '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + totalCount + ' 个督办包</span>' +
       '</div>';
 
@@ -3086,7 +3086,7 @@
 
       var html = '<div style="padding:14px 12px">' +
         '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px">' +
-          '<i data-lucide="calendar" width="14" height="14" style="color:var(--accent)"></i> 历史月报' +
+          '<i data-lucide="calendar" width="14" height="14" class="c-accent"></i> 历史月报' +
         '</div>';
       for (var hi = 0; hi < MR_HISTORY.length; hi++) {
         var h = MR_HISTORY[hi];
@@ -3558,12 +3558,12 @@
       '<div style="font-size:13px;color:#344054;line-height:1.6;margin-bottom:14px;padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px">' + (h.suggestion || '—') + '</div>' +
       // — 基础信息（两列简洁）—
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:3px 16px;margin-bottom:10px">' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">对象</span> <a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue)">' + escapeHtml(h.object) + '</a></div>' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">责任人</span> ' + (h.person || '—') + '</div>' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">发现</span> ' + (h.discoverer || '—') + ' / ' + h.foundDate + '</div>' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">期限</span> ' + h.deadline + '</div>' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">来源</span> ' + h.source + '</div>' +
-        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span style="color:var(--weak)">片区</span> ' + (h.region || '—') + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span class="c-weak">对象</span> <a href="#" onclick="openEnterprisePanel(\'' + h.object.replace(/'/g, "\\'") + '\');return false" style="color:var(--blue);text-decoration:none;border-bottom:1px dashed var(--blue)">' + escapeHtml(h.object) + '</a></div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span class="c-weak">责任人</span> ' + (h.person || '—') + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span class="c-weak">发现</span> ' + (h.discoverer || '—') + ' / ' + h.foundDate + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span class="c-weak">期限</span> ' + h.deadline + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span class="c-weak">来源</span> ' + h.source + '</div>' +
+        '<div style="font-size:11.5px;color:var(--muted);padding:2px 0"><span class="c-weak">片区</span> ' + (h.region || '—') + '</div>' +
       '</div>' +
       // — 依据（可折叠）—
       '<div id="regulationWrap" style="margin-bottom:6px">' +
@@ -3786,10 +3786,10 @@
         '<div class="metric-card ep-tab-card' + (unclosedHaz > 0 ? ' alert-danger' : '') + (activeTab === 'hazards' ? ' mc-active' : '') + '" style="cursor:pointer;position:relative" data-tab="hazards" onclick="epSwitchTab(\'hazards\')">' +
           (unclosedHaz > 0 ? '<span class="mc-alert-badge">' + unclosedHaz + '</span>' : '') +
           '<div class="mc-value">' + data.hazards.length + '</div><div class="mc-label">隐患数</div></div>' +
-        '<div class="metric-card ep-tab-card' + (activeTab === 'expert' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="expert" onclick="epSwitchTab(\'expert\')"><div class="mc-value">' + (data.expertRecords || []).length + '</div><div class="mc-label">专家履职</div></div>' +
-        '<div class="metric-card ep-tab-card' + (activeTab === 'selfinspect' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="selfinspect" onclick="epSwitchTab(\'selfinspect\')"><div class="mc-value">' + (data.selfInspections || []).length + '</div><div class="mc-label">自检自查</div></div>' +
-        '<div class="metric-card ep-tab-card' + (activeTab === 'training' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="training" onclick="epSwitchTab(\'training\')"><div class="mc-value">' + (data.trainingRecords || []).length + '</div><div class="mc-label">教育培训</div></div>' +
-        '<div class="metric-card ep-tab-card' + (activeTab === 'dimensions' ? ' mc-active' : '') + '" style="cursor:pointer" data-tab="dimensions" onclick="epSwitchTab(\'dimensions\')"><div class="mc-value">' + (data.scorePct || '—') + '%</div><div class="mc-label">主体责任</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'expert' ? ' mc-active' : '') + '" class="pointer" data-tab="expert" onclick="epSwitchTab(\'expert\')"><div class="mc-value">' + (data.expertRecords || []).length + '</div><div class="mc-label">专家履职</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'selfinspect' ? ' mc-active' : '') + '" class="pointer" data-tab="selfinspect" onclick="epSwitchTab(\'selfinspect\')"><div class="mc-value">' + (data.selfInspections || []).length + '</div><div class="mc-label">自检自查</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'training' ? ' mc-active' : '') + '" class="pointer" data-tab="training" onclick="epSwitchTab(\'training\')"><div class="mc-value">' + (data.trainingRecords || []).length + '</div><div class="mc-label">教育培训</div></div>' +
+        '<div class="metric-card ep-tab-card' + (activeTab === 'dimensions' ? ' mc-active' : '') + '" class="pointer" data-tab="dimensions" onclick="epSwitchTab(\'dimensions\')"><div class="mc-value">' + (data.scorePct || '—') + '%</div><div class="mc-label">主体责任</div></div>' +
       '</div>';
       return html;
     }
@@ -3805,7 +3805,7 @@
           '<div style="flex:1;min-width:0;line-height:1.4">' +
             '<div style="font-size:12px;color:var(--text);font-weight:500">' + s.type + '</div>' +
             '<div style="font-size:11px;color:var(--muted)">' + (s.detail || '无异常') + '</div></div>' +
-          '<div style="text-align:right;flex-shrink:0">' +
+          '<div class="text-right shrink-0">' +
             '<div style="font-size:11px;color:var(--weak)">' + s.date + '</div>' +
             '<div style="font-size:10.5px;margin-top:2px">' + issueText + '</div></div></div>';
       });
@@ -3816,7 +3816,7 @@
           '<div style="flex:1;min-width:0;line-height:1.4">' +
             '<div style="font-size:12px;color:var(--text);font-weight:500">' + e.expert + ' · ' + e.type + '</div>' +
             '<div style="font-size:11px;color:var(--muted)">' + e.result + '</div></div>' +
-          '<div style="text-align:right;flex-shrink:0">' +
+          '<div class="text-right shrink-0">' +
             '<div style="font-size:11px;color:var(--weak)">' + e.date + '</div>' +
             '<div style="font-size:10px;margin-top:2px;color:var(--weak)">' + e.org + '</div></div></div>';
       });
@@ -3826,7 +3826,7 @@
           '<div style="flex:1;min-width:0;line-height:1.4">' +
             '<div style="font-size:12px;color:var(--text);font-weight:500">' + t.type + ' · ' + t.instructor + '</div>' +
             '<div style="font-size:11px;color:var(--muted)">' + t.detail + '</div></div>' +
-          '<div style="text-align:right;flex-shrink:0">' +
+          '<div class="text-right shrink-0">' +
             '<div style="font-size:11px;color:var(--weak)">' + t.date + '</div>' +
             '<div style="font-size:10.5px;margin-top:2px;color:var(--green)">' + t.attendees + ' 人</div></div></div>';
       });
@@ -3884,7 +3884,7 @@
       var html = '<div style="font-size:13px;font-weight:700;margin-bottom:8px">最近隐患</div>';
       for (var i = 0; i < recent.length; i++) {
         var h = recent[i];
-        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + escapeHtml(h.overdue) + ' 天</span>' : '<span style="color:var(--weak)">—</span>';
+        var overdueLabel = h.overdue > 0 ? '<span style="color:var(--red);font-weight:600">逾期 ' + escapeHtml(h.overdue) + ' 天</span>' : '<span class="c-weak">—</span>';
         html += '<div class="hazard-card" style="cursor:pointer;margin-bottom:8px" onclick="openHazardDetail(\'' + h.object.replace(/'/g, "\\'") + '\',\'' + h.foundDate + '\')">' +
           '<div class="hc-head"><span class="hc-name">' + escapeHtml(h.object) + '</span></div>' +
           '<div class="hc-desc">' + escapeHtml(h.hazard) + '</div>' +
@@ -3988,7 +3988,7 @@
         var it = items[ii];
         var statusCls = it.statusCls || 'neutral';
         var overdueHtml = it.overdue > 0 ? '<span class="drill-item-overdue">逾期 ' + it.overdue + '天</span>' : '';
-        listHtml += '<div class="drill-item" data-line="' + (it.line || '其他') + '" onclick="openHazardDetail(\'' + it.name.replace(/'/g, "\\'") + '\')" title="点击查看详情" style="cursor:pointer">' +
+        listHtml += '<div class="drill-item" data-line="' + (it.line || '其他') + '" onclick="openHazardDetail(\'' + it.name.replace(/'/g, "\\'") + '\')" title="点击查看详情" class="pointer">' +
           '<div class="drill-item-head">' +
             '<span class="drill-item-title">' + it.name + '</span>' +
             (it.line ? '<span class="drill-item-line">' + it.line + '</span>' : '') +
@@ -4278,7 +4278,7 @@
         for (var ri = 0; ri < task.relatedItems.length; ri++) {
           var item = task.relatedItems[ri];
           var hazardName = item.split('·')[0].trim();
-          leftHtml += '<div class="td-related-item" style="cursor:pointer" onclick="closeTaskModal();openHazardDetail(\'' + hazardName.replace(/'/g, "\\'") + '\')">' +
+          leftHtml += '<div class="td-related-item" class="pointer" onclick="closeTaskModal();openHazardDetail(\'' + hazardName.replace(/'/g, "\\'") + '\')">' +
             '<i data-lucide="chevron-right" width="12" height="12"></i>' + item +
           '</div>';
         }
@@ -5196,7 +5196,7 @@
       lucide.createIcons();
       } catch(e) {
         console.error('[YAQ] saveMetricConfig 渲染异常:', e);
-        container.innerHTML = '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" style="color:var(--red)"></i><h3>渲染异常</h3><p>指标配置已保存，但渲染场景时发生错误，请刷新页面。</p></div>';
+        container.innerHTML = '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" class="c-red"></i><h3>渲染异常</h3><p>指标配置已保存，但渲染场景时发生错误，请刷新页面。</p></div>';
       }
       showToast('指标配置已保存');
     }
