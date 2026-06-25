@@ -41,8 +41,6 @@ npm run build:css
 # 4. 复制 HTML 和资源文件
 echo "📄 复制静态资源..."
 npm run build:html
-# 复制 .nojekyll — 防止 GitHub Pages 用 Jekyll 处理站点
-cp .nojekyll dist/ 2>/dev/null || touch dist/.nojekyll
 
 # 5. 输出统计
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
