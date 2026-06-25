@@ -8,8 +8,8 @@
 (function() {
   'use strict';
 
-  // ─── 安全的 localStorage 封装（防隐私模式/配额超限崩溃） ──
-  var ls = {
+  // ─── localStorage 封装：复用 app.js 中已定义的 YAQ.ls ─────
+  var ls = (window.YAQ && window.YAQ.ls) || {
     get: function(key, fallback) {
       try { var v = localStorage.getItem(key); return v !== null ? v : fallback; }
       catch(e) { return fallback !== undefined ? fallback : null; }
