@@ -20,13 +20,6 @@
     }
   };
 
-  // ─── HTML 转义（防止 XSS） ────────────────────────────────────────
-  function escapeHtml(str) {
-    var div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
-    return div.innerHTML;
-  }
-
   var STORAGE_KEY = 'yaq_agent_initialized';
   var userMode = 'default';
   var attentionItems = [

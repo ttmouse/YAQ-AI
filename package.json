@@ -1,0 +1,16 @@
+{
+  "name": "yaq-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "YAQ-AI: 安全监管智能工作台",
+  "scripts": {
+    "build": "bash build.sh",
+    "build:js": "terser js/app.js -o dist/js/app.min.js --compress --mangle --comments false && terser js/agent-init.js -o dist/js/agent-init.min.js --compress --mangle --comments false && terser js/rules.js -o dist/js/rules.min.js --compress --mangle --comments false",
+    "build:css": "cleancss -o dist/css/style.min.css css/style.css && cleancss -o dist/css/agent-init.min.css css/agent-init.css",
+    "build:html": "cp index.html dist/ && cp agent_init_mobile_demo_v2.html dist/ && cp ai-vs-traditional-comparison.html dist/ && cp safety_governance_command_demo_v02.html dist/ && cp special-inspection-prototype.html dist/"
+  },
+  "devDependencies": {
+    "terser": "^5.31.0",
+    "clean-css-cli": "^5.6.3"
+  }
+}

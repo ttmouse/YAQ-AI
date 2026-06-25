@@ -1741,9 +1741,14 @@
         '<div class="pi-actions">' + actionsHtml + '</div></div></div>';
     }
 
-    function getActionIcon(name) {
-      var map = { '督办': 'megaphone', '现场核查': 'search', '会议议题': 'calendar', '跟踪': 'pin', '提醒履职': 'bell' };
-      return map[name] || 'chevron-right';
+    function getActionIcon(key) {
+      var map = {
+        // 中文 action 名称（用于优先处理队列）
+        '督办': 'megaphone', '现场核查': 'search', '会议议题': 'calendar', '跟踪': 'pin', '提醒履职': 'bell',
+        // 英文 action ID（用于处置建议）
+        supervise: 'user-check', inspect: 'search', meeting: 'calendar', remind: 'bell', enforce: 'ban'
+      };
+      return map[key] || 'chevron-right';
     }
 
     function countByLevel(arr, level) {
@@ -2035,10 +2040,6 @@
         if (level === 'external-2' || level === 'internal-4') return 'var(--orange-soft)';
         if (level === 'external-1' || level === 'internal-3') return 'var(--accent-soft)';
         return 'var(--green-soft)';
-      }
-      function getActionIcon(action) {
-        var map = { supervise: 'user-check', inspect: 'search', meeting: 'calendar', remind: 'bell', enforce: 'ban' };
-        return map[action] || 'chevron-right';
       }
 
       var html = '<div class="section-head" style="margin-bottom:0;margin-top:24px"><h2><i data-lucide="sparkles" aria-hidden="true" style="color:var(--accent)"></i> AI 处置建议</h2><span class="info-card-badge" style="background:var(--accent);color:#fff">' + recs.length + ' 条待确认</span></div>';
