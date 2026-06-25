@@ -964,6 +964,7 @@
         case 'disposal': html = renderDisposal(); break;
         case 'followup': html = renderFollowup(); break;
         case 'pending-actions': html = renderPendingActions(); break;
+        case 'supervision-track': html = renderSupervisionTrack(); break;
         default: html = renderDashboard();
       }
       container.innerHTML = html;
@@ -2402,6 +2403,82 @@
       return html;
     }
 
+    // ════════════════════════════════════════════════════════════════
+    // 督办跟踪 — 所有已发起督办的执行情况
+    // ════════════════════════════════════════════════════════════════
+
+    function renderSupervisionTrack() {
+      // 合并所有督办包：已确认的历史包 + 当前发起的包
+      var allPackages = (MOCK.confirmedPackages || []).concat(MOCK.supervisionPackages || []);
+      // 去重
+      var seen = {};
+      var packages = [];
+      for (var pi = 0; pi < allPackages.length; pi++) {
+        var p = allPackages[pi];
+        if (!seen[p.id]) {
+          seen[p.id] = true;
+          packages.push(p);
+        }
+      }
+
+      // 按创建时间倒序
+      packages.sort(function(a, b) { return (b.createdAt || '') > (a.createdAt || '') ? 1 : -1; });
+
+      var totalCount = packages.length;
+      var progressingCount = 0, doneCount = 0, overdueCount = 0, totalItems = 0;
+      for (var pi2 = 0; pi2 < packages.length; pi2++) {
+        var pk = packages[pi2];
+        totalItems += pk.draftItems ? pk.draftItems.length : 0;
+        if (pk.status === '已完成') doneCount++;
+        else if (pk.status === '推进中') progressingCount++;
+        else overdueCount++;
+      }
+
+      var html = '';
+
+      // ─── 页面头 ──────────────────────────────────────────────
+      html += '<div class="section-head" style="margin-bottom:12px">' +
+        '<h2><i data-lucide="alert-circle" aria-hidden="true" style="color:var(--accent)"></i> 督办跟踪</h2>' +
+        '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + totalCount + ' 个督办包</span>' +
+      '</div>';
+
+      // ─── 概览统计 ──────────────────────────────────────────────
+      html += '<div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)">' +
+          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">督办总数</div>' +
+          '<div style="font-size:24px;font-weight:700;color:var(--text)">' + totalCount + '</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--orange);border-radius:12px;background:#fff8f0">' +
+          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">推进中</div>' +
+          '<div style="font-size:24px;font-weight:700;color:#d97706">' + progressingCount + '</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--green);border-radius:12px;background:#f0fdf4">' +
+          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">已完成</div>' +
+          '<div style="font-size:24px;font-weight:700;color:var(--green)">' + doneCount + '</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--red);border-radius:12px;background:#fef2f2">' +
+          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">需升级/逾期</div>' +
+          '<div style="font-size:24px;font-weight:700;color:var(--red)">' + overdueCount + '</div>' +
+        '</div>' +
+        '<div class="st-summary-card" style="flex:1;min-width:120px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)">' +
+          '<div style="font-size:11px;color:var(--weak);margin-bottom:4px">处理项总计</div>' +
+          '<div style="font-size:24px;font-weight:700;color:var(--text)">' + totalItems + '</div>' +
+        '</div>' +
+      '</div>';
+
+      if (packages.length === 0) {
+        html += '<div style="padding:40px 0;text-align:center;color:var(--weak);font-size:13px">暂无已发起的督办包<br>请在「待确认行动」中确认发起督办</div>';
+        return html;
+      }
+
+      // ─── 督办包列表 ──────────────────────────────────────────
+      for (var pi3 = 0; pi3 < packages.length; pi3++) {
+        html += renderConfirmedPackageCard(packages[pi3]);
+      }
+
+      return html;
+    }
+
     var currentDrawerAction = '';
 
     function openDrawer(action) {
@@ -3459,7 +3536,7 @@
 
       // 同步右栏场景提示
       var chatBody = $dom.chatBody;
-      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
+      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动', 'supervision-track': '🔍 督办跟踪' };
 
       _switchTimer = setTimeout(function() {
         _switchTimer = null;
@@ -3618,7 +3695,7 @@
 
     function agentAsk(sceneId) {
       var chatBody = $dom.chatBody;
-      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动' };
+      var sceneNames = { dashboard: '📊 今日监管工作台', 'hazard-report': '⚠ 重大隐患整改日报', efficiency: '📈 履职效能分析', responsibility: '👥 主体责任评估', disposal: '🔁 分级处置闭环', 'pending-actions': '📋 待确认行动', 'supervision-track': '🔍 督办跟踪' };
       var name = sceneNames[sceneId] || sceneId;
 
       // 打开浮动面板
@@ -4211,6 +4288,7 @@
         case 'disposal': html = renderDisposal(); break;
         case 'followup': html = renderFollowup(); break;
         case 'pending-actions': html = renderPendingActions(); break;
+        case 'supervision-track': html = renderSupervisionTrack(); break;
       }
       container.innerHTML = html;
       lucide.createIcons();
@@ -4229,7 +4307,8 @@
           { id: 'hazard-report', name: '重大隐患整改日报', icon: 'shield-alert', desc: '隐患闭环跟踪' },
           { id: 'efficiency', name: '履职效能分析', icon: 'bar-chart-3', desc: '条线绩效评估' },
           { id: 'responsibility', name: '主体责任评估', icon: 'users', desc: '企业风险分级' },
-          { id: 'disposal', name: '分级处置闭环', icon: 'git-branch', desc: '内部/外部处置' }
+          { id: 'disposal', name: '分级处置闭环', icon: 'git-branch', desc: '内部/外部处置' },
+          { id: 'supervision-track', name: '督办跟踪', icon: 'alert-circle', desc: '发起督办的执行情况跟踪' }
         ]
       },
       {
@@ -4606,7 +4685,8 @@
       'responsibility': '主体责任',
       'disposal': '分级处置',
       'followup': '重点跟进',
-      'pending-actions': '待确认行动'
+      'pending-actions': '待确认行动',
+      'supervision-track': '督办跟踪'
     };
 
     function switchTab(sceneId) {
