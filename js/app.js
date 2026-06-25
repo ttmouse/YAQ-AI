@@ -1,5 +1,9 @@
   (function() {
     'use strict';
+
+    // ─── 存储版本号 ────────────────────────────────────────────
+    var STORAGE_VERSION = 4;
+
     // ════════════════════════════════════════════════════════════════
     // DOM CACHE — 缓存常用 DOM 引用，避免重复查询
     // ════════════════════════════════════════════════════════════════
@@ -1262,7 +1266,6 @@
       }
 
       // 检测存储版本，不匹配则重置（指标结构变了）
-      var STORAGE_VERSION = 4;
       if (localStorage.getItem('yaq_metric_ver') != STORAGE_VERSION) {
         localStorage.removeItem('yaq_metric_prefs');
         localStorage.removeItem('yaq_metric_order');
@@ -1817,10 +1820,10 @@
             if (s.risk === 'high') highRisk++;
             if (s.drill === '0 次' || s.drill === 0) noDrill++;
           }
-          var selfCheckRate = Math.round((total - noSelfCheck) / total * 100);
-          var trainingRate = Math.round((total - trainingLow) / total * 100);
+          var selfCheckRate = total > 0 ? Math.round((total - noSelfCheck) / total * 100) : 0;
+          var trainingRate = total > 0 ? Math.round((total - trainingLow) / total * 100) : 0;
           var drillOk = total - noDrill;
-          var drillRate = Math.round(drillOk / total * 100);
+          var drillRate = total > 0 ? Math.round(drillOk / total * 100) : 0;
           var gapSorted = [];
           for (var si = 0; si < total; si++) {
             var s = subs[si];
@@ -3258,6 +3261,7 @@
       var siRate = si.length > 0 ? Math.round(si.filter(function(x) { return x.statusCls === 'done' || x.status === '无异常'; }).length / si.length * 100) : 0;
       var totalHaz = allHaz.length;
       var closedHaz = allHaz.filter(function(x) { return x.statusCls === 'done'; }).length;
+      var closedRate = totalHaz > 0 ? Math.round(closedHaz / totalHaz * 100) : 0;
 
       var summary = '';
       if (overdue) {
@@ -3269,13 +3273,13 @@
       var enterpriseWeak = siRate < 60;
       var repeatIssue = prevSame.length > 0;
       if (enterpriseWeak || repeatIssue) {
-        summary += '企业自检执行率仅 ' + siRate + '%，隐患闭环率 ' + Math.round(closedHaz / totalHaz * 100) + '%，主体责任落实不到位。';
+        summary += '企业自检执行率仅 ' + siRate + '%，隐患闭环率 ' + closedRate + '%，主体责任落实不到位。';
       }
       if (repeatIssue) {
         summary += '同类隐患反复出现 ' + prevSame.length + ' 次，需深挖根因。';
       }
       if (!enterpriseWeak && !repeatIssue && !overdue) {
-        summary = '该企业自检执行率 ' + siRate + '%，隐患闭环率 ' + Math.round(closedHaz / totalHaz * 100) + '%，整体履职基本到位。详情可查看右侧企业侧边栏。';
+        summary = '该企业自检执行率 ' + siRate + '%，隐患闭环率 ' + closedRate + '%，整体履职基本到位。详情可查看右侧企业侧边栏。';
       }
 
       summary += ' 点击上方企业名称查看完整评估报告。';
@@ -4718,31 +4722,8 @@
         }
       }
 
-      var text = parts.join('\n\n');
-      if (!text) return;
-      fallbackCopy(text);
     }
 
-    function fallbackCopy(text) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      ta.style.pointerEvents = 'none';
-      ta.style.left = '0';
-      ta.style.top = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      try {
-        var ok = document.execCommand('copy');
-        if (ok) showToast('已复制到剪贴板');
-        else showToast('按 Ctrl+C 复制');
-      } catch(e) {
-        showToast('按 Ctrl+C 复制');
-      }
-      document.body.removeChild(ta);
-    }
 
     function toggleMiniCard(el) {
       el.classList.toggle('mc-active');

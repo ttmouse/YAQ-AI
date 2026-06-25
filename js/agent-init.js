@@ -5,6 +5,13 @@
 (function() {
   'use strict';
 
+  // ─── HTML 转义（防止 XSS） ────────────────────────────────────────
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
   var STORAGE_KEY = 'yaq_agent_initialized';
   var userMode = 'default';
   var attentionItems = [
@@ -60,10 +67,10 @@
     return '<div class="c-row agent"><div class="agent-text">' + html + '</div></div>';
   }
   function userMsg(text) {
-    return '<div class="c-row user"><div class="c-bubble user">' + text + '</div></div>';
+    return '<div class="c-row user"><div class="c-bubble user">' + escapeHtml(text) + '</div></div>';
   }
   function voiceMsg(text) {
-    return '<div class="c-row user"><div class="c-bubble user voice"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-4"/><path d="M7 16V8"/><path d="M11 18V6"/><path d="M15 16V8"/><path d="M19 14v-4"/></svg><span>' + text + '</span></div></div>';
+    return '<div class="c-row user"><div class="c-bubble user voice"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-4"/><path d="M7 16V8"/><path d="M11 18V6"/><path d="M15 16V8"/><path d="M19 14v-4"/></svg><span>' + escapeHtml(text) + '</span></div></div>';
   }
   function thinkingDots(text) {
     var t = text || '正在处理';
@@ -226,7 +233,7 @@
     showActions([]);
     chatAppend(userMsg('好的，继续'));
     setTimeout(function() {
-      typeText('根据你的岗位，我已整理以下日常关注方向，请确认。<strong>你也可以告诉我还有哪些想关注的维度</strong>——比如：帮我盯着消防通道堵塞。', function() {
+      typeText('根据你的岗位，我已整理以下日常关注方向，请确认。<br><br><strong>💡 你也可以告诉我还有哪些想关注的维度</strong>——比如：帮我盯着消防通道堵塞。', function() {
         renderPrefCards();
       });
     }, 350);
