@@ -30,11 +30,13 @@ npm run build:js
 echo "🎨 压缩 CSS..."
 npm run build:css
 
-# 合并 CSS（减少生产环境 HTTP 请求数）(#88)
-echo "📦 合并 CSS..."
-# 排除 mobile.css（响应式单独加载），其余全部合并为 app.css
-cat dist/css/style.css dist/css/agent-init.css dist/css/tokens.css dist/css/base.css dist/css/layout.css dist/css/blocks.css dist/css/detail.css dist/css/modal.css dist/css/work-items.css dist/css/assistant.css dist/css/utilities.css > dist/css/app.css 2>/dev/null
-echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（11 个文件合并）"
+# 合并 CSS — 先合并源文件再压缩，跨文件重复规则被去重 (#91 #92)
+echo "📦 合并 CSS（源文件合并→单次压缩，跨文件去重）..."
+# 排除 mobile.css（响应式单独加载），其余合并为 app.css
+cat css/style.css css/agent-init.css css/tokens.css css/base.css css/layout.css css/blocks.css css/detail.css css/modal.css css/work-items.css css/assistant.css css/utilities.css > /tmp/app-merged.css 2>/dev/null
+npx cleancss -o dist/css/app.css /tmp/app-merged.css 2>/dev/null
+rm -f /tmp/app-merged.css
+echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（11 个源文件合并+去重压缩）"
 
 # 4. 复制 HTML 和资源文件
 echo "📄 复制静态资源..."
