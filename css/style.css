@@ -156,6 +156,11 @@
     /* ─── Toast ───────────────────────────────────────────────────── */
     .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;border-radius:999px;padding:12px 16px;font-size:13px;display:none;z-index:999;box-shadow:0 12px 30px rgba(0,0,0,.2)}
     .toast.show{display:block}
+    .toast.mock{background:#92400e}
+
+    /* 🧪 演示标识 */
+    .demo-badge{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:600;background:var(--yellow);color:#000;vertical-align:middle;margin-left:6px;white-space:nowrap}
+    .demo-notice{position:fixed;left:0;right:0;bottom:0;z-index:9998;text-align:center;padding:4px 12px;font-size:11px;background:var(--yellow);color:#000;opacity:.85;backdrop-filter:blur(4px)}
 
     /* ════════════════════════════════════════════════════════════
        Compat: 场景渲染组件（旧 -> 新视觉）

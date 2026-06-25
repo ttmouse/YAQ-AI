@@ -1581,7 +1581,7 @@
     function openSuperviseDrawer() {
       var items = generateGlobalSupervisionItems();
       if (items.length === 0) {
-        showToast('当前无待督办事项');
+        showToast('当前无待督办事项', 'mock');
         return;
       }
 
@@ -2052,7 +2052,7 @@
 
     // ─── AI 处置建议：重新生成（模拟） ──────────────────────
     window.regenerateDisposalRecs = function() {
-      showToast('AI 正在基于最新异常数据重新分析…');
+      showToast('AI 正在基于最新异常数据重新分析…', 'mock');
       setTimeout(function() {
         // 重新渲染处置场景
         var container = $dom.sceneContent;
@@ -2060,7 +2060,7 @@
           container.innerHTML = renderDisposal();
           lucide.createIcons();
         }
-        showToast('处置建议已更新（模拟）');
+        showToast('处置建议已更新（模拟）', 'mock');
       }, 800);
     };
 
@@ -2581,7 +2581,7 @@
         }
       }
       if (scheduleEl) localStorage.setItem('yaq_agent_cron_' + sceneId, scheduleEl.value);
-      showToast('Agent 配置已保存');
+      showToast('Agent 配置已保存', 'mock');
       closeDrawer();
     }
 
@@ -2598,9 +2598,10 @@
     // TOAST
     // ════════════════════════════════════════════════════════════════
 
-    function showToast(msg) {
+    function showToast(msg, type) {
       var el = $dom.toast;
-      el.textContent = msg;
+      el.textContent = type === 'mock' ? '🧪 [演示] ' + msg : msg;
+      el.className = 'toast' + (type === 'mock' ? ' mock' : '');
       el.classList.add('show');
       setTimeout(function() { el.classList.remove('show'); }, 2500);
     }
@@ -4927,5 +4928,11 @@
     // Render default scene
     renderScene('dashboard');
     bindInteractions();
+
+    // 添加演示版本提示条
+    var demoNotice = document.createElement('div');
+    demoNotice.className = 'demo-notice';
+    demoNotice.textContent = '🧪 演示版本 — 当前使用模拟数据，所有操作均为功能预览，不涉及真实数据变更';
+    document.body.appendChild(demoNotice);
 
   })();
