@@ -5980,9 +5980,6 @@
     // 渲染左栏场景列表
     // ════════════════════════════════════════════════════════════════
 
-    function renderSceneList() {
-      // 侧边导航已移除，无需渲染
-    }
 
     // ════════════════════════════════════════════════════════════════
     // TAB 管理
@@ -6076,7 +6073,6 @@
       switchTab: switchTab,
       closeTab: closeTab,
       renderScene: renderScene,
-      renderSceneList: renderSceneList,
 
       // ─── UI 工具 ───
       showToast: showToast,
@@ -6505,7 +6501,6 @@
 
 
     // 渲染左栏场景列表
-    renderSceneList();
 
     // Render default scene
     renderScene('dashboard');
