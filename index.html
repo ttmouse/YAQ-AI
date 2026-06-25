@@ -10,6 +10,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>站长每日监管闭环工作台</title>
   <script src="https://unpkg.com/lucide@1.21.0/dist/umd/lucide.min.js"></script>
+  <script>
+  // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
+  // 避免每次 lucide.createIcons() 全量扫描整个 DOM。
+  // - 首次调用: 全量扫描（初始化所有静态 HTML 图标：sidebar、topbar、modal 等）
+  // - 后续调用: 有显式容器时限定到该容器，否则自动限定到 .workspace
+  (function() {
+    if (typeof lucide === 'undefined' || !lucide.createIcons) return;
+    var orig = lucide.createIcons;
+    var _fullScanDone = false;
+    lucide.createIcons = function(options) {
+      // ── 第 1 次: 全量扫描（初始化所有静态 HTML 图标） ──────
+      if (!_fullScanDone) {
+        _fullScanDone = true;
+        orig.call(this);  // 全量扫描确保 sidebar/topbar/modal 静态图标被渲染
+        // 若调用方指定了容器，再补一次限定扫描
+        if (options) {
+          if (options.nodeType === 1) return orig.call(this, options);
+          if (options.container && options.container.nodeType === 1) return orig.call(this, options);
+        }
+        return;
+      }
+      // ── 后续调用: 尽可能限定到容器 ─────────────────────────
+      if (options) {
+        if (options.nodeType === 1) return orig.call(this, options);
+        if (options.container && options.container.nodeType === 1) return orig.call(this, options);
+      }
+      var container = document.querySelector('.workspace') || document.querySelector('.scene-content') || document.getElementById('sceneContent');
+      if (container) return orig.call(this, { container: container });
+      return orig.call(this);
+    };
+  })();
+  </script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/agent-init.css">
   <!-- ═══ 新设计系统 — JS 渲染引擎依赖的 CSS 模块 ══════════════════ -->

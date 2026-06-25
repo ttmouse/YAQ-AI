@@ -120,7 +120,7 @@
 
     function typeToken() {
       if (ti >= tokens.length) {
-        lucide.createIcons();
+        lucide.createIcons({ container: document.getElementById("initOverlay") });
         if (callback) callback();
         return;
       }
@@ -208,7 +208,7 @@
         showActions([
           { label: '准备好了', click: 'YAQ.doWelcomeNext()', primary: true }
         ]);
-        lucide.createIcons();
+        lucide.createIcons({ container: document.getElementById("initOverlay") });
       });
     }, 600);
   }
@@ -230,7 +230,7 @@
         showActions([
           { label: '好的，继续', click: 'YAQ.doContinueAbility()', primary: true }
         ]);
-        lucide.createIcons();
+        lucide.createIcons({ container: document.getElementById("initOverlay") });
       });
     }, 350);
   }
@@ -288,7 +288,7 @@
     adjustChatPadding();
     var inp = document.getElementById('initChatInput');
     if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
-    lucide.createIcons();
+    lucide.createIcons({ container: document.getElementById("initOverlay") });
   }
 
   /** 根据浮动卡片高度调整聊天区域底部 padding */
@@ -378,7 +378,7 @@
       var ct = document.querySelector('.init-container');
       if (ct) ct.scrollTop = ct.scrollHeight;
     }
-    lucide.createIcons();
+    lucide.createIcons({ container: document.getElementById("initOverlay") });
   }
 
 
@@ -398,7 +398,7 @@
               showActions([
                 { label: '进入工作台', click: 'YAQ.doEnter()', primary: true }
               ]);
-              lucide.createIcons();
+              lucide.createIcons({ container: document.getElementById("initOverlay") });
             }, 500);
           }, 500);
         }, 400);
@@ -415,7 +415,7 @@
           '<div class="gen-task-status">已开启</div>' +
         '</div>'
       );
-      lucide.createIcons();
+      lucide.createIcons({ container: document.getElementById("initOverlay") });
       i++;
       setTimeout(nextTask, 350);
     }
@@ -470,7 +470,7 @@
           showActions([
             { label: '继续设置提醒边界', click: 'YAQ.doContinue("boundary")', primary: true }
           ]);
-          lucide.createIcons();
+          lucide.createIcons({ container: document.getElementById("initOverlay") });
         });
       }, 350);
     } else if (phase === 'boundary') {
@@ -495,7 +495,7 @@
           showActions([
             { label: '生成管理心跳计划', click: 'YAQ.doGenerate()', primary: true, large: true }
           ]);
-          lucide.createIcons();
+          lucide.createIcons({ container: document.getElementById("initOverlay") });
         });
       }, 350);
     }
@@ -585,7 +585,7 @@
     showActions([
       { label: '进入工作台', click: 'YAQ.doEnter()', primary: true, large: true }
     ]);
-    lucide.createIcons();
+    lucide.createIcons({ container: document.getElementById("initOverlay") });
     window._initUserMode = userMode;
   }
 
@@ -651,7 +651,7 @@
         doneMsg.style.cssText = 'padding:8px 0 4px;font-size:13px;font-weight:600;color:#16a34a;display:flex;align-items:center;gap:6px';
         doneMsg.innerHTML = '<i data-lucide="check-circle" width="16" height="16" style="color:#16a34a"></i> 首次诊断完成，报告已生成。';
         sc.appendChild(doneMsg);
-        lucide.createIcons();
+        lucide.createIcons({ container: document.getElementById("initOverlay") });
         var container = document.querySelector('.init-container') || document.querySelector('.center');
         if (container) container.scrollTop = container.scrollHeight;
         // 保存所有文案（欢迎语 + 诊断完成消息），渲染 dashboard 后重新插入顶部
@@ -668,7 +668,7 @@
               headerWrap.style.cssText = 'margin-bottom:16px';
               headerWrap.innerHTML = savedHeader.join('');
               sc.insertBefore(headerWrap, sc.firstChild);
-              lucide.createIcons();
+              lucide.createIcons({ container: document.getElementById("initOverlay") });
             }
           }
         }, 600);
@@ -676,7 +676,7 @@
       }
       var step = thinkSteps[idx];
       statusLine.innerHTML = '<i data-lucide="' + step.icon + '" width="14" height="14" style="flex-shrink:0"></i> ' + step.text;
-      lucide.createIcons();
+      lucide.createIcons({ container: document.getElementById("initOverlay") });
       var ct = document.querySelector('.center') || document.querySelector('.init-container');
       if (ct) ct.scrollTop = ct.scrollHeight;
       idx++;
@@ -718,7 +718,7 @@
           }
         }
         typeText('好的，已加上。', function() {
-          lucide.createIcons();
+          lucide.createIcons({ container: document.getElementById("initOverlay") });
         });
       }, 500);
     }, 600);
@@ -770,19 +770,19 @@
             { label: '调整关注重点', click: 'YAQ.doContinue("attention")', primary: true },
             { label: '直接生成方案', click: 'YAQ.doQuickFinish()' }
           ]);
-          lucide.createIcons();
+          lucide.createIcons({ container: document.getElementById("initOverlay") });
         });
       }, 350);
     } else if (mode === 'what') {
       setTimeout(function() {
         typeResponse('正在整理能力清单…', '在日常监管中，我可以：<br><br>• <strong>盯</strong> — 重大隐患、重点主体、专项进度、团队履职<br>• <strong>判</strong> — 区分正常波动、待确认和重大风险<br>• <strong>整</strong> — 态势简报、隐患日报、会议材料、月报草稿<br>• <strong>推</strong> — 督办提议、会议议题、现场核查<br>• <strong>醒</strong> — 只在需要你关注时推送<br><br>你现在最想让我先盯什么？', function() {
-          lucide.createIcons();
+          lucide.createIcons({ container: document.getElementById("initOverlay") });
         });
       }, 350);
     } else {
       setTimeout(function() {
         typeResponse('正在同步你的偏好…', '好的，已记录。有什么需要调整的随时告诉我。', function() {
-          lucide.createIcons();
+          lucide.createIcons({ container: document.getElementById("initOverlay") });
         });
       }, 350);
     }
@@ -820,7 +820,7 @@
           if (periodEl) periodEl.textContent = '每月 28 日';
           // 回复
           typeText('好的，已调整。月报改为每月 28 日生成。', function() {
-            lucide.createIcons();
+            lucide.createIcons({ container: document.getElementById("initOverlay") });
           });
         }, 600);
         return;
@@ -854,7 +854,7 @@
     bar.className = 'agent-disabled-bar';
     bar.innerHTML = '<i data-lucide="alert-triangle" width="16" height="16"></i><span>应擎总控尚未启用，当前仅展示基础工作台。</span><button class="adb-btn" onclick="YAQ.reEnable()">启用主控 Agent</button>';
     ws.insertBefore(bar, ws.firstChild);
-    lucide.createIcons();
+    lucide.createIcons({ container: ws });
   }
   function reEnable() {
     var bar = document.getElementById('disabledBar');

@@ -1954,7 +1954,7 @@
       }
 
       $dom.drawerBody.innerHTML = bodyHtml;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.drawerBody });
       $dom.drawerPanel.classList.add('open');
       $dom.drawerOverlay.classList.add('open');
     }
@@ -3351,7 +3351,7 @@
         if (i < content.sections.length - 1) bodyHtml += '<div class="drawer-divider"></div>';
       }
       $dom.drawerBody.innerHTML = bodyHtml;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.drawerBody });
 
       $dom.drawerPanel.classList.add('open');
       $dom.drawerOverlay.classList.add('open');
@@ -3447,7 +3447,7 @@
         '<button class="agent-config-save" onclick="saveAgentPrompt(\'' + sceneId + '\')"><i data-lucide="check" width="14" height="14"></i> 保存配置</button>';
 
       $dom.drawerBody.innerHTML = bodyHtml;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.drawerBody });
 
       // 预览 cron 变化
       var selectEl = $dom.agentScheduleSelect;
@@ -3742,7 +3742,7 @@
       $dom.epTabContent.innerHTML = epRenderTab(data, 'hazards');
       $dom.epPanel.classList.add('open');
       window.__epData = data;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.epTabContent });
     }
 
     function closeEnterprisePanel() {
@@ -3759,7 +3759,7 @@
       // 更新内容区
       $dom.epTabContent.innerHTML = epRenderTab(data, tab);
       window.__epActiveTab = tab;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.epTabContent });
     }
 
     function epRenderFixedTop(data) {
@@ -4065,7 +4065,7 @@
         };
       }
 
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.drillBody });
 
       $dom.drillFloat.classList.add('open');
       $dom.drillOverlay.classList.add('open');
@@ -4103,7 +4103,7 @@
       setTimeout(function() {
         conv.innerHTML += '<div class="dmsg agent"><div class="dmsg-bubble">' + answer + '</div></div>';
         conv.scrollTop = conv.scrollHeight;
-        lucide.createIcons();
+        lucide.createIcons({ container: conv });
       }, 600);
     }
 
@@ -4339,7 +4339,7 @@
 
       $dom.taskModalRight.innerHTML = rightHtml;
 
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.taskModalRight });
       $dom.taskModalOverlay.style.display = 'block';
       $dom.taskModal.style.display = 'flex';
     }
@@ -4491,7 +4491,7 @@
           '</div>';
           $dom.drawerBody.innerHTML = resultHtml;
           $dom.drawerCancel.style.display = 'none';
-          lucide.createIcons();
+          lucide.createIcons({ container: $dom.drawerBody });
           showToast('✅ 已发起 ' + count + ' 条督办，通知已发送');
           return;
         }
@@ -4519,7 +4519,7 @@
         '</div>';
         $dom.drawerBody.innerHTML = resultHtml;
         $dom.drawerCancel.style.display = 'none';
-        lucide.createIcons();
+        lucide.createIcons({ container: $dom.drawerBody });
 
         // 保存生成的文案供复制
         window.__lastGeneratedText = generated;
@@ -4751,7 +4751,7 @@
       $dom.metricModalOverlay.style.display = 'block';
       $dom.metricModal.style.display = 'flex';
       renderMetricCheckboxes();
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.metricModal });
     }
 
     function closeMetricConfig() {
@@ -4885,7 +4885,7 @@
         '</div>';
       }
       $dom.selectedMetricsList.innerHTML = html;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.selectedMetricsList });
     }
 
     // ─── 拖拽排序 ─────────────────────────────────────────────────
@@ -5055,7 +5055,7 @@
       if (!html) return;
       tip.innerHTML = html;
       tip.classList.add('show');
-      lucide.createIcons();
+      lucide.createIcons({ container: tip });
 
       // 鼠标进入浮层 → 取消隐藏
       tip.onmouseenter = function() {
@@ -5697,7 +5697,7 @@
           html = '<div class="launcher-empty">未找到 "<strong>' + $_escapeHtml(query) + '</strong>" 相关的结果</div>';
         }
         $dom.launcherBody.innerHTML = html;
-        lucide.createIcons();
+        lucide.createIcons({ container: $dom.launcherBody });
         return;
       }
 
@@ -5771,7 +5771,7 @@
       }
 
       $dom.launcherBody.innerHTML = html;
-      lucide.createIcons();
+      lucide.createIcons({ container: $dom.launcherBody });
     }
 
     // 渲染搜索结果项（带类型图标、高亮、摘要）

@@ -767,7 +767,7 @@
     container.id = 'rulesDetailContainer';
     container.innerHTML = html;
     document.body.appendChild(container);
-    lucide.createIcons();
+    lucide.createIcons({ container: container });
   }
 
   function closeRuleDetail() {
