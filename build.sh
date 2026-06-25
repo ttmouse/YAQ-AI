@@ -39,9 +39,7 @@ echo "   agent-init.css $(wc -c < css/agent-init.css | tr -d ' ')B → $(wc -c <
 # 5. 复制 HTML 文件
 echo "📄 复制 HTML..."
 cp index.html dist/
-cp agent_init_mobile_demo_v2.html dist/ 2>/dev/null || true
 cp ai-vs-traditional-comparison.html dist/ 2>/dev/null || true
-cp safety_governance_command_demo_v02.html dist/ 2>/dev/null || true
 cp special-inspection-prototype.html dist/ 2>/dev/null || true
 
 # 6. 输出统计
