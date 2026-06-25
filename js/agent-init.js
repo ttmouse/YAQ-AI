@@ -13,8 +13,8 @@
     { id:'a3', title:'专项行动是否滞后',             desc:'日常任务、专项任务是否时间过半、任务过半', on:true },
     { id:'a4', title:'重点主体对象是否异常',         desc:'重点企业/场所风险上升、整改反复、异常', on:true },
     { id:'a5', title:'团队履职是否异常',             desc:'应消站、区域站、村社、专家履职情况', on:true },
-    { id:'a6', title:'是否需要准备会议材料',         desc:'会议前自动整理重大隐患、专项滞后、待确认事项', on:true },
-    { id:'a7', title:'是否需要生成月度监管报告草稿', desc:'月末整理日常监管、履职、主体责任和辖区安全形势', on:true }
+    { id:'a6', title:'是否需要准备会议材料',         desc:'会议前自动整理重大隐患、专项滞后、待确认事项', on:false },
+    { id:'a7', title:'是否需要生成月度监管报告草稿', desc:'月末整理日常监管、履职、主体责任和辖区安全形势', on:false }
   ];
   var agents = [
     { id:'g1', name:'每日态势 Agent',     schedule:'每天 08:30', output:'今日安全态势简报',          push:'有异常进入总控动态', on:true },
@@ -27,11 +27,12 @@
     { id:'g8', name:'系统性复盘 Agent',   schedule:'异常反复时触发', output:'复盘建议',             push:'进入建议复盘', on:true }
   ];
   var PREF_OPTIONS = [
-    { id:'default',          icon:'layout-dashboard', label:'直接启用默认方案',            sub:'所有关注项和子 Agent 按默认方案启用' },
-    { id:'major_hazard',     icon:'shield-alert',     label:'重大隐患闭环',                sub:'重点盯超期、临时管控、整改方案' },
-    { id:'special_task',     icon:'target',           label:'专项行动进度',                sub:'重点盯任务是否进度滞后、责任条线是否掉队' },
-    { id:'meeting_material', icon:'calendar',         label:'会议材料准备',                sub:'重点增强会议材料自动整理能力' },
-    { id:'low_interrupt',    icon:'bell-off',         label:'少打扰，只推重要事项',        sub:'降低推送频率，需要拍板时再提醒' }
+    { id:'daily_risk',     label:'今天有没有必须处理的安全风险', sub:'整体安全态势、风险区域、新增隐患变化。' },
+    { id:'major_hazard',   label:'重大隐患是否闭环',             sub:'新增重大隐患、历史遗留隐患、逾期未整改、临时管控措施。' },
+    { id:'special_task',   label:'专项行动是否滞后',             sub:'日常任务、专项任务是否时间过半、任务过半。' },
+    { id:'key_subject',    label:'重点主体对象是否异常',         sub:'重点企业/场所风险上升、整改反复、平台使用异常。' },
+    { id:'team_duty',      label:'团队履职是否异常',             sub:'应消站、区域站、村社、专家履职情况是否异常。' },
+    { id:'monthly_report', label:'帮我生成每月的安全月报',        sub:'月末自动整理日常监管数据，生成月度报告草稿。' }
   ];
   var MODE_RESPONSES = {
     major_hazard: '已将<span class="hl">重大隐患闭环</span>设为优先关注。<br><br>我会重点检查：<br>• 是否超期未整改<br>• 是否有临时管控措施<br>• 整改方案是否可行<br>• 责任人是否履职到位<br><br>其他日常巡检——安全态势、专项行动进度、重点主体异常、团队履职——继续保持正常运行。',
@@ -47,10 +48,14 @@
     var box = document.getElementById('chatBox');
     if (!box) return;
     box.insertAdjacentHTML('beforeend', html);
-    requestAnimationFrame(function() { box.scrollTop = box.scrollHeight; });
+    // 滚动父级容器（.init-container 才是有 overflow-y 的元素）
+    var container = box.closest('.init-container') || box.parentElement;
+    if (container) {
+      requestAnimationFrame(function() { container.scrollTop = container.scrollHeight; });
+    }
   }
   function agentMsg(html) {
-    return '<div class="c-row agent"><div class="c-bubble">' + html + '</div></div>';
+    return '<div class="c-row agent"><div class="agent-text">' + html + '</div></div>';
   }
   function userMsg(text) {
     return '<div class="c-row user"><div class="c-bubble user">' + text + '</div></div>';
@@ -67,6 +72,82 @@
       if (callback) callback();
     }, 700 + Math.random() * 400);
   }
+  // ─── 打字引擎 ──────────────────────────────────────────────
+  var _typeId = 0;
+  function doType(id, html, callback) {
+    var el = document.getElementById(id);
+    if (!el) { if (callback) callback(); return; }
+    // 将 HTML 拆分为标签和纯文本交替的 token 数组
+    var tokens = [];
+    var regex = /(<[^>]+>)/g;
+    var lastIdx = 0, match;
+    while ((match = regex.exec(html)) !== null) {
+      if (match.index > lastIdx) {
+        tokens.push({ t: 'text', v: html.substring(lastIdx, match.index) });
+      }
+      tokens.push({ t: 'tag', v: match[0] });
+      lastIdx = match.index + match[0].length;
+    }
+    if (lastIdx < html.length) {
+      tokens.push({ t: 'text', v: html.substring(lastIdx) });
+    }
+    // 如果无标签，整个作为一段文本
+    if (tokens.length === 0) tokens.push({ t: 'text', v: html });
+
+    var ti = 0;      // token index
+    var ci = 0;      // char index within current text token
+    var output = '';
+
+    function typeToken() {
+      if (ti >= tokens.length) {
+        lucide.createIcons();
+        if (callback) callback();
+        return;
+      }
+      var tok = tokens[ti];
+      if (tok.t === 'tag') {
+        output += tok.v;
+        ti++;
+        // 立即进入下一个 token
+        setTimeout(typeToken, 0);
+        return;
+      }
+      // 纯文本：每次追加 2-3 个字符
+      var chunk = '';
+      for (var c = 0; c < 2 + Math.round(Math.random()) && ci < tok.v.length; c++, ci++) {
+        chunk += tok.v[ci];
+      }
+      output += chunk;
+      el.innerHTML = output;
+      var ct = document.querySelector('.init-container');
+      if (ct) ct.scrollTop = ct.scrollHeight;
+      if (ci >= tok.v.length) {
+        ci = 0;
+        ti++;
+      }
+      setTimeout(typeToken, 20 + Math.random() * 15);
+    }
+    typeToken();
+  }
+  // ─── 思考 → 打字回复 ─────────────────────────────────────
+  function typeResponse(thinkText, responseHTML, callback) {
+    _typeId++;
+    var id = 'typeArea' + _typeId;
+    chatAppend(thinkingDots(thinkText));
+    setTimeout(function() {
+      var row = document.getElementById('thinkingRow');
+      if (row) row.remove();
+      chatAppend('<div class="c-row agent"><div class="agent-text" id="' + id + '"></div></div>');
+      doType(id, responseHTML, callback);
+    }, 600 + Math.random() * 300);
+  }
+  // ─── 纯打字（无思考圆点） ─────────────────────────────────
+  function typeText(text, callback) {
+    _typeId++;
+    var id = 'typeArea' + _typeId;
+    chatAppend('<div class="c-row agent"><div class="agent-text" id="' + id + '"></div></div>');
+    doType(id, text, callback);
+  }
   // ─── 快捷操作芯片（输入框上方居中） ──────────────────────────
   function showActions(chips) {
     var wrap = document.getElementById('initQuickWrap');
@@ -79,6 +160,14 @@
       html += '<button class="q-chip' + cls + '" onclick="' + c.click + '">' + c.label + '</button>';
     }
     wrap.innerHTML = html;
+    // 自动演示：按钮渲染后自动点击
+    if (window._autoChain) {
+      clearTimeout(window._chainTimer);
+      window._chainTimer = setTimeout(function() {
+        var btns = document.querySelectorAll('.q-chip.primary');
+        if (btns.length > 0) btns[0].click();
+      }, 2500);
+    }
   }
 
   // ═══ 开场 ══════════════════════════════════════════════════════════
@@ -94,93 +183,163 @@
         '<div class="iw-role"><div class="iw-row"><span>当前角色</span><span>良渚街道应急消防工作站站长</span></div><div class="iw-row"><span>管辖范围</span><span>良渚街道</span></div><div class="iw-row"><span>关注对象</span><span>主体对象 / 隐患 / 任务 / 履职</span></div></div></div>' +
       '</div>'
     );
-    showActions([
-      { label: '稍后再说', click: 'window.skip()' },
-      { label: '开始配置', click: 'window.doWelcomeNext()', primary: true }
-    ]);
-    lucide.createIcons();
+    setTimeout(function() {
+      typeText('我们先完成初始化设置，把日常监管安排起来。准备好了吗？', function() {
+        showActions([
+          { label: '准备好了', click: 'window.doWelcomeNext()', primary: true }
+        ]);
+        lucide.createIcons();
+      });
+    }, 600);
   }
   function doWelcomeNext() {
-    chatAppend(agentMsg('好的。在正式开始之前，我先介绍一下我能在哪些方面协助你的日常工作。'));
-    chatAppend(
-      '<div class="ability-grid" style="margin-top:4px">' +
-        '<div class="ability-card"><div class="ac-icon blue">盯</div><div class="ac-title">帮你盯</div><div class="ac-desc">重大隐患、重点主体、专项进度、团队履职。</div></div>' +
-        '<div class="ability-card"><div class="ac-icon green">判</div><div class="ac-title">帮你判断</div><div class="ac-desc">区分普通波动、待确认事项和重大风险。</div></div>' +
-        '<div class="ability-card"><div class="ac-icon orange">整</div><div class="ac-title">帮你整理</div><div class="ac-desc">态势简报、隐患日报、履职简报、会议材料。</div></div>' +
-        '<div class="ability-card"><div class="ac-icon red">推</div><div class="ac-title">帮你推动</div><div class="ac-desc">督办、会议议题、现场核查、持续跟踪。</div></div>' +
-        '<div class="ability-card"><div class="ac-icon purple">醒</div><div class="ac-title">帮你提醒</div><div class="ac-desc">只在需要关注、判断或处置时推送。</div></div>' +
-        '<div class="ability-card"><div class="ac-icon blue">问</div><div class="ac-title">你可直接问</div><div class="ac-desc">支持文字或语音追问、查询、调整口径。</div></div>' +
-      '</div>'
-    );
-    showActions([
-      { label: '好的，继续', click: 'window.doContinueAbility()', primary: true }
-    ]);
-    lucide.createIcons();
+    chatAppend(userMsg('准备好了'));
+    setTimeout(function() {
+      typeText('好的。在正式开始之前，我先介绍一下我能在哪些方面协助你的日常工作。', function() {
+        chatAppend(
+          '<div class="ability-grid" style="margin-top:4px">' +
+          '<div class="ability-card"><div class="ac-icon blue">盯</div><div class="ac-title">帮你盯</div><div class="ac-desc">重大隐患、重点主体、专项进度、团队履职。</div></div>' +
+          '<div class="ability-card"><div class="ac-icon green">判</div><div class="ac-title">帮你判断</div><div class="ac-desc">区分普通波动、待确认事项和重大风险。</div></div>' +
+          '<div class="ability-card"><div class="ac-icon orange">整</div><div class="ac-title">帮你整理</div><div class="ac-desc">态势简报、隐患日报、履职简报、会议材料。</div></div>' +
+          '<div class="ability-card"><div class="ac-icon red">推</div><div class="ac-title">帮你推动</div><div class="ac-desc">督办、会议议题、现场核查、持续跟踪。</div></div>' +
+          '<div class="ability-card"><div class="ac-icon purple">醒</div><div class="ac-title">帮你提醒</div><div class="ac-desc">只在需要关注、判断或处置时推送。</div></div>' +
+          '<div class="ability-card"><div class="ac-icon blue">问</div><div class="ac-title">你可直接问</div><div class="ac-desc">支持文字或语音追问、查询、调整口径。</div></div>' +
+          '</div>'
+        );
+        showActions([
+          { label: '好的，继续', click: 'window.doContinueAbility()', primary: true }
+        ]);
+        lucide.createIcons();
+      });
+    }, 350);
   }
+  // ═══ 用户选偏好（多选） ═══════════════════════════════════════════
+  var selectedModes = ['daily_risk', 'major_hazard', 'special_task', 'key_subject'];
+
   function doContinueAbility() {
-    chatAppend(agentMsg('了解了。<br><br><strong>你最近最想让我先盯什么？</strong>'));
-    chatAppend('<div class="pref-grid" id="prefGrid">');
+    chatAppend(userMsg('好的，继续'));
+    setTimeout(function() {
+      typeText('根据你的岗位，我已整理以下日常关注方向，请确认。', function() {
+        renderPrefCards();
+      });
+    }, 350);
+  }
+
+  function renderPrefCards() {
+    var html = '<div class="pref-card-wrap" id="prefGrid">' +
+      '<div class="attn-list">';
     for (var i = 0; i < PREF_OPTIONS.length; i++) {
       var p = PREF_OPTIONS[i];
-      chatAppend('<div class="pref-card" onclick="window.doPick(\'' + p.id + '\')"><div class="pref-icon"><i data-lucide="' + p.icon + '" width="20" height="20"></i></div><div class="pref-label">' + p.label + '</div><div class="pref-sub">' + p.sub + '</div></div>');
+      var sel = selectedModes.indexOf(p.id) > -1;
+      if (!sel) continue;
+      html += '<div class="attn-card selected" data-id="' + p.id + '" onclick="window.togglePref(\'' + p.id + '\')">' +
+        '<div class="attn-check">✓</div>' +
+        '<div class="attn-body">' +
+          '<div class="attn-title">' + p.label + '</div>' +
+          '<div class="attn-desc">' + p.sub + '</div>' +
+        '</div>' +
+      '</div>';
     }
-    chatAppend('</div>');
+    html += '</div>' +
+      '<button class="card-confirm-btn" onclick="window.confirmPref()">确认关注方向</button>' +
+    '</div>';
+    chatAppend(html);
     lucide.createIcons();
   }
 
-  // ═══ 用户选偏好 ════════════════════════════════════════════════════
-  function doPick(mode) {
-    userMode = mode;
-    var p = PREF_OPTIONS.filter(function(x) { return x.id === mode; })[0];
-    chatAppend(userMsg(p.label));
-    var thinkTexts = { major_hazard:'正在建立重大隐患监控方案…', special_task:'正在加载专项进度数据…', low_interrupt:'正在切换推送规则…', meeting_material:'正在增强会前准备能力…', default:'正在载入默认管理方案…' };
-    showThinking(thinkTexts[mode] || thinkTexts.default, function() {
-      chatAppend(agentMsg(MODE_RESPONSES[mode] || MODE_RESPONSES.default));
-      showActions([
-        { label: '调整关注重点', click: 'window.doContinue("attention")', primary: true },
-        { label: '直接生成方案', click: 'window.doQuickFinish()' }
-      ]);
-      lucide.createIcons();
-    });
-    var grid = document.getElementById('prefGrid');
-    if (grid) { grid.style.transition = 'opacity .3s'; grid.style.opacity = '0.3'; grid.style.pointerEvents = 'none'; }
+  function togglePref(id) {
+    var idx = selectedModes.indexOf(id);
+    if (idx > -1) {
+      selectedModes.splice(idx, 1);
+      if (selectedModes.length === 0) selectedModes.push('daily_risk');
+    } else {
+      selectedModes.push(id);
+    }
+    // 只更新被点击的卡片
+    var el = document.querySelector('.attn-card[data-id="' + id + '"]');
+    if (el) {
+      var sel = selectedModes.indexOf(id) > -1;
+      el.className = 'attn-card' + (sel ? ' selected' : '');
+      var chk = el.querySelector('.attn-check');
+      if (chk) chk.textContent = sel ? '✓' : '';
+    }
+  }
+
+  function confirmPref() {
+    // 根据选择生成响应
+    userMode = 'default';
+    var labels = [];
+    for (var i = 0; i < selectedModes.length; i++) {
+      var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[i]; })[0];
+      if (p) labels.push(p.label);
+    }
+    chatAppend(userMsg(labels.join('、')));
+    var thinkTexts = '正在按你的选择生成管理方案…';
+    setTimeout(function() {
+      typeResponse(thinkTexts, buildCombinedResponse(), function() {
+        showActions([
+          { label: '调整关注重点', click: 'window.doContinue("attention")', primary: true },
+          { label: '直接生成方案', click: 'window.doQuickFinish()' }
+        ]);
+        lucide.createIcons();
+      });
+    }, 350);
+  }
+
+  function buildCombinedResponse() {
+    var combined = '好的，我将重点关注以下方向：<br><br>';
+    for (var i = 0; i < selectedModes.length; i++) {
+      var p = PREF_OPTIONS.filter(function(x) { return x.id === selectedModes[i]; })[0];
+      if (p) combined += '• <strong>' + p.label + '</strong><br>' + p.sub + '<br><br>';
+    }
+    combined += '其他日常巡检项继续保持正常运行。需要调整时随时告诉我。';
+    return combined;
   }
 
   // ═══ 关注项 / 提醒边界 ═════════════════════════════════════════════
   function doContinue(phase) {
     if (phase === 'attention') {
-      chatAppend(agentMsg('以下默认关注项，点掉不需要的我自动调整推送方式。也可以直接在输入框告诉我。'));
-      var html = '<div class="attn-list" id="attentionToggles">';
-      for (var i = 0; i < attentionItems.length; i++) {
-        var a = attentionItems[i];
-        html += '<div class="attn-card' + (a.on ? ' selected' : '') + '" data-id="' + a.id + '" onclick="window.togAttn(\'' + a.id + '\')"><div class="attn-check">' + (a.on ? '✓' : '') + '</div><div class="attn-body"><div class="attn-title">' + a.title + '</div><div class="attn-desc">' + a.desc + '</div></div></div>';
-      }
-      html += '</div>';
-      chatAppend(html);
-      showActions([
-        { label: '继续设置提醒边界', click: 'window.doContinue("boundary")', primary: true }
-      ]);
-      lucide.createIcons();
+      chatAppend(userMsg('调整关注重点'));
+      setTimeout(function() {
+        typeText('以下默认关注项，点掉不需要的我自动调整推送方式。也可以在直接在输入框告诉我。', function() {
+          var html = '<div class="attn-list" id="attentionToggles">';
+          for (var i = 0; i < attentionItems.length; i++) {
+            var a = attentionItems[i];
+            html += '<div class="attn-card' + (a.on ? ' selected' : '') + '" data-id="' + a.id + '" onclick="window.togAttn(\'' + a.id + '\')"><div class="attn-check">' + (a.on ? '✓' : '') + '</div><div class="attn-body"><div class="attn-title">' + a.title + '</div><div class="attn-desc">' + a.desc + '</div></div></div>';
+          }
+          html += '</div>';
+          chatAppend(html);
+          showActions([
+            { label: '继续设置提醒边界', click: 'window.doContinue("boundary")', primary: true }
+          ]);
+          lucide.createIcons();
+        });
+      }, 350);
     } else if (phase === 'boundary') {
-      var msg = userMode === 'low_interrupt' ? '低打扰模式已启用。最后看一下四级推送规则。' : '最后看一下推送规则。我不会把所有结果都推给你——只有需要关注的才会进入总控台。';
-      var ruleHtml = agentMsg(msg) + '<div class="rule-list">';
-      var rules = [
-        { n:'普通完成', h:'只进入运行记录', e:'每日态势简报正常生成', c:'level-gray' },
-        { n:'轻微异常', h:'进入总控动态',   e:'片区隐患闭环率轻微下降', c:'level-orange' },
-        { n:'需要判断', h:'进入待我确认',   e:'专项行动明显滞后、隐患整改证据不足', c:'level-blue' },
-        { n:'重大风险', h:'主动提醒并建议行动', e:'重大隐患超期未闭环、多主体集中异常', c:'level-red' }
-      ];
-      for (var i = 0; i < rules.length; i++) {
-        var r = rules[i];
-        var hl = (userMode === 'low_interrupt' && i === 3) ? ' highlighted' : '';
-        ruleHtml += '<div class="rule-card ' + r.c + hl + '"><div class="rule-n">' + r.n + '</div><div class="rule-h">' + r.h + '</div><div class="rule-e">' + r.e + '</div></div>';
-      }
-      ruleHtml += '</div>';
-      chatAppend(ruleHtml);
-      showActions([
-        { label: '生成管理心跳计划', click: 'window.doGenerate()', primary: true, large: true }
-      ]);
-      lucide.createIcons();
+      chatAppend(userMsg('继续设置提醒边界'));
+      setTimeout(function() {
+        var msg = userMode === 'low_interrupt' ? '低打扰模式已启用。最后看一下四级推送规则。' : '最后看一下推送规则。我不会把所有结果都推给你——只有需要关注的才会进入总控台。';
+        typeText(msg, function() {
+          var ruleHtml = '<div class="rule-list">';
+          var rules = [
+            { n:'普通完成', h:'只进入运行记录', e:'每日态势简报正常生成', c:'level-gray' },
+            { n:'轻微异常', h:'进入总控动态',   e:'片区隐患闭环率轻微下降', c:'level-orange' },
+            { n:'需要判断', h:'进入待我确认',   e:'专项行动明显滞后、隐患整改证据不足', c:'level-blue' },
+            { n:'重大风险', h:'主动提醒并建议行动', e:'重大隐患超期未闭环、多主体集中异常', c:'level-red' }
+          ];
+          for (var i = 0; i < rules.length; i++) {
+            var r = rules[i];
+            var hl = (userMode === 'low_interrupt' && i === 3) ? ' highlighted' : '';
+            ruleHtml += '<div class="rule-card ' + r.c + hl + '"><div class="rule-n">' + r.n + '</div><div class="rule-h">' + r.h + '</div><div class="rule-e">' + r.e + '</div></div>';
+          }
+          ruleHtml += '</div>';
+          chatAppend(ruleHtml);
+          showActions([
+            { label: '生成管理心跳计划', click: 'window.doGenerate()', primary: true, large: true }
+          ]);
+          lucide.createIcons();
+        });
+      }, 350);
     }
   }
   function togAttn(id) {
@@ -197,15 +356,18 @@
     }
   }
   function doQuickFinish() {
-    chatAppend(agentMsg('好的，跳过微调，直接按你的偏好生成方案。'));
-    setTimeout(function() { doGenerate(); }, 600);
+    chatAppend(userMsg('直接生成方案'));
+    typeText('好的，跳过微调，直接按你的偏好生成方案。', function() {
+      setTimeout(function() { doGenerate(); }, 400);
+    });
   }
 
   // ═══ 生成 ══════════════════════════════════════════════════════════
   function doGenerate() {
+    chatAppend(userMsg('生成管理心跳计划'));
     var msgs = [
       '正在确认你的角色和管辖范围…',
-      '正在按「' + MODE_LABELS[userMode] + '」模式生成管理方案…',
+      '正在生成管理心跳计划…',
       '正在配置日常巡检任务…',
       '正在设置 ' + (userMode === 'low_interrupt' ? '低打扰' : '4 级') + ' 推送边界…',
       '管理心跳计划已生成。'
@@ -213,11 +375,12 @@
     var i = 0;
     function nextGenMsg() {
       if (i >= msgs.length) { setTimeout(showDone, 400); return; }
-      chatAppend(agentMsg(msgs[i]));
-      i++;
-      setTimeout(nextGenMsg, 600 + Math.random() * 300);
+      typeText(msgs[i], function() {
+        i++;
+        setTimeout(nextGenMsg, 200);
+      });
     }
-    nextGenMsg();
+    setTimeout(nextGenMsg, 350);
   }
 
   // ═══ 完成 ══════════════════════════════════════════════════════════
@@ -266,6 +429,7 @@
 
   // ═══ 进入总控台 ═══════════════════════════════════════════════════
   function doEnter() {
+    chatAppend(userMsg('进入工作台'));
     localStorage.setItem(STORAGE_KEY, 'true');
     var overlay = document.getElementById('initOverlay');
     if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
@@ -282,6 +446,60 @@
     input.value = '';
     chatAppend(userMsg(val));
     var mode;
+    // 检测"月报/报告"模式
+    var reportMatch = null;
+    if (/月报|报告|月度/.test(val)) reportMatch = 'monthly_report';
+    // 检测"关注 + 具体事项"模式
+    var focusMatch = null;
+    if (/关注|加上|还要|增加/.test(val)) {
+      if (/团队履职|履职/.test(val)) focusMatch = 'team_duty';
+      else if (/重大隐患|隐患/.test(val)) focusMatch = 'major_hazard';
+      else if (/专项行动|专项/.test(val)) focusMatch = 'special_task';
+      else if (/重点主体|主体/.test(val)) focusMatch = 'key_subject';
+      else if (/安全风险|风险/.test(val)) focusMatch = 'daily_risk';
+    }
+    var insertId = focusMatch || reportMatch;
+    if (insertId) {
+      setTimeout(function() {
+        // 1. 先出状态消息
+        chatAppend('<div class="c-row agent"><div class="agent-text" style="color:#94a3b8">正在更新关注项⋯</div></div>');
+        // 2. 再插入卡片（带延迟有逐个出现的效果）
+        setTimeout(function() {
+          if (selectedModes.indexOf(insertId) === -1) {
+            selectedModes.push(insertId);
+            var grid = document.querySelector('#prefGrid .attn-list');
+            if (grid) {
+              var p = PREF_OPTIONS.filter(function(x) { return x.id === insertId; })[0];
+              if (p) {
+                var card = document.createElement('div');
+                card.className = 'attn-card selected';
+                card.setAttribute('data-id', insertId);
+                card.setAttribute('onclick', "window.togglePref('" + insertId + "')");
+                card.innerHTML = '<div class="attn-check">✓</div><div class="attn-body"><div class="attn-title">' + p.label + '</div><div class="attn-desc">' + p.sub + '</div></div>';
+                card.style.animation = 'fadeUp .35s ease-out both';
+                grid.appendChild(card);
+                var ct = document.querySelector('.init-container');
+                if (ct) ct.scrollTop = ct.scrollHeight;
+              }
+            }
+          }
+          // 3. 状态变为完成
+          var statusEls = document.querySelectorAll('.c-row.agent .agent-text');
+          if (statusEls.length > 0) {
+            var last = statusEls[statusEls.length - 1];
+            if (last && last.textContent.indexOf('正在更新') === 0) {
+              last.style.color = '';
+              last.innerHTML = '更新关注项 <span style="color:#16a34a">✓</span>';
+            }
+          }
+          // 4. 打出确认文案
+          typeText('好的，已加上。现在关注 ' + selectedModes.length + ' 个方向。', function() {
+            lucide.createIcons();
+          });
+        }, 500);
+      }, 600);
+      return;
+    }
     if (/隐患|超期|闭环|重大/.test(val)) mode = 'major_hazard';
     else if (/专项|任务|进度|滞后/.test(val)) mode = 'special_task';
     else if (/少|别烦|安静|轻|低/.test(val)) mode = 'low_interrupt';
@@ -289,27 +507,50 @@
     else if (/什么|帮|功能|干|盯/.test(val)) mode = 'what';
     if (mode && mode !== 'what') {
       userMode = mode;
-      showThinking('正在按你的要求调整…', function() {
-        chatAppend(agentMsg(MODE_RESPONSES[mode] || MODE_RESPONSES.default));
-        showActions([
-          { label: '调整关注重点', click: 'window.doContinue("attention")', primary: true },
-          { label: '直接生成方案', click: 'window.doQuickFinish()' }
-        ]);
-        lucide.createIcons();
-      });
+      setTimeout(function() {
+        typeResponse('正在按你的要求调整…', MODE_RESPONSES[mode] || MODE_RESPONSES.default, function() {
+          showActions([
+            { label: '调整关注重点', click: 'window.doContinue("attention")', primary: true },
+            { label: '直接生成方案', click: 'window.doQuickFinish()' }
+          ]);
+          lucide.createIcons();
+        });
+      }, 350);
     } else if (mode === 'what') {
-      showThinking('正在整理能力清单…', function() {
-        chatAppend(agentMsg('在日常监管中，我可以：<br><br>• <strong>盯</strong> — 重大隐患、重点主体、专项进度、团队履职<br>• <strong>判</strong> — 区分正常波动、待确认和重大风险<br>• <strong>整</strong> — 态势简报、隐患日报、会议材料、月报草稿<br>• <strong>推</strong> — 督办提议、会议议题、现场核查<br>• <strong>醒</strong> — 只在需要你关注时推送<br><br>你现在最想让我先盯什么？'));
-        lucide.createIcons();
-      });
+      setTimeout(function() {
+        typeResponse('正在整理能力清单…', '在日常监管中，我可以：<br><br>• <strong>盯</strong> — 重大隐患、重点主体、专项进度、团队履职<br>• <strong>判</strong> — 区分正常波动、待确认和重大风险<br>• <strong>整</strong> — 态势简报、隐患日报、会议材料、月报草稿<br>• <strong>推</strong> — 督办提议、会议议题、现场核查<br>• <strong>醒</strong> — 只在需要你关注时推送<br><br>你现在最想让我先盯什么？', function() {
+          lucide.createIcons();
+        });
+      }, 350);
     } else {
-      showThinking('正在同步你的偏好…', function() {
-        chatAppend(agentMsg('好的，已记录。有什么需要调整的随时告诉我。'));
-        lucide.createIcons();
-      });
+      setTimeout(function() {
+        typeResponse('正在同步你的偏好…', '好的，已记录。有什么需要调整的随时告诉我。', function() {
+          lucide.createIcons();
+        });
+      }, 350);
     }
   }
   function convChatVoice() {
+    var input = document.getElementById('initChatInput');
+    if (!input) return;
+    // 检测当前页面上下文，决定模拟内容
+    var prefGrid = document.getElementById('prefGrid');
+    if (prefGrid) {
+      // 在偏好选择页：模拟语音输入添加关注项
+      var stepVoice = window._voiceStep || 0;
+      if (stepVoice === 0) {
+        window._voiceStep = 1;
+        input.value = '我还想关注 团队履职是否异常';
+        window.convChatSend();
+        return;
+      } else if (stepVoice === 1) {
+        window._voiceStep = 2;
+        input.value = '帮我生成每月的安全月报';
+        window.convChatSend();
+        return;
+      }
+    }
+    // 默认语音弹窗
     showSheet('已识别你的语音','"帮我盯好重大隐患，别让超期的漏掉。"','已切换为重大隐患优先模式。重大隐患 Agent 已提升为最高优先，每天 08:00 和 16:00 各巡检一次。');
   }
 
@@ -321,6 +562,7 @@
 
   // ═══ Skip ══════════════════════════════════════════════════════════
   function skip() {
+    chatAppend(userMsg('稍后再说'));
     var overlay = document.getElementById('initOverlay');
     if (overlay) { overlay.classList.remove('active'); overlay.style.display = 'none'; }
     var appEl = document.querySelector('.app');
@@ -425,7 +667,8 @@
   }
 
   // ═══ 导出 ══════════════════════════════════════════════════════════
-  window.doPick = doPick;
+  window.togglePref = togglePref;
+  window.confirmPref = confirmPref;
   window.doContinue = doContinue;
   window.doQuickFinish = doQuickFinish;
   window.doGenerate = doGenerate;
