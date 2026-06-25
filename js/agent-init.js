@@ -520,7 +520,7 @@
     var sc = document.getElementById('sceneContent');
     if (!sc) return;
     sc.innerHTML = '';
-    sc.style.cssText = 'display:flex;flex-direction:column;gap:8px;padding:0 0 14px 0';
+    sc.style.cssText = 'display:flex;flex-direction:column;gap:8px;padding:0 0 14px 0;text-align:left';
 
     // 欢迎
     var welcome = document.createElement('div');

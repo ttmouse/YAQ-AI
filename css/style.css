@@ -290,6 +290,7 @@
     .hmodal-label{width:90px;flex-shrink:0;color:var(--weak);font-weight:500}
     .hmodal-value{flex:1;color:var(--text)}
 
+    /* ─── 待确认督办弹窗 ──────────────────────────────────── */
     .hmodal-foot {
       display: flex;
       align-items: center;
@@ -1644,6 +1645,9 @@
     @keyframes fade-up {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+    .scene-content {
+      text-align: left;
     }
     .scene-content > * {
       animation: fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
