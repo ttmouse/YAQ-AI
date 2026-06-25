@@ -30,9 +30,23 @@ npm run build:js
 echo "🎨 压缩 CSS..."
 npm run build:css
 
+# 合并 CSS（减少生产环境 HTTP 请求数）(#88)
+echo "📦 合并 CSS..."
+# 排除 mobile.css（响应式单独加载），其余全部合并为 app.css
+cat dist/css/style.css dist/css/agent-init.css dist/css/tokens.css dist/css/base.css dist/css/layout.css dist/css/blocks.css dist/css/detail.css dist/css/modal.css dist/css/work-items.css dist/css/assistant.css dist/css/utilities.css > dist/css/app.css 2>/dev/null
+echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（11 个文件合并）"
+
 # 4. 复制 HTML 和资源文件
 echo "📄 复制静态资源..."
 npm run build:html
+
+# 替换 dist/index.html 中的 CSS 引用（12 个文件 → 2 个）
+echo "🔗 更新 index.html CSS 引用..."
+# 删除所有 <link rel="stylesheet" href="css/..."> 行
+sed -i '' '/<link rel="stylesheet" href="css\/.*">/d' dist/index.html
+# 在 <title> 后插入合并后的 CSS 引用（保持 head 中合理位置）
+sed -i '' 's|<title>站长每日监管闭环工作台</title>|<title>站长每日监管闭环工作台</title>\n  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">|' dist/index.html
+echo "   12 个 CSS 引用 → 2 个 (app.css + mobile.css)"
 
 # 5. 输出统计
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

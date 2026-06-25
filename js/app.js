@@ -6511,6 +6511,4 @@
     renderScene('dashboard');
     bindInteractions();
 
-    // ════════════════════════════════════════════════════════════════
-    // ES6 MODULE SYSTEM — 连接 9 个模块文件到运行时
   })();
