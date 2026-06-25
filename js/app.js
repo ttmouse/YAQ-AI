@@ -1358,16 +1358,6 @@
       // ─── 待确认行动项 ────────────────────────────────────────
       html += renderActionItems();
 
-      // ─── 处置建议入口 ────────────────────────────────────────
-      var recCount = (MOCK.disposalRecommendations || []).length;
-      if (recCount > 0) {
-        html += '<div class="dr-dashboard-entry" onclick="switchScene(\'disposal\')" title="查看 AI 处置建议">' +
-          '<i data-lucide="sparkles" width="15" height="15" style="color:var(--accent)"></i>' +
-          '<span><strong>处置建议</strong> · <span style="color:var(--accent);font-weight:600">' + recCount + ' 条</span>待确认</span>' +
-          '<i data-lucide="chevron-right" width="14" height="14" style="color:var(--weak);margin-left:auto"></i>' +
-        '</div>';
-      }
-
       return html;
     }
 
@@ -1417,8 +1407,8 @@
         '<div style="position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--blue);border-radius:0 3px 3px 0"></div>' +
         '<div style="flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center"><i data-lucide="zap" width="18" height="18"></i></div>' +
         '<div style="flex:1;min-width:0">' +
-          '<div style="font-size:13px;font-weight:600;color:var(--text)">待确认督办 <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;margin-left:6px">' + items.length + ' 条</span></div>' +
-          '<div style="font-size:12px;color:var(--muted);margin-top:1px">勾选要确认的行动项，批量审核后统一发送</div>' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text)">待确认行动 <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;margin-left:6px">' + items.length + ' 项</span></div>' +
+          '<div style="font-size:12px;color:var(--muted);margin-top:1px">AI 建议的行动项，点击进入审核确认</div>' +
         '</div>' +
         '<i data-lucide="chevron-right" width="18" height="18" style="flex-shrink:0;color:var(--weak)"></i>' +
       '</div>';
@@ -4235,6 +4225,7 @@
       {
         title: '站长工作台', apps: [
           { id: 'dashboard', name: '今日监管工作台', icon: 'layout-dashboard', desc: '整体安全态势' },
+          { id: 'pending-actions', name: '待确认行动', icon: 'clipboard-check', desc: '待确认行动审核与发起' },
           { id: 'hazard-report', name: '重大隐患整改日报', icon: 'shield-alert', desc: '隐患闭环跟踪' },
           { id: 'efficiency', name: '履职效能分析', icon: 'bar-chart-3', desc: '条线绩效评估' },
           { id: 'responsibility', name: '主体责任评估', icon: 'users', desc: '企业风险分级' },
