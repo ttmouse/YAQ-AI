@@ -638,6 +638,24 @@
   }
 }
 
+/* ─── 移动端：滚动容器 overscroll 行为控制 ──────────────── */
+@media (max-width: 768px) {
+  .center,
+  .modal-body,
+  .hmodal-body,
+  .tmodal-body,
+  .drawer-body,
+  .action-modal-body,
+  .pa-modal-body,
+  .assistant-body,
+  .work-items-list,
+  .scene-content,
+  .memory-panel-body {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* ─── 移动端：tab-strip 作为侧边栏滑出 ──────────────────── */
 @media (max-width: 768px) {
   .tab-strip {
