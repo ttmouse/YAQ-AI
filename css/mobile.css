@@ -39,9 +39,6 @@
     max-width: 100%;
     padding: 0 10px;
   }
-  .main {
-    padding-bottom: 82px;
-  }
   .global-chat-bar {
     width: calc(100% - 20px);
     max-width: 100%;
@@ -109,9 +106,6 @@
     display: none;
   } /* 只保留搜索图标 */
 
-  .main {
-    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
-  }
   .result {
     padding: 0 8px;
   }
@@ -144,7 +138,7 @@
 
   /* 全局聊天栏 */
   .global-chat-bar {
-    bottom: calc(8px + env(safe-area-inset-bottom, 0));
+    margin-bottom: calc(8px + env(safe-area-inset-bottom, 0));
   }
   .global-chat-inner input {
     font-size: 12px;
@@ -450,7 +444,7 @@
   .global-chat-bar {
     height: auto;
     min-height: 38px;
-    bottom: 6px;
+    margin-bottom: 6px;
     padding: 4px 2px 4px 10px;
   }
   .global-chat-inner input {
@@ -462,8 +456,8 @@
     height: 28px;
   }
   .global-chat-quick-wrap {
-    bottom: 56px;
     gap: 4px;
+    margin-bottom: 8px;
   }
   .global-chat-quick-wrap .gq-chip {
     height: 22px;
@@ -628,25 +622,16 @@
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .main {
-    padding-bottom: calc(8px + env(safe-area-inset-bottom));
-  }
   .global-chat-bar {
-    bottom: calc(12px + env(safe-area-inset-bottom));
+    margin-bottom: calc(12px + env(safe-area-inset-bottom));
   }
 
   @media (max-width: 768px) {
-    .main {
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
-    }
     .global-chat-bar {
-      bottom: calc(8px + env(safe-area-inset-bottom));
+      margin-bottom: calc(8px + env(safe-area-inset-bottom));
     }
   }
   @media (max-width: 480px) {
-    .main {
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
-    }
   }
 }
 
@@ -655,19 +640,13 @@
 /* iPhone 底部横条约 34px，强制给足间距 */
 @media (display-mode: standalone) {
 
-  .main {
-    padding-bottom: calc(8px + 34px) !important;
-  }
   .global-chat-bar {
-    bottom: calc(12px + 34px) !important;
+    margin-bottom: calc(12px + 34px) !important;
   }
 }
 @media (display-mode: standalone) and (max-width: 480px) {
-  .main {
-    padding-bottom: calc(8px + 34px) !important;
-  }
   .global-chat-bar {
-    bottom: calc(12px + 34px) !important;
+    margin-bottom: calc(12px + 34px) !important;
   }
 }
 
