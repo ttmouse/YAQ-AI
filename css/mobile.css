@@ -415,7 +415,7 @@
     position: fixed;
     left: auto;
     right: 12px;
-    top: 52px;
+    top: calc(52px + env(safe-area-inset-top, 0px));
     bottom: auto;
     z-index: 950;
   }
