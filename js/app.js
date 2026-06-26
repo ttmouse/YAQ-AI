@@ -2871,7 +2871,6 @@
       newMajorSignificant_本周: 1,         // 新增重大/较大风险主体（warning）
       majorRisk_本周: 1,                  // 重大风险
       areaRiskAbnormal_本周: 1,           // 风险上升片区（warning）
-      taskCompleteRate_今日: 1,           // 检查任务完成率
     };
     var allMetrics = [];
     for (var bi = 0; bi < baseMetrics.length; bi++) {
@@ -2937,7 +2936,6 @@
           'newMajorSignificant_本周',
           'majorRisk_本周',
           'areaRiskAbnormal_本周',
-          'taskCompleteRate_今日',
         ];
         var checked = allMetrics.filter(function (m) {
           return m.checked;
@@ -3135,7 +3133,7 @@
         tc.name.replace(/'/g, "\\'") +
         '\')">' +
         (tc.lag
-          ? '<div style="position:absolute;top:-1px;right:-1px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:0 10px 0 10px;color:#fff;background:' +
+          ? '<div style="position:absolute;top:-1px;left:-1px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px 0 10px 0;color:#fff;background:' +
             (tc.risk === '重大风险' ? 'var(--red)' : '#d97706') +
             ';line-height:1.5;z-index:1">' +
             tcAlert +
@@ -3188,7 +3186,11 @@
     html += '</div></div>';
 
     // ─── 待确认行动项 ────────────────────────────────────────
-    html += renderActionItems();
+    html +=
+      '<div class="info-card">' +
+      '<div class="info-card-head"><h3><i data-lucide="clipboard-check" aria-hidden="true" class="c-accent"></i> 待确认行动项</h3></div>' +
+      renderActionItems() +
+      '</div>';
 
     return html;
   }
@@ -3274,15 +3276,15 @@
     var items = MOCK.actionItems || [];
     if (items.length === 0) return '';
     return (
-      "<div style=\"display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--line);border-radius:14px;background:var(--card);cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,transform .15s\" onclick=\"switchScene('pending-actions')\" onmouseover=\"this.style.boxShadow='0 4px 14px rgba(23,105,224,0.12)';this.style.transform='translateY(-1px)'\" onmouseout=\"this.style.boxShadow='';this.style.transform=''\">" +
-      '<div style="flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center"><i data-lucide="zap" width="18" height="18"></i></div>' +
+      '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;border-radius:14px;background:#f8f9fc;position:relative;overflow:hidden">' +
       '<div style="flex:1;min-width:0">' +
-      '<div style="font-size:13px;font-weight:600;color:var(--text)">待确认行动 <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;margin-left:6px">' +
+      '<div style="font-size:13px;color:#64748b;line-height:1.5">经以上信息，已为您生成 <strong style="color:#1e293b">' +
       items.length +
-      ' 项</span></div>' +
-      '<div style="font-size:12px;color:var(--muted);margin-top:1px">AI 建议的行动项，点击进入审核确认</div>' +
+      ' 项</strong>推进行动</div>' +
       '</div>' +
-      '<i data-lucide="chevron-right" width="18" height="18" style="flex-shrink:0;color:var(--weak)"></i>' +
+      '<button onclick="switchScene(\'pending-actions\')" style="flex-shrink:0;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+      '查看行动项 <i data-lucide="chevron-right" width="14" height="14"></i>' +
+      '</button>' +
       '</div>'
     );
   }
@@ -9194,17 +9196,10 @@
     strip.innerHTML = html;
   }
 
-  // 初始化默认 tab — 将初始化场景一键变成顶部 Tab
+  // 初始化默认 tab — 只保留工作台和月报
   var defaultTabs = [
     { id: 'dashboard', label: '工作台' },
     { id: 'monthly-report', label: '月报' },
-    { id: 'hazard-report', label: '重大隐患整改' },
-    { id: 'efficiency', label: '履职效能' },
-    { id: 'responsibility', label: '主体责任' },
-    { id: 'disposal', label: '分级处置' },
-    { id: 'followup', label: '重点跟进' },
-    { id: 'pending-actions', label: '待确认行动' },
-    { id: 'supervision-track', label: '督办跟踪' },
   ];
   defaultTabs.forEach(function (t) {
     tabs.push(t);

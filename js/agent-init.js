@@ -1563,8 +1563,27 @@
     // 用思考→逐段打字的方式展现
     sceneTypeResponse('正在分析超期未闭环原因…', sections, function () {
       showGlobalQuickChip([{ label: '对任务的异常进行分析', text: '分析一下任务的异常情况' }]);
+      // 在分析内容底部追加"生成推进行动"按钮
+      var respBubble = document.querySelector('.c-row.agent:last-child .c-bubble');
+      if (respBubble) {
+        var btnHtml =
+          '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;text-align:center">' +
+          '<button onclick="generateOverdueActions()" style="background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+          '<i data-lucide="clipboard-check" width="16" height="16" style="vertical-align:middle;margin-right:6px"></i> 生成推进行动' +
+          '</button>' +
+          '<div style="font-size:11px;color:#94a3b8;margin-top:6px">基于以上分析自动生成待确认行动，可前往审核确认</div>' +
+          '</div>';
+        respBubble.insertAdjacentHTML('beforeend', btnHtml);
+        if (window.lucide) lucide.createIcons();
+      }
     });
   }
+
+  // ─── 生成超期未闭环推进行动 ──────────────────────────────
+  window.generateOverdueActions = function () {
+    if (window.YAQ && window.YAQ.showToast) window.YAQ.showToast('已生成超期未闭环推进行动，正在跳转…');
+    if (window.renderScene) window.renderScene('pending-actions');
+  };
 
   // ═══ 任务异常分析 ═══════════════════════════════════════════════
   function renderTaskAnomalyAnalysis() {
