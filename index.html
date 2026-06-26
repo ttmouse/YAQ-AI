@@ -496,6 +496,45 @@
           return orig.call(this);
         };
       })();
+
+      /* ═══ 移动端：弹窗打开时自动隐藏底部聊天栏（:has() 回退） ═══ */
+      (function () {
+        if (!('ontouchstart' in window)) return;
+        var modalSelectors = [
+          '#hazardModal', '#taskModal', '#metricModal', '#paModal',
+          '#drillFloat', '#actionModal', '.memory-panel.open'
+        ];
+        var chatBar = document.querySelector('.global-chat-bar');
+        if (!chatBar) return;
+
+        function checkModals() {
+          var anyOpen = false;
+          for (var i = 0; i < modalSelectors.length; i++) {
+            var el = document.querySelector(modalSelectors[i]);
+            if (el) {
+              var style = window.getComputedStyle(el);
+              if (style.display !== 'none' && style.visibility !== 'hidden') {
+                anyOpen = true;
+                break;
+              }
+            }
+          }
+          chatBar.style.display = anyOpen ? 'none' : '';
+        }
+
+        // 用 MutationObserver 监听 modal 显示状态变化（比事件更可靠）
+        var observer = new MutationObserver(function () {
+          checkModals();
+        });
+        observer.observe(document.body, {
+          attributes: true,
+          attributeFilter: ['style', 'class'],
+          subtree: true,
+        });
+
+        // 初始化检查
+        setTimeout(checkModals, 500);
+      })();
     </script>
 
     <script src="js/data/mock-data.js"></script>

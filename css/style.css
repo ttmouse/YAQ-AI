@@ -317,7 +317,7 @@
   position: fixed;
   left: 50%;
   bottom: 24px;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(20px);
   background: #111827;
   color: var(--surface);
   border-radius: 999px;
@@ -326,9 +326,19 @@
   display: none;
   z-index: 999;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  max-width: 90vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .toast.show {
   display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
 }
 .toast.mock {
   background: #92400e;

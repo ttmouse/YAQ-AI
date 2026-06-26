@@ -722,6 +722,33 @@ html.pwa-standalone .init-overlay {
   top: calc(52px + var(--pwa-safe-top, env(safe-area-inset-top, 20px)));
 }
 
+/* ─── Windows PWA Title Bar 区域（window-controls-overlay） ──── */
+/* 当 Windows PWA 使用窗口控制叠加层时，标题栏区域不要被内容遮挡 */
+@media (display-mode: window-controls-overlay) {
+  .top {
+    padding-left: calc(env(titlebar-area-x, 0px) + 14px);
+    padding-right: calc(env(titlebar-area-width, 0px) + 14px);
+    height: env(titlebar-area-height, 52px);
+    min-height: env(titlebar-area-height, 52px);
+  }
+  .brand h1,
+  .brand img {
+    display: none;
+  }
+  .brand .tab-strip {
+    margin-left: 0;
+  }
+  /* 拖动区域 */
+  .top {
+    -webkit-app-region: drag;
+  }
+  .top button,
+  .top input,
+  .top .pill {
+    -webkit-app-region: no-drag;
+  }
+}
+
 /* ─── 移动端：隐藏左下角菜单，改由服务站名称触发 ──────────────── */
 @media (max-width: 768px) {
   .demo-menu-wrap {

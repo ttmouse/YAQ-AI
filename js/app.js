@@ -445,6 +445,11 @@
   function renderScene(sceneId) {
     var container = $dom.sceneContent;
 
+    // ─── 保存当前滚动位置 ────────────────────────────────────────
+    var centerEl = document.querySelector('.center');
+    var savedScrollTop = centerEl ? centerEl.scrollTop : 0;
+    var savedSceneId = state.activeScene;
+
     // ─── Loading 状态 ────────────────────────────────────────────
     container.innerHTML = renderLoading();
 
@@ -512,6 +517,17 @@
           window.YAQ.showGlobalQuickChip([]);
         }
       }
+
+      // ─── 恢复滚动位置（同场景刷新时）或滚动到顶部（新场景） ──
+      requestAnimationFrame(function () {
+        if (centerEl) {
+          if (sceneId === savedSceneId && savedScrollTop > 0) {
+            centerEl.scrollTop = savedScrollTop;
+          } else {
+            centerEl.scrollTop = 0;
+          }
+        }
+      });
     }, 80); // 80ms 模拟加载延迟
   }
 
@@ -4231,11 +4247,17 @@
 
   function showToast(msg, type) {
     var el = $dom.toast;
-    el.textContent = type === 'mock' ? '🧪 [演示] ' + msg : msg;
+    if (!el) return;
+    // 使用 innerHTML 支持 Emoji 图标和简单 HTML 标记
+    var prefix = type === 'mock' ? '<span style="opacity:0.5;margin-right:4px">🧪</span>' : '';
+    el.innerHTML = prefix + (type === 'mock' ? msg : msg);
     el.className = 'toast' + (type === 'mock' ? ' mock' : '');
     el.classList.add('show');
-    setTimeout(function () {
+    // 清除已有定时器，防止快速调用时消失过快
+    if (el._toastTimer) clearTimeout(el._toastTimer);
+    el._toastTimer = setTimeout(function () {
       el.classList.remove('show');
+      el._toastTimer = null;
     }, 2500);
   }
 
