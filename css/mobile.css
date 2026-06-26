@@ -112,7 +112,7 @@
 
   .top {
     min-height: 40px;
-    padding: 0 8px;
+    padding: env(safe-area-inset-top, 0px) 8px 0;
   }
   .brand img {
     height: 20px !important;
@@ -133,7 +133,7 @@
 
   /* ─── Init overlay 适配更小的顶部栏 ────────────── */
   .init-overlay {
-    top: 40px;
+    top: calc(40px + env(safe-area-inset-top));
   }
   .meta .pill {
     font-size: 10px;
@@ -442,7 +442,6 @@
     height: auto !important;
     max-height: 85vh !important;
     border-radius: 16px 16px 0 0 !important;
-    transform: translateY(100%) !important;
     opacity: 1 !important;
     visibility: visible !important;
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
@@ -491,8 +490,14 @@
   }
 }
 
+/* ─── 底部滑入动画 keyframes ────────────────────────────── */
+@keyframes slideUpDrawer {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
 /* ─── 待确认督办弹窗 — 移动端底部抽屉式 ──────────────────────── */
-/* 与 action-modal-panel 同模式：从底部滑入 */
+/* JS 通过 display: none/flex 控制显隐(cssom)，使用 animation 实现滑入 */
 @media (max-width: 768px) {
   .pa-modal-panel {
     top: auto !important;
@@ -503,9 +508,6 @@
     height: auto !important;
     max-height: 85vh !important;
     border-radius: 16px 16px 0 0 !important;
-    transform: translateY(100%);
-    display: flex !important;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
   }
   .pa-modal-panel::before {
@@ -518,9 +520,8 @@
     margin: 8px auto 0;
     flex-shrink: 0;
   }
-  /* panel 显示时由 JS 设 display:flex + 移除 transform，此处用属性选择器兜底 */
   .pa-modal-panel[style*="display: flex"] {
-    transform: translateY(0);
+    animation: slideUpDrawer 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .pa-modal-head {
     padding: 12px 20px;
@@ -549,10 +550,6 @@
     height: auto !important;
     max-height: 90vh !important;
     border-radius: 16px 16px 0 0 !important;
-    transform: translateY(100%);
-    display: flex !important;
-    flex-direction: column;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
   }
   .modal-panel::before {
@@ -566,7 +563,7 @@
     flex-shrink: 0;
   }
   .modal-panel[style*="display: flex"] {
-    transform: translateY(0);
+    animation: slideUpDrawer 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .modal-head {
     padding: 8px 16px 4px;
@@ -596,10 +593,6 @@
     height: auto !important;
     max-height: 90vh !important;
     border-radius: 16px 16px 0 0 !important;
-    transform: translateY(100%);
-    display: flex !important;
-    flex-direction: column;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
   }
   .drill-float::before {
@@ -613,7 +606,7 @@
     flex-shrink: 0;
   }
   .drill-float.open {
-    transform: translateY(0) !important;
+    animation: slideUpDrawer 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .drill-head {
     padding: 8px 16px;
@@ -1008,9 +1001,11 @@ html.pwa-standalone .init-overlay {
 @media (max-width: 768px) {
   body:has(.hmodal-panel[style*="display: block"]) .global-chat-bar,
   body:has(.tmodal-panel[style*="display: block"]) .global-chat-bar,
-  body:has(.modal-panel[style*="display: block"]) .global-chat-bar,
+  body:has(.modal-panel[style*="display: flex"]) .global-chat-bar,
+  body:has(.pa-modal-panel[style*="display: flex"]) .global-chat-bar,
   body:has(.drill-float.open) .global-chat-bar,
   body:has(.action-modal-panel.open) .global-chat-bar,
+  body:has(.action-modal-panel[style*="display: flex"]) .global-chat-bar,
   body:has(.memory-panel.open) .global-chat-bar {
     display: none;
   }
