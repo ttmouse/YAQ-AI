@@ -648,6 +648,11 @@
     margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
   }
 
+  /* 顶部导航栏避开 iOS 状态栏（PWA 独立模式） */
+  .top {
+    padding-top: calc(env(safe-area-inset-top, 20px)) !important;
+  }
+
   /* 全屏面板顶部避开 iOS 状态栏 + 灵动岛 */
   .memory-panel {
     padding-top: calc(44px + env(safe-area-inset-top, 20px)) !important;
