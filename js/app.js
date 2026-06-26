@@ -4480,7 +4480,6 @@
           '<div class="mc-value"' + (m.valueColor ? ' style="color:' + m.valueColor + '"' : '') + '>' + m.value +
             (m.compare ? '<span class="mc-delta ' + (m.compare.isBad ? 'bad' : 'good') + '">' + m.compare.delta + '</span>' : '') +
           '</div>' +
-          (m.compare ? '<div class="mc-baseline">vs ' + m.compare.baselineLabel + ' ' + m.compare.baselineValue + '</div>' : '') +
           '<div class="mc-label">' + m.label + '</div>' +
           '<div class="mc-period ' + bCls + '">' + periodDisp + '</div>' +
         '</div>';
@@ -5990,6 +5989,50 @@
     window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)
     window.showMetricTip = window.YAQ.showMetricTip;      // 供指标卡片 onmouseenter 使用
     window.hideMetricTip = window.YAQ.hideMetricTip;      // 供指标卡片 onmouseleave 使用
+    window.openMetricConfig = window.YAQ.openMetricConfig; // 供指标配置按钮 onclick 使用
+    window.openAgentConfig = window.YAQ.openAgentConfig;   // 供 Agent 配置按钮 onclick 使用
+    window.saveAgentPrompt = window.YAQ.saveAgentPrompt;   // 供 Agent 提示词保存按钮 onclick 使用
+    window.askAI = window.YAQ.askAI;                       // 供 AI 分析按钮 onclick 使用
+
+    // ── 内联事件处理器全局别名（逐步替代内联，优先用 data-cmd） ──
+    window.openHazardDetail = window.YAQ.openHazardDetail;
+    window.openEnterprisePanel = window.YAQ.openEnterprisePanel;
+    window.regenerateDisposalRecs = window.YAQ.regenerateDisposalRecs;
+    window.copyDisposalRec = window.YAQ.copyDisposalRec;
+    window.generateAllDisposalText = window.YAQ.generateAllDisposalText;
+    window.toggleSelectAllPA = window.YAQ.toggleSelectAllPA;
+    window.batchConfirmPAs = window.YAQ.batchConfirmPAs;
+    window.batchChangePAs = window.YAQ.batchChangePAs;
+    window.batchIgnorePAs = window.YAQ.batchIgnorePAs;
+    window.clearPASelection = window.YAQ.clearPASelection;
+    window.togglePASelection = window.YAQ.togglePASelection;
+    window.confirmPendingAction = window.YAQ.confirmPendingAction;
+    window.changePendingAction = window.YAQ.changePendingAction;
+    window.ignorePendingAction = window.YAQ.ignorePendingAction;
+    window.toggleMrSection = window.YAQ.toggleMrSection;
+    window.toggleRegulation = window.YAQ.toggleRegulation;
+    window.epSwitchTab = window.YAQ.epSwitchTab;
+    window.copyDrawerGenerated = window.YAQ.copyDrawerGenerated;
+    window.setMetricFilter = window.YAQ.setMetricFilter;
+    window.setPeriodFilter = window.YAQ.setPeriodFilter;
+    window.toggleMiniCard = window.YAQ.toggleMiniCard;
+    window.onDragStart = window.YAQ.onDragStart;
+    window.onDragOver = window.YAQ.onDragOver;
+    window.onDrop = window.YAQ.onDrop;
+    window.onDragEnd = window.YAQ.onDragEnd;
+    window.removeSelected = window.YAQ.removeSelected;
+    window.copyTipContent = window.YAQ.copyTipContent;
+    window.applySearchChip = window.YAQ.applySearchChip;
+    window.executeSearchResult = window.YAQ.executeSearchResult;
+    window.launcherGo = window.YAQ.launcherGo;
+    window.toggleFavorite = window.YAQ.toggleFavorite;
+    window.openMetricDrilldown = window.YAQ.openMetricDrilldown;
+
+    // ── 未入 YAQ 命名空间的内联函数（直接挂 window） ──
+    window.closeDrawer = closeDrawer;
+    window.openTaskDetail = openTaskDetail;
+    window.removeSearchKeyword = removeSearchKeyword;
+    window.clearSearchHistory = clearSearchHistory;
 
     // ── 复合命令包装：支持 data-cmd 单命令调用 ──────────────
     YAQ.resetAndCloseMenu = function() { window.resetInit(); window.closeDemoMenu(); };
