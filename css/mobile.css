@@ -311,6 +311,11 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  /* 搜索/命令面板内边距 */
+  .launcher-panel {
+    padding: 32px 20px 48px !important;
+  }
+
   /* 表格在移动端可横向滚动 */
   .table-wrapper {
     overflow-x: auto;
@@ -417,6 +422,11 @@
   .modal-head-top input {
     font-size: 11px !important;
     height: 26px !important;
+  }
+
+  /* 搜索面板移动端内边距 */
+  .launcher-panel {
+    padding: 24px 16px 40px !important;
   }
 
   /* 表格字号 */
@@ -608,6 +618,10 @@
   /* 偏好选择网格变为 1 列 */
   .pref-grid {
     grid-template-columns: 1fr;
+  }
+  /* 搜索面板进一步缩小内边距 */
+  .launcher-panel {
+    padding: 16px 12px 32px !important;
   }
 
 }
