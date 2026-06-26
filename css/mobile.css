@@ -518,6 +518,16 @@
   .hmfoot-action {
     padding: 8px;
   }
+
+  /* 专项检查编辑弹窗 — 移动端全屏 */
+  .si-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    padding: 16px !important;
+  }
 }
 
 /* ─── 记忆面板 — 移动端全屏 ──────────────────────────────── */
