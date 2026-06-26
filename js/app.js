@@ -2993,7 +2993,7 @@
       riskSummary +
       '</div>' +
       '</div>' +
-      '<div style="display:flex;gap:8px;overflow-x:auto;padding:2px 0">';
+      '<div style="display:flex;gap:8px;overflow-x:auto;padding:2px 0;scrollbar-width:none;-ms-overflow-style:none">';
     var shownCount = 0;
     // 第一轮：未闭环
     for (var hi = 0; hi < majorHazards.length && shownCount < 3; hi++) {

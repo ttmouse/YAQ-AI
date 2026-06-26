@@ -1321,6 +1321,50 @@
       if (input) input.value = '';
     }, 300);
   }
+
+  // ─── sceneContent 容器追加（带滚动） ─────────────────────
+  function sceneAppend(html) {
+    var container = document.getElementById('sceneContent');
+    if (!container) return;
+    container.insertAdjacentHTML('beforeend', html);
+    var scrollContainer = container.closest('.result') || container.parentElement;
+    if (scrollContainer) {
+      requestAnimationFrame(function () {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      });
+    }
+  }
+
+  // ─── sceneContent 思考 → 逐段展示回复 ──────────────────
+  function sceneTypeResponse(thinkText, sections, callback) {
+    sceneAppend(thinkingDots(thinkText));
+    setTimeout(function () {
+      var row = document.getElementById('thinkingRow');
+      if (row) row.remove();
+      var respId = 'sceneResp' + Date.now();
+      sceneAppend('<div class="c-row agent"><div class="c-bubble" id="' + respId + '" style="flex:1;min-width:0;background:#fff;border:1px solid #e2eaf8;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.04)"></div></div>');
+      var el = document.getElementById(respId);
+      if (!el) { if (callback) callback(); return; }
+      var idx = 0;
+      function appendNext() {
+        if (idx >= sections.length) {
+          if (window.lucide) lucide.createIcons();
+          if (callback) callback();
+          return;
+        }
+        el.insertAdjacentHTML('beforeend', sections[idx]);
+        var container = document.getElementById('sceneContent');
+        if (container) {
+          var sc = container.closest('.result') || container.parentElement;
+          if (sc) requestAnimationFrame(function () { sc.scrollTop = sc.scrollHeight; });
+        }
+        idx++;
+        setTimeout(appendNext, 250 + Math.random() * 200);
+      }
+      appendNext();
+    }, 700 + Math.random() * 400);
+  }
+
   function renderOverdueAnalysis() {
     var container = document.getElementById('sceneContent');
     if (!container) return;
