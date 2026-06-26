@@ -466,3 +466,10 @@
     justify-content: center;
   }
 }
+
+/* ─── rules-toast 移动端上移避免与底部导航重叠 ───────────────── */
+@media (max-width: 768px) {
+  .rules-toast {
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+}
