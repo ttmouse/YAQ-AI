@@ -327,7 +327,9 @@
   z-index: 999;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
   pointer-events: none;
   max-width: 90vw;
   white-space: nowrap;
@@ -6681,14 +6683,16 @@
    全局底部浮动输入条
    ═════════════════════════════════════════════════════════════════════ */
 .global-chat-quick-wrap {
-  flex-shrink: 0;
-  align-self: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  bottom: 64px;
   width: calc(100% - 32px);
   max-width: 840px;
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 8px;
   z-index: 45;
   pointer-events: none;
 }
@@ -6784,8 +6788,8 @@
 }
 @media (min-width: 769px) {
   .global-chat-inner .global-chat-btn {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 }
 .global-chat-inner .global-chat-btn:hover {
@@ -6806,8 +6810,8 @@
 }
 @media (min-width: 769px) {
   .global-chat-inner .global-chat-mic {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 }
 .global-chat-inner .global-chat-mic:hover {

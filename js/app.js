@@ -137,6 +137,9 @@
     workspace: document.getElementById('workspace'),
   };
 
+  // ─── YAQ 命名空间 — 后续脚本（agent-init.js/track-store.js）会补充更多方法 ──
+  var YAQ = {};
+
   // ════════════════════════════════════════════════════════════════
   // 自定义弹窗（替换原生 prompt/confirm — 移动端体验差不可接受）
   // ════════════════════════════════════════════════════════════════
@@ -156,8 +159,8 @@
     }
 
     titleEl.textContent = '确认操作';
-    bodyEl.innerHTML = '<p style="margin:8px 0;font-size:14px;color:var(--text);line-height:1.6">' +
-      escapeHtml(message) + '</p>';
+    bodyEl.innerHTML =
+      '<p style="margin:8px 0;font-size:14px;color:var(--text);line-height:1.6">' + escapeHtml(message) + '</p>';
     footerEl.style.display = 'flex';
     footerEl.innerHTML =
       '<button class="action-modal-cancel-btn" id="confirmCancelBtn" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer">取消</button>' +
@@ -210,11 +213,25 @@
       bodyHtml +=
         '<div style="margin-bottom:12px">' +
         '<label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px">' +
-        escapeHtml(f.label || '') + '</label>' +
+        escapeHtml(f.label || '') +
+        '</label>' +
         (f.type === 'textarea'
-          ? '<textarea id="promptField' + fi + '" placeholder="' + escapeHtml(f.placeholder || '') + '" style="width:100%;min-height:80px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;color:var(--text);background:var(--surface)">' + escapeHtml(f.defaultValue || '') + '</textarea>'
-          : '<input id="promptField' + fi + '" type="' + (f.type || 'text') + '" placeholder="' + escapeHtml(f.placeholder || '') + '" value="' + escapeHtml(f.defaultValue || '') + '" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--text);background:var(--surface)" />'
-        ) +
+          ? '<textarea id="promptField' +
+            fi +
+            '" placeholder="' +
+            escapeHtml(f.placeholder || '') +
+            '" style="width:100%;min-height:80px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;color:var(--text);background:var(--surface)">' +
+            escapeHtml(f.defaultValue || '') +
+            '</textarea>'
+          : '<input id="promptField' +
+            fi +
+            '" type="' +
+            (f.type || 'text') +
+            '" placeholder="' +
+            escapeHtml(f.placeholder || '') +
+            '" value="' +
+            escapeHtml(f.defaultValue || '') +
+            '" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--text);background:var(--surface)" />') +
         '</div>';
     }
     bodyEl.innerHTML = bodyHtml;
@@ -275,41 +292,49 @@
   // 助手函数
   function escapeHtml(str) {
     if (typeof str !== 'string') return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   // ─── 使用自定义弹窗重写 updateTrackProgress 等方法 ──────────
   // 更新进展（弹窗输入进展描述）
   YAQ.updateTrackProgress = function (id) {
-    YAQ.showPrompt([
-      { label: '最新进展描述', placeholder: '例如：已联系企业负责人，安排本周五前整改', type: 'textarea' },
-      { label: '当前完成进度（0-100%）', placeholder: '例如：65', defaultValue: '50' }
-    ], function (vals) {
-      if (!vals) return; // 用户取消
-      var note = (vals[0] || '').trim();
-      var pct = vals[1] || '';
-      if (!note) return;
-      var progress = parseInt(pct, 10);
-      if (isNaN(progress) || progress < 0) progress = 50;
-      if (progress > 100) progress = 100;
-      YAQ.trackStore.update(id, { note: note, progress: progress });
-      showToast('✅ 进展已更新');
-      switchScene('followup');
-    });
+    YAQ.showPrompt(
+      [
+        { label: '最新进展描述', placeholder: '例如：已联系企业负责人，安排本周五前整改', type: 'textarea' },
+        { label: '当前完成进度（0-100%）', placeholder: '例如：65', defaultValue: '50' },
+      ],
+      function (vals) {
+        if (!vals) return; // 用户取消
+        var note = (vals[0] || '').trim();
+        var pct = vals[1] || '';
+        if (!note) return;
+        var progress = parseInt(pct, 10);
+        if (isNaN(progress) || progress < 0) progress = 50;
+        if (progress > 100) progress = 100;
+        YAQ.trackStore.update(id, { note: note, progress: progress });
+        showToast('✅ 进展已更新');
+        switchScene('followup');
+      },
+    );
   };
   // 标记闭环
   YAQ.resolveTrack = function (id) {
     YAQ.showConfirm('确认该事项已闭环？', function (confirmed) {
       if (!confirmed) return;
-      YAQ.showPrompt([
-        { label: '闭环说明（可选）', placeholder: '例如：已完成整改并复查确认', type: 'textarea' }
-      ], function (vals) {
-        var note = (vals && vals[0] && vals[0].trim()) || '已闭环';
-        YAQ.trackStore.resolve(id, note);
-        showToast('✅ 已标记为闭环');
-        switchScene('followup');
-      });
+      YAQ.showPrompt(
+        [{ label: '闭环说明（可选）', placeholder: '例如：已完成整改并复查确认', type: 'textarea' }],
+        function (vals) {
+          var note = (vals && vals[0] && vals[0].trim()) || '已闭环';
+          YAQ.trackStore.resolve(id, note);
+          showToast('✅ 已标记为闭环');
+          switchScene('followup');
+        },
+      );
     });
   };
 
@@ -7858,6 +7883,7 @@
   // YAQ Namespace — 统一命名空间，替代零散 window 导出
   // 新增代码应使用 YAQ.xxx 而非 window.xxx
   // ════════════════════════════════════════════════════════════════
+  window.YAQ = window.YAQ || {};
   Object.assign(window.YAQ, {
     // ─── 场景/导航 ───
     switchScene: switchScene,

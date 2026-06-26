@@ -42,7 +42,11 @@
     <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <!-- iOS 启动屏（通过在根目录放 splash/ 图片实现） -->
-    <link rel="apple-touch-startup-image" href="apple-touch-icon.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <link
+      rel="apple-touch-startup-image"
+      href="apple-touch-icon.png"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+    />
     <meta name="theme-color" content="#f8f9fc" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1e1e2e" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -501,8 +505,13 @@
       (function () {
         if (!('ontouchstart' in window)) return;
         var modalSelectors = [
-          '#hazardModal', '#taskModal', '#metricModal', '#paModal',
-          '#drillFloat', '#actionModal', '.memory-panel.open'
+          '#hazardModal',
+          '#taskModal',
+          '#metricModal',
+          '#paModal',
+          '#drillFloat',
+          '#actionModal',
+          '.memory-panel.open',
         ];
         var chatBar = document.querySelector('.global-chat-bar');
         if (!chatBar) return;
@@ -616,7 +625,7 @@
 
           // 统一规则：高度>=896px 的 iPhone 有刘海/灵动岛
           // 动态岛/刘海机型 top = 59px（包含状态栏）
-          if (h * ratio >= 2000 || h >= 896) return 59;  // 14 Pro Max / 15 Plus / 16 系列
+          if (h * ratio >= 2000 || h >= 896) return 59; // 14 Pro Max / 15 Plus / 16 系列
           if (h >= 844) return 54; // 14 Pro / 15 Pro
           if (h >= 812) return 44; // X / XS / 11 Pro / 12/13 mini
           return 20; // SE / 8 及以下
@@ -631,7 +640,7 @@
           '.memory-panel',
           '.launcher-panel',
           '.action-modal-panel',
-          '.si-modal'
+          '.si-modal',
         ];
         targets.forEach(function (sel) {
           var els = document.querySelectorAll(sel);

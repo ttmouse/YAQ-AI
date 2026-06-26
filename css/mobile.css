@@ -493,8 +493,12 @@
 
 /* ─── 底部滑入动画 keyframes ────────────────────────────── */
 @keyframes slideUpDrawer {
-  from { transform: translateY(100%); }
-  to   { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* ─── 待确认督办弹窗 — 移动端底部抽屉式 ──────────────────────── */
@@ -521,7 +525,7 @@
     margin: 8px auto 0;
     flex-shrink: 0;
   }
-  .pa-modal-panel[style*="display: flex"] {
+  .pa-modal-panel[style*='display: flex'] {
     animation: slideUpDrawer 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .pa-modal-head {
@@ -563,7 +567,7 @@
     margin: 8px auto 0;
     flex-shrink: 0;
   }
-  .modal-panel[style*="display: flex"] {
+  .modal-panel[style*='display: flex'] {
     animation: slideUpDrawer 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .modal-head {
@@ -1023,7 +1027,9 @@ html.pwa-standalone .global-chat-bar {
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-md);
     z-index: 99;
-    transition: max-height 0.25s ease, padding 0.25s ease;
+    transition:
+      max-height 0.25s ease,
+      padding 0.25s ease;
     padding: 0 12px;
     gap: 2px;
   }
@@ -1044,13 +1050,13 @@ html.pwa-standalone .global-chat-bar {
 
 /* ─── 移动端：全屏弹窗打开时隐藏底部聊天栏 ──────────── */
 @media (max-width: 768px) {
-  body:has(.hmodal-panel[style*="display: block"]) .global-chat-bar,
-  body:has(.tmodal-panel[style*="display: block"]) .global-chat-bar,
-  body:has(.modal-panel[style*="display: flex"]) .global-chat-bar,
-  body:has(.pa-modal-panel[style*="display: flex"]) .global-chat-bar,
+  body:has(.hmodal-panel[style*='display: block']) .global-chat-bar,
+  body:has(.tmodal-panel[style*='display: block']) .global-chat-bar,
+  body:has(.modal-panel[style*='display: flex']) .global-chat-bar,
+  body:has(.pa-modal-panel[style*='display: flex']) .global-chat-bar,
   body:has(.drill-float.open) .global-chat-bar,
   body:has(.action-modal-panel.open) .global-chat-bar,
-  body:has(.action-modal-panel[style*="display: flex"]) .global-chat-bar,
+  body:has(.action-modal-panel[style*='display: flex']) .global-chat-bar,
   body:has(.memory-panel.open) .global-chat-bar {
     display: none;
   }
