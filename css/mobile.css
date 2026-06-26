@@ -701,3 +701,19 @@
     justify-content: space-between;
   }
 }
+
+/* ─── 移动端：指标说明浮层底部居中 ────────────────────── */
+@media (max-width: 768px) {
+  .metric-tip {
+    top: auto !important;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0)) !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: calc(100vw - 32px) !important;
+    width: max-content;
+    font-size: 12px;
+    border-radius: 12px;
+    padding: 12px 16px;
+  }
+}
