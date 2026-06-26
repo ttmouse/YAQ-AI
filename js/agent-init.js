@@ -1642,9 +1642,9 @@
     sceneAppend(
       '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
         '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
-          escapeHtml(userQuery) +
+        escapeHtml(userQuery) +
         '</div>' +
-      '</div>',
+        '</div>',
     );
     var sections = [
       // 标题
@@ -1652,73 +1652,71 @@
       // 说明
       '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
         '已将原工作组数据聚合为 <strong>2 个业务组</strong>，按 <strong>3 个片区</strong>分别展示。' +
-      '</div>',
+        '</div>',
       // 业务组1：企业安全组
       '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
-          '<span style="background:#eef4ff;color:#2563eb;font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px">业务组 ①</span>' +
-          '<span style="font-size:14px;font-weight:700;color:#1e293b">企业安全组（原工作组 A/B）</span>' +
+        '<span style="background:#eef4ff;color:#2563eb;font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px">业务组 ①</span>' +
+        '<span style="font-size:14px;font-weight:700;color:#1e293b">企业安全组（原工作组 A/B）</span>' +
         '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">' +
-          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">951</div><div style="font-size:11px;color:#64748b">监管企业</div></div>' +
-          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">93.48%</div><div style="font-size:11px;color:#64748b">采集率</div></div>' +
-          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#dc2626">11.13%</div><div style="font-size:11px;color:#64748b">整改完成率</div></div>' +
+        '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">951</div><div style="font-size:11px;color:#64748b">监管企业</div></div>' +
+        '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">93.48%</div><div style="font-size:11px;color:#64748b">采集率</div></div>' +
+        '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#dc2626">11.13%</div><div style="font-size:11px;color:#64748b">整改完成率</div></div>' +
         '</div>' +
         '<div style="font-size:12px;color:#475569;line-height:1.7;padding:8px 10px;background:#fef2f2;border-radius:8px">⚠ 企业整改完成率仅 11.13%，推送覆盖率 58.57%，需重点关注整改闭环。</div>' +
-      '</div>',
+        '</div>',
       // 业务组2：场所安全组
       '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
-          '<span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px">业务组 ②</span>' +
-          '<span style="font-size:14px;font-weight:700;color:#1e293b">场所安全组（原工作组 C/D）</span>' +
+        '<span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 10px;border-radius:6px">业务组 ②</span>' +
+        '<span style="font-size:14px;font-weight:700;color:#1e293b">场所安全组（原工作组 C/D）</span>' +
         '</div>' +
         '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">' +
-          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">13,540</div><div style="font-size:11px;color:#64748b">监管场所</div></div>' +
-          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#d97706">57.36%</div><div style="font-size:11px;color:#64748b">采集率</div></div>' +
-          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#16a34a">59.46%</div><div style="font-size:11px;color:#64748b">整改完成率</div></div>' +
+        '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">13,540</div><div style="font-size:11px;color:#64748b">监管场所</div></div>' +
+        '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#d97706">57.36%</div><div style="font-size:11px;color:#64748b">采集率</div></div>' +
+        '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#16a34a">59.46%</div><div style="font-size:11px;color:#64748b">整改完成率</div></div>' +
         '</div>' +
         '<div style="font-size:12px;color:#475569;line-height:1.7;padding:8px 10px;background:#fff7ed;border-radius:8px">⚠ 场所采集率仅 57.36%，待办推送覆盖率低至 17.05%，监管触达严重不足。</div>' +
-      '</div>',
+        '</div>',
       // 片区数据
       '<div style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #e2e8f0;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
         '<div style="font-weight:700;margin-bottom:8px">📍 各片区关键数据</div>' +
         '<table style="width:100%;font-size:12px;border-collapse:collapse">' +
-          '<tr style="border-bottom:1px solid #e2e8f0">' +
-            '<th style="text-align:left;padding:4px 6px;color:#64748b;font-weight:500">片区</th>' +
-            '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">监管主体</th>' +
-            '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">采集率</th>' +
-            '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">整改率</th>' +
-            '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">状态</th>' +
-          '</tr>' +
-          '<tr style="border-bottom:1px solid #f1f5f9">' +
-            '<td style="padding:6px;color:#1e293b;font-weight:600">良渚片</td>' +
-            '<td style="padding:6px;text-align:center">4,832</td>' +
-            '<td style="padding:6px;text-align:center">68.2%</td>' +
-            '<td style="padding:6px;text-align:center;color:#d97706">43.1%</td>' +
-            '<td style="padding:6px;text-align:center"><span style="color:#d97706">⚠ 偏低</span></td>' +
-          '</tr>' +
-          '<tr style="border-bottom:1px solid #f1f5f9">' +
-            '<td style="padding:6px;color:#1e293b;font-weight:600">物流片</td>' +
-            '<td style="padding:6px;text-align:center">3,276</td>' +
-            '<td style="padding:6px;text-align:center">54.7%</td>' +
-            '<td style="padding:6px;text-align:center;color:#dc2626">28.6%</td>' +
-            '<td style="padding:6px;text-align:center"><span style="color:#dc2626">✗ 危险</span></td>' +
-          '</tr>' +
-          '<tr>' +
-            '<td style="padding:6px;color:#1e293b;font-weight:600">勾庄片</td>' +
-            '<td style="padding:6px;text-align:center">6,383</td>' +
-            '<td style="padding:6px;text-align:center">61.3%</td>' +
-            '<td style="padding:6px;text-align:center;color:#16a34a">72.8%</td>' +
-            '<td style="padding:6px;text-align:center"><span style="color:#16a34a">✓ 正常</span></td>' +
-          '</tr>' +
+        '<tr style="border-bottom:1px solid #e2e8f0">' +
+        '<th style="text-align:left;padding:4px 6px;color:#64748b;font-weight:500">片区</th>' +
+        '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">监管主体</th>' +
+        '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">采集率</th>' +
+        '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">整改率</th>' +
+        '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">状态</th>' +
+        '</tr>' +
+        '<tr style="border-bottom:1px solid #f1f5f9">' +
+        '<td style="padding:6px;color:#1e293b;font-weight:600">良渚片</td>' +
+        '<td style="padding:6px;text-align:center">4,832</td>' +
+        '<td style="padding:6px;text-align:center">68.2%</td>' +
+        '<td style="padding:6px;text-align:center;color:#d97706">43.1%</td>' +
+        '<td style="padding:6px;text-align:center"><span style="color:#d97706">⚠ 偏低</span></td>' +
+        '</tr>' +
+        '<tr style="border-bottom:1px solid #f1f5f9">' +
+        '<td style="padding:6px;color:#1e293b;font-weight:600">物流片</td>' +
+        '<td style="padding:6px;text-align:center">3,276</td>' +
+        '<td style="padding:6px;text-align:center">54.7%</td>' +
+        '<td style="padding:6px;text-align:center;color:#dc2626">28.6%</td>' +
+        '<td style="padding:6px;text-align:center"><span style="color:#dc2626">✗ 危险</span></td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td style="padding:6px;color:#1e293b;font-weight:600">勾庄片</td>' +
+        '<td style="padding:6px;text-align:center">6,383</td>' +
+        '<td style="padding:6px;text-align:center">61.3%</td>' +
+        '<td style="padding:6px;text-align:center;color:#16a34a">72.8%</td>' +
+        '<td style="padding:6px;text-align:center"><span style="color:#16a34a">✓ 正常</span></td>' +
+        '</tr>' +
         '</table>' +
         '<div style="font-size:11px;color:#64748b;margin-top:6px">物流片整改率仅 28.6%，需优先介入。</div>' +
-      '</div>',
+        '</div>',
     ];
     sceneTypeResponse('正在按业务组和片区重构月报…', sections, function () {
-      showGlobalQuickChip([
-        { label: '后续月报是否要保存为模板？', text: '将这种展示方式保存为月报模板' },
-      ]);
+      showGlobalQuickChip([{ label: '后续月报是否要保存为模板？', text: '将这种展示方式保存为月报模板' }]);
     });
   }
 
@@ -1730,9 +1728,9 @@
     sceneAppend(
       '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
         '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
-          escapeHtml(userQuery) +
+        escapeHtml(userQuery) +
         '</div>' +
-      '</div>',
+        '</div>',
     );
     var sections = [
       // 标题
@@ -1740,22 +1738,22 @@
       // 模板保存确认
       '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#f0fdf4;border-radius:12px;border:1px solid #bbf7d0">' +
         '已识别当前月报的 <strong>展示结构</strong>，并保存为默认模板。后续月报将自动按此结构生成。' +
-      '</div>',
+        '</div>',
       // 模板结构卡片
       '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="font-size:13px;font-weight:600;color:#1e293b;margin-bottom:10px">📐 已保存的模板结构</div>' +
         '<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:#475569;line-height:1.6">' +
-          '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>按业务组聚合（企业安全组 + 场所安全组）</div>' +
-          '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>按片区拆分展示（良渚片 / 物流片 / 勾庄片）</div>' +
-          '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>每个业务组展示核心指标卡片（监管数 / 采集率 / 整改率）</div>' +
-          '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>各片区附状态标记（正常 / 偏低 / 危险）</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>按业务组聚合（企业安全组 + 场所安全组）</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>按片区拆分展示（良渚片 / 物流片 / 勾庄片）</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>每个业务组展示核心指标卡片（监管数 / 采集率 / 整改率）</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;padding:4px 0"><span style="background:#eef4ff;color:#2563eb;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px">维度</span>各片区附状态标记（正常 / 偏低 / 危险）</div>' +
         '</div>' +
-      '</div>',
+        '</div>',
       // AI 分析说明
       '<div style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #e2e8f0;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
         '<div style="font-weight:700;margin-bottom:6px">🤖 AI 分析</div>' +
         '<div style="font-size:12px;color:#475569">已分析当前月报数据与展示结构，识别出 2 个业务组（企业/场所）和 3 个片区（良渚/物流/勾庄）之间的数据差异。<strong>模板已保存</strong>，下期月报将自动按业务组聚合 + 多片区对比的方式生成。</div>' +
-      '</div>',
+        '</div>',
     ];
     sceneTypeResponse('正在分析月报结构并更新模板…', sections);
   }
