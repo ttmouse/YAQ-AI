@@ -1,0 +1,36 @@
+# Reasonix 配置模板
+# 复制此文件为 reasonix.toml 并按需修改
+# 
+# 注意：reasonix.toml 已在 .gitignore 中，不会被提交到版本控制。
+# 这是一份参考模板供新开发者快速上手。
+#
+# 完整文档：https://reasonix.dev/config
+
+config_version = 3
+# default_model = "your-model-here"   # 例如 "deepseek-flash", "gpt-4o" 等
+# language      = "zh"                # 默认为自动检测
+
+[agent]
+# system_prompt = """你的自定义系统提示词"""
+# system_prompt_file = "prompts/system.md"
+temperature       = 0.0
+# reasoning_language = "zh"
+soft_compact_ratio  = 0.5
+compact_ratio       = 0.8
+compact_force_ratio = 0.9
+cold_resume_prune   = true
+# planner_model = "your-planner-model"
+# subagent_model = "your-subagent-model"
+
+[tools]
+# enabled = []   # 空 = 启用所有内置工具
+bash_timeout_seconds = 120
+
+[tools.background_jobs]
+stalled_warning_seconds = 900
+
+[lsp]
+enabled = true
+# [lsp.servers.go]
+# command = "gopls"
+# args = []
