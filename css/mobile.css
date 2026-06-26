@@ -649,6 +649,11 @@
     margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
   }
 
+  /* 初始化场景输入条底部间距 */
+  .init-chat-bar {
+    margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
+  }
+
   /* 顶部导航栏避开 iOS 状态栏（PWA 独立模式） */
   .top {
     padding-top: calc(env(safe-area-inset-top, 20px)) !important;
@@ -720,6 +725,12 @@
 html.pwa-standalone .init-overlay {
   /* JS 已设置 --pwa-safe-top 自定义属性，CSS 作为回退兜底 */
   top: calc(52px + var(--pwa-safe-top, env(safe-area-inset-top, 20px)));
+}
+html.pwa-standalone .init-chat-bar {
+  margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
+}
+html.pwa-standalone .global-chat-bar {
+  margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
 }
 
 /* ─── Windows PWA Title Bar 区域（window-controls-overlay） ──── */
