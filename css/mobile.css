@@ -493,6 +493,27 @@
   }
 }
 
+/* ─── 记忆面板 — 移动端全屏 ──────────────────────────────── */
+@media (max-width: 768px) {
+  .memory-panel {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    z-index: 970;
+  }
+  .memory-panel-head {
+    padding: 12px 16px;
+  }
+  .memory-panel-body {
+    padding: 12px 16px 20px;
+  }
+}
+
 /* ─── 超小屏（≤400px）特殊适配 ────────────────────────────── */
 @media (max-width: 400px) {
   /* 能力卡片网格在极小屏变回 1 列 */
