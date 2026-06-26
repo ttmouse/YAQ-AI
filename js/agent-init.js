@@ -1571,10 +1571,11 @@
           var container = document.getElementById('sceneContent');
           if (container) {
             var sc = container.closest('.center');
-            if (sc)
+            if (sc) {
               requestAnimationFrame(function () {
                 sc.scrollTop = sc.scrollHeight;
               });
+            }
           }
           idx++;
           setTimeout(appendNext, 250 + Math.random() * 200);
