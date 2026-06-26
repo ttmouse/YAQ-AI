@@ -17,6 +17,8 @@
     img-src 'self' https://app.17an.com data:;
     font-src 'self' data:;
     connect-src 'self' https://unpkg.com;
+    manifest-src 'self';
+    worker-src 'self';
   "
     />
     <meta property="og:title" content="站长每日监管闭环工作台" />
@@ -27,6 +29,17 @@
     <meta name="description" content="基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人" />
     <title>站长每日监管闭环工作台</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+    <!-- ═══ PWA — iOS 添加到主屏幕 + Android TWA ══════════════════ -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="应擎工作台" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
     <link rel="preconnect" href="https://unpkg.com" crossorigin />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/agent-init.css" />
@@ -477,5 +490,14 @@
     <script src="js/track-store.js"></script>
     <script src="js/rules.js"></script>
     <script src="js/agent-init.js"></script>
+
+    <!-- ═══ PWA Service Worker 注册 ════════════════════════════════ -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {});
+        });
+      }
+    </script>
   </body>
 </html>

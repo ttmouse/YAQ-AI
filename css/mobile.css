@@ -590,3 +590,27 @@
     }
   }
 }
+
+/* ─── PWA 独立模式（iOS 添加到主屏幕后） ────────────────────────── */
+/* standalone 模式下 env(safe-area-inset-bottom) 可能失效 */
+/* iPhone 底部横条约 34px，强制给足间距 */
+@media (display-mode: standalone) {
+  .mobile-bottom-nav {
+    height: auto;
+    padding: 4px 0 34px;
+  }
+  .main {
+    padding-bottom: calc(50px + 34px) !important;
+  }
+  .global-chat-bar {
+    bottom: calc(12px + 34px) !important;
+  }
+}
+@media (display-mode: standalone) and (max-width: 480px) {
+  .main {
+    padding-bottom: calc(50px + 34px) !important;
+  }
+  .global-chat-bar {
+    bottom: calc(12px + 34px) !important;
+  }
+}
