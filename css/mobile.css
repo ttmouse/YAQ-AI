@@ -656,6 +656,19 @@
   }
 }
 
+/* ─── 移动端：消除 tap 高亮灰色闪动 ──────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role='button'],
+  [data-cmd] {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 /* ─── 移动端：tab-strip 作为侧边栏滑出 ──────────────────── */
 @media (max-width: 768px) {
   .tab-strip {
