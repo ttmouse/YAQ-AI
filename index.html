@@ -546,7 +546,10 @@
 
       /* ═══ iOS PWA Safe Area 修复 ════════════════════════════════ */
       (function () {
-        if (!window.navigator.standalone) return; // 仅 PWA 模式
+        if (!window.navigator.standalone) return; // 仅 iOS PWA 模式
+
+        // 添加 pwa-standalone 类，CSS 可针对此做额外适配
+        document.documentElement.classList.add('pwa-standalone');
 
         function getSafeTop() {
           // 方式 1：通过 CSS env() 读取系统安全区域
@@ -569,13 +572,17 @@
 
         var sat = getSafeTop();
 
-        // 应用到顶栏
-        var top = document.querySelector('.top');
-        if (top) top.style.paddingTop = sat + 'px';
-
-        // 应用到初始覆盖层
+        // 初始化覆盖层：env() 可能未完全生效，JS 确保正确偏移
         var initOv = document.querySelector('.init-overlay');
-        if (initOv) initOv.style.top = 52 + sat + 'px';
+        if (initOv) initOv.style.setProperty('--pwa-safe-top', sat + 'px');
+
+        // 监听 orientation change，重新计算（iPad 横竖屏切换时 safe area 变化）
+        window.addEventListener('orientationchange', function () {
+          setTimeout(function () {
+            var sat2 = getSafeTop();
+            if (initOv) initOv.style.setProperty('--pwa-safe-top', sat2 + 'px');
+          }, 300);
+        });
       })();
 
       /* ═══ 移动端键盘弹出时输入框自动滚入可视区 ══════════════════ */

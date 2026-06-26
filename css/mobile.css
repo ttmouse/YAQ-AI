@@ -442,12 +442,80 @@
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
 /* ─── PWA 独立模式（iOS 添加到主屏幕后） ────────────────────────── */
-/* standalone 模式下 env(safe-area-inset-bottom) 可能失效 */
+/* standalone 模式下 env(safe-area-inset-bottom) 在部分 iOS 版本可能失效 */
 /* iPhone 底部横条约 34px，强制给足间距 */
-@media (display-mode: standalone) and (max-width: 480px) {
+@media (display-mode: standalone) {
+  /* 全局聊天栏底部间距（涵盖所有断点，不限于 480px） */
   .global-chat-bar {
-    margin-bottom: calc(12px + 34px) !important;
+    margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
   }
+
+  /* 全屏面板顶部避开 iOS 状态栏 + 灵动岛 */
+  .memory-panel {
+    padding-top: calc(44px + env(safe-area-inset-top, 20px)) !important;
+  }
+  .memory-panel-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  /* 启动台面板顶部间距 */
+  .launcher-panel {
+    padding-top: calc(env(safe-area-inset-top, 20px) + 20px) !important;
+  }
+
+  /* 全屏弹窗底部避开 Home Indicator */
+  .action-modal-body,
+  .hmodal-body,
+  .tmodal-body,
+  .pa-modal-body,
+  .drawer-body {
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 34px)) !important;
+  }
+
+  /* 钻取浮层 */
+  .drill-float {
+    padding-top: calc(env(safe-area-inset-top, 20px) + 8px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 34px) + 8px);
+  }
+
+  /* 底部 Toast 上移避开 Home Indicator */
+  .toast {
+    bottom: calc(80px + env(safe-area-inset-bottom, 34px)) !important;
+  }
+
+  /* 规则 toast */
+  .rules-toast {
+    bottom: calc(100px + env(safe-area-inset-bottom, 34px)) !important;
+  }
+
+  /* Demo 菜单（右上角）跟随状态栏高度 */
+  .demo-menu-wrap.mobile-top-right {
+    top: calc(52px + env(safe-area-inset-top, 20px)) !important;
+  }
+}
+
+/* iPhone 横屏 PWA 适配 */
+@media (display-mode: standalone) and (orientation: landscape) {
+  .top {
+    padding-left: calc(14px + env(safe-area-inset-left, 0px));
+    padding-right: calc(14px + env(safe-area-inset-right, 0px));
+  }
+  .hmodal-body,
+  .tmodal-body,
+  .drawer-body {
+    padding-left: calc(14px + env(safe-area-inset-left, 0px));
+    padding-right: calc(14px + env(safe-area-inset-right, 0px));
+  }
+}
+
+/* ─── iOS PWA 独立模式：JS 注入的 pwa-standalone class ────── */
+/* 当 JS 检测到 window.navigator.standalone 时给 html 添加此 class */
+/* 用于弥补 CSS display-mode:standalone 在某些 iOS 版本不生效的情况 */
+html.pwa-standalone .init-overlay {
+  /* JS 已设置 --pwa-safe-top 自定义属性，CSS 作为回退兜底 */
+  top: calc(52px + var(--pwa-safe-top, env(safe-area-inset-top, 20px)));
 }
 
 /* ─── 移动端：隐藏左下角菜单，改由服务站名称触发 ──────────────── */
