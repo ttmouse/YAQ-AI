@@ -982,55 +982,103 @@
       // AI Agent 分析回复
       '<div class="c-row agent" style="animation:fadeUp .35s ease-out both">' +
         '<div class="c-bubble" style="flex:1;min-width:0;background:#fff;border:1px solid #e2eaf8;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.04)">' +
+          // ─── 标题 ───
           '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">🔍 超期未闭环原因分析</div>' +
           '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
-            '当前共有 <strong style="color:#dc2626">2 项</strong>重大隐患超期未整改，涉及 <strong>消防安全组</strong>，以下逐项分析原因：' +
+            '当前共有 <strong style="color:#dc2626">2 项</strong>重大隐患超期未整改。以下从 <strong>政府端（监督跟进）</strong>和 <strong>企业端（主体责任）</strong>两个维度逐项研判责任归属。' +
           '</div>' +
+          // ─── 第1项 ───
           '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px;border-left:3px solid #dc2626">' +
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
               '<span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">超期 3 天</span>' +
               '<span style="font-size:14px;font-weight:700;color:#1e293b">北苑商业综合体 · 消防通道堵塞</span>' +
             '</div>' +
             '<div style="font-size:12px;color:#64748b;line-height:1.7;margin-bottom:10px">' +
-              '<div>📍 责任人：王志安 &nbsp;|&nbsp; 区域：良渚街道</div>' +
+              '<div>📍 责任人：王志安（消防安全组）&nbsp;|&nbsp; 区域：良渚街道</div>' +
               '<div style="margin-top:4px">📋 临时管控措施待确认，整改方案未提交</div>' +
             '</div>' +
-            '<div style="background:#f8fafc;border-radius:10px;padding:12px;font-size:12px;line-height:1.7">' +
-              '<div style="font-weight:600;color:#475569;margin-bottom:6px">🧠 AI 分析 — 超期原因</div>' +
-              '<div style="color:#64748b">' +
-                '1. <strong>反复出现型问题：</strong>消防通道堵塞本月已发生 3 次，属于屡教不改型，常规电话提醒已失效。<br>' +
-                '2. <strong>处置力度不足：</strong>当前仅停留在督促层面，未采取实质性强制措施（如停业整顿），责任人缺乏紧迫感。<br>' +
-                '3. <strong>临时管控缺失：</strong>超期 3 天仍未确认临时管控方案，存在持续风险敞口。<br>' +
-                '4. <strong>建议升级处置：</strong>启动第 3 级处置——责令占用区域停业整顿，由消防安全组组长带队现场核查。' +
+            // 政府端分析
+            '<div style="background:#eef4ff;border-radius:10px;padding:12px;margin-bottom:8px;font-size:12px;line-height:1.7">' +
+              '<div style="font-weight:600;color:#2563eb;margin-bottom:4px">🏛 政府端 — 监督跟进</div>' +
+              '<div style="color:#475569">' +
+                '• 已反复提醒：该主体消防通道堵塞本月已发现 <strong>3 次</strong>，王志安已多次电话督促。<br>' +
+                '• 已发督办：超期 3 天，系统已自动发起督办流程。<br>' +
+                '• 存在问题：目前仅停留在电话督促层面，<strong style="color:#dc2626">未升级实质性措施</strong>（如现场核查、临时管控、停业整顿），跟进力度偏软。' +
               '</div>' +
             '</div>' +
+            // 企业端分析
+            '<div style="background:#fef2f2;border-radius:10px;padding:12px;margin-bottom:10px;font-size:12px;line-height:1.7">' +
+              '<div style="font-weight:600;color:#dc2626;margin-bottom:4px">🏢 企业端 — 主体责任</div>' +
+              '<div style="color:#475569">' +
+                '• 反复堵塞：同一问题月内反复 3 次，说明企业未建立长效管理机制，<strong style="color:#dc2626">主体责任落实不到位</strong>。<br>' +
+                '• 整改配合度低：超期 3 天仍未提交整改方案，临时管控措施也未确认，企业配合意愿弱。<br>' +
+                '• 建议：该主体属于屡教不改型，常规督促已失效，需升级为企业约谈或联合执法。' +
+              '</div>' +
+            '</div>' +
+            // 责任研判结论
+            '<div style="background:#f8fafc;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.7;border:1px dashed #d1d5db">' +
+              '<div style="font-weight:700;color:#1e293b;margin-bottom:2px">⚖ 初步研判：<span style="color:#dc2626">企业主体责任问题为主</span></div>' +
+              '<div style="color:#64748b">政府端已多次提醒催办，手段基本到位但力度偏软；企业端反复堵塞、不配合整改，是超期的主要原因。建议：政府端升级为现场核查 + 企业约谈，如仍不配合则联合执法。</div>' +
+            '</div>' +
           '</div>' +
+          // ─── 第2项 ───
           '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px;border-left:3px solid #f97316">' +
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
               '<span style="background:#fff7ed;color:#d97706;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">超期 1 天</span>' +
               '<span style="font-size:14px;font-weight:700;color:#1e293b">云栖高层住宅 · 自动消防设施失效</span>' +
             '</div>' +
             '<div style="font-size:12px;color:#64748b;line-height:1.7;margin-bottom:10px">' +
-              '<div>📍 责任人：李明 &nbsp;|&nbsp; 区域：五常街道</div>' +
+              '<div>📍 责任人：李明（消防安全组）&nbsp;|&nbsp; 区域：五常街道</div>' +
               '<div style="margin-top:4px">📋 18-25 层消防设施大面积失效，整改证据不足</div>' +
             '</div>' +
-            '<div style="background:#f8fafc;border-radius:10px;padding:12px;font-size:12px;line-height:1.7">' +
-              '<div style="font-weight:600;color:#475569;margin-bottom:6px">🧠 AI 分析 — 超期原因</div>' +
-              '<div style="color:#64748b">' +
-                '1. <strong>整改难度大：</strong>涉及高层建筑 18-25 层消防设施全面失效，修复工程量大，需专业消防工程公司介入。<br>' +
-                '2. <strong>证据链不完整：</strong>整改证据不足，无法确认是否已部分修复或已制定修复方案。<br>' +
-                '3. <strong>公共安全风险：</strong>高层建筑消防设施失效属于系统性风险，一旦发生火灾后果严重。<br>' +
-                '4. <strong>建议升级处置：</strong>启动第 3 级处置——对失效设施所在区域采取停用措施并挂牌督办，2 日内提交修复方案。' +
+            // 政府端分析
+            '<div style="background:#eef4ff;border-radius:10px;padding:12px;margin-bottom:8px;font-size:12px;line-height:1.7">' +
+              '<div style="font-weight:600;color:#2563eb;margin-bottom:4px">🏛 政府端 — 监督跟进</div>' +
+              '<div style="color:#475569">' +
+                '• 已发整改通知：超期 1 天，李明已跟进并下发整改要求。<br>' +
+                '• <strong style="color:#dc2626">跟进存在盲区：</strong>目前仅收到企业口头反馈，未见书面整改方案或修复进度证明。<strong>整改证据链未闭环</strong>，政府端未对证据完整性提出明确要求。<br>' +
+                '• 缺少专业支撑：高层消防设施修复涉及专业工程验收，政府端未引入第三方检测机构介入评估。' +
+              '</div>' +
+            '</div>' +
+            // 企业端分析
+            '<div style="background:#fef2f2;border-radius:10px;padding:12px;margin-bottom:10px;font-size:12px;line-height:1.7">' +
+              '<div style="font-weight:600;color:#dc2626;margin-bottom:4px">🏢 企业端 — 主体责任</div>' +
+              '<div style="color:#475569">' +
+                '• 整改推进慢：超期 1 天但未见实质性修复进展，企业未主动报告困难和进度。<br>' +
+                '• 修复能力存疑：18-25 层消防设施全面失效，修复工程量大，企业是否已联系专业消防工程公司<strong style="color:#dc2626">未可知</strong>。<br>' +
+                '• 企业配合度一般：有整改意愿但行动迟缓，缺乏紧迫感。' +
+              '</div>' +
+            '</div>' +
+            // 责任研判结论
+            '<div style="background:#f8fafc;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.7;border:1px dashed #d1d5db">' +
+              '<div style="font-weight:700;color:#1e293b;margin-bottom:2px">⚖ 初步研判：<span style="color:#d97706">政府跟进盲区 + 企业执行不力并存</span></div>' +
+              '<div style="color:#64748b">超期时间较短（1 天），但政府端对整改证据要求不明确、缺少专业检测手段是重要因素；企业端推进缓慢也需要问责。建议：政府端明确整改验收标准，要求企业提交阶段性修复计划并引入第三方检测。' +
               '</div>' +
             '</div>' +
           '</div>' +
-          '<div style="background:linear-gradient(135deg,#eef4ff,#f5f9ff);border:1px solid #d7e3ff;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
-            '<div style="font-weight:700;margin-bottom:6px">📊 关联分析</div>' +
-            '<div style="font-size:12px;color:#475569">' +
-              '消防安全组 2 项超期与该组复查闭环率 68%（↓6pp）数据关联——复查环节效率不足。' +
-              '该组人均日处理量估算为 4.2 项，当前日均新增+待复查量约 6.8 项/人，<strong style="color:#dc2626">人力已超饱和约 62%</strong>。' +
-              '建议排查复查人力配置或抽查任务排序。' +
-            '</div>' +
+          // ─── 汇总结论 ───
+          '<div style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #e2e8f0;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
+            '<div style="font-weight:700;margin-bottom:6px">📋 汇总</div>' +
+            '<table style="width:100%;font-size:12px;border-collapse:collapse">' +
+              '<tr style="border-bottom:1px solid #e2e8f0">' +
+                '<th style="text-align:left;padding:4px 6px;color:#64748b;font-weight:500">隐患</th>' +
+                '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">政府端</th>' +
+                '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">企业端</th>' +
+                '<th style="text-align:center;padding:4px 6px;color:#64748b;font-weight:500">主因</th>' +
+              '</tr>' +
+              '<tr style="border-bottom:1px solid #f1f5f9">' +
+                '<td style="padding:6px;color:#1e293b;font-weight:600">北苑商业综合体</td>' +
+                '<td style="padding:6px;text-align:center;color:#d97706">⚠ 力度偏软</td>' +
+                '<td style="padding:6px;text-align:center;color:#dc2626">✗ 不配合</td>' +
+                '<td style="padding:6px;text-align:center;color:#dc2626;font-weight:700">企业</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td style="padding:6px;color:#1e293b;font-weight:600">云栖高层住宅</td>' +
+                '<td style="padding:6px;text-align:center;color:#dc2626">✗ 跟进盲区</td>' +
+                '<td style="padding:6px;text-align:center;color:#d97706">⚠ 推进慢</td>' +
+                '<td style="padding:6px;text-align:center;color:#d97706;font-weight:700">双方</td>' +
+              '</tr>' +
+            '</table>' +
           '</div>' +
         '</div>' +
       '</div>';

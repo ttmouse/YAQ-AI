@@ -5988,6 +5988,8 @@
     window.switchScene = window.YAQ.switchScene;  // 供移动端底部导航 onclick 使用
     window.onMetricSearch = window.YAQ.onMetricSearch;    // 供指标搜索 oninput 使用 (#53)
     window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)
+    window.showMetricTip = window.YAQ.showMetricTip;      // 供指标卡片 onmouseenter 使用
+    window.hideMetricTip = window.YAQ.hideMetricTip;      // 供指标卡片 onmouseleave 使用
 
     // ── 复合命令包装：支持 data-cmd 单命令调用 ──────────────
     YAQ.resetAndCloseMenu = function() { window.resetInit(); window.closeDemoMenu(); };
