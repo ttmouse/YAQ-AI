@@ -5,365 +5,477 @@
   核心：判断 → 定位 → 处置 → 跟踪闭环
 -->
 <html lang="zh-CN">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="Content-Security-Policy" content="
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://unpkg.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://app.17an.com data:;
     font-src 'self' data:;
     connect-src 'self' https://unpkg.com;
-  ">
-  <meta property="og:title" content="站长每日监管闭环工作台">
-  <meta property="og:description" content="基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://ttmouse.com/yaq-ai/">
-  <meta property="og:image" content="https://ttmouse.com/yaq-ai/favicon.svg">
-  <meta name="description" content="基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人">
-  <title>站长每日监管闭环工作台</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/agent-init.css">
-  <!-- ═══ 新设计系统 — JS 渲染引擎依赖的 CSS 模块 ══════════════════ -->
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/blocks.css">
-  <link rel="stylesheet" href="css/detail.css">
-  <link rel="stylesheet" href="css/modal.css">
-  <link rel="stylesheet" href="css/work-items.css">
-  <link rel="stylesheet" href="css/assistant.css">
-  <link rel="stylesheet" href="css/mobile.css">
-  <link rel="stylesheet" href="css/utilities.css">
-</head>
-<body>
-
-  <!-- ═══ 主控 Agent 初始化场景 ═════════════════════════════════════ -->
-  <div class="init-overlay" id="initOverlay">
-    <div class="init-container">
-      <div class="init-content" id="chatBox"></div>
-    </div>
-    <div class="init-quick-wrap" id="initQuickWrap"></div>
-    <!-- 浮动卡片容器：渲染勾选面板（attn-card）、Agent开关等，位于聊天内容区与输入框之间 -->
-    <div id="initFloatCard"></div>
-    <div class="init-chat-bar">
-      <input type="text" class="init-chat-input" id="initChatInput" placeholder="直接对话，例如：帮我看好重大隐患"
-        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.convChatSend()}">
-      <button class="init-chat-btn" onclick="window.convChatVoice()" title="语音输入">
-        <i data-lucide="mic" width="16" height="16"></i>
-      </button>
-      <button class="init-chat-send" onclick="window.convChatSend()" title="发送">
-        <i data-lucide="arrow-up" width="16" height="16"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- ═══ 杨站长工作台 v18 — 3 列布局 ════════════════════════════════ -->
-  <div class="app">
-
-    <!-- ─── 顶栏 ─────────────────────────────────────────────────── -->
-    <div class="top">
-      <div class="brand">
-        <img src="https://app.17an.com/dsb/dsb-new/ea0dd430_2026-6-24/static/img/logo.16c3ec2.png" alt="logo" style="height:28px;width:auto">
-        <div class="tab-strip" id="tabStrip"></div>
+  "
+    />
+    <meta property="og:title" content="站长每日监管闭环工作台" />
+    <meta property="og:description" content="基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ttmouse.com/yaq-ai/" />
+    <meta property="og:image" content="https://ttmouse.com/yaq-ai/favicon.svg" />
+    <meta name="description" content="基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人" />
+    <title>站长每日监管闭环工作台</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://unpkg.com" crossorigin />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/agent-init.css" />
+    <!-- ═══ 新设计系统 — JS 渲染引擎依赖的 CSS 模块 ══════════════════ -->
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/blocks.css" />
+    <link rel="stylesheet" href="css/detail.css" />
+    <link rel="stylesheet" href="css/modal.css" />
+    <link rel="stylesheet" href="css/work-items.css" />
+    <link rel="stylesheet" href="css/assistant.css" />
+    <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/utilities.css" />
+  </head>
+  <body>
+    <!-- ═══ 主控 Agent 初始化场景 ═════════════════════════════════════ -->
+    <div class="init-overlay" id="initOverlay">
+      <div class="init-container">
+        <div class="init-content" id="chatBox"></div>
       </div>
-      <div class="meta">
-        <div class="topbar-search" data-cmd="openLauncher" style="margin-left:0;margin-right:8px">
-          <i data-lucide="search" width="14" height="14"></i>
-          <span class="topbar-search-placeholder">搜索</span>
-        </div>
-        <span class="pill org-switch" data-cmd="showToast" data-arg="组织切换（演示功能）" title="切换组织">
-          <i data-lucide="building-2" width="12" height="12" style="vertical-align:middle;margin-right:4px"></i> 良渚应急消防管理站
-        </span>
-        <span class="pill"><i data-lucide="user" width="12" height="12" style="vertical-align:middle;margin-right:4px"></i> 站长</span>
-      </div>
-    </div>
-
-    <!-- ─── 主体：单列布局 ──────────────────────────────────────── -->
-    <div class="main" id="mainLayout">
-
-      <!-- ═══ 右侧浮动：月报历史侧边栏（覆盖层，不占宽） ═════ -->
-      <div id="mrSidebar" style="display:none;position:absolute;top:52px;right:0;bottom:0;width:220px;background:var(--card);border-left:1px solid var(--line);box-shadow:-4px 0 20px rgba(0,0,0,.06);z-index:100;overflow-y:auto;padding:0">
-        <div id="mrSidebarContent"></div>
-      </div>
-
-      <!-- ═══ 中栏：内容区 ════════════════════════════════════════ -->
-      <div class="center">
-        <div class="result" id="workspace">
-          <div class="scene-content" id="sceneContent">
-            <!-- 由 JS 动态渲染 -->
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <!-- ─── 演示菜单（左下角） ──────────────────────────── -->
-    <div class="demo-menu-wrap" id="demoMenuWrap">
-      <button class="demo-menu-trigger demo-corner" data-cmd="toggleDemoMenu" title="演示菜单">
-        <i data-lucide="more-vertical" width="18" height="18"></i>
-      </button>
-      <div class="demo-menu demo-corner-menu" id="demoMenu">
-        <div class="demo-menu-item" data-cmd="openDemoPage" data-arg="special-inspection-prototype.html"><i data-lucide="file-search" width="14" height="14"></i> 智能专项检查 🆕</div>
-        <div class="demo-menu-item" data-cmd="resetAndCloseMenu"><i data-lucide="rotate-ccw" width="14" height="14"></i> 重新初始化</div>
-        <div class="demo-menu-item" data-cmd="dashboardRedirectAndClose"><i data-lucide="sparkles" width="14" height="14"></i> 初始化工作台</div>
-        <div class="demo-menu-item" data-cmd="normalDashboardAndClose"><i data-lucide="layout-dashboard" width="14" height="14"></i> 日常工作台</div>
-        <div class="demo-menu-item" data-cmd="closeMenuAndOpenComparison"><i data-lucide="git-compare" width="14" height="14"></i> AI vs 传统流程对比</div>
-      </div>
-    </div>
-    <!-- ─── 全局底部浮动输入条 ────────────────────────────── -->
-    <div class="global-chat-quick-wrap" id="globalChatQuickWrap">
-      <button class="gq-chip" onclick="YAQ.globalChatQuick('分析一下隐患闭环未关闭的原因')">🔍 分析超期未闭环原因</button>
-      <button class="gq-chip" onclick="YAQ.globalChatQuick('今天有哪些到期未整改的隐患')">⚠️ 到期未整改</button>
-      <button class="gq-chip" onclick="YAQ.globalChatQuick('各个片区的隐患闭环率排名')">📊 闭环率排名</button>
-      <button class="gq-chip" onclick="YAQ.globalChatQuick('帮我生成今天的巡查报告')">📋 生成巡查报告</button>
-    </div>
-    <div class="global-chat-bar">
-      <div class="global-chat-inner">
-        <input type="text" id="globalChatInput" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降"
-          data-cmd-key="Enter" data-cmd="globalChatSend">
-        <button class="global-chat-mic" data-cmd="convChatVoice" title="语音输入">
+      <div class="init-quick-wrap" id="initQuickWrap"></div>
+      <!-- 浮动卡片容器：渲染勾选面板（attn-card）、Agent开关等，位于聊天内容区与输入框之间 -->
+      <div id="initFloatCard"></div>
+      <div class="init-chat-bar">
+        <input
+          type="text"
+          class="init-chat-input"
+          id="initChatInput"
+          placeholder="直接对话，例如：帮我看好重大隐患"
+          onkeydown="
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              window.convChatSend();
+            }
+          "
+        />
+        <button class="init-chat-btn" onclick="window.convChatVoice()" title="语音输入">
           <i data-lucide="mic" width="16" height="16"></i>
         </button>
-        <button class="global-chat-btn" data-cmd="globalChatSend" title="发送">
+        <button class="init-chat-send" onclick="window.convChatSend()" title="发送">
           <i data-lucide="arrow-up" width="16" height="16"></i>
         </button>
       </div>
     </div>
 
-    <!-- ─── 移动端底部导航 (≤768px 显示) ─────────────────────── -->
-    <nav class="mobile-bottom-nav" id="mobileBottomNav">
-      <button class="mb-nav-item active" data-scene="dashboard" title="态势总览">
-        <i data-lucide="layout-dashboard" width="18" height="18"></i>
-        <span>态势</span>
-      </button>
-      <button class="mb-nav-item" data-scene="hazard-report" title="隐患">
-        <i data-lucide="alert-triangle" width="18" height="18"></i>
-        <span>隐患</span>
-      </button>
-      <button class="mb-nav-item" data-scene="pending-actions" title="行动">
-        <i data-lucide="clipboard-check" width="18" height="18"></i>
-        <span>行动</span>
-      </button>
-      <button class="mb-nav-item" data-scene="followup" title="跟踪">
-        <i data-lucide="pin" width="18" height="18"></i>
-        <span>跟踪</span>
-      </button>
-      <button class="mb-nav-item" data-scene="efficiency" title="效能">
-        <i data-lucide="bar-chart-3" width="18" height="18"></i>
-        <span>效能</span>
-      </button>
-    </nav>
-  </div>
-
-
-  <!-- ─── Drawer Overlay ───────────────────────────────────────────── -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-
-  <!-- ─── Drawer Panel ─────────────────────────────────────────────── -->
-  <div class="drawer-panel" id="drawerPanel">
-    <div class="drawer-header">
-      <h3 id="drawerTitle"></h3>
-      <button class="drawer-close" id="drawerClose" aria-label="关闭">
-        <i data-lucide="x" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="drawer-body" id="drawerBody">
-      <!-- Dynamic content -->
-    </div>
-    <div class="drawer-footer">
-      <button class="drawer-btn primary" id="drawerConfirm">确认生成</button>
-      <button class="drawer-btn" id="drawerCancel">取消</button>
-    </div>
-  </div>
-
-  <!-- ─── 指标配置弹窗 ─────────────────────────────────────────── -->
-  <div class="modal-overlay" id="metricModalOverlay" data-cmd="closeMetricConfig"></div>
-  <div class="modal-panel" id="metricModal">
-    <div class="modal-head">
-      <div class="modal-head-top">
-        <span style="font-weight:600;font-size:15px">配置显示指标</span>
-        <div style="position:relative;flex:1;max-width:320px;margin:0 24px">
-          <i data-lucide="search" width="14" height="14" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--weak);pointer-events:none"></i>
-          <input id="metricSearchInput" placeholder="搜索指标名称" data-cmd-input="onMetricSearch" style="padding-left:28px;width:100%;height:30px;border:1px solid var(--line);border-radius:999px;background:#f2f4f7;font-size:12px;color:var(--text);outline:none;font-family:inherit;transition:border-color .15s;padding-right:10px">
+    <!-- ═══ 杨站长工作台 v18 — 3 列布局 ════════════════════════════════ -->
+    <div class="app">
+      <!-- ─── 顶栏 ─────────────────────────────────────────────────── -->
+      <div class="top">
+        <div class="brand">
+          <img
+            src="https://app.17an.com/dsb/dsb-new/ea0dd430_2026-6-24/static/img/logo.16c3ec2.png"
+            alt="logo"
+            style="height: 28px; width: auto"
+          />
+          <div class="tab-strip" id="tabStrip"></div>
         </div>
-        <button class="modal-close" data-cmd="closeMetricConfig"><i data-lucide="x" width="16" height="16"></i></button>
+        <div class="meta">
+          <div class="topbar-search" data-cmd="openLauncher" style="margin-left: 0; margin-right: 8px">
+            <i data-lucide="search" width="14" height="14"></i>
+            <span class="topbar-search-placeholder">搜索</span>
+          </div>
+          <span class="pill org-switch" data-cmd="showToast" data-arg="组织切换（演示功能）" title="切换组织">
+            <i data-lucide="building-2" width="12" height="12" style="vertical-align: middle; margin-right: 4px"></i>
+            良渚应急消防管理站
+          </span>
+          <span class="pill"
+            ><i data-lucide="user" width="12" height="12" style="vertical-align: middle; margin-right: 4px"></i>
+            站长</span
+          >
+        </div>
       </div>
-      <div class="modal-filters" id="metricFilterTabs"></div>
-    </div>
-    <div class="modal-body" style="display:flex;flex-direction:column;padding:0;overflow:hidden">
-      <div class="mbody-top" id="metricCheckboxes" style="flex:1;overflow-y:auto;padding:14px 18px">
-        <!-- 指标网格由 JS 渲染 -->
-      </div>
-      <div class="mbody-bottom" id="selectedArea" style="flex-shrink:0;border-top:1px solid var(--line);padding:10px 18px 8px;max-height:170px;overflow-y:auto">
-        <div style="font-size:11px;font-weight:600;color:var(--weak);margin-bottom:6px">已选指标（拖拽排序）</div>
-        <div id="selectedMetricsList" style="display:flex;flex-wrap:nowrap;gap:4px;overflow-x:auto;overflow-y:hidden;padding:6px 0 2px"></div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <div class="mfoot-count" id="mfootCount">已选 <strong>0</strong> 个指标</div>
-      <div class="mfoot-actions">
-        <button class="mfoot-btn" data-cmd="closeMetricConfig">取消</button>
-        <button class="mfoot-btn primary" data-cmd="saveMetricConfig">保存</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- ─── 隐患详情弹窗 ─────────────────────────────────────────── -->
-  <div class="modal-overlay" id="hazardModalOverlay" data-cmd="closeHazardModal"></div>
-  <div class="hmodal-panel" id="hazardModal">
-    <div class="hmodal-head">
-      <div class="hmodal-title">
-        <span class="hmodal-dot" id="hazardModalDot" style="background:var(--red)"></span>
-        <span id="hazardModalName">隐患详情</span>
+      <!-- ─── 主体：单列布局 ──────────────────────────────────────── -->
+      <div class="main" id="mainLayout">
+        <!-- ═══ 右侧浮动：月报历史侧边栏（覆盖层，不占宽） ═════ -->
+        <div
+          id="mrSidebar"
+          style="
+            display: none;
+            position: absolute;
+            top: 52px;
+            right: 0;
+            bottom: 0;
+            width: 220px;
+            background: var(--card);
+            border-left: 1px solid var(--line);
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 0;
+          "
+        >
+          <div id="mrSidebarContent"></div>
+        </div>
+
+        <!-- ═══ 中栏：内容区 ════════════════════════════════════════ -->
+        <div class="center">
+          <div class="result" id="workspace">
+            <div class="scene-content" id="sceneContent">
+              <!-- 由 JS 动态渲染 -->
+            </div>
+          </div>
+        </div>
       </div>
-      <button class="hmodal-close" data-cmd="closeHazardModal">✕</button>
-    </div>
-    <div class="hmodal-body" id="hazardModalBody"></div>
-    <div class="hmodal-foot">
-      <div class="hmfoot-actions">
-        <button class="hmfoot-action primary" title="督办" data-cmd="openDrawer" data-arg="supervise"><i data-lucide="megaphone" width="14" height="14"></i><span>督办</span></button>
-        <button class="hmfoot-action" title="现场核查" data-cmd="openDrawer" data-arg="inspect"><i data-lucide="search" width="14" height="14"></i><span>现场核查</span></button>
-        <button class="hmfoot-action" title="会议议题" data-cmd="openDrawer" data-arg="meeting"><i data-lucide="calendar" width="14" height="14"></i><span>会议议题</span></button>
-        <button class="hmfoot-action" title="持续跟踪" data-cmd="showToast" data-arg="已加入持续跟踪"><i data-lucide="pin" width="14" height="14"></i><span>跟踪</span></button>
+      <!-- ─── 演示菜单（左下角） ──────────────────────────── -->
+      <div class="demo-menu-wrap" id="demoMenuWrap">
+        <button class="demo-menu-trigger demo-corner" data-cmd="toggleDemoMenu" title="演示菜单">
+          <i data-lucide="more-vertical" width="18" height="18"></i>
+        </button>
+        <div class="demo-menu demo-corner-menu" id="demoMenu">
+          <div class="demo-menu-item" data-cmd="openDemoPage" data-arg="special-inspection-prototype.html">
+            <i data-lucide="file-search" width="14" height="14"></i> 智能专项检查 🆕
+          </div>
+          <div class="demo-menu-item" data-cmd="resetAndCloseMenu">
+            <i data-lucide="rotate-ccw" width="14" height="14"></i> 重新初始化
+          </div>
+          <div class="demo-menu-item" data-cmd="dashboardRedirectAndClose">
+            <i data-lucide="sparkles" width="14" height="14"></i> 初始化工作台
+          </div>
+          <div class="demo-menu-item" data-cmd="normalDashboardAndClose">
+            <i data-lucide="layout-dashboard" width="14" height="14"></i> 日常工作台
+          </div>
+          <div class="demo-menu-item" data-cmd="closeMenuAndOpenComparison">
+            <i data-lucide="git-compare" width="14" height="14"></i> AI vs 传统流程对比
+          </div>
+        </div>
       </div>
-      <button class="hmfoot-copy" data-cmd="copyHazardInfo"><i data-lucide="copy" width="14" height="14"></i> 复制隐患信息</button>
-    </div>
-  </div>
-
-  <!-- ─── 任务详情弹窗 ─────────────────────────────────────────── -->
-  <div class="modal-overlay" id="taskModalOverlay" data-cmd="closeTaskModal"></div>
-  <div class="tmodal-panel" id="taskModal">
-    <div class="tmodal-head">
-      <div class="tmodal-title" id="taskModalTitle">
-        <i data-lucide="target" width="16" height="16" style="color:var(--accent)"></i>
-        <span id="taskModalName">任务详情</span>
+      <!-- ─── 全局底部浮动输入条 ────────────────────────────── -->
+      <div class="global-chat-quick-wrap" id="globalChatQuickWrap">
+        <button class="gq-chip" onclick="YAQ.globalChatQuick('分析一下隐患闭环未关闭的原因')">
+          分析超期未闭环原因
+        </button>
       </div>
-      <button class="tmodal-close" data-cmd="closeTaskModal">✕</button>
-    </div>
-    <div class="tmodal-body" id="taskModalBody">
-      <div class="tmodal-left" id="taskModalLeft"></div>
-      <div class="tmodal-divider"></div>
-      <div class="tmodal-right" id="taskModalRight"></div>
-    </div>
-  </div>
-
-  <!-- ─── 待确认督办弹窗 ─────────────────────────────────────────── -->
-  <div class="modal-overlay" id="paModalOverlay" data-cmd="closePAModal"></div>
-  <div class="pa-modal-panel" id="paModal">
-    <div class="pa-modal-head">
-      <div class="pa-modal-title">
-        <i data-lucide="clipboard-check" width="18" height="18" style="color:var(--accent)"></i>
-        <span>待确认督办</span>
+      <div class="global-chat-bar">
+        <div class="global-chat-inner">
+          <input
+            type="text"
+            id="globalChatInput"
+            placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降"
+            data-cmd-key="Enter"
+            data-cmd="globalChatSend"
+          />
+          <button class="global-chat-mic" data-cmd="convChatVoice" title="语音输入">
+            <i data-lucide="mic" width="16" height="16"></i>
+          </button>
+          <button class="global-chat-btn" data-cmd="globalChatSend" title="发送">
+            <i data-lucide="arrow-up" width="16" height="16"></i>
+          </button>
+        </div>
       </div>
-      <button class="pa-modal-close" data-cmd="closePAModal">✕</button>
+
+      <!-- ─── 移动端底部导航 (≤768px 显示) ─────────────────────── -->
+      <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <button class="mb-nav-item active" data-scene="dashboard" title="态势总览">
+          <i data-lucide="layout-dashboard" width="18" height="18"></i>
+          <span>态势</span>
+        </button>
+        <button class="mb-nav-item" data-scene="hazard-report" title="隐患">
+          <i data-lucide="alert-triangle" width="18" height="18"></i>
+          <span>隐患</span>
+        </button>
+        <button class="mb-nav-item" data-scene="pending-actions" title="行动">
+          <i data-lucide="clipboard-check" width="18" height="18"></i>
+          <span>行动</span>
+        </button>
+        <button class="mb-nav-item" data-scene="followup" title="跟踪">
+          <i data-lucide="pin" width="18" height="18"></i>
+          <span>跟踪</span>
+        </button>
+        <button class="mb-nav-item" data-scene="efficiency" title="效能">
+          <i data-lucide="bar-chart-3" width="18" height="18"></i>
+          <span>效能</span>
+        </button>
+      </nav>
     </div>
-    <div class="pa-modal-body" id="paModalBody">
-      <!-- 由 JS 渲染 -->
-    </div>
-    <div class="pa-modal-foot">
-      <div class="pam-foot-left">
-        <span class="pam-count" id="paModalCount">共 0 项待确认</span>
+
+    <!-- ─── Drawer Overlay ───────────────────────────────────────────── -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- ─── Drawer Panel ─────────────────────────────────────────────── -->
+    <div class="drawer-panel" id="drawerPanel">
+      <div class="drawer-header">
+        <h3 id="drawerTitle"></h3>
+        <button class="drawer-close" id="drawerClose" aria-label="关闭">
+          <i data-lucide="x" aria-hidden="true"></i>
+        </button>
       </div>
-      <div class="pam-foot-actions">
-        <button class="pam-btn pam-btn-muted" data-cmd="closePAModal">关闭</button>
+      <div class="drawer-body" id="drawerBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="drawer-footer">
+        <button class="drawer-btn primary" id="drawerConfirm">确认生成</button>
+        <button class="drawer-btn" id="drawerCancel">取消</button>
       </div>
     </div>
-  </div>
 
-  <!-- ─── Toast ────────────────────────────────────────────────────── -->
-  <div class="toast" id="toast"></div>
-
-  <!-- ─── 指标说明浮层 ─────────────────────────────────────────── -->
-  <div class="metric-tip" id="metricTip"></div>
-
-  <!-- ─── 指标钻取浮层 ──────────────────────────────────────────── -->
-  <div class="modal-overlay" id="drillOverlay" data-cmd="closeDrillFloat"></div>
-  <div class="drill-float" id="drillFloat">
-    <div class="drill-head">
-      <h3 class="drill-title" id="drillTitle"></h3>
-      <button class="drill-close" data-cmd="closeDrillFloat"><i data-lucide="x" width="16" height="16"></i></button>
-    </div>
-    <div class="drill-body" id="drillBody">
-      <!-- left: item list / right: AI analysis -->
-    </div>
-  </div>
-
-  <!-- ─── 站点地图启动台 ─────────────────────────────────────────── -->
-  <div class="launcher-overlay" id="launcherOverlay" data-cmd="closeLauncher"></div>
-  <div class="launcher-panel" id="launcherPanel">
-    <div class="launcher-header">
-      <div class="launcher-search-wrap">
-        <i data-lucide="search" width="18" height="18" class="launcher-search-icon"></i>
-        <input class="launcher-search" id="launcherSearch" type="text"
-          placeholder="搜索人员、企业、任务、功能…"
-          autocomplete="off"
-          data-cmd-input="onLauncherSearch"
-          data-cmd-key="Enter" data-cmd="launcherSearchFirst"
-          data-cmd-key-esc="closeLauncher">
+    <!-- ─── 指标配置弹窗 ─────────────────────────────────────────── -->
+    <div class="modal-overlay" id="metricModalOverlay" data-cmd="closeMetricConfig"></div>
+    <div class="modal-panel" id="metricModal">
+      <div class="modal-head">
+        <div class="modal-head-top">
+          <span style="font-weight: 600; font-size: 15px">配置显示指标</span>
+          <div style="position: relative; flex: 1; max-width: 320px; margin: 0 24px">
+            <i
+              data-lucide="search"
+              width="14"
+              height="14"
+              style="
+                position: absolute;
+                left: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--weak);
+                pointer-events: none;
+              "
+            ></i>
+            <input
+              id="metricSearchInput"
+              placeholder="搜索指标名称"
+              data-cmd-input="onMetricSearch"
+              style="
+                padding-left: 28px;
+                width: 100%;
+                height: 30px;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                background: #f2f4f7;
+                font-size: 12px;
+                color: var(--text);
+                outline: none;
+                font-family: inherit;
+                transition: border-color 0.15s;
+                padding-right: 10px;
+              "
+            />
+          </div>
+          <button class="modal-close" data-cmd="closeMetricConfig">
+            <i data-lucide="x" width="16" height="16"></i>
+          </button>
+        </div>
+        <div class="modal-filters" id="metricFilterTabs"></div>
       </div>
-      <div class="launcher-chips" id="launchChips"></div>
-    </div>
-    <div class="launcher-body" id="launcherBody">
-      <!-- 由 JS 渲染 -->
-    </div>
-  </div>
-
-  <!-- ═══ 企业详情面板（右侧滑出）═════════════════════════════════ -->
-  <div class="ep-panel" id="epPanel">
-    <div class="ep-head">
-      <div class="ep-head-left">
-        <i data-lucide="building-2" width="18" height="18"></i>
-        <span id="epName" style="font-weight:700;font-size:16px">企业名称</span>
+      <div class="modal-body" style="display: flex; flex-direction: column; padding: 0; overflow: hidden">
+        <div class="mbody-top" id="metricCheckboxes" style="flex: 1; overflow-y: auto; padding: 14px 18px">
+          <!-- 指标网格由 JS 渲染 -->
+        </div>
+        <div
+          class="mbody-bottom"
+          id="selectedArea"
+          style="
+            flex-shrink: 0;
+            border-top: 1px solid var(--line);
+            padding: 10px 18px 8px;
+            max-height: 170px;
+            overflow-y: auto;
+          "
+        >
+          <div style="font-size: 11px; font-weight: 600; color: var(--weak); margin-bottom: 6px">
+            已选指标（拖拽排序）
+          </div>
+          <div
+            id="selectedMetricsList"
+            style="display: flex; flex-wrap: nowrap; gap: 4px; overflow-x: auto; overflow-y: hidden; padding: 6px 0 2px"
+          ></div>
+        </div>
       </div>
-      <button class="ep-close" data-cmd="closeEnterprisePanel" aria-label="关闭">
-        <i data-lucide="x" width="18" height="18"></i>
-      </button>
+      <div class="modal-foot">
+        <div class="mfoot-count" id="mfootCount">已选 <strong>0</strong> 个指标</div>
+        <div class="mfoot-actions">
+          <button class="mfoot-btn" data-cmd="closeMetricConfig">取消</button>
+          <button class="mfoot-btn primary" data-cmd="saveMetricConfig">保存</button>
+        </div>
+      </div>
     </div>
-    <div class="ep-body" id="epBody">
-      <!-- Risk level + summary + metric row (fixed) -->
-      <div id="epFixedTop"></div>
-      <!-- Tab content (switches) -->
-      <div id="epTabContent"></div>
+
+    <!-- ─── 隐患详情弹窗 ─────────────────────────────────────────── -->
+    <div class="modal-overlay" id="hazardModalOverlay" data-cmd="closeHazardModal"></div>
+    <div class="hmodal-panel" id="hazardModal">
+      <div class="hmodal-head">
+        <div class="hmodal-title">
+          <span class="hmodal-dot" id="hazardModalDot" style="background: var(--red)"></span>
+          <span id="hazardModalName">隐患详情</span>
+        </div>
+        <button class="hmodal-close" data-cmd="closeHazardModal">✕</button>
+      </div>
+      <div class="hmodal-body" id="hazardModalBody"></div>
+      <div class="hmodal-foot">
+        <div class="hmfoot-actions">
+          <button class="hmfoot-action primary" title="督办" data-cmd="openDrawer" data-arg="supervise">
+            <i data-lucide="megaphone" width="14" height="14"></i><span>督办</span>
+          </button>
+          <button class="hmfoot-action" title="现场核查" data-cmd="openDrawer" data-arg="inspect">
+            <i data-lucide="search" width="14" height="14"></i><span>现场核查</span>
+          </button>
+          <button class="hmfoot-action" title="会议议题" data-cmd="openDrawer" data-arg="meeting">
+            <i data-lucide="calendar" width="14" height="14"></i><span>会议议题</span>
+          </button>
+          <button class="hmfoot-action" title="持续跟踪" data-cmd="showToast" data-arg="已加入持续跟踪">
+            <i data-lucide="pin" width="14" height="14"></i><span>跟踪</span>
+          </button>
+        </div>
+        <button class="hmfoot-copy" data-cmd="copyHazardInfo">
+          <i data-lucide="copy" width="14" height="14"></i> 复制隐患信息
+        </button>
+      </div>
     </div>
-  </div>
 
-  <script src="https://unpkg.com/lucide@1.21.0/dist/umd/lucide.min.js"
-    integrity="sha384-xphWpUp6pRlNpM8BxCtyoW96oteA0kPxUX0VP6V32gICuE4ViDFBfaoyj5BS7M4w"
-    crossorigin="anonymous"></script>
-  <script>
-  // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
-  (function() {
-    if (typeof lucide === 'undefined' || !lucide.createIcons) return;
-    var orig = lucide.createIcons;
-    var _fullScanDone = false;
-    lucide.createIcons = function(options) {
-      if (!_fullScanDone) {
-        _fullScanDone = true;
-        orig.call(this);
-        if (options) {
-          if (options.nodeType === 1) return orig.call(this, options);
-          if (options.container && options.container.nodeType === 1) return orig.call(this, options);
-        }
-        return;
-      }
-      if (options) {
-        if (options.nodeType === 1) return orig.call(this, options);
-        if (options.container && options.container.nodeType === 1) return orig.call(this, options);
-      }
-      var container = document.querySelector('.workspace') || document.querySelector('.scene-content') || document.getElementById('sceneContent');
-      if (container) return orig.call(this, { container: container });
-      return orig.call(this);
-    };
-  })();
-  </script>
+    <!-- ─── 任务详情弹窗 ─────────────────────────────────────────── -->
+    <div class="modal-overlay" id="taskModalOverlay" data-cmd="closeTaskModal"></div>
+    <div class="tmodal-panel" id="taskModal">
+      <div class="tmodal-head">
+        <div class="tmodal-title" id="taskModalTitle">
+          <i data-lucide="target" width="16" height="16" style="color: var(--accent)"></i>
+          <span id="taskModalName">任务详情</span>
+        </div>
+        <button class="tmodal-close" data-cmd="closeTaskModal">✕</button>
+      </div>
+      <div class="tmodal-body" id="taskModalBody">
+        <div class="tmodal-left" id="taskModalLeft"></div>
+        <div class="tmodal-divider"></div>
+        <div class="tmodal-right" id="taskModalRight"></div>
+      </div>
+    </div>
 
-  <script src="js/app.js"></script>
-  <script src="js/track-store.js"></script>
-  <script src="js/rules.js"></script>
-  <script src="js/agent-init.js"></script>
+    <!-- ─── 待确认督办弹窗 ─────────────────────────────────────────── -->
+    <div class="modal-overlay" id="paModalOverlay" data-cmd="closePAModal"></div>
+    <div class="pa-modal-panel" id="paModal">
+      <div class="pa-modal-head">
+        <div class="pa-modal-title">
+          <i data-lucide="clipboard-check" width="18" height="18" style="color: var(--accent)"></i>
+          <span>待确认督办</span>
+        </div>
+        <button class="pa-modal-close" data-cmd="closePAModal">✕</button>
+      </div>
+      <div class="pa-modal-body" id="paModalBody">
+        <!-- 由 JS 渲染 -->
+      </div>
+      <div class="pa-modal-foot">
+        <div class="pam-foot-left">
+          <span class="pam-count" id="paModalCount">共 0 项待确认</span>
+        </div>
+        <div class="pam-foot-actions">
+          <button class="pam-btn pam-btn-muted" data-cmd="closePAModal">关闭</button>
+        </div>
+      </div>
+    </div>
 
-</body>
+    <!-- ─── Toast ────────────────────────────────────────────────────── -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ─── 指标说明浮层 ─────────────────────────────────────────── -->
+    <div class="metric-tip" id="metricTip"></div>
+
+    <!-- ─── 指标钻取浮层 ──────────────────────────────────────────── -->
+    <div class="modal-overlay" id="drillOverlay" data-cmd="closeDrillFloat"></div>
+    <div class="drill-float" id="drillFloat">
+      <div class="drill-head">
+        <h3 class="drill-title" id="drillTitle"></h3>
+        <button class="drill-close" data-cmd="closeDrillFloat"><i data-lucide="x" width="16" height="16"></i></button>
+      </div>
+      <div class="drill-body" id="drillBody">
+        <!-- left: item list / right: AI analysis -->
+      </div>
+    </div>
+
+    <!-- ─── 站点地图启动台 ─────────────────────────────────────────── -->
+    <div class="launcher-overlay" id="launcherOverlay" data-cmd="closeLauncher"></div>
+    <div class="launcher-panel" id="launcherPanel">
+      <div class="launcher-header">
+        <div class="launcher-search-wrap">
+          <i data-lucide="search" width="18" height="18" class="launcher-search-icon"></i>
+          <input
+            class="launcher-search"
+            id="launcherSearch"
+            type="text"
+            placeholder="搜索人员、企业、任务、功能…"
+            autocomplete="off"
+            data-cmd-input="onLauncherSearch"
+            data-cmd-key="Enter"
+            data-cmd="launcherSearchFirst"
+            data-cmd-key-esc="closeLauncher"
+          />
+        </div>
+        <div class="launcher-chips" id="launchChips"></div>
+      </div>
+      <div class="launcher-body" id="launcherBody">
+        <!-- 由 JS 渲染 -->
+      </div>
+    </div>
+
+    <!-- ═══ 企业详情面板（右侧滑出）═════════════════════════════════ -->
+    <div class="ep-panel" id="epPanel">
+      <div class="ep-head">
+        <div class="ep-head-left">
+          <i data-lucide="building-2" width="18" height="18"></i>
+          <span id="epName" style="font-weight: 700; font-size: 16px">企业名称</span>
+        </div>
+        <button class="ep-close" data-cmd="closeEnterprisePanel" aria-label="关闭">
+          <i data-lucide="x" width="18" height="18"></i>
+        </button>
+      </div>
+      <div class="ep-body" id="epBody">
+        <!-- Risk level + summary + metric row (fixed) -->
+        <div id="epFixedTop"></div>
+        <!-- Tab content (switches) -->
+        <div id="epTabContent"></div>
+      </div>
+    </div>
+
+    <script
+      src="https://unpkg.com/lucide@1.21.0/dist/umd/lucide.min.js"
+      integrity="sha384-xphWpUp6pRlNpM8BxCtyoW96oteA0kPxUX0VP6V32gICuE4ViDFBfaoyj5BS7M4w"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
+      (function () {
+        if (typeof lucide === 'undefined' || !lucide.createIcons) return;
+        var orig = lucide.createIcons;
+        var _fullScanDone = false;
+        lucide.createIcons = function (options) {
+          if (!_fullScanDone) {
+            _fullScanDone = true;
+            orig.call(this);
+            if (options) {
+              if (options.nodeType === 1) return orig.call(this, options);
+              if (options.container && options.container.nodeType === 1) return orig.call(this, options);
+            }
+            return;
+          }
+          if (options) {
+            if (options.nodeType === 1) return orig.call(this, options);
+            if (options.container && options.container.nodeType === 1) return orig.call(this, options);
+          }
+          var container =
+            document.querySelector('.workspace') ||
+            document.querySelector('.scene-content') ||
+            document.getElementById('sceneContent');
+          if (container) return orig.call(this, { container: container });
+          return orig.call(this);
+        };
+      })();
+    </script>
+
+    <script src="js/app.js"></script>
+    <script src="js/track-store.js"></script>
+    <script src="js/rules.js"></script>
+    <script src="js/agent-init.js"></script>
+  </body>
 </html>

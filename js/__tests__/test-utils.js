@@ -15,9 +15,16 @@ export function escapeHtml(str) {
 
 // ─── safeRender — 与 app.js 中的实现一致 ──
 export function safeRender(fn, fallbackMsg) {
-  try { return fn(); }
-  catch (e) {
-    return '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" class="c-red"></i><h3>' + (fallbackMsg || '渲染异常') + '</h3><p>请刷新页面重试。' + (e.message ? ' (' + e.message + ')' : '') + '</p></div>';
+  try {
+    return fn();
+  } catch (e) {
+    return (
+      '<div class="error-state"><i data-lucide="alert-triangle" width="32" height="32" class="c-red"></i><h3>' +
+      (fallbackMsg || '渲染异常') +
+      '</h3><p>请刷新页面重试。' +
+      (e.message ? ' (' + e.message + ')' : '') +
+      '</p></div>'
+    );
   }
 }
 
@@ -38,8 +45,12 @@ export function severityLabel(sev) {
 // ─── conditionTypeLabel — 与 rules.js 中的实现一致 ──
 export function conditionTypeLabel(type) {
   var map = {
-    threshold: '阈值', timeWindow: '超时', comparison: '对比',
-    trend: '趋势', behavior: '行为', composite: '复合',
+    threshold: '阈值',
+    timeWindow: '超时',
+    comparison: '对比',
+    trend: '趋势',
+    behavior: '行为',
+    composite: '复合',
   };
   return map[type] || type;
 }
@@ -51,14 +62,22 @@ export function createLS() {
       try {
         var v = localStorage.getItem(key);
         return v !== null ? v : fallback;
-      } catch (e) { return fallback; }
+      } catch (e) {
+        return fallback;
+      }
     },
     set(key, val) {
-      try { localStorage.setItem(key, val); return true; }
-      catch (e) { return false; }
+      try {
+        localStorage.setItem(key, val);
+        return true;
+      } catch (e) {
+        return false;
+      }
     },
     remove(key) {
-      try { localStorage.removeItem(key); } catch (e) {}
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {}
     },
   };
 }

@@ -3,7 +3,8 @@
    ═══════════════════════════════════════════════════════════ */
 
 .assistant {
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
@@ -11,12 +12,16 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--sp-3);
-  display: flex; flex-direction: column; gap: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
 }
 
 /* suggestion chips */
 .assistant-suggestions {
-  display: flex; flex-direction: column; gap: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
   padding: var(--sp-2);
 }
 .assistant-sug-title {
@@ -26,7 +31,9 @@
   margin-bottom: var(--sp-1);
 }
 .assistant-sug {
-  display: flex; align-items: center; gap: var(--sp-2);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-md);
   font-size: var(--fs-sm);
@@ -36,8 +43,15 @@
   transition: background var(--duration-fast) var(--ease);
   line-height: var(--lh-relaxed);
 }
-.assistant-sug:hover { background: var(--hover-bg); }
-.assistant-sug svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
+.assistant-sug:hover {
+  background: var(--hover-bg);
+}
+.assistant-sug svg {
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
 
 /* conversation messages */
 .assistant-msg {
@@ -70,7 +84,8 @@
 .assistant-input-wrap {
   padding: var(--sp-3);
   border-top: 1px solid var(--border);
-  display: flex; gap: var(--sp-2);
+  display: flex;
+  gap: var(--sp-2);
 }
 .assistant-input {
   flex: 1;
@@ -82,19 +97,28 @@
   background: var(--bg);
   transition: border-color var(--duration-fast) var(--ease);
 }
-.assistant-input::placeholder { color: var(--muted); }
+.assistant-input::placeholder {
+  color: var(--muted);
+}
 .assistant-input:focus {
   border-color: var(--accent);
   background: var(--surface);
 }
 .assistant-send {
-  width: 32px; height: 32px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--r-md);
   background: var(--accent);
   color: var(--surface);
-  display: grid; place-items: center;
+  display: grid;
+  place-items: center;
   transition: background var(--duration-fast) var(--ease);
   flex-shrink: 0;
 }
-.assistant-send:hover { background: var(--accent-hover); }
-.assistant-send svg { width: 15px; height: 15px; }
+.assistant-send:hover {
+  background: var(--accent-hover);
+}
+.assistant-send svg {
+  width: 15px;
+  height: 15px;
+}

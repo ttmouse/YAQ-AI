@@ -16,13 +16,17 @@
   border: 1px solid transparent;
   margin-bottom: 2px;
 }
-.work-item:hover { background: var(--hover-bg); }
+.work-item:hover {
+  background: var(--hover-bg);
+}
 .work-item.selected {
   background: var(--selected-bg);
   border-color: var(--selected-border);
 }
 .work-item-head {
-  display: flex; align-items: flex-start; justify-content: space-between;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: var(--sp-2);
   margin-bottom: 4px;
 }
@@ -34,7 +38,9 @@
   flex: 1;
 }
 .work-item-meta {
-  display: flex; align-items: center; gap: var(--sp-2);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
   flex-wrap: wrap;
 }
 .work-item-blocker {
@@ -48,15 +54,22 @@
   overflow: hidden;
 }
 .work-item-footer {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: var(--sp-2);
 }
 .work-item-resp {
   font-size: var(--fs-xs);
   color: var(--muted);
-  display: flex; align-items: center; gap: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.work-item-resp svg { width: 12px; height: 12px; }
+.work-item-resp svg {
+  width: 12px;
+  height: 12px;
+}
 .work-item-action {
   font-size: var(--fs-xs);
   color: var(--accent);
@@ -65,9 +78,17 @@
 
 /* empty state */
 .work-items-empty {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: var(--sp-10) var(--sp-6);
-  color: var(--muted); text-align: center; gap: var(--sp-2);
+  color: var(--muted);
+  text-align: center;
+  gap: var(--sp-2);
 }
-.work-items-empty svg { width: 32px; height: 32px; opacity: 0.3; }
+.work-items-empty svg {
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+}

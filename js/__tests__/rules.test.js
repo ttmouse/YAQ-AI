@@ -21,7 +21,10 @@ const AI_TEMPLATES = [
         dimension: 'metric',
         severity: 'danger',
         description: '当检查完成率低于 ' + m[1] + '% 时视为异常',
-        condition: { type: 'threshold', params: { target: 'checkRate', operator: 'lt', value: parseInt(m[1]), unit: '%' } },
+        condition: {
+          type: 'threshold',
+          params: { target: 'checkRate', operator: 'lt', value: parseInt(m[1]), unit: '%' },
+        },
         effect: { markAlert: 'danger', generatePriority: true },
       };
     },
@@ -33,9 +36,13 @@ const AI_TEMPLATES = [
     build(m) {
       return {
         name: '隐患新增环比过高',
-        dimension: 'trend', severity: 'warning',
+        dimension: 'trend',
+        severity: 'warning',
         description: '当隐患新增量环比增长超过 ' + m[1] + '% 时触发预警',
-        condition: { type: 'trend', params: { target: 'newHazard', operator: 'gt', value: parseInt(m[1]), unit: '%', period: '环比' } },
+        condition: {
+          type: 'trend',
+          params: { target: 'newHazard', operator: 'gt', value: parseInt(m[1]), unit: '%', period: '环比' },
+        },
         effect: { markAlert: 'warning', generatePriority: true },
       };
     },
@@ -47,9 +54,13 @@ const AI_TEMPLATES = [
     build(m) {
       return {
         name: '企业持续未' + (m[2] || '登录'),
-        dimension: 'behavior', severity: 'danger',
+        dimension: 'behavior',
+        severity: 'danger',
         description: '当企业连续 ' + m[1] + ' 天未登录系统时标记为异常',
-        condition: { type: 'behavior', params: { target: 'enterpriseLogin', operator: 'gte', value: parseInt(m[1]), unit: '天', window: '连续' } },
+        condition: {
+          type: 'behavior',
+          params: { target: 'enterpriseLogin', operator: 'gte', value: parseInt(m[1]), unit: '天', window: '连续' },
+        },
         effect: { markAlert: 'danger', generatePriority: true },
       };
     },
@@ -61,9 +72,13 @@ const AI_TEMPLATES = [
     build(m) {
       return {
         name: '整改超期超过 ' + m[1] + ' 天',
-        dimension: 'timeout', severity: 'danger',
+        dimension: 'timeout',
+        severity: 'danger',
         description: '当隐患整改超期超过 ' + m[1] + ' 天时升级为危险',
-        condition: { type: 'timeWindow', params: { target: 'overdue', operator: 'gt', value: parseInt(m[1]), unit: '天' } },
+        condition: {
+          type: 'timeWindow',
+          params: { target: 'overdue', operator: 'gt', value: parseInt(m[1]), unit: '天' },
+        },
         effect: { markAlert: 'danger', generatePriority: true },
       };
     },
@@ -75,9 +90,19 @@ const AI_TEMPLATES = [
     build(m) {
       return {
         name: '低于同类均值超过 ' + m[1] + '%',
-        dimension: 'comparison', severity: 'warning',
+        dimension: 'comparison',
+        severity: 'warning',
         description: '当某条线指标低于同类均值 ' + m[1] + '% 以上时预警',
-        condition: { type: 'comparison', params: { target: 'linePerformance', operator: 'lt', value: parseInt(m[1]), unit: '%', compareTo: 'peerAverage' } },
+        condition: {
+          type: 'comparison',
+          params: {
+            target: 'linePerformance',
+            operator: 'lt',
+            value: parseInt(m[1]),
+            unit: '%',
+            compareTo: 'peerAverage',
+          },
+        },
         effect: { markAlert: 'warning', generatePriority: false },
       };
     },
@@ -89,9 +114,13 @@ const AI_TEMPLATES = [
     build(m) {
       return {
         name: '重大隐患超期 ' + m[1] + ' 天',
-        dimension: 'timeout', severity: 'danger',
+        dimension: 'timeout',
+        severity: 'danger',
         description: '重大隐患超期 ' + m[1] + ' 天自动标记为危险',
-        condition: { type: 'timeWindow', params: { target: 'majorOverdue', operator: 'gte', value: parseInt(m[1]), unit: '天' } },
+        condition: {
+          type: 'timeWindow',
+          params: { target: 'majorOverdue', operator: 'gte', value: parseInt(m[1]), unit: '天' },
+        },
         effect: { markAlert: 'danger', generatePriority: true },
       };
     },
@@ -103,7 +132,8 @@ const AI_TEMPLATES = [
     build() {
       return {
         name: '企业自查持续缺失',
-        dimension: 'behavior', severity: 'warning',
+        dimension: 'behavior',
+        severity: 'warning',
         description: '当存在自查率为 0 的企业时标记为异常',
         condition: { type: 'behavior', params: { target: 'selfCheck', operator: 'gt', value: 0, unit: '家' } },
         effect: { markAlert: 'warning', generatePriority: false },
@@ -138,7 +168,14 @@ function severityLabel(sev) {
 }
 
 function conditionTypeLabel(type) {
-  const map = { threshold: '阈值', timeWindow: '超时', comparison: '对比', trend: '趋势', behavior: '行为', composite: '复合' };
+  const map = {
+    threshold: '阈值',
+    timeWindow: '超时',
+    comparison: '对比',
+    trend: '趋势',
+    behavior: '行为',
+    composite: '复合',
+  };
   return map[type] || type;
 }
 
@@ -413,21 +450,33 @@ describe('evaluateRule', () => {
         const actual = ctx[p.target];
         if (actual === undefined) return null;
         switch (p.operator) {
-          case 'lt': triggered = actual < p.value; break;
-          case 'gt': triggered = actual > p.value; break;
-          case 'gte': triggered = actual >= p.value; break;
+          case 'lt':
+            triggered = actual < p.value;
+            break;
+          case 'gt':
+            triggered = actual > p.value;
+            break;
+          case 'gte':
+            triggered = actual >= p.value;
+            break;
         }
-        if (triggered) detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
+        if (triggered)
+          detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
         break;
       }
       case 'timeWindow': {
         const actual = ctx[p.target];
         if (actual === undefined) return null;
         switch (p.operator) {
-          case 'gt': triggered = actual > p.value; break;
-          case 'gte': triggered = actual >= p.value; break;
+          case 'gt':
+            triggered = actual > p.value;
+            break;
+          case 'gte':
+            triggered = actual >= p.value;
+            break;
         }
-        if (triggered) detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
+        if (triggered)
+          detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
         break;
       }
       case 'behavior': {
@@ -442,7 +491,7 @@ describe('evaluateRule', () => {
         if (actual === undefined) return null;
         if (p.target === 'newHazard') {
           const baseline = 18;
-          const change = Math.round((actual - baseline) / baseline * 100);
+          const change = Math.round(((actual - baseline) / baseline) * 100);
           triggered = change > p.value;
         }
         break;
@@ -465,52 +514,70 @@ describe('evaluateRule', () => {
   });
 
   it('threshold — actual < value 应触发', () => {
-    const result = evaluateRule({
-      enabled: true,
-      condition: { type: 'threshold', params: { target: 'checkRate', operator: 'lt', value: 60, unit: '%' } },
-    }, ctx);
+    const result = evaluateRule(
+      {
+        enabled: true,
+        condition: { type: 'threshold', params: { target: 'checkRate', operator: 'lt', value: 60, unit: '%' } },
+      },
+      ctx,
+    );
     expect(result.triggered).toBe(true);
     expect(result.detail).toContain('48');
   });
 
   it('threshold — actual > value 不应触发', () => {
-    const result = evaluateRule({
-      enabled: true,
-      condition: { type: 'threshold', params: { target: 'checkRate', operator: 'gt', value: 60, unit: '%' } },
-    }, ctx);
+    const result = evaluateRule(
+      {
+        enabled: true,
+        condition: { type: 'threshold', params: { target: 'checkRate', operator: 'gt', value: 60, unit: '%' } },
+      },
+      ctx,
+    );
     expect(result.triggered).toBe(false);
   });
 
   it('threshold — actual >= value 应触发', () => {
-    const result = evaluateRule({
-      enabled: true,
-      condition: { type: 'threshold', params: { target: 'checkRate', operator: 'gte', value: 48, unit: '%' } },
-    }, ctx);
+    const result = evaluateRule(
+      {
+        enabled: true,
+        condition: { type: 'threshold', params: { target: 'checkRate', operator: 'gte', value: 48, unit: '%' } },
+      },
+      ctx,
+    );
     expect(result.triggered).toBe(true);
   });
 
   it('timeWindow — overdue > value 应触发', () => {
-    const result = evaluateRule({
-      enabled: true,
-      condition: { type: 'timeWindow', params: { target: 'overdue', operator: 'gt', value: 2, unit: '天' } },
-    }, ctx);
+    const result = evaluateRule(
+      {
+        enabled: true,
+        condition: { type: 'timeWindow', params: { target: 'overdue', operator: 'gt', value: 2, unit: '天' } },
+      },
+      ctx,
+    );
     expect(result.triggered).toBe(true);
   });
 
   it('behavior — selfCheck > 0 应触发', () => {
-    const result = evaluateRule({
-      enabled: true,
-      condition: { type: 'behavior', params: { target: 'selfCheck', operator: 'gt', value: 0, unit: '家' } },
-    }, ctx);
+    const result = evaluateRule(
+      {
+        enabled: true,
+        condition: { type: 'behavior', params: { target: 'selfCheck', operator: 'gt', value: 0, unit: '家' } },
+      },
+      ctx,
+    );
     expect(result.triggered).toBe(true);
     expect(result.detail).toContain('5');
   });
 
   it('不存在的 target 应返回 null', () => {
-    const result = evaluateRule({
-      enabled: true,
-      condition: { type: 'threshold', params: { target: 'nonexistent', operator: 'lt', value: 50, unit: '%' } },
-    }, ctx);
+    const result = evaluateRule(
+      {
+        enabled: true,
+        condition: { type: 'threshold', params: { target: 'nonexistent', operator: 'lt', value: 50, unit: '%' } },
+      },
+      ctx,
+    );
     expect(result).toBeNull();
   });
 });

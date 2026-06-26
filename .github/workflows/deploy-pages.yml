@@ -37,6 +37,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
       - name: QA — Lint
         run: npx eslint js/ --max-warnings 200
+      - name: QA — Format
+        run: npm run format
       - name: QA — Test
         run: npx vitest run
       - name: Build

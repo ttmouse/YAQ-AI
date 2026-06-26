@@ -8,14 +8,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  escapeHtml,
-  safeRender,
-  escHtml,
-  severityLabel,
-  conditionTypeLabel,
-  createLS,
-} from './test-utils.js';
+import { escapeHtml, safeRender, escHtml, severityLabel, conditionTypeLabel, createLS } from './test-utils.js';
 
 // ─── escapeHtml（与 app.js 中 YAQ.escapeHtml 实现一致） ──
 
@@ -54,15 +47,13 @@ describe('localStorage wrapper (YAQ.ls)', () => {
 
   beforeEach(() => {
     const store = {};
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(
-      (key) => store[key] ?? null,
-    );
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(
-      (key, value) => { store[key] = String(value); },
-    );
-    vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(
-      (key) => { delete store[key]; },
-    );
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(key => store[key] ?? null);
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation((key, value) => {
+      store[key] = String(value);
+    });
+    vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(key => {
+      delete store[key];
+    });
     ls = createLS();
   });
 
@@ -103,7 +94,9 @@ describe('safeRender', () => {
   });
 
   it('异常时应返回错误 fallback', () => {
-    const result = safeRender(() => { throw new Error('boom'); }, '出错了');
+    const result = safeRender(() => {
+      throw new Error('boom');
+    }, '出错了');
     expect(result).toContain('error-state');
     expect(result).toContain('出错了');
   });
@@ -169,7 +162,8 @@ describe('Rule AI Templates (rules.js)', () => {
       },
     },
     {
-      pattern: /(?:隐患|问题)(?:新增|新发现)\s*(?:环比|较上期|相比)\s*(?:增长|上升|增加|↑)\s*(?:超过|大于|>)\s*(\d+)\s*%/,
+      pattern:
+        /(?:隐患|问题)(?:新增|新发现)\s*(?:环比|较上期|相比)\s*(?:增长|上升|增加|↑)\s*(?:超过|大于|>)\s*(\d+)\s*%/,
       label: '隐患新增环比过高',
       parse(input) {
         const m = input.match(this.pattern);

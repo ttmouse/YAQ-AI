@@ -92,7 +92,9 @@ function createTrackStore() {
 
     autoCreateFromContext(title, source, responsibility, deadline) {
       return this.add({
-        title, source, sourceId: '',
+        title,
+        source,
+        sourceId: '',
         responsibility: responsibility || '',
         deadline: deadline || '',
         initNote: '来自「' + source + '」自动创建',
@@ -122,8 +124,11 @@ function createTrackStore() {
 
     _load() {
       const raw = ls.get(this._key);
-      try { this._tracks = raw ? JSON.parse(raw) : []; }
-      catch { this._tracks = []; }
+      try {
+        this._tracks = raw ? JSON.parse(raw) : [];
+      } catch {
+        this._tracks = [];
+      }
     },
 
     _save() {
@@ -181,7 +186,7 @@ describe('TrackStore — 基本 CRUD', () => {
     store.add({ title: '持久化测试' });
     const all1 = store.getAll();
     const all2 = store.getAll();
-    expect(all1).toBe(all2);  // 同一引用
+    expect(all1).toBe(all2); // 同一引用
     expect(all1).toHaveLength(1);
   });
 });
@@ -191,7 +196,7 @@ describe('TrackStore — 基本 CRUD', () => {
 describe('TrackStore — 查询/筛选', () => {
   beforeEach(() => {
     // 创建 3 条不同状态的记录
-    store.add({ title: '跟踪中' });  // status='tracking'
+    store.add({ title: '跟踪中' }); // status='tracking'
     const p = store.add({ title: '进行中' });
     store.update(p.id, { status: 'progressing' });
     const c = store.add({ title: '已闭环' });
@@ -384,7 +389,7 @@ describe('TrackStore — 边界情况', () => {
   it('update 不传 note 不应添加更新记录', () => {
     const t = store.add({ title: '无备注' });
     store.update(t.id, { progress: 50 });
-    expect(store.getAll()[0].updates).toHaveLength(1);  // 只有初始创建记录
+    expect(store.getAll()[0].updates).toHaveLength(1); // 只有初始创建记录
   });
 
   it('clear 所有数据后 getAll 应返回空数组', () => {
