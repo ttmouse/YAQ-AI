@@ -574,6 +574,18 @@
         var initOv = document.querySelector('.init-overlay');
         if (initOv) initOv.style.top = 52 + sat + 'px';
       })();
+
+      /* ═══ 移动端键盘弹出时输入框自动滚入可视区 ══════════════════ */
+      (function () {
+        if (!('ontouchstart' in window)) return;
+        document.addEventListener('focusin', function (e) {
+          var el = e.target;
+          if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') return;
+          setTimeout(function () {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
+        });
+      })();
     </script>
   </body>
 </html>
