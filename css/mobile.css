@@ -642,3 +642,9 @@
     margin-top: 4px;
   }
 }
+/* 手机竖屏时 demo-menu 顶部跟随压缩后的顶栏 */
+@media (max-width: 480px) {
+  .demo-menu-wrap.mobile-top-right {
+    top: 44px !important;
+  }
+}
