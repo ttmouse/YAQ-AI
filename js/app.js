@@ -2084,9 +2084,7 @@
       // Agent 内容渲染完成后，显示对应的快捷输入
       if (window.YAQ.showGlobalQuickChip) {
         if (sceneId === 'dashboard') {
-          window.YAQ.showGlobalQuickChip([
-            { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
-          ]);
+          window.YAQ.showGlobalQuickChip([{ label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' }]);
         } else if (sceneId === 'monthly-report') {
           window.YAQ.showGlobalQuickChip([
             { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
@@ -2865,12 +2863,12 @@
     // 展开：每个期间指标按周期拆成独立卡片
     // 站长每日工作台默认展示指标：先异常再预警
     var dailyDefaults = {
-      majorOpen: 1,                      // 未闭环重大隐患（danger）
-      majorNew_今日: 1,                   // 新增重大隐患（danger）
-      riskLevelUp_本周: 1,                // 风险等级上调（warning）
-      newMajorSignificant_本周: 1,         // 新增重大/较大风险主体（warning）
-      majorRisk_本周: 1,                  // 重大风险
-      areaRiskAbnormal_本周: 1,           // 风险上升片区（warning）
+      majorOpen: 1, // 未闭环重大隐患（danger）
+      majorNew_今日: 1, // 新增重大隐患（danger）
+      riskLevelUp_本周: 1, // 风险等级上调（warning）
+      newMajorSignificant_本周: 1, // 新增重大/较大风险主体（warning）
+      majorRisk_本周: 1, // 重大风险
+      areaRiskAbnormal_本周: 1, // 风险上升片区（warning）
     };
     var allMetrics = [];
     for (var bi = 0; bi < baseMetrics.length; bi++) {
@@ -3017,7 +3015,12 @@
     html +=
       '<div class="info-card">' +
       '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
-      '<h3><i data-lucide="shield-alert" aria-hidden="true" class="c-red"></i> 关键风险闭环</h3>' +
+      '<div style="display:flex;align-items:center;gap:8px;width:100%">' +
+      '<h3 style="flex:1"><i data-lucide="shield-alert" aria-hidden="true" class="c-red"></i> 关键风险闭环</h3>' +
+      "<button onclick=\"switchScene('hazard-report')\" style=\"background:none;border:none;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s;flex-shrink:0\" onmouseover=\"this.style.background='#f1f5f9';this.style.color='#334155'\" onmouseout=\"this.style.background='none';this.style.color='#94a3b8'\">" +
+      '查看全部 <i data-lucide="chevron-right" width="14" height="14"></i>' +
+      '</button>' +
+      '</div>' +
       '<div style="width:100%;font-size:13px;font-weight:500;color:var(--text);line-height:1.5;margin-top:3px">' +
       riskSummary +
       '</div>' +
@@ -3061,61 +3064,27 @@
         '</div>' +
         '</div>';
     }
-    // 第二轮：已完成
-    var doneShown = 0;
-    for (var hi2 = 0; hi2 < majorHazards.length && doneShown < 2; hi2++) {
-      var h2 = majorHazards[hi2];
-      if (h2.status !== '已完成') continue;
-      doneShown++;
-      html +=
-        '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer;opacity:0.75" onclick="openHazardDetail(\'' +
-        h2.object +
-        '\')" title="点击查看详情">' +
-        '<div class="hc-head">' +
-        '<span class="hc-name">' +
-        escapeHtml(h2.object) +
-        '</span>' +
-        '</div>' +
-        '<div class="hc-desc">' +
-        h2.hazard.split('\n')[0] +
-        '</div>' +
-        '<div class="hc-meta">' +
-        '<span>来源 ' +
-        h2.source +
-        '</span>' +
-        '<span class="hc-status done">已闭环</span>' +
-        '<span>—</span>' +
-        '</div>' +
-        '<div class="hc-time">' +
-        h2.foundDate +
-        ' → ' +
-        h2.deadline +
-        '</div>' +
-        '</div>';
-    }
     html += '</div></div>';
 
     // ─── 板块三：核心任务进展 ────────────────────────────────
     var tasks = MOCK.tasks;
-    var lagCount = 0;
-    for (var ti = 0; ti < tasks.length; ti++) {
-      if (tasks[ti].lag) lagCount++;
-    }
     html +=
       '<div class="info-card">' +
       '<div class="info-card-head">' +
       '<h3><i data-lucide="target" aria-hidden="true" class="c-accent"></i> 核心任务进展</h3>' +
-      '<span class="info-card-badge danger">' +
-      lagCount +
-      ' 项异常</span>' +
+      "<button onclick=\"switchScene('followup')\" style=\"background:none;border:none;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s\" onmouseover=\"this.style.background='#f1f5f9';this.style.color='#334155'\" onmouseout=\"this.style.background='none';this.style.color='#94a3b8'\">" +
+      '查看全部 <i data-lucide="chevron-right" width="14" height="14"></i>' +
+      '</button>' +
       '</div>' +
       '<div style="display:flex;gap:8px;overflow-x:auto;flex-wrap:nowrap;padding:2px 0;scrollbar-width:none;-ms-overflow-style:none">';
     // 异常任务排前面
     var sortedTasks = tasks.slice().sort(function (a, b) {
       return a.lag === b.lag ? 0 : a.lag ? -1 : 1;
     });
-    for (var tci = 0; tci < sortedTasks.length; tci++) {
-      var tc = sortedTasks[tci];
+    // 只展示前 3 个任务
+    var showTasks = sortedTasks.slice(0, 3);
+    for (var tci = 0; tci < showTasks.length; tci++) {
+      var tc = showTasks[tci];
       var tcRate = parseInt(tc.rate) || 0;
       var tcBar = tc.lag
         ? tc.risk === '重大风险'
@@ -7169,7 +7138,6 @@
           '<div class="msg agent"><div class="bubble">已切换到「' + name + '」，你需要关注什么？</div></div>';
         chatBody.scrollTop = chatBody.scrollHeight;
       }
-
     }, 250);
   }
 
