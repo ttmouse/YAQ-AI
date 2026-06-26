@@ -319,6 +319,12 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* 信息卡片内表格溢出保护 */
+  .info-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* 月报侧边栏 */
   #mrSidebar {
     width: 100% !important;
