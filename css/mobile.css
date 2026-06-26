@@ -232,6 +232,11 @@
     max-width: 100% !important;
     margin: 0 !important;
   }
+  /* 模态标题允许多行，防止溢出 */
+  .modal-title {
+    white-space: normal;
+    word-break: break-word;
+  }
 
   /* 指标钻取浮层 */
   .drill-float {
