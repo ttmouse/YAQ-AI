@@ -47,7 +47,6 @@
 
 /* ─── 手机横屏 / 小平板（≤768px） ────────────────────────────── */
 @media (max-width: 768px) {
-
   /* Toast 位置调整 */
   .toast {
     left: 16px;
@@ -432,5 +431,18 @@
 @media (max-width: 480px) {
   .demo-menu-wrap.mobile-top-right {
     top: 44px !important;
+  }
+}
+
+/* ─── 多列网格移动端 collapse ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .three-col-grid {
+    grid-template-columns: 1fr;
+  }
+  .block-metrics {
+    grid-template-columns: 1fr;
+  }
+  .drill-body {
+    grid-template-columns: 1fr;
   }
 }
