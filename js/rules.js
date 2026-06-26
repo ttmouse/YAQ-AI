@@ -514,7 +514,7 @@
             break;
         }
         if (triggered)
-          detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
+          {detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';}
         break;
       }
       case 'timeWindow': {
@@ -532,7 +532,7 @@
             break;
         }
         if (triggered)
-          detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
+          {detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';}
         break;
       }
       case 'comparison': {
@@ -595,13 +595,13 @@
           }
         }
         if (p.logic === 'AND')
-          triggered = results.every(function (x) {
+          {triggered = results.every(function (x) {
             return x;
-          });
+          });}
         else
-          triggered = results.some(function (x) {
+          {triggered = results.some(function (x) {
             return x;
-          });
+          });}
         if (triggered) detail = '复合条件满足 (' + p.rules.join(' + ') + ')';
         break;
       }
@@ -1184,7 +1184,7 @@
     }
     var icon = zone.querySelector('.rules-ai-toggle-icon');
     if (icon)
-      icon.innerHTML = '<i data-lucide="chevron-' + (aiZoneVisible ? 'up' : 'down') + '" aria-hidden="true"></i>';
+      {icon.innerHTML = '<i data-lucide="chevron-' + (aiZoneVisible ? 'up' : 'down') + '" aria-hidden="true"></i>';}
     lucide.createIcons();
   }
 

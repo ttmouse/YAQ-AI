@@ -2019,15 +2019,6 @@
 .priority-item:hover {
   border-color: var(--blue);
 }
-.priority-item.level-high {
-  border-left: 3px solid var(--red);
-}
-.priority-item.level-mid {
-  border-left: 3px solid var(--orange);
-}
-.priority-item.level-low {
-  border-left: 3px solid var(--weak);
-}
 .pi-left {
   display: flex;
   flex-direction: column;
@@ -3123,16 +3114,6 @@
 .priority-item:hover {
   border-color: var(--accent);
 }
-.priority-item.level-high {
-  border-left: 3px solid var(--red);
-}
-.priority-item.level-mid {
-  border-left: 3px solid var(--orange);
-}
-.priority-item.level-low {
-  border-left: 3px solid var(--muted);
-}
-
 .pi-left {
   display: flex;
   flex-direction: column;
@@ -4388,7 +4369,7 @@
 }
 .scene-content {
   text-align: left;
-  padding: 22px 0;
+  padding: 22px 0 50px;
 }
 .scene-content > * {
   animation: fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -5795,19 +5776,6 @@
 .pa-card:hover {
   border-color: #d0d8e4;
 }
-.pa-card.pa-type-supervise {
-  border-left: 3px solid var(--orange);
-}
-.pa-card.pa-type-explain {
-  border-left: 3px solid var(--blue);
-}
-.pa-card.pa-type-track {
-  border-left: 3px solid var(--purple);
-}
-.pa-card.pa-type-observe {
-  border-left: 3px solid var(--weak);
-}
-
 .pa-card-top {
   display: flex;
   align-items: flex-start;

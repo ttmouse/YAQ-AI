@@ -1324,6 +1324,9 @@
   function globalChatQuick(text) {
     var input = document.getElementById('globalChatInput');
     if (input) input.value = text;
+    // 点击快捷芯片时，隐藏快捷芯片
+    var quickWrap = document.getElementById('globalChatQuickWrap');
+    if (quickWrap) quickWrap.style.display = 'none';
     // 点击快捷芯片时，模拟用户发送消息，AI Agent 在页面底部分析展现
     if (text.indexOf('超期未闭环原因') >= 0 || text.indexOf('隐患闭环未关闭的原因') >= 0) {
       if (input) {
@@ -1331,6 +1334,14 @@
         input.blur();
       }
       renderOverdueAnalysis();
+      return;
+    }
+    if (text.indexOf('任务的异常') >= 0 || text.indexOf('任务异常') >= 0) {
+      if (input) {
+        input.value = '';
+        input.blur();
+      }
+      renderTaskAnomalyAnalysis();
       return;
     }
     showToast('正在分析你的问题…（演示回复）');
@@ -1344,7 +1355,7 @@
     var container = document.getElementById('sceneContent');
     if (!container) return;
     container.insertAdjacentHTML('beforeend', html);
-    var scrollContainer = container.closest('.result') || container.parentElement;
+    var scrollContainer = container.closest('.center');
     if (scrollContainer) {
       requestAnimationFrame(function () {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
@@ -1372,7 +1383,7 @@
         el.insertAdjacentHTML('beforeend', sections[idx]);
         var container = document.getElementById('sceneContent');
         if (container) {
-          var sc = container.closest('.result') || container.parentElement;
+          var sc = container.closest('.center');
           if (sc) requestAnimationFrame(function () { sc.scrollTop = sc.scrollHeight; });
         }
         idx++;
@@ -1388,7 +1399,7 @@
     var userQuery = '分析一下隐患闭环未关闭的原因';
     // 先显示用户消息
     sceneAppend(
-      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-bottom:12px">' +
+      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
         '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
           escapeHtml(userQuery) +
         '</div>' +
@@ -1403,7 +1414,7 @@
         '当前共有 <strong style="color:#dc2626">2 项</strong>重大隐患超期未整改。以下从 <strong>政府端（监督跟进）</strong>和 <strong>企业端（主体责任）</strong>两个维度逐项研判责任归属。' +
       '</div>',
       // 第1项
-      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px;border-left:3px solid #dc2626">' +
+      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
           '<span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">超期 3 天</span>' +
           '<span style="font-size:14px;font-weight:700;color:#1e293b">北苑商业综合体 · 消防通道堵塞</span>' +
@@ -1434,7 +1445,7 @@
         '</div>' +
       '</div>',
       // 第2项
-      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px;border-left:3px solid #f97316">' +
+      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
           '<span style="background:#fff7ed;color:#d97706;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">超期 1 天</span>' +
           '<span style="font-size:14px;font-weight:700;color:#1e293b">云栖高层住宅 · 自动消防设施失效</span>' +
@@ -1502,7 +1513,7 @@
     var userQuery = '分析一下任务的异常情况';
     // 先显示用户消息
     sceneAppend(
-      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-bottom:12px">' +
+      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
         '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
         escapeHtml(userQuery) +
         '</div>' +
@@ -1516,7 +1527,7 @@
         '当前有 <strong style="color:#dc2626">2 项</strong>任务存在异常，需重点关注。' +
       '</div>',
       // 第1项
-      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px;border-left:3px solid #dc2626">' +
+      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
           '<span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">严重滞后</span>' +
           '<span style="font-size:14px;font-weight:700;color:#1e293b">2026年第二季度良渚片重大风险检查任务</span>' +
@@ -1535,7 +1546,7 @@
         '</div>' +
       '</div>',
       // 第2项
-      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px;border-left:3px solid #f97316">' +
+      '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:16px;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">' +
           '<span style="background:#fff7ed;color:#d97706;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px">进度偏低</span>' +
           '<span style="font-size:14px;font-weight:700;color:#1e293b">片区隐患排查复查</span>' +

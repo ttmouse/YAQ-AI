@@ -3244,7 +3244,6 @@
     if (items.length === 0) return '';
     return (
       "<div style=\"display:flex;align-items:center;gap:12px;padding:14px 16px;margin-bottom:8px;border:1px solid var(--line);border-radius:14px;background:var(--card);cursor:pointer;position:relative;overflow:hidden;transition:box-shadow .15s,transform .15s\" onclick=\"switchScene('pending-actions')\" onmouseover=\"this.style.boxShadow='0 4px 14px rgba(23,105,224,0.12)';this.style.transform='translateY(-1px)'\" onmouseout=\"this.style.boxShadow='';this.style.transform=''\">" +
-      '<div style="position:absolute;left:0;top:6px;bottom:6px;width:3px;background:var(--blue);border-radius:0 3px 3px 0"></div>' +
       '<div style="flex-shrink:0;width:34px;height:34px;border-radius:10px;background:var(--blue-bg);color:var(--blue);display:flex;align-items:center;justify-content:center"><i data-lucide="zap" width="18" height="18"></i></div>' +
       '<div style="flex:1;min-width:0">' +
       '<div style="font-size:13px;font-weight:600;color:var(--text)">待确认行动 <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;margin-left:6px">' +
@@ -3910,7 +3909,7 @@
 
     function renderLevels(arr, tagPrefix) {
       if (!arr || arr.length === 0)
-        return '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无分级处置数据</div>';
+        {return '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无分级处置数据</div>';}
       var h = '';
       for (var li = 0; li < arr.length; li++) {
         var lv = arr[li];
@@ -4324,7 +4323,7 @@
 
         html +=
           '<div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:var(--fg-soft);display:flex;flex-direction:column;gap:6px' +
-          (fu.needIntervention ? ';border-left:3px solid var(--red)' : '') +
+          (fu.needIntervention ? '' : '') +
           '">' +
           // 标题行
           '<div style="display:flex;align-items:center;justify-content:space-between">' +
@@ -5311,7 +5310,7 @@
       // Analysis
       if (sec.analysis) {
         html +=
-          '<div style="margin-top:8px;padding:8px 12px;background:var(--bg);border-radius:8px;font-size:12.5px;color:var(--weak);border-left:3px solid var(--accent)">' +
+          '<div style="margin-top:8px;padding:8px 12px;background:var(--bg);border-radius:8px;font-size:12.5px;color:var(--weak)">' +
           '<span style="font-weight:600;color:var(--text)">📊 分析：</span>' +
           sec.analysis +
           '</div>';
@@ -6172,7 +6171,7 @@
     if (tab === 'overview') return epRenderRecentHazards(data.hazards);
     if (tab === 'hazards') return epRenderHazardCards(data.hazards);
     if (tab === 'selfinspect')
-      return epRenderList(data.selfInspections, '自检自查记录', function (s) {
+      {return epRenderList(data.selfInspections, '自检自查记录', function (s) {
         var dotCls = s.statusCls || 'neutral';
         var issueText =
           s.issues > 0
@@ -6202,9 +6201,9 @@
           issueText +
           '</div></div></div>'
         );
-      });
+      });}
     if (tab === 'expert')
-      return epRenderList(data.expertRecords, '专家履职记录', function (e) {
+      {return epRenderList(data.expertRecords, '专家履职记录', function (e) {
         var dotCls = e.statusCls || 'neutral';
         return (
           '<div class="ep-hist-item">' +
@@ -6228,9 +6227,9 @@
           e.org +
           '</div></div></div>'
         );
-      });
+      });}
     if (tab === 'training')
-      return epRenderList(data.trainingRecords, '培训记录', function (t) {
+      {return epRenderList(data.trainingRecords, '培训记录', function (t) {
         return (
           '<div class="ep-hist-item">' +
           '<span class="ep-hist-dot done"></span>' +
@@ -6251,7 +6250,7 @@
           t.attendees +
           ' 人</div></div></div>'
         );
-      });
+      });}
     if (tab === 'dimensions') {
       var html =
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
@@ -6339,7 +6338,7 @@
 
   function epRenderRecentHazards(hazards) {
     if (!hazards || hazards.length === 0)
-      return '<div style="text-align:center;padding:20px 0;color:var(--weak);font-size:13px">暂无隐患记录</div>';
+      {return '<div style="text-align:center;padding:20px 0;color:var(--weak);font-size:13px">暂无隐患记录</div>';}
     var sorted = hazards.slice().sort(function (a, b) {
       return a.foundDate < b.foundDate ? 1 : -1;
     });
@@ -6418,7 +6417,7 @@
       html += itemFn(items[i]);
     }
     if (items.length === 0)
-      html += '<div style="text-align:center;padding:24px 0;color:var(--weak);font-size:13px">暂无记录</div>';
+      {html += '<div style="text-align:center;padding:24px 0;color:var(--weak);font-size:13px">暂无记录</div>';}
     return html;
   }
 
@@ -6972,11 +6971,11 @@
     // 定位分析：条线 → 区域 → 责任
     rightHtml += '<div class="tma-block">' + '<div class="tma-label">定位分析</div>';
     if (task.line)
-      rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>条线：' + task.line + '</div>';
+      {rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>条线：' + task.line + '</div>';}
     if (task.region)
-      rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>区域：' + task.region + '</div>';
+      {rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>区域：' + task.region + '</div>';}
     if (task.person)
-      rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>责任：' + task.person + '</div>';
+      {rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>责任：' + task.person + '</div>';}
     rightHtml += '</div>';
 
     // 关联对象
@@ -7429,7 +7428,7 @@
       // 卡片 hover 提示信息：desc + 基线对照（如有）
       var tipParts = [m.desc || ''];
       if (m.compare)
-        tipParts.push('vs ' + m.compare.baselineLabel + ' ' + m.compare.baselineValue + '  ' + m.compare.delta);
+        {tipParts.push('vs ' + m.compare.baselineLabel + ' ' + m.compare.baselineValue + '  ' + m.compare.delta);}
       var tipText = tipParts.join('\n');
       html +=
         '<div class="metric-card' +
@@ -8617,12 +8616,21 @@
   var SEARCH_HISTORY_MOCK = ['王志安', '北苑', '消防通道', '恒源化工', '检查'];
 
   function getSearchHistory() {
-    var h = JSON.parse(ls.get(SEARCH_HISTORY_KEY, 'null'));
-    if (!h || !Array.isArray(h) || h.length === 0) {
-      h = SEARCH_HISTORY_MOCK.slice();
-      ls.set(SEARCH_HISTORY_KEY, JSON.stringify(h));
+    var raw = ls.get(SEARCH_HISTORY_KEY);
+    if (raw === null || raw === undefined || raw === 'null') {
+      // 首次使用：初始化 mock 数据
+      var mock = SEARCH_HISTORY_MOCK.slice();
+      ls.set(SEARCH_HISTORY_KEY, JSON.stringify(mock));
+      return mock;
     }
-    return h;
+    try {
+      var h = JSON.parse(raw);
+      if (Array.isArray(h)) return h;
+    } catch (e) {}
+    // 数据异常，重置为 mock
+    var mock = SEARCH_HISTORY_MOCK.slice();
+    ls.set(SEARCH_HISTORY_KEY, JSON.stringify(mock));
+    return mock;
   }
 
   function recordSearchKeyword(keyword) {
@@ -8856,13 +8864,13 @@
       if (meta.region) metaHtml += '<span class="sri-tag sri-tag-region">' + $_escapeHtml(meta.region) + '</span>';
       if (meta.level && meta.level.indexOf('重大') > -1) metaHtml += '<span class="sri-tag sri-tag-danger">重大</span>';
       else if (meta.level && meta.level.indexOf('一般') > -1)
-        metaHtml += '<span class="sri-tag sri-tag-warn">一般</span>';
+        {metaHtml += '<span class="sri-tag sri-tag-warn">一般</span>';}
       if (meta.status === '超期未整改') metaHtml += '<span class="sri-tag sri-tag-danger">超期</span>';
     } else if (entry.type === 'task') {
       if (meta.region) metaHtml += '<span class="sri-tag sri-tag-region">' + $_escapeHtml(meta.region) + '</span>';
       if (meta.status) metaHtml += '<span class="sri-tag sri-tag-info">' + $_escapeHtml(meta.status) + '</span>';
       if (meta.progress)
-        metaHtml += '<span class="sri-tag sri-tag-progress">' + $_escapeHtml(meta.progress) + '</span>';
+        {metaHtml += '<span class="sri-tag sri-tag-progress">' + $_escapeHtml(meta.progress) + '</span>';}
     } else if (entry.type === 'workItem') {
       if (meta.risk && meta.risk.indexOf('重大') > -1) metaHtml += '<span class="sri-tag sri-tag-danger">重大</span>';
       if (meta.status) metaHtml += '<span class="sri-tag sri-tag-info">' + $_escapeHtml(meta.status) + '</span>';
