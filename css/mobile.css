@@ -125,13 +125,6 @@
     font-size: 10px;
     padding: 3px 6px;
   }
-  .tab-strip {
-    gap: 2px;
-  }
-  .tab-strip .tab-item {
-    font-size: 11px;
-    padding: 4px 8px;
-  }
 
   .result {
     padding: 0 6px;

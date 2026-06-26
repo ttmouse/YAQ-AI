@@ -6595,13 +6595,18 @@
    Tab 条
    ═════════════════════════════════════════════════════════════════════ */
 .tab-strip {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  overflow-x: auto;
-  flex: 1;
-  min-width: 0;
-  scrollbar-width: none;
+  display: none;
+}
+@media (min-width: 769px) {
+  .tab-strip {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+    scrollbar-width: none;
+  }
 }
 .tab-strip::-webkit-scrollbar {
   display: none;
