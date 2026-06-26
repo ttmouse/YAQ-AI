@@ -729,6 +729,18 @@
   }
 }
 
+/* ─── 移动端：全屏弹窗打开时隐藏底部聊天栏 ──────────── */
+@media (max-width: 768px) {
+  body:has(.hmodal-panel[style*="display: block"]) .global-chat-bar,
+  body:has(.tmodal-panel[style*="display: block"]) .global-chat-bar,
+  body:has(.modal-panel[style*="display: block"]) .global-chat-bar,
+  body:has(.drill-float.open) .global-chat-bar,
+  body:has(.action-modal-panel.open) .global-chat-bar,
+  body:has(.memory-panel.open) .global-chat-bar {
+    display: none;
+  }
+}
+
 /* ─── 移动端：指标说明浮层底部居中 ────────────────────── */
 @media (max-width: 768px) {
   .metric-tip {
