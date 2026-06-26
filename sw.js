@@ -3,6 +3,13 @@ const CACHE_NAME = 'yaq-ai-v2';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './manifest.json',
+  './apple-touch-icon.png',
+  './favicon.svg',
+  './robots.txt',
+  './404.html',
+  './ai-vs-traditional-comparison.html',
+  './special-inspection-prototype.html',
   './css/style.css',
   './css/tokens.css',
   './css/base.css',
@@ -15,15 +22,11 @@ const STATIC_ASSETS = [
   './css/mobile.css',
   './css/utilities.css',
   './css/agent-init.css',
+  './css/inspection.css',
   './js/app.js',
   './js/track-store.js',
   './js/rules.js',
-  './js/agent-init.js',
-  './favicon.svg',
-  './robots.txt',
-  './404.html',
-  './ai-vs-traditional-comparison.html',
-  './special-inspection-prototype.html'
+  './js/agent-init.js'
 ];
 
 /* ─── 安装：预缓存静态资源 ────────────────────────────────────── */
