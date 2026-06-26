@@ -190,6 +190,83 @@
   // TrackStore 已在 js/track-store.js 中注册到 YAQ.trackStore
 
   // ════════════════════════════════════════════════════════════════
+  // 密码保护 — 硬编码密码 + 缓存验证
+  // ════════════════════════════════════════════════════════════════
+
+  // ★ 修改密码时：改这里 + 递增 PWD_VERSION
+  var PWD_HASH = hashPwd('YQA');
+  var PWD_VERSION = 1; // 改密码时递增此值，旧缓存失效
+
+  var PWD_AUTH_KEY = 'yaq_auth_ver';
+
+  // 简单哈希
+  function hashPwd(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) {
+      h = (((h << 5) - h) + s.charCodeAt(i)) | 0;
+    }
+    var salt = 'yaq!@#2025';
+    var mixed = h + salt;
+    var h2 = 0;
+    for (var j = 0; j < mixed.length; j++) {
+      h2 = (((h2 << 5) - h2) + mixed.charCodeAt(j)) | 0;
+    }
+    return (h2 >>> 0).toString(36);
+  }
+
+  // 检查是否已验证通过
+  function isPwdAuthed() {
+    var v = ls.get(PWD_AUTH_KEY);
+    return v !== null && parseInt(v, 10) === PWD_VERSION;
+  }
+
+  // 提交密码验证
+  YAQ.pwdSubmit = function () {
+    var input = document.getElementById('pwdInput');
+    var errorEl = document.getElementById('pwdError');
+    var pwd = input ? input.value : '';
+
+    if (!pwd) {
+      if (errorEl) errorEl.textContent = '请输入密码';
+      return;
+    }
+
+    if (hashPwd(pwd) !== PWD_HASH) {
+      if (errorEl) errorEl.textContent = '密码错误，请重试';
+      if (input) { input.value = ''; input.focus(); }
+      return;
+    }
+
+    // 验证通过
+    ls.set(PWD_AUTH_KEY, String(PWD_VERSION));
+    var overlay = document.getElementById('pwdOverlay');
+    if (overlay) overlay.classList.remove('open');
+    if (typeof window.bootApp === 'function') window.bootApp();
+  };
+
+  // 密码保护检查（页面加载时调用）
+  function initPwdProtection() {
+    if (isPwdAuthed()) {
+      // 已验证通过 → 正常启动
+      if (typeof window.bootApp === 'function') window.bootApp();
+      return;
+    }
+    // 需要验证 → 显示密码浮层
+    var overlay = document.getElementById('pwdOverlay');
+    var input = document.getElementById('pwdInput');
+    var errorEl = document.getElementById('pwdError');
+    if (overlay) {
+      if (input) { input.value = ''; input.focus(); }
+      if (errorEl) errorEl.textContent = '';
+      overlay.classList.add('open');
+      // 渲染 Lucide 图标
+      if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        lucide.createIcons({ container: overlay });
+      }
+    }
+  };
+
+  // ════════════════════════════════════════════════════════════════
   // 企业主体责任 AI 评估数据（mock）— 由 js/data/mock-data.js 注入
   // ════════════════════════════════════════════════════════════════
 
@@ -8882,6 +8959,15 @@
     if (ws) ws.scrollTop = ws.scrollHeight;
   };
 
-  renderScene('dashboard');
-  bindInteractions();
+  // ════════════════════════════════════════════════════════════════
+  // BOOT — 密码保护 → 启动应用
+  // ════════════════════════════════════════════════════════════════
+
+  window.bootApp = function () {
+    renderScene('dashboard');
+    bindInteractions();
+  };
+
+  // 启动密码保护检查（弹窗或直接 boot）
+  initPwdProtection();
 })();

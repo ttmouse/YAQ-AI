@@ -57,6 +57,27 @@
     <link rel="stylesheet" href="css/inspection.css" />
   </head>
   <body>
+    <!-- ═══ 密码保护浮层 ═══════════════════════════════════════════ -->
+    <div class="pwd-overlay" id="pwdOverlay">
+      <div class="pwd-modal">
+        <div class="pwd-icon"><i data-lucide="lock" width="32" height="32"></i></div>
+        <div class="pwd-title">请输入访问密码</div>
+        <div class="pwd-desc">请输入密码以继续</div>
+        <div class="pwd-input-wrap">
+          <input
+            type="password"
+            class="pwd-input"
+            id="pwdInput"
+            placeholder="输入密码"
+            autocomplete="off"
+            onkeydown="if(event.key==='Enter')window.YAQ.pwdSubmit()"
+          />
+        </div>
+        <div class="pwd-error" id="pwdError"></div>
+        <button class="pwd-btn" id="pwdBtn" onclick="window.YAQ.pwdSubmit()">确认</button>
+      </div>
+    </div>
+
     <!-- ═══ 主控 Agent 初始化场景 ═════════════════════════════════════ -->
     <div class="init-overlay" id="initOverlay">
       <div class="init-container">
