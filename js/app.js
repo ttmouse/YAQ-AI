@@ -3064,7 +3064,46 @@
         '</div>' +
         '</div>';
     }
-    html += '</div></div>';
+    // ─── AI 异常原因定位（右侧分析面板） ──────────────────────
+    if (overdueCount > 0) {
+      html += '<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:12px">' +
+        '<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:5px">' +
+          '<i data-lucide="brain" width="14" height="14" style="color:#2563eb"></i> AI 异常原因定位' +
+        '</div>' +
+        '<div style="display:flex;gap:12px;flex-wrap:wrap">';
+      for (var oi = 0; oi < majorHazards.length; oi++) {
+        var oh = majorHazards[oi];
+        if (oh.status !== '超期未整改') continue;
+        var isBeiYuan = oh.object.indexOf('北苑') >= 0;
+        var govIssues = isBeiYuan
+          ? '已多次电话督促（本月 3 次），已发起督办流程。但仅停留在电话层面，未升级现场核查/停业整顿等实质性措施，跟进力度偏软。'
+          : '已下发整改通知，李明已跟进。但整改证据链未闭环，未明确验收标准，未引入第三方检测机构，跟进存在盲区。';
+        var entIssues = isBeiYuan
+          ? '同一问题月内反复 3 次，企业未建立长效管理机制；超期 3 天仍未提交整改方案，临时管控未确认，配合意愿弱。属屡教不改型。'
+          : '超期 1 天未见实质性修复进展，企业未主动报告困难；18-25 层消防设施全面失效，是否已联系专业工程公司未知。推进缓慢。';
+        var conclusion = isBeiYuan
+          ? '<span style="color:#dc2626;font-weight:700">企业主体责任问题为主</span>'
+          : '<span style="color:#d97706;font-weight:700">政府跟进盲区 + 企业执行不力并存</span>';
+        var badgeColor = isBeiYuan ? '#dc2626' : '#d97706';
+        var badgeBg = isBeiYuan ? '#fef2f2' : '#fff7ed';
+        html +=
+          '<div style="flex:1;min-width:260px;background:#fafbfc;border-radius:12px;padding:12px;border:1px solid var(--line)">' +
+            '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">' +
+              '<span style="background:' + badgeBg + ';color:' + badgeColor + ';font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px">逾期 ' + oh.overdue + ' 天</span>' +
+              '<span style="font-size:13px;font-weight:700;color:var(--text)">' + escapeHtml(oh.object) + '</span>' +
+            '</div>' +
+            '<div style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px">' +
+              '<div style="display:flex;gap:4px;margin-bottom:4px"><span style="font-weight:600;color:#2563eb;white-space:nowrap">🏛 政府端</span><span style="color:var(--text)">' + govIssues + '</span></div>' +
+              '<div style="display:flex;gap:4px;margin-bottom:4px"><span style="font-weight:600;color:#dc2626;white-space:nowrap">🏢 企业端</span><span style="color:var(--text)">' + entIssues + '</span></div>' +
+            '</div>' +
+            '<div style="font-size:11px;color:var(--text);padding:6px 8px;background:#fff;border-radius:8px;border:1px dashed var(--line)">' +
+              '⚖ 初步研判：' + conclusion +
+            '</div>' +
+          '</div>';
+      }
+      html += '</div></div>';
+    }
+    html += '</div>';
 
     // ─── 板块三：核心任务进展 ────────────────────────────────
     var tasks = MOCK.tasks;
