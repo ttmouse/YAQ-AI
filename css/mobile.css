@@ -615,3 +615,58 @@
     padding: 14px;
   }
 }
+
+/* ─── 移动端：汉堡菜单按钮 ──────────────────────────────── */
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: var(--r-md);
+    transition: background var(--duration-fast) var(--ease);
+    flex-shrink: 0;
+    touch-action: manipulation;
+  }
+  .hamburger-btn:active {
+    background: var(--fg-soft);
+  }
+}
+
+/* ─── 移动端：tab-strip 作为侧边栏滑出 ──────────────────── */
+@media (max-width: 768px) {
+  .tab-strip {
+    position: fixed;
+    top: calc(46px + env(safe-area-inset-top, 0px));
+    left: 0;
+    right: 0;
+    max-height: 0;
+    overflow: hidden;
+    flex-direction: column;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    z-index: 99;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+    padding: 0 12px;
+    gap: 2px;
+  }
+  .tab-strip.open {
+    display: flex;
+    max-height: 400px;
+    padding: 8px 12px;
+    overflow-y: auto;
+  }
+  .tab-item {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: var(--r-md);
+    width: 100%;
+    justify-content: space-between;
+  }
+}
