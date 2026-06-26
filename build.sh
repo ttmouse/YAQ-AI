@@ -21,7 +21,7 @@ fi
 
 # 2. 清理并创建 dist 目录
 rm -rf dist
-mkdir -p dist/js dist/css
+mkdir -p dist/js/data dist/css
 
 # 3. 委托 npm scripts 执行压缩（单一命令定义源）
 echo "📜 压缩 JS..."

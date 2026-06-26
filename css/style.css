@@ -6453,6 +6453,7 @@
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+  margin-bottom: 8px;
   z-index: 45;
   pointer-events: none;
 }
