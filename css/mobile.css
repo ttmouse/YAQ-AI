@@ -70,6 +70,9 @@
   .init-chat-bar {
     bottom: calc(24px + env(safe-area-inset-bottom, 0));
   }
+  .init-chat-bar .init-chat-input {
+    font-size: 12px;
+  }
   #initFloatCard {
     bottom: calc(82px + env(safe-area-inset-bottom, 0));
   }
