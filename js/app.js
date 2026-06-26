@@ -2081,11 +2081,19 @@
       if (sceneId === 'pending-actions') {
         updateBatchBar();
       }
-      // 月报场景显示快捷输入
-      if (sceneId === 'monthly-report' && window.YAQ.showGlobalQuickChip) {
-        window.YAQ.showGlobalQuickChip([
-          { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
-        ]);
+      // Agent 内容渲染完成后，显示对应的快捷输入
+      if (window.YAQ.showGlobalQuickChip) {
+        if (sceneId === 'dashboard') {
+          window.YAQ.showGlobalQuickChip([
+            { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
+          ]);
+        } else if (sceneId === 'monthly-report') {
+          window.YAQ.showGlobalQuickChip([
+            { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
+          ]);
+        } else {
+          window.YAQ.showGlobalQuickChip([]);
+        }
       }
     }, 80); // 80ms 模拟加载延迟
   }
@@ -2855,18 +2863,15 @@
     ];
 
     // 展开：每个期间指标按周期拆成独立卡片
-    // 站长每日工作台默认 9 个指标
+    // 站长每日工作台默认展示指标：先异常再预警
     var dailyDefaults = {
-      majorOpen: 1,
-      majorNew_今日: 1,
-      taskCompleteRate_今日: 1,
-      majorRisk_本周: 1,
-      significantRisk_本周: 1,
-      generalRisk_本周: 1,
-      lowRisk_本周: 1,
-      areaRiskAbnormal_本周: 1,
-      riskLevelUp_本周: 1,
-      newMajorSignificant_本周: 1,
+      majorOpen: 1,                      // 未闭环重大隐患（danger）
+      majorNew_今日: 1,                   // 新增重大隐患（danger）
+      riskLevelUp_本周: 1,                // 风险等级上调（warning）
+      newMajorSignificant_本周: 1,         // 新增重大/较大风险主体（warning）
+      majorRisk_本周: 1,                  // 重大风险
+      areaRiskAbnormal_本周: 1,           // 风险上升片区（warning）
+      taskCompleteRate_今日: 1,           // 检查任务完成率
     };
     var allMetrics = [];
     for (var bi = 0; bi < baseMetrics.length; bi++) {
@@ -2923,13 +2928,33 @@
     var savedOrder = JSON.parse(ls.get('yaq_metric_order', 'null'));
     window.__metricOrder =
       savedOrder ||
-      allMetrics
-        .filter(function (m) {
+      // 先异常（danger）再预警（warning）
+      (function () {
+        var desiredOrder = [
+          'majorNew_今日',
+          'majorOpen',
+          'riskLevelUp_本周',
+          'newMajorSignificant_本周',
+          'majorRisk_本周',
+          'areaRiskAbnormal_本周',
+          'taskCompleteRate_今日',
+        ];
+        var checked = allMetrics.filter(function (m) {
           return m.checked;
-        })
-        .map(function (m) {
+        });
+        // 按 desiredOrder 排序，不在列表中的排在最后
+        checked.sort(function (a, b) {
+          var ai = desiredOrder.indexOf(a.id);
+          var bi = desiredOrder.indexOf(b.id);
+          if (ai === -1 && bi === -1) return 0;
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+          return ai - bi;
+        });
+        return checked.map(function (m) {
           return m.id;
         });
+      })();
     // 写入版本号
     if (!metricPrefs) ls.set('yaq_metric_ver', STORAGE_VERSION);
 
@@ -5448,14 +5473,6 @@
       sc.innerHTML = renderMonthlyReport();
       lucide.createIcons();
     }
-    showToast(
-      '已切换至' +
-        (
-          MR_HISTORY.filter(function (h) {
-            return h.active;
-          })[0] || {}
-        ).label,
-    );
   };
 
   // ─── 月报章节折叠切换 ────────────────────────────────────
@@ -7127,7 +7144,6 @@
             '」，你可以在这里配置异常判定规则，或直接告诉 AI 你想加的规则。</div></div>';
           chatBody.scrollTop = chatBody.scrollHeight;
         }
-        showToast('已切换至「规则引擎」');
         return;
       }
 
@@ -7152,7 +7168,6 @@
         chatBody.scrollTop = chatBody.scrollHeight;
       }
 
-      showToast('已切换至「' + name + '」');
     }, 250);
   }
 

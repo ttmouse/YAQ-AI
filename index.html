@@ -99,27 +99,21 @@
           <div class="tab-strip" id="tabStrip"></div>
         </div>
         <div class="meta">
-          <div class="topbar-search" data-cmd="openLauncher" style="margin-left: 0; margin-right: 8px">
-            <i data-lucide="search" width="14" height="14"></i>
-            <span class="topbar-search-placeholder">搜索</span>
-          </div>
-          <span
-            class="pill org-switch"
-            data-cmd="showToast"
-            data-arg="组织切换（演示功能）"
-            title="切换组织"
-            id="orgSwitch"
-          >
-            <i data-lucide="building-2" width="12" height="12" style="vertical-align: middle; margin-right: 4px"></i>
-            良渚应急消防管理站
-          </span>
-          <span class="pill"
-            ><i data-lucide="user" width="12" height="12" style="vertical-align: middle; margin-right: 4px"></i>
-            站长</span
-          >
           <span class="notif-bell" id="notifBell" title="通知">
             <i data-lucide="bell" width="16" height="16"></i>
             <span class="notif-badge" id="notifBadge">3</span>
+          </span>
+          <div class="topbar-search" data-cmd="openLauncher" title="搜索">
+            <i data-lucide="search" width="16" height="16"></i>
+          </div>
+          <span
+            class="pill org-switch"
+            data-cmd="toggleDemoMenu"
+            title="演示菜单"
+            id="orgSwitch"
+          >
+            良渚应急消防管理站
+            <i data-lucide="chevron-down" width="12" height="12"></i>
           </span>
         </div>
       </div>
@@ -156,11 +150,8 @@
           </div>
         </div>
       </div>
-      <!-- ─── 演示菜单（左下角） ──────────────────────────── -->
+      <!-- ─── 演示菜单（右上角） ──────────────────────────── -->
       <div class="demo-menu-wrap" id="demoMenuWrap">
-        <button class="demo-menu-trigger demo-corner" data-cmd="toggleDemoMenu" title="演示菜单">
-          <i data-lucide="more-vertical" width="18" height="18"></i>
-        </button>
         <div class="demo-menu demo-corner-menu" id="demoMenu">
           <div class="demo-menu-item" data-cmd="openDemoPage" data-arg="special-inspection-prototype.html">
             <i data-lucide="file-search" width="14" height="14"></i> 智能专项检查 🆕
@@ -179,12 +170,8 @@
           </div>
         </div>
       </div>
-      <!-- ─── 全局底部浮动输入条 ────────────────────────────── -->
-      <div class="global-chat-quick-wrap" id="globalChatQuickWrap">
-        <button class="gq-chip" onclick="YAQ.globalChatQuick('分析一下隐患闭环未关闭的原因')">
-          分析超期未闭环原因
-        </button>
-      </div>
+      <!-- ─── 全局底部浮动输入条（由 Agent 渲染完成后动态显示） ── -->
+      <div class="global-chat-quick-wrap" id="globalChatQuickWrap" style="display:none"></div>
       <div class="global-chat-bar">
         <div class="global-chat-inner">
           <input

@@ -84,6 +84,14 @@
   font-size: 12px;
   white-space: nowrap;
 }
+.org-switch {
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
 .main {
   flex: 1;
   min-height: 0;
@@ -487,9 +495,9 @@
   gap: 4px;
 }
 .metric-card {
-  border: 1px solid var(--line);
+  border: none;
   border-radius: 10px;
-  background: var(--surface);
+  background: #f8f9fc;
   padding: 10px 4px;
   text-align: center;
   min-width: 90px;
@@ -2462,29 +2470,24 @@
 
 /* ─── 顶栏入口按钮 ───────────────────────────────────────── */
 .topbar-search {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 16px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--hover-bg);
-  color: var(--muted);
-  font-size: 12px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   cursor: pointer;
-  transition:
-    background 0.15s,
-    border-color 0.15s;
-  min-width: 140px;
+  color: #64748b;
+  transition: background 0.15s;
 }
 .topbar-search:hover {
-  background: #eaeef2;
-  border-color: #d1d5db;
+  background: #f1f5f9;
+  color: #334155;
 }
 .topbar-search svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 .topbar-search-placeholder {
@@ -6378,33 +6381,14 @@
    ═════════════════════════════════════════════════════════════════════ */
 .demo-menu-wrap {
   position: absolute;
-  left: 14px;
-  bottom: 70px;
+  right: 14px;
+  top: 44px;
   z-index: 950;
-}
-.demo-menu-trigger {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  border: 1px solid #e2eaf8;
-  background: rgba(255, 255, 255, 0.9);
-  color: #94a3b8;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: all 0.15s;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-.demo-menu-trigger:hover {
-  border-color: var(--accent);
-  color: var(--accent);
 }
 .demo-menu {
   position: absolute;
-  left: 0;
-  bottom: 44px;
+  right: 0;
+  top: 100%;
   min-width: 150px;
   background: var(--surface);
   border: 1px solid #e2eaf8;
@@ -6413,6 +6397,7 @@
   padding: 6px;
   display: none;
   z-index: 100;
+  margin-top: 4px;
 }
 .demo-menu.open {
   display: block;

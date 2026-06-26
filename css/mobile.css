@@ -185,12 +185,8 @@
 
   /* 演示菜单 */
   .demo-menu-wrap {
-    left: 8px;
-    bottom: calc(58px + env(safe-area-inset-bottom, 0));
-  }
-  .demo-menu-trigger {
-    width: 32px;
-    height: 32px;
+    right: 8px;
+    top: 40px;
   }
 
   /* 隐患详情弹窗 — 移动端全屏 */
