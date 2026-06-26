@@ -330,6 +330,14 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* 隐患表、主体表在移动端横向滚动 */
+  .hazard-table-wrap,
+  .subject-table-wrap,
+  .task-detail-table {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* 月报侧边栏 */
   #mrSidebar {
     width: 100% !important;
@@ -362,7 +370,7 @@
   .tab-strip {
     gap: 2px;
   }
-  .tab-strip .tab {
+  .tab-strip .tab-item {
     font-size: 11px;
     padding: 4px 8px;
   }
