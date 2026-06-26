@@ -446,3 +446,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── 移动端触控目标 ≥44px（Apple HIG / Material Design） ───────── */
+@media (max-width: 768px) {
+  .modal-close,
+  .hmodal-close,
+  .pa-modal-close,
+  .tmodal-close,
+  .ep-close,
+  .dmsg-send,
+  .notif-bell,
+  .memory-panel-close,
+  .global-chat-btn,
+  .global-chat-mic {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
