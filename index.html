@@ -518,27 +518,39 @@
         }
       })();
 
-      /* ═══ iOS PWA Safe Area 修复：读取 env() 并应用到顶栏 ═══ */
+      /* ═══ iOS PWA Safe Area 修复 ════════════════════════════════ */
       (function () {
         if (!window.navigator.standalone) return; // 仅 PWA 模式
 
-        var test = document.createElement('div');
-        test.style.cssText =
-          'position:fixed;top:0;left:0;width:1px;height:1px;pointer-events:none;padding-top:env(safe-area-inset-top)';
-        document.body.appendChild(test);
-
-        requestAnimationFrame(function () {
-          var sat = parseInt(getComputedStyle(test).paddingTop, 10) || 0;
+        function getSafeTop() {
+          // 方式 1：通过 CSS env() 读取系统安全区域
+          var test = document.createElement('div');
+          test.style.cssText =
+            'position:fixed;top:0;left:0;width:1px;height:1px;padding-top:env(safe-area-inset-top)';
+          document.body.appendChild(test);
+          var v = parseInt(getComputedStyle(test).paddingTop, 10);
           document.body.removeChild(test);
+          if (v && v >= 10) return v;
 
-          if (sat > 0) {
-            var top = document.querySelector('.top');
-            if (top) top.style.paddingTop = sat + 'px';
+          // 方式 2：env() 未生效时，根据屏幕尺寸推算（仅 iOS PWA）
+          var h = window.screen.height;
+          var w = window.screen.width;
+          // portrait 下刘海/灵动岛机型高度
+          if (h >= 896) return 59;  // 14 Pro Max / 15 Plus
+          if (h >= 844) return 54;  // 14 Pro / 15 Pro
+          if (h >= 812) return 44;  // X / XS / 11 Pro
+          return 20;                // SE / 8 及以下
+        }
 
-            var initOv = document.querySelector('.init-overlay');
-            if (initOv) initOv.style.top = 52 + sat + 'px';
-          }
-        });
+        var sat = getSafeTop();
+
+        // 应用到顶栏
+        var top = document.querySelector('.top');
+        if (top) top.style.paddingTop = sat + 'px';
+
+        // 应用到初始覆盖层
+        var initOv = document.querySelector('.init-overlay');
+        if (initOv) initOv.style.top = 52 + sat + 'px';
       })();
     </script>
   </body>
