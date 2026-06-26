@@ -138,57 +138,180 @@
   };
 
   // ════════════════════════════════════════════════════════════════
-  // MOCK DATA — 由 js/data/mock-data.js 注入
+  // 自定义弹窗（替换原生 prompt/confirm — 移动端体验差不可接受）
   // ════════════════════════════════════════════════════════════════
 
-  var MOCK = window.MOCK;
+  /** 自定义确认弹窗（替代 confirm()） */
+  YAQ.showConfirm = function (message, callback) {
+    var overlay = document.getElementById('actionModalOverlay');
+    var panel = document.getElementById('actionModal');
+    var titleEl = document.getElementById('actionModalTitle');
+    var bodyEl = document.getElementById('actionModalBody');
+    var footerEl = document.getElementById('actionModalFooter');
 
-  // 对外暴露给 inline onclick 使用
-  var YAQ = (window.YAQ = {});
-  YAQ.ls = ls; // 共享 localStorage 封装，供 agent-init.js 等后续脚本使用
-  YAQ.addTrack = function (opts) {
-    if (typeof opts === 'string') opts = { title: opts };
-    var t = YAQ.trackStore.add(opts || {});
-    showToast('✅ 已加入持续跟踪');
-    return t;
+    if (!overlay || !panel || !titleEl || !bodyEl || !footerEl) {
+      // 回退到原生 confirm
+      if (callback) callback(confirm(message));
+      return;
+    }
+
+    titleEl.textContent = '确认操作';
+    bodyEl.innerHTML = '<p style="margin:8px 0;font-size:14px;color:var(--text);line-height:1.6">' +
+      escapeHtml(message) + '</p>';
+    footerEl.style.display = 'flex';
+    footerEl.innerHTML =
+      '<button class="action-modal-cancel-btn" id="confirmCancelBtn" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer">取消</button>' +
+      '<button class="action-modal-ok-btn" id="confirmOkBtn" style="flex:1;padding:10px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer">确认</button>';
+
+    overlay.classList.add('open');
+    panel.classList.add('open');
+
+    function cleanup() {
+      overlay.classList.remove('open');
+      panel.classList.remove('open');
+      footerEl.style.display = 'none';
+    }
+
+    document.getElementById('confirmCancelBtn').onclick = function () {
+      cleanup();
+      if (callback) callback(false);
+    };
+    document.getElementById('confirmOkBtn').onclick = function () {
+      cleanup();
+      if (callback) callback(true);
+    };
+    overlay.onclick = function () {
+      cleanup();
+      if (callback) callback(false);
+    };
   };
+
+  /** 自定义输入弹窗（替代 prompt()）— 支持单/双输入 */
+  YAQ.showPrompt = function (fields, callback) {
+    // fields: [{ label, placeholder, defaultValue?, type? }]
+    var overlay = document.getElementById('actionModalOverlay');
+    var panel = document.getElementById('actionModal');
+    var titleEl = document.getElementById('actionModalTitle');
+    var bodyEl = document.getElementById('actionModalBody');
+    var footerEl = document.getElementById('actionModalFooter');
+
+    if (!overlay || !panel || !titleEl || !bodyEl || !footerEl) {
+      // 回退到原生 prompt（仅单字段时）
+      if (fields && fields.length === 1 && callback) {
+        callback([prompt(fields[0].label || '')]);
+      }
+      return;
+    }
+
+    titleEl.textContent = '请输入';
+    var bodyHtml = '';
+    for (var fi = 0; fi < fields.length; fi++) {
+      var f = fields[fi];
+      bodyHtml +=
+        '<div style="margin-bottom:12px">' +
+        '<label style="display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px">' +
+        escapeHtml(f.label || '') + '</label>' +
+        (f.type === 'textarea'
+          ? '<textarea id="promptField' + fi + '" placeholder="' + escapeHtml(f.placeholder || '') + '" style="width:100%;min-height:80px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;color:var(--text);background:var(--surface)">' + escapeHtml(f.defaultValue || '') + '</textarea>'
+          : '<input id="promptField' + fi + '" type="' + (f.type || 'text') + '" placeholder="' + escapeHtml(f.placeholder || '') + '" value="' + escapeHtml(f.defaultValue || '') + '" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--text);background:var(--surface)" />'
+        ) +
+        '</div>';
+    }
+    bodyEl.innerHTML = bodyHtml;
+    footerEl.style.display = 'flex';
+    footerEl.innerHTML =
+      '<button class="action-modal-cancel-btn" id="promptCancelBtn" style="flex:1;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--text);font-size:13px;cursor:pointer">取消</button>' +
+      '<button class="action-modal-ok-btn" id="promptOkBtn" style="flex:1;padding:10px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer">确认</button>';
+
+    overlay.classList.add('open');
+    panel.classList.add('open');
+
+    // 自动聚焦第一个输入
+    setTimeout(function () {
+      var firstInput = document.getElementById('promptField0');
+      if (firstInput) firstInput.focus();
+    }, 200);
+
+    function getValues() {
+      var vals = [];
+      for (var vi = 0; vi < fields.length; vi++) {
+        var el = document.getElementById('promptField' + vi);
+        vals.push(el ? el.value : '');
+      }
+      return vals;
+    }
+
+    function cleanup() {
+      overlay.classList.remove('open');
+      panel.classList.remove('open');
+      footerEl.style.display = 'none';
+    }
+
+    document.getElementById('promptCancelBtn').onclick = function () {
+      cleanup();
+      if (callback) callback(null);
+    };
+    document.getElementById('promptOkBtn').onclick = function () {
+      var vals = getValues();
+      cleanup();
+      if (callback) callback(vals);
+    };
+    overlay.onclick = function () {
+      cleanup();
+      if (callback) callback(null);
+    };
+
+    // Enter 键提交
+    bodyEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        var vals = getValues();
+        cleanup();
+        if (callback) callback(vals);
+      }
+    });
+  };
+
+  // 助手函数
+  function escapeHtml(str) {
+    if (typeof str !== 'string') return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  // ─── 使用自定义弹窗重写 updateTrackProgress 等方法 ──────────
   // 更新进展（弹窗输入进展描述）
   YAQ.updateTrackProgress = function (id) {
-    var note = prompt('请输入最新进展描述：');
-    if (note && note.trim()) {
-      var t = YAQ.trackStore.getActive().filter(function (x) {
-        return x.id === id;
-      })[0];
-      var currentProgress = t ? t.progress : 50;
-      // 用户大致评估进展百分比
-      var pct = prompt('当前完成进度（0-100%）：', Math.min(100, currentProgress + 15));
+    YAQ.showPrompt([
+      { label: '最新进展描述', placeholder: '例如：已联系企业负责人，安排本周五前整改', type: 'textarea' },
+      { label: '当前完成进度（0-100%）', placeholder: '例如：65', defaultValue: '50' }
+    ], function (vals) {
+      if (!vals) return; // 用户取消
+      var note = (vals[0] || '').trim();
+      var pct = vals[1] || '';
+      if (!note) return;
       var progress = parseInt(pct, 10);
-      if (isNaN(progress)) progress = Math.min(100, currentProgress + 15);
-      YAQ.trackStore.update(id, { note: note.trim(), progress: progress });
+      if (isNaN(progress) || progress < 0) progress = 50;
+      if (progress > 100) progress = 100;
+      YAQ.trackStore.update(id, { note: note, progress: progress });
       showToast('✅ 进展已更新');
       switchScene('followup');
-    }
+    });
   };
   // 标记闭环
   YAQ.resolveTrack = function (id) {
-    if (confirm('确认该事项已闭环？')) {
-      var note = prompt('闭环说明（可选）：');
-      YAQ.trackStore.resolve(id, note || '已闭环');
-      showToast('✅ 已标记为闭环');
-      switchScene('followup');
-    }
+    YAQ.showConfirm('确认该事项已闭环？', function (confirmed) {
+      if (!confirmed) return;
+      YAQ.showPrompt([
+        { label: '闭环说明（可选）', placeholder: '例如：已完成整改并复查确认', type: 'textarea' }
+      ], function (vals) {
+        var note = (vals && vals[0] && vals[0].trim()) || '已闭环';
+        YAQ.trackStore.resolve(id, note);
+        showToast('✅ 已标记为闭环');
+        switchScene('followup');
+      });
+    });
   };
-  // 归档
-  YAQ.closeTrack = function (id) {
-    YAQ.trackStore.close(id);
-    showToast('已归档');
-    switchScene('followup');
-  };
-  // 便捷入口：从当前上下文快速创建跟踪
-  YAQ.quickTrack = function (title, source, responsibility) {
-    return YAQ.addTrack({ title: title, source: source || '手动添加', responsibility: responsibility || '' });
-  };
-  // TrackStore 已在 js/track-store.js 中注册到 YAQ.trackStore
 
   // ════════════════════════════════════════════════════════════════
   // 密码保护 — 硬编码密码 + 缓存验证

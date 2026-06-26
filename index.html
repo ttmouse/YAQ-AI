@@ -33,12 +33,21 @@
     <!-- ═══ PWA — iOS 添加到主屏幕 + Android TWA ══════════════════ -->
     <link rel="manifest" href="manifest.json" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="应擎工作台" />
+    <!-- iOS 所有尺寸图标 -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <meta name="theme-color" content="#6366f1" />
+    <!-- iOS 启动屏（通过在根目录放 splash/ 图片实现） -->
+    <link rel="apple-touch-startup-image" href="apple-touch-icon.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <meta name="theme-color" content="#f8f9fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1e1e2e" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <!-- 禁止自动识别电话/地址（管理后台不需要） -->
+    <meta name="format-detection" content="telephone=no,address=no,email=no" />
 
     <link rel="preconnect" href="https://unpkg.com" crossorigin />
     <link rel="stylesheet" href="css/style.css" />
@@ -550,9 +559,10 @@
 
         // 添加 pwa-standalone 类，CSS 可针对此做额外适配
         document.documentElement.classList.add('pwa-standalone');
+        document.documentElement.classList.add('pwa-ios');
 
         function getSafeTop() {
-          // 方式 1：通过 CSS env() 读取系统安全区域
+          // 方式 1：通过 CSS env() 读取系统安全区域（最可靠）
           var test = document.createElement('div');
           test.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding-top:env(safe-area-inset-top)';
           document.body.appendChild(test);
@@ -563,26 +573,56 @@
           // 方式 2：env() 未生效时，根据屏幕尺寸推算（仅 iOS PWA）
           var h = window.screen.height;
           var w = window.screen.width;
-          // portrait 下刘海/灵动岛机型高度
-          if (h >= 896) return 59; // 14 Pro Max / 15 Plus
+          var ratio = window.devicePixelRatio || 1;
+
+          // 统一规则：高度>=896px 的 iPhone 有刘海/灵动岛
+          // 动态岛/刘海机型 top = 59px（包含状态栏）
+          if (h * ratio >= 2000 || h >= 896) return 59;  // 14 Pro Max / 15 Plus / 16 系列
           if (h >= 844) return 54; // 14 Pro / 15 Pro
-          if (h >= 812) return 44; // X / XS / 11 Pro
+          if (h >= 812) return 44; // X / XS / 11 Pro / 12/13 mini
           return 20; // SE / 8 及以下
         }
 
         var sat = getSafeTop();
 
-        // 初始化覆盖层：env() 可能未完全生效，JS 确保正确偏移
-        var initOv = document.querySelector('.init-overlay');
-        if (initOv) initOv.style.setProperty('--pwa-safe-top', sat + 'px');
+        // 应用到所有需要 safe-area 的覆盖层
+        var targets = [
+          '.init-overlay',
+          '.app .top',
+          '.memory-panel',
+          '.launcher-panel',
+          '.action-modal-panel',
+          '.si-modal'
+        ];
+        targets.forEach(function (sel) {
+          var els = document.querySelectorAll(sel);
+          for (var i = 0; i < els.length; i++) {
+            els[i].style.setProperty('--pwa-safe-top', sat + 'px');
+          }
+        });
 
         // 监听 orientation change，重新计算（iPad 横竖屏切换时 safe area 变化）
         window.addEventListener('orientationchange', function () {
           setTimeout(function () {
             var sat2 = getSafeTop();
-            if (initOv) initOv.style.setProperty('--pwa-safe-top', sat2 + 'px');
+            targets.forEach(function (sel) {
+              var els = document.querySelectorAll(sel);
+              for (var i = 0; i < els.length; i++) {
+                els[i].style.setProperty('--pwa-safe-top', sat2 + 'px');
+              }
+            });
+            // 通知 CSS 重新适配
+            document.documentElement.style.setProperty('--safe-top-real', sat2 + 'px');
           }, 300);
         });
+
+        // 立即设置 CSS 变量
+        document.documentElement.style.setProperty('--safe-top-real', sat + 'px');
+
+        /* ═══ 检测是否为 notch/灵动岛 机型，以便 CSS 做差异化处理 ═══ */
+        if (sat >= 44) {
+          document.documentElement.classList.add('has-notch');
+        }
       })();
 
       /* ═══ 移动端键盘弹出时输入框自动滚入可视区 ══════════════════ */

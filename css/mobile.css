@@ -444,6 +444,7 @@
     border-radius: 16px 16px 0 0 !important;
     opacity: 1 !important;
     visibility: visible !important;
+    transform: translateY(100%) !important;
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
     /* 拖拽手柄 */
@@ -916,14 +917,14 @@ html.pwa-standalone .init-overlay {
   }
 }
 
-/* ─── 移动端：汉堡菜单按钮 ──────────────────────────────── */
+/* ─── 移动端：汉堡菜单按钮（≥44px 满足 Apple HIG 触控标准） ──── */
 @media (max-width: 768px) {
   .hamburger-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    min-width: 44px;
+    min-height: 44px;
     border: none;
     background: transparent;
     color: var(--muted);
@@ -932,6 +933,7 @@ html.pwa-standalone .init-overlay {
     transition: background var(--duration-fast) var(--ease);
     flex-shrink: 0;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .hamburger-btn:active {
     background: var(--fg-soft);

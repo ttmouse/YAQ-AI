@@ -2,16 +2,17 @@
   "name": "站长每日监管闭环工作台",
   "short_name": "应擎工作台",
   "description": "基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人",
-  "start_url": "./",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
-  "background_color": "#6366f1",
+  "background_color": "#f8f9fc",
   "theme_color": "#6366f1",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "categories": ["business", "productivity", "utilities"],
   "lang": "zh-CN",
   "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "favicon.svg",
@@ -24,6 +25,33 @@
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "167x167",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "120x120",
+      "type": "image/png",
+      "purpose": "any"
     }
-  ]
+  ],
+  "screenshots": [],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
+  "handle_links": "preferred",
+  "capture_links": "new-client"
 }

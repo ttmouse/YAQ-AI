@@ -1,6 +1,8 @@
-/* ═══ Service Worker — PWA 离线缓存 ═══════════════════════════════ */
-const CACHE_NAME = 'yaq-ai-v2';
-const STATIC_ASSETS = [
+/* ═══ Service Worker — PWA 离线缓存（Network-First 策略）═══════════ */
+/* 管理后台数据动态变化，使用 Network-First 确保数据新鲜，
+   离线时回退到缓存保障基本可用。 */
+var CACHE_NAME = 'yaq-ai-v3';
+var STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
@@ -26,7 +28,8 @@ const STATIC_ASSETS = [
   './js/app.js',
   './js/track-store.js',
   './js/rules.js',
-  './js/agent-init.js'
+  './js/agent-init.js',
+  './js/data/mock-data.js'
 ];
 
 /* ─── 安装：预缓存静态资源 ────────────────────────────────────── */
@@ -53,30 +56,60 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 
-/* ─── 请求拦截：Cache-First 策略 ──────────────────────────────── */
+/* ─── 请求拦截：Network-First 策略 ──────────────────────────────── */
+/* - HTML 页面（含根路径）：Network-First，离线时回退缓存
+   - 静态资源（CSS/JS/图片/字体）：Cache-First
+   - 外部 CDN 请求：Network-Only（不缓存） */
 self.addEventListener('fetch', function (e) {
-  /* 只缓存同源 GET 请求 */
+  /* 只处理同源 GET 请求 */
   if (e.request.method !== 'GET') return;
   if (!e.request.url.startsWith(self.location.origin)) return;
 
+  var url = new URL(e.request.url);
+  var ext = url.pathname.split('.').pop().toLowerCase();
+
+  // ─── 外部 CDN：不缓存 ──────────────────────────────────────────
+  if (url.hostname !== self.location.hostname) return;
+
+  // ─── 静态资源（CSS/JS/图片/字体等）：Cache-First ────────────────
+  var staticExts = ['css', 'js', 'png', 'svg', 'jpg', 'jpeg', 'gif', 'webp', 'woff', 'woff2', 'ttf', 'ico'];
+  if (staticExts.indexOf(ext) !== -1) {
+    e.respondWith(
+      caches.match(e.request).then(function (cached) {
+        if (cached) return cached;
+        return fetch(e.request).then(function (response) {
+          if (response && response.status === 200) {
+            var clone = response.clone();
+            caches.open(CACHE_NAME).then(function (cache) {
+              cache.put(e.request, clone);
+            });
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // ─── HTML 页面 & 根路径：Network-First ──────────────────────────
   e.respondWith(
-    caches.match(e.request).then(function (cached) {
-      if (cached) return cached;
-
-      return fetch(e.request).then(function (response) {
-        /* 只缓存成功的响应 */
-        if (!response || response.status !== 200) return response;
-
+    fetch(e.request).then(function (response) {
+      if (response && response.status === 200) {
         var clone = response.clone();
         caches.open(CACHE_NAME).then(function (cache) {
           cache.put(e.request, clone);
         });
-        return response;
-      }).catch(function () {
-        /* 离线回退：返回 index.html（SPA 路由） */
-        if (e.request.headers.get('accept').includes('text/html')) {
+      }
+      return response;
+    }).catch(function () {
+      // 离线 → 回退缓存
+      return caches.match(e.request).then(function (cached) {
+        if (cached) return cached;
+        // SPA 路由回退到 index.html
+        if (e.request.headers.get('accept') && e.request.headers.get('accept').includes('text/html')) {
           return caches.match('./index.html');
         }
+        return new Response('离线模式', { status: 503 });
       });
     })
   );
