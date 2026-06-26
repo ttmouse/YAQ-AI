@@ -313,9 +313,21 @@
     grid-template-columns: 1fr 1fr;
   }
 
+  /* 责任区块卡片 — 缩小最小宽度 */
+  .block-card {
+    min-width: 160px !important;
+    max-width: none !important;
+  }
+
   /* 搜索/命令面板内边距 */
   .launcher-panel {
     padding: 32px 20px 48px !important;
+  }
+  /* 搜索标签芯片溢出保护 */
+  .l-chip {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* 表格在移动端可横向滚动 */
