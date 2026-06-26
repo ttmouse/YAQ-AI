@@ -506,11 +506,18 @@
   color: #d97706;
 }
 
-/* ─── 指标卡一排 ────────────────────────────────────────────── */
+/* ─── 指标卡一排（横向滚动，不换行） ─────────────────────────── */
 .metric-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 4px 0 8px;
+}
+.metric-row::-webkit-scrollbar {
+  display: none;
 }
 .metric-card {
   border: none;
