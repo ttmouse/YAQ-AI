@@ -117,6 +117,10 @@
             ><i data-lucide="user" width="12" height="12" style="vertical-align: middle; margin-right: 4px"></i>
             站长</span
           >
+          <span class="notif-bell" id="notifBell" title="通知">
+            <i data-lucide="bell" width="16" height="16"></i>
+            <span class="notif-badge" id="notifBadge">3</span>
+          </span>
         </div>
       </div>
 
@@ -533,6 +537,17 @@
             if (menu) menu.classList.remove('open');
           }
         });
+
+        /* ═══ 通知红点：点击铃铛弹 toast，红点永远不消失 ══════════ */
+        var notifBell = document.getElementById('notifBell');
+        if (notifBell) {
+          notifBell.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (typeof window.showToast === 'function') {
+              window.showToast('您有 3 条待处理督办事项');
+            }
+          });
+        }
       })();
     </script>
   </body>
