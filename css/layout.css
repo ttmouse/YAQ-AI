@@ -309,6 +309,7 @@
   background: var(--surface);
   flex-shrink: 0;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .blocks-row {
   display: flex;

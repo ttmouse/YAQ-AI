@@ -85,6 +85,7 @@
   .info-card {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 12px;
   }
 
   /* 隐患表、主体表在移动端横向滚动 */
@@ -116,6 +117,19 @@
     height: 20px !important;
   }
 
+  /* 服务站名称在极小屏上溢出保护 */
+  .org-switch {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .brand h1 {
+    font-size: 15px;
+  }
+
   /* ─── Init overlay 适配更小的顶部栏 ────────────── */
   .init-overlay {
     top: 40px;
@@ -127,6 +141,11 @@
 
   .result {
     padding: 0 6px;
+  }
+
+  /* 月报侧边栏跟随压缩的顶部栏高度 */
+  #mrSidebar {
+    top: 40px !important;
   }
 
   /* 内容区字号 */
@@ -502,7 +521,12 @@
   .notif-bell,
   .memory-panel-close,
   .global-chat-btn,
-  .global-chat-mic {
+  .global-chat-mic,
+  .drill-close,
+  .metric-config-btn,
+  .agent-config-btn,
+  .aib-btn,
+  .goal-input-btn {
     min-width: 44px;
     min-height: 44px;
     display: inline-flex;

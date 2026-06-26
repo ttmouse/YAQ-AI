@@ -2520,6 +2520,7 @@
   flex-wrap: nowrap;
   gap: 8px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   overflow-y: hidden;
   padding: 8px 12px;
 }
@@ -5612,6 +5613,7 @@
   font-family: ui-monospace, Menlo, monospace;
   line-height: 1.6;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   white-space: pre;
 }
 .rules-detail-tip {
