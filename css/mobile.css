@@ -552,6 +552,18 @@
     padding: 8px;
   }
 
+  /* 底部 Sheet 弹窗 — 缩小内边距 */
+  .conv-sheet {
+    padding: 16px 16px 20px !important;
+  }
+  .conv-sheet-title {
+    font-size: 15px;
+  }
+  .conv-sheet-text {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
   /* 专项检查编辑弹窗 — 移动端全屏 */
   .si-modal {
     width: 100% !important;
