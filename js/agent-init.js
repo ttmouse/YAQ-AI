@@ -1293,7 +1293,12 @@
   // 点击外部关闭菜单
   document.addEventListener('click', function (e) {
     var wrap = document.getElementById('demoMenuWrap');
+    var orgSwitch = document.getElementById('orgSwitch');
     if (wrap && !wrap.contains(e.target)) {
+      // 如果点击的是站点名称（orgSwitch）或其内部，不关闭菜单
+      if (orgSwitch && (e.target === orgSwitch || orgSwitch.contains(e.target))) {
+        return;
+      }
       var menu = document.getElementById('demoMenu');
       if (menu) menu.classList.remove('open');
     }

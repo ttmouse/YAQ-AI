@@ -21,9 +21,7 @@
 
 /* ─── 手机横屏 / 小平板（≤768px） ────────────────────────────── */
 @media (max-width: 768px) {
-  .mobile-bottom-nav {
-    display: flex;
-  }
+
   .top {
     padding: 0 10px;
     min-height: 46px;
@@ -41,13 +39,13 @@
 
   /* ─── Init 聊天栏避开底部导航 ──────────────────────────── */
   .init-chat-bar {
-    bottom: calc(24px + 50px + env(safe-area-inset-bottom, 0));
+    bottom: calc(24px + env(safe-area-inset-bottom, 0));
   }
   #initFloatCard {
-    bottom: calc(82px + 50px + env(safe-area-inset-bottom, 0));
+    bottom: calc(82px + env(safe-area-inset-bottom, 0));
   }
   .init-quick-wrap {
-    bottom: calc(82px + 50px + env(safe-area-inset-bottom, 0));
+    bottom: calc(82px + env(safe-area-inset-bottom, 0));
   }
   .brand {
     gap: 6px;
@@ -80,7 +78,7 @@
   } /* 只保留搜索图标 */
 
   .main {
-    padding-bottom: calc(50px + env(safe-area-inset-bottom, 0));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0));
   }
   .result {
     padding: 0 8px;
@@ -114,7 +112,7 @@
 
   /* 全局聊天栏 */
   .global-chat-bar {
-    bottom: calc(54px + env(safe-area-inset-bottom, 0));
+    bottom: calc(8px + env(safe-area-inset-bottom, 0));
   }
   .global-chat-inner input {
     font-size: 12px;
@@ -505,37 +503,29 @@
   .pref-grid {
     grid-template-columns: 1fr;
   }
-  /* 调整底部导航项间距 */
-  .mb-nav-item {
-    padding: 2px 4px;
-  }
-  .mb-nav-item span {
-    font-size: 8.5px;
-  }
+
 }
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .main {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
   }
   .global-chat-bar {
     bottom: calc(12px + env(safe-area-inset-bottom));
   }
-  .mobile-bottom-nav {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+
   @media (max-width: 768px) {
     .main {
-      padding-bottom: calc(50px + env(safe-area-inset-bottom));
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
     }
     .global-chat-bar {
-      bottom: calc(56px + env(safe-area-inset-bottom));
+      bottom: calc(8px + env(safe-area-inset-bottom));
     }
   }
   @media (max-width: 480px) {
     .main {
-      padding-bottom: calc(50px + env(safe-area-inset-bottom));
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
     }
   }
 }
@@ -544,12 +534,9 @@
 /* standalone 模式下 env(safe-area-inset-bottom) 可能失效 */
 /* iPhone 底部横条约 34px，强制给足间距 */
 @media (display-mode: standalone) {
-  .mobile-bottom-nav {
-    height: auto;
-    padding: 4px 0 34px;
-  }
+
   .main {
-    padding-bottom: calc(50px + 34px) !important;
+    padding-bottom: calc(8px + 34px) !important;
   }
   .global-chat-bar {
     bottom: calc(12px + 34px) !important;
@@ -557,7 +544,7 @@
 }
 @media (display-mode: standalone) and (max-width: 480px) {
   .main {
-    padding-bottom: calc(50px + 34px) !important;
+    padding-bottom: calc(8px + 34px) !important;
   }
   .global-chat-bar {
     bottom: calc(12px + 34px) !important;

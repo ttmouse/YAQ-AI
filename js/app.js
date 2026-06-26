@@ -66,7 +66,7 @@
   window.toggleDemoMenu = function () {}; // stub — agent-init.js 加载后替换为真实实现
 
   // ─── 存储版本号 ────────────────────────────────────────────
-  var STORAGE_VERSION = 4;
+  var STORAGE_VERSION = 5;
 
   // ════════════════════════════════════════════════════════════════
   // DOM CACHE — 缓存常用 DOM 引用，避免重复查询
@@ -2861,13 +2861,13 @@
     ];
 
     // 展开：每个期间指标按周期拆成独立卡片
-    // 站长每日工作台默认展示指标：先异常再预警
+    // 站长每日工作台默认展示指标
     var dailyDefaults = {
       majorOpen: 1, // 未闭环重大隐患（danger）
       majorNew_今日: 1, // 新增重大隐患（danger）
       riskLevelUp_本周: 1, // 风险等级上调（warning）
       newMajorSignificant_本周: 1, // 新增重大/较大风险主体（warning）
-      majorRisk_本周: 1, // 重大风险
+      majorRisk_本周: 1, // 重大风险（warning）
       areaRiskAbnormal_本周: 1, // 风险上升片区（warning）
     };
     var allMetrics = [];
@@ -2908,7 +2908,6 @@
         });
       }
     }
-
     // 检测存储版本，不匹配则重置（指标结构变了）
     if (ls.get('yaq_metric_ver') != STORAGE_VERSION) {
       ls.remove('yaq_metric_prefs');
@@ -2925,27 +2924,19 @@
     var savedOrder = JSON.parse(ls.get('yaq_metric_order', 'null'));
     window.__metricOrder =
       savedOrder ||
-      // 先异常（danger）再预警（warning）
+      // 先异常（danger）再预警（warning），组内保持原始定义顺序
       (function () {
-        var desiredOrder = [
-          'majorNew_今日',
-          'majorOpen',
-          'riskLevelUp_本周',
-          'newMajorSignificant_本周',
-          'majorRisk_本周',
-          'areaRiskAbnormal_本周',
-        ];
         var checked = allMetrics.filter(function (m) {
           return m.checked;
         });
-        // 按 desiredOrder 排序，不在列表中的排在最后
+        // 按 alert 分组排序：danger 在前，warning 在后，同组按原始索引
         checked.sort(function (a, b) {
-          var ai = desiredOrder.indexOf(a.id);
-          var bi = desiredOrder.indexOf(b.id);
-          if (ai === -1 && bi === -1) return 0;
-          if (ai === -1) return 1;
-          if (bi === -1) return -1;
-          return ai - bi;
+          var orderMap = { danger: 0, warning: 1 };
+          var ao = orderMap[a.alert] !== undefined ? orderMap[a.alert] : 2;
+          var bo = orderMap[b.alert] !== undefined ? orderMap[b.alert] : 2;
+          if (ao !== bo) return ao - bo;
+          // 同 alert 类型保持原始定义顺序
+          return allMetrics.indexOf(a) - allMetrics.indexOf(b);
         });
         return checked.map(function (m) {
           return m.id;
@@ -3017,7 +3008,7 @@
       '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
       '<div style="display:flex;align-items:center;gap:8px;width:100%">' +
       '<h3 style="flex:1"><i data-lucide="shield-alert" aria-hidden="true" class="c-red"></i> 关键风险闭环</h3>' +
-      "<button onclick=\"switchScene('hazard-report')\" style=\"background:none;border:none;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s;flex-shrink:0\" onmouseover=\"this.style.background='#f1f5f9';this.style.color='#334155'\" onmouseout=\"this.style.background='none';this.style.color='#94a3b8'\">" +
+      '<button onclick="switchScene(\'hazard-report\')" class="hover-show-btn" style="background:none;border:none;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s;flex-shrink:0" onmouseover="this.style.background=\'#f1f5f9\';this.style.color=\'#334155\'" onmouseout="this.style.background=\'none\';this.style.color=\'#94a3b8\'">' +
       '查看全部 <i data-lucide="chevron-right" width="14" height="14"></i>' +
       '</button>' +
       '</div>' +
@@ -3072,7 +3063,7 @@
       '<div class="info-card">' +
       '<div class="info-card-head">' +
       '<h3><i data-lucide="target" aria-hidden="true" class="c-accent"></i> 核心任务进展</h3>' +
-      "<button onclick=\"switchScene('followup')\" style=\"background:none;border:none;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s\" onmouseover=\"this.style.background='#f1f5f9';this.style.color='#334155'\" onmouseout=\"this.style.background='none';this.style.color='#94a3b8'\">" +
+      '<button onclick="switchScene(\'followup\')" class="hover-show-btn" style="background:none;border:none;color:#94a3b8;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s" onmouseover="this.style.background=\'#f1f5f9\';this.style.color=\'#334155\'" onmouseout="this.style.background=\'none\';this.style.color=\'#94a3b8\'">' +
       '查看全部 <i data-lucide="chevron-right" width="14" height="14"></i>' +
       '</button>' +
       '</div>' +
@@ -3247,11 +3238,11 @@
     return (
       '<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;border-radius:14px;background:#f8f9fc;position:relative;overflow:hidden">' +
       '<div style="flex:1;min-width:0">' +
-      '<div style="font-size:13px;color:#64748b;line-height:1.5">经以上信息，已为您生成 <strong style="color:#1e293b">' +
+      '<div style="font-size:13px;color:#64748b;line-height:1.5">小安已基于以上信息汇总，为您生成了 <strong style="color:#1e293b">' +
       items.length +
       ' 项</strong>推进行动</div>' +
       '</div>' +
-      '<button onclick="switchScene(\'pending-actions\')" style="flex-shrink:0;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+      '<button onclick="openActionConfirmation()" style="flex-shrink:0;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
       '查看行动项 <i data-lucide="chevron-right" width="14" height="14"></i>' +
       '</button>' +
       '</div>'
@@ -3290,6 +3281,45 @@
         showToast('执行：' + action);
     }
   }
+
+  // ─── 打开行动项确认弹窗（展示待确认行动详细卡片） ──────────
+  window.openActionConfirmation = function () {
+    var pas = MOCK.pendingActions || [];
+    var pendingPas = pas.filter(function (p) { return p.status === 'pending'; });
+    if (pendingPas.length === 0) {
+      if (window.YAQ && window.YAQ.showToast) window.YAQ.showToast('当前暂无待确认行动项');
+      return;
+    }
+    var bodyHtml =
+      '<div style="padding:4px 0">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:#f0f7ff;border-radius:12px">' +
+      '<i data-lucide="bot" width="18" height="18" style="color:var(--accent);flex-shrink:0"></i>' +
+      '<div style="font-size:13px;color:#1e293b;line-height:1.5">小安已基于以上分析为您汇总了 <strong>' + pendingPas.length + ' 项</strong>待确认行动，请逐条审核确认。</div>' +
+      '</div>';
+
+    for (var i = 0; i < pendingPas.length; i++) {
+      bodyHtml += renderPendingActionCard(pendingPas[i]);
+    }
+
+    bodyHtml +=
+      '<div style="text-align:center;margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9">' +
+      '<button onclick="closeActionModal();switchScene(\'pending-actions\')" style="background:none;border:none;color:#94a3b8;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s" onmouseover="this.style.background=\'#f1f5f9\';this.style.color=\'#334155\'" onmouseout="this.style.background=\'none\';this.style.color=\'#94a3b8\'">' +
+      '查看所有待办 <i data-lucide="chevron-right" width="14" height="14"></i>' +
+      '</button>' +
+      '</div>' +
+      '</div>';
+
+    document.getElementById('actionModalTitle').innerHTML = '<i data-lucide="clipboard-check" aria-hidden="true" style="color:var(--accent)"></i> 确认行动项';
+    document.getElementById('actionModalBody').innerHTML = bodyHtml;
+    lucide.createIcons({ container: document.getElementById('actionModalBody') });
+    document.getElementById('actionModalOverlay').classList.add('open');
+    document.getElementById('actionModal').classList.add('open');
+  };
+
+  window.closeActionModal = function () {
+    document.getElementById('actionModalOverlay').classList.remove('open');
+    document.getElementById('actionModal').classList.remove('open');
+  };
 
   // ─── 行动项选择管理 ──────────────────────────────────────────
 
