@@ -614,3 +614,33 @@
     bottom: calc(12px + 34px) !important;
   }
 }
+
+/* ─── 移动端：隐藏左下角菜单，改由服务站名称触发 ──────────────── */
+@media (max-width: 768px) {
+  .demo-menu-wrap {
+    display: none !important;
+  }
+  .org-switch {
+    cursor: pointer;
+  }
+  .org-switch:active {
+    opacity: 0.7;
+  }
+  /* 菜单定位到右上角（服务站名称下方） */
+  .demo-menu-wrap.mobile-top-right {
+    display: block !important;
+    position: fixed;
+    left: auto;
+    right: 12px;
+    top: 52px;
+    bottom: auto;
+    z-index: 950;
+  }
+  .demo-menu-wrap.mobile-top-right .demo-menu {
+    left: auto;
+    right: 0;
+    bottom: auto;
+    top: 100%;
+    margin-top: 4px;
+  }
+}

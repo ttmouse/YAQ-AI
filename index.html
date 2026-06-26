@@ -103,7 +103,7 @@
             <i data-lucide="search" width="14" height="14"></i>
             <span class="topbar-search-placeholder">搜索</span>
           </div>
-          <span class="pill org-switch" data-cmd="showToast" data-arg="组织切换（演示功能）" title="切换组织">
+          <span class="pill org-switch" data-cmd="showToast" data-arg="组织切换（演示功能）" title="切换组织" id="orgSwitch">
             <i data-lucide="building-2" width="12" height="12" style="vertical-align: middle; margin-right: 4px"></i>
             良渚应急消防管理站
           </span>
@@ -498,6 +498,36 @@
           navigator.serviceWorker.register('./sw.js').catch(function () {});
         });
       }
+
+      /* ═══ 移动端：服务站名称 → 展开演示菜单 ══════════════════════ */
+      (function () {
+        var orgSwitch = document.getElementById('orgSwitch');
+        var menuWrap = document.getElementById('demoMenuWrap');
+        if (!orgSwitch || !menuWrap) return;
+
+        orgSwitch.addEventListener('click', function (e) {
+          if (window.innerWidth > 768) return; // 桌面端不处理
+          e.preventDefault();
+          e.stopPropagation();
+
+          // 移动端：把菜单搬到右上角
+          menuWrap.classList.add('mobile-top-right');
+
+          // 切换菜单开关
+          var menu = document.getElementById('demoMenu');
+          if (menu) {
+            menu.classList.toggle('open');
+          }
+        });
+
+        // 点击菜单外部关闭
+        document.addEventListener('click', function (e) {
+          if (!menuWrap.contains(e.target) && e.target !== orgSwitch && !orgSwitch.contains(e.target)) {
+            var menu = document.getElementById('demoMenu');
+            if (menu) menu.classList.remove('open');
+          }
+        });
+      })();
     </script>
   </body>
 </html>
