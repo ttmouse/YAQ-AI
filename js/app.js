@@ -539,6 +539,9 @@
     return '';
   }
 
+  // ─── MOCK 数据别名（由 js/data/mock-data.js 注入 window.MOCK） ──
+  var MOCK = window.MOCK;
+
   // ─── Dashboard ───────────────────────────────────────────────────
 
   function renderDashboard() {
