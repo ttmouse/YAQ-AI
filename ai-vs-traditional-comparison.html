@@ -3,6 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://unpkg.com 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' https://app.17an.com data:;
+    font-src 'self' data:;
+    connect-src 'self';
+  ">
   <title>站长工作流程对照 · 传统 vs AI Agent</title>
   <script src="https://unpkg.com/lucide@1.21.0/dist/umd/lucide.min.js"
     integrity="sha384-xphWpUp6pRlNpM8BxCtyoW96oteA0kPxUX0VP6V32gICuE4ViDFBfaoyj5BS7M4w"
