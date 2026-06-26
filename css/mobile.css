@@ -401,6 +401,9 @@
     border-radius: 0 !important;
     padding: 16px !important;
   }
+  .si-modal-overlay.active {
+    align-items: stretch;
+  }
 }
 
 /* ─── 记忆面板 — 移动端全屏 ──────────────────────────────── */
@@ -418,9 +421,11 @@
   }
   .memory-panel-head {
     padding: 12px 16px;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
   }
   .memory-panel-body {
     padding: 12px 16px 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   }
 }
 
