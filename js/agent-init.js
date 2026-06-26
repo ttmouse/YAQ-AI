@@ -957,10 +957,10 @@
   function globalChatQuick(text) {
     var input = document.getElementById('globalChatInput');
     if (input) input.value = text;
-    // 点击"分析超期未闭环原因"时，渲染 AI Agent 分析
+    // 点击快捷芯片时，模拟用户发送消息，AI Agent 在页面底部分析展现
     if (text.indexOf('超期未闭环原因') >= 0 || text.indexOf('隐患闭环未关闭的原因') >= 0) {
-      renderOverdueAnalysis();
       if (input) { input.value = ''; input.blur(); }
+      renderOverdueAnalysis();
       return;
     }
     showToast('正在分析你的问题…（演示回复）');
@@ -971,9 +971,17 @@
   function renderOverdueAnalysis() {
     var container = document.getElementById('sceneContent');
     if (!container) return;
-    var html =
+    var userQuery = '分析一下隐患闭环未关闭的原因';
+    container.innerHTML =
+      // 用户消息气泡
+      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-bottom:12px">' +
+        '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
+          escapeHtml(userQuery) +
+        '</div>' +
+      '</div>' +
+      // AI Agent 分析回复
       '<div class="c-row agent" style="animation:fadeUp .35s ease-out both">' +
-        '<div class="agent-text">' +
+        '<div class="c-bubble" style="flex:1;min-width:0;background:#fff;border:1px solid #e2eaf8;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.04)">' +
           '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">🔍 超期未闭环原因分析</div>' +
           '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
             '当前共有 <strong style="color:#dc2626">2 项</strong>重大隐患超期未整改，涉及 <strong>消防安全组</strong>，以下逐项分析原因：' +
@@ -1026,7 +1034,11 @@
           '</div>' +
         '</div>' +
       '</div>';
-    container.innerHTML = html;
+    // 滚动到底部
+    var scrollContainer = container.closest('.result') || container.parentElement;
+    if (scrollContainer) {
+      requestAnimationFrame(function() { scrollContainer.scrollTop = scrollContainer.scrollHeight; });
+    }
     if (window.lucide) lucide.createIcons();
   }
   function init() {
