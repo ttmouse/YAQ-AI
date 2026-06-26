@@ -2225,10 +2225,10 @@
 
 /* ─── 关键风险闭环卡片 ─────────────────────────────────────── */
 .hazard-card {
-  border: 1px solid var(--line);
+  border: none;
   border-radius: 12px;
   padding: 12px;
-  background: var(--surface);
+  background: #f8f9fc;
   position: relative;
 }
 .hc-head {

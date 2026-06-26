@@ -1304,6 +1304,23 @@
     showToast('正在分析你的问题…（演示回复）');
     input.value = '';
   }
+  // ─── 全局快捷芯片：在 globalChatQuickWrap 中显示新芯片 ──
+  function showGlobalQuickChip(chips) {
+    var wrap = document.getElementById('globalChatQuickWrap');
+    if (!wrap) return;
+    if (!chips || chips.length === 0) {
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'flex';
+    var html = '';
+    for (var i = 0; i < chips.length; i++) {
+      var c = chips[i];
+      html += '<button class="gq-chip" onclick="YAQ.globalChatQuick(\'' + c.text.replace(/'/g, "\\'") + '\')">' + c.label + '</button>';
+    }
+    wrap.innerHTML = html;
+  }
+
   function globalChatQuick(text) {
     var input = document.getElementById('globalChatInput');
     if (input) input.value = text;
