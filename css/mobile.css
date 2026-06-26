@@ -100,6 +100,7 @@
   #mrSidebar {
     width: 100% !important;
     top: 46px !important;
+    z-index: 90 !important;
   }
 }
 
@@ -146,6 +147,7 @@
   /* 月报侧边栏跟随压缩的顶部栏高度 */
   #mrSidebar {
     top: 40px !important;
+    z-index: 90 !important;
   }
 
   /* 内容区字号 */
