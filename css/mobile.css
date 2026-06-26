@@ -486,6 +486,144 @@
   }
 }
 
+/* ─── 待确认督办弹窗 — 移动端底部抽屉式 ──────────────────────── */
+/* 与 action-modal-panel 同模式：从底部滑入 */
+@media (max-width: 768px) {
+  .pa-modal-panel {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 85vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    transform: translateY(100%);
+    display: flex !important;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  }
+  .pa-modal-panel::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 8px auto 0;
+    flex-shrink: 0;
+  }
+  /* panel 显示时由 JS 设 display:flex + 移除 transform，此处用属性选择器兜底 */
+  .pa-modal-panel[style*="display: flex"] {
+    transform: translateY(0);
+  }
+  .pa-modal-head {
+    padding: 12px 20px;
+  }
+  .pa-modal-body {
+    padding: 12px 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pa-modal-foot {
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-shrink: 0;
+  }
+  .pa-modal-overlay {
+    z-index: 249;
+  }
+}
+
+/* ─── 指标配置弹窗 — 移动端底部抽屉式 ──────────────────────── */
+@media (max-width: 768px) {
+  .modal-panel {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    transform: translateY(100%);
+    display: flex !important;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  }
+  .modal-panel::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 8px auto 0;
+    flex-shrink: 0;
+  }
+  .modal-panel[style*="display: flex"] {
+    transform: translateY(0);
+  }
+  .modal-head {
+    padding: 8px 16px 4px;
+  }
+  .modal-body {
+    padding: 4px 16px 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modal-foot {
+    padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+    flex-shrink: 0;
+  }
+  .modal-overlay {
+    z-index: 99;
+  }
+}
+
+/* ─── 指标钻取浮层 — 移动端底部抽屉式 ──────────────────────── */
+@media (max-width: 768px) {
+  .drill-float {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 90vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    transform: translateY(100%);
+    display: flex !important;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  }
+  .drill-float::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 8px auto 0;
+    flex-shrink: 0;
+  }
+  .drill-float.open {
+    transform: translateY(0) !important;
+  }
+  .drill-head {
+    padding: 8px 16px;
+    flex-shrink: 0;
+  }
+  .drill-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .drill-overlay {
+    z-index: 129;
+  }
+}
+
 /* ─── 超小屏（≤400px）特殊适配 ────────────────────────────── */
 @media (max-width: 400px) {
   /* 能力卡片网格在极小屏变回 1 列 */
