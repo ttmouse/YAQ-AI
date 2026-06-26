@@ -246,6 +246,17 @@
     transform: none !important;
   }
 
+  /* 规则详情弹窗 */
+  .rules-detail-panel {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    transform: none !important;
+  }
+
   /* 企业侧边栏 */
   .ep-panel {
     width: 100% !important;
