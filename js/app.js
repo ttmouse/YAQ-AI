@@ -4562,28 +4562,28 @@
               if (row) {
                 var cells = row.querySelectorAll('td');
                 trackTitle = (cells[0] ? cells[0].textContent.trim() : '') + ' - ' + (cells[1] ? cells[1].textContent.trim() : '');
-                addTrack({ title: trackTitle, source: '隐患整改日报', responsibility: (cells[5] ? cells[5].textContent.trim() : '') });
+                YAQ.addTrack({ title: trackTitle, source: '隐患整改日报', responsibility: (cells[5] ? cells[5].textContent.trim() : '') });
               }
               e.stopPropagation();
               return;
             }
             // 普通 hazard-card：提取已有标题
             if (trackTitle) {
-              addTrack(trackTitle);
+              YAQ.addTrack(trackTitle);
               e.stopPropagation();
               return;
             }
           } else if (drCard) {
             var nameEl = drCard.querySelector('.dr-hazard-name');
             trackTitle = nameEl ? nameEl.textContent.trim() : '跟踪事项';
-            addTrack({ title: trackTitle, source: '诊断处置' });
+            YAQ.addTrack({ title: trackTitle, source: '诊断处置' });
             e.stopPropagation();
             return;
           } else if (drawerGen) {
             var drawerPanel = document.getElementById('drawerPanel');
             var titleEl = drawerPanel ? drawerPanel.querySelector('#drawerTitle') : null;
             trackTitle = titleEl ? titleEl.textContent.trim() : '跟踪事项';
-            addTrack({ title: trackTitle, source: '处置生成' });
+            YAQ.addTrack({ title: trackTitle, source: '处置生成' });
             closeDrawer();
             e.stopPropagation();
             return;
@@ -6143,11 +6143,6 @@
       openHazardDetail: openHazardDetail,
       copyHazardInfo: copyHazardInfo,
 
-      // ─── 任务详情 ───
-      openTaskDetail: openTaskDetail,
-      closeTaskModal: closeTaskModal,
-
-      // ─── 法规 ───
       toggleRegulation: toggleRegulation,
 
       // ─── 快速启动 (Launcher) ───
@@ -6161,10 +6156,10 @@
       applySearchChip: applySearchChip,
 
       // ─── 处置建议 ───
-      copyDisposalRec: function(idx) { copyDisposalRec(idx); },
-      generateAllDisposalText: function() { generateAllDisposalText(); },
-      regenerateDisposalRecs: function() { regenerateDisposalRecs(); },
-      copyDrawerGenerated: function() { copyDrawerGenerated(); },
+      copyDisposalRec: function(idx) { YAQ.copyDisposalRec(idx); },
+      generateAllDisposalText: function() { YAQ.generateAllDisposalText(); },
+      regenerateDisposalRecs: function() { YAQ.regenerateDisposalRecs(); },
+      copyDrawerGenerated: function() { YAQ.copyDrawerGenerated(); },
 
       // ─── 月报 ───
       mrToggleModule: YAQ.mrToggleModule,
