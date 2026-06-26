@@ -221,6 +221,15 @@
   background: #1d4ed8;
 }
 
+/* 移动端：增大触摸目标至 44px（Apple HIG） */
+@media (max-width: 768px) {
+  .init-chat-bar .init-chat-btn,
+  .init-chat-bar .init-chat-send {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* ═════ 对话行 ═══════════════════════════════════════════════════ */
 .c-row {
   display: flex;

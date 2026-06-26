@@ -517,3 +517,73 @@
     bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ─── 规则引擎：维度侧栏在移动端变为顶部标签栏 ──────────── */
+@media (max-width: 768px) {
+  .rules-body {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .rules-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 4px;
+    padding: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .rules-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  .rules-dim-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 6px 10px;
+  }
+  .rules-log-time {
+    width: auto;
+    min-width: 80px;
+  }
+  .rules-log-name {
+    min-width: 0;
+  }
+}
+
+/* ─── 启动台内容间距在移动端压缩 ──────────────────────────── */
+@media (max-width: 768px) {
+  .launcher-body {
+    gap: 16px;
+  }
+}
+
+/* ─── 企业详情面板内边距移动端压缩 ──────────────────────────── */
+@media (max-width: 480px) {
+  .ep-head {
+    padding: 12px 14px;
+  }
+  .ep-body {
+    padding: 10px 14px 10px;
+  }
+}
+
+/* ─── 信息卡片标题字号移动端缩小 ──────────────────────────── */
+@media (max-width: 480px) {
+  .info-card-head h3 {
+    font-size: 13px;
+  }
+}
+
+/* ─── 区块卡片最小宽度移动端缩小 ──────────────────────────── */
+@media (max-width: 480px) {
+  .block-card {
+    min-width: 200px;
+  }
+}
+
+/* ─── Drawer 内容区内边距移动端压缩 ──────────────────────────── */
+@media (max-width: 480px) {
+  .drawer-body {
+    padding: 14px;
+  }
+}
