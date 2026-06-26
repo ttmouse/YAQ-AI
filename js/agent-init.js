@@ -1306,8 +1306,164 @@
   function globalChatSend() {
     var input = document.getElementById('globalChatInput');
     if (!input || !input.value.trim()) return;
-    showToast('正在分析你的问题…（演示回复）');
+    var text = input.value.trim();
     input.value = '';
+
+    // 1) 显示用户消息
+    sceneAppend(
+      '<div class="c-row user">' +
+        '<div class="c-bubble user">' + escapeHtml(text) + '</div>' +
+        '</div>'
+    );
+
+    // 2) 模拟 AI 思考 → 假回复
+    simulateAIResponse(text);
+  }
+
+  // ─── 模拟 AI 回答：思考 → 假回复 ──────────────────────────
+  function simulateAIResponse(userText) {
+    var fakeReply = generateFakeReply(userText);
+    sceneTypeResponse('应擎总控正在分析…', fakeReply, function () {
+      // 回复完成后，显示快捷芯片（如果有）
+      var quickChips = suggestQuickChips(userText);
+      if (quickChips) showGlobalQuickChip(quickChips);
+    });
+  }
+
+  // ─── 根据输入生成假回复（分段数组，供 sceneTypeResponse 逐段展示） ──
+  function generateFakeReply(text) {
+    var lower = text.toLowerCase();
+
+    // ── 隐患/安全类 ──
+    if (lower.indexOf('隐患') >= 0 || lower.indexOf('风险') >= 0 || lower.indexOf('安全') >= 0) {
+      return [
+        '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">🔍 当前安全态势概览</div>',
+        '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:12px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
+          '截至今日，辖区内共有 <strong>47 条</strong>待处理隐患，其中 <span style="color:#dc2626;font-weight:600">重大隐患 3 条</span>，<span style="color:#d97706;font-weight:600">较大隐患 8 条</span>。' +
+          '</div>',
+        '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
+          '<div style="font-weight:700;margin-bottom:6px">⚠ 需要你关注</div>' +
+          '<div style="color:#475569">物流片区有 2 条重大隐患已超期 7 天未整改，建议立即督办处理。</div>' +
+          '</div>',
+      ];
+    }
+
+    // ── 物流片区 ──
+    if (lower.indexOf('物流') >= 0 || lower.indexOf('片区') >= 0) {
+      return [
+        '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">📍 物流片区监管数据</div>',
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">' +
+          '<div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:#1e293b">3,276</div><div style="font-size:11px;color:#64748b">监管场所</div></div>' +
+          '<div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:#d97706">54.7%</div><div style="font-size:11px;color:#64748b">采集率</div></div>' +
+          '<div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:#dc2626">28.6%</div><div style="font-size:11px;color:#64748b">整改完成率</div></div>' +
+          '<div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center"><div style="font-size:20px;font-weight:700;color:#dc2626">3</div><div style="font-size:11px;color:#64748b">超期隐患</div></div>' +
+          '</div>',
+        '<div style="background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
+          '<div style="font-weight:700;color:#dc2626;margin-bottom:4px">✗ 物流片需重点关注</div>' +
+          '<div style="color:#475569">整改完成率仅 28.6%，显著低于其他片区。建议联系片区负责人了解原因，必要时安排专项督导。</div>' +
+          '</div>',
+      ];
+    }
+
+    // ── 专项行动/任务 ──
+    if (lower.indexOf('专项') >= 0 || lower.indexOf('行动') >= 0 || lower.indexOf('任务') >= 0) {
+      return [
+        '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">📋 专项行动进度</div>',
+        '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:14px;margin-bottom:10px">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+          '<span style="font-size:13px;font-weight:600;color:#1e293b">夏季消防安全专项检查</span>' +
+          '<span style="font-size:12px;color:#d97706;font-weight:600">进度 62%</span>' +
+          '</div>' +
+          '<div style="height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden">' +
+          '<div style="height:100%;width:62%;background:#d97706;border-radius:3px"></div>' +
+          '</div>' +
+          '<div style="font-size:12px;color:#64748b;margin-top:6px">应完成 180 家，已完成 112 家，剩余 68 家</div>' +
+          '</div>',
+        '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:14px;margin-bottom:10px">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+          '<span style="font-size:13px;font-weight:600;color:#1e293b">危化品企业专项排查</span>' +
+          '<span style="font-size:12px;color:#16a34a;font-weight:600">进度 89%</span>' +
+          '</div>' +
+          '<div style="height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden">' +
+          '<div style="height:100%;width:89%;background:#16a34a;border-radius:3px"></div>' +
+          '</div>' +
+          '<div style="font-size:12px;color:#64748b;margin-top:6px">应完成 45 家，已完成 40 家，剩余 5 家</div>' +
+          '</div>',
+        '<div style="background:#f8fafc;border-radius:12px;padding:12px;font-size:12px;color:#64748b;line-height:1.6">' +
+          '💡 夏季消防安全专项检查进度滞后，距 deadline 还有 10 天，建议加快节奏。' +
+          '</div>',
+      ];
+    }
+
+    // ── 企业查询 ──
+    if (lower.indexOf('企业') >= 0 || lower.indexOf('公司') >= 0) {
+      return [
+        '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">🏢 重点企业监管概况</div>',
+        '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:14px;margin-bottom:10px">' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#1e293b">951</div><div style="font-size:11px;color:#64748b">监管企业总数</div></div>' +
+          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#dc2626">23</div><div style="font-size:11px;color:#64748b">风险上升企业</div></div>' +
+          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#d97706">47</div><div style="font-size:11px;color:#64748b">整改反复企业</div></div>' +
+          '<div style="background:#f8fafc;border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:700;color:#16a34a">881</div><div style="font-size:11px;color:#64748b">正常企业</div></div>' +
+          '</div>' +
+          '</div>',
+        '<div style="background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:1px solid #e2e8f0;border-radius:14px;padding:14px;font-size:13px;line-height:1.7">' +
+          '<div style="font-weight:700;margin-bottom:4px">🤖 AI 分析</div>' +
+          '<div style="color:#475569">风险上升企业主要集中在物流片区（12 家），建议重点关注。</div>' +
+          '</div>',
+      ];
+    }
+
+    // ── 履职/团队 ──
+    if (lower.indexOf('履职') >= 0 || lower.indexOf('团队') >= 0 || lower.indexOf('人员') >= 0) {
+      return [
+        '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">👥 团队履职情况</div>',
+        '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:14px;padding:14px;margin-bottom:10px">' +
+          '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9">' +
+          '<span style="font-size:13px;color:#1e293b">应消站</span><span style="font-size:13px;color:#16a34a;font-weight:600">正常</span></div>' +
+          '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9">' +
+          '<span style="font-size:13px;color:#1e293b">区域站</span><span style="font-size:13px;color:#d97706;font-weight:600">3 人未填报</span></div>' +
+          '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9">' +
+          '<span style="font-size:13px;color:#1e293b">村社</span><span style="font-size:13px;color:#d97706;font-weight:600">5 个村社滞后</span></div>' +
+          '<div style="display:flex;justify-content:space-between;padding:6px 0">' +
+          '<span style="font-size:13px;color:#1e293b">专家</span><span style="font-size:13px;color:#16a34a;font-weight:600">正常</span></div>' +
+          '</div>',
+        '<div style="background:#f8fafc;border-radius:12px;padding:12px;font-size:12px;color:#64748b;line-height:1.6">' +
+          '💡 区域站有 3 人连续 3 天未填报巡查记录，村社层面勾庄片、物流片各有滞后，建议提醒。' +
+          '</div>',
+      ];
+    }
+
+    // ── 默认回复 ──
+    return [
+      '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">🤖 应擎总控</div>',
+      '<div style="font-size:13px;color:#475569;line-height:1.8;margin-bottom:12px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
+        '收到你的问题，让我来分析一下当前的数据…' +
+        '</div>',
+      '<div style="background:linear-gradient(135deg,#eef4ff,#f8faff);border:1px solid #c7d7f5;border-radius:14px;padding:14px;font-size:13px;color:#1e293b;line-height:1.7">' +
+        '<div style="font-weight:700;color:#2563eb;margin-bottom:4px">📊 当前总体态势</div>' +
+        '<div style="color:#475569">辖区整体安全形势平稳，但物流片区隐患闭环率偏低（28.6%），建议重点关注。如需进一步了解某个具体事项，可以直接告诉我。</div>' +
+        '</div>',
+    ];
+  }
+
+  // ─── 根据用户问题建议后续快捷芯片 ──────────────────────────
+  function suggestQuickChips(text) {
+    var lower = text.toLowerCase();
+    if (lower.indexOf('隐患') >= 0 || lower.indexOf('风险') >= 0) {
+      return [{ label: '查看超期未整改隐患', text: '哪些隐患超期未整改？' }];
+    }
+    if (lower.indexOf('物流') >= 0 || lower.indexOf('片区') >= 0) {
+      return [{ label: '分析物流片整改率低的原因', text: '分析一下物流片整改率低的原因' }];
+    }
+    if (lower.indexOf('专项') >= 0 || lower.indexOf('任务') >= 0) {
+      return [{ label: '查看任务异常分析', text: '分析一下任务的异常情况' }];
+    }
+    if (lower.indexOf('企业') >= 0) {
+      return [{ label: '查看风险上升企业清单', text: '列出风险上升的企业' }];
+    }
+    // 默认不显示快捷芯片
+    return null;
   }
   // ─── 全局快捷芯片：在 globalChatQuickWrap 中显示新芯片 ──
   function showGlobalQuickChip(chips) {
@@ -1332,74 +1488,53 @@
   }
 
   function globalChatQuick(text) {
+    // 显示用户消息
+    sceneAppend(
+      '<div class="c-row user">' +
+        '<div class="c-bubble user">' + escapeHtml(text) + '</div>' +
+        '</div>'
+    );
+
     var input = document.getElementById('globalChatInput');
-    if (input) input.value = text;
-    // 点击快捷芯片时，隐藏快捷芯片
+    if (input) input.value = '';
+    // 隐藏快捷芯片
     var quickWrap = document.getElementById('globalChatQuickWrap');
     if (quickWrap) quickWrap.style.display = 'none';
-    // 点击快捷芯片时，模拟用户发送消息，AI Agent 在页面底部分析展现
+    if (input) input.blur();
+
+    // 根据关键词路由到具体场景
     if (text.indexOf('超期未闭环原因') >= 0 || text.indexOf('隐患闭环未关闭的原因') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       renderOverdueAnalysis();
       return;
     }
     if (text.indexOf('任务的异常') >= 0 || text.indexOf('任务异常') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       renderTaskAnomalyAnalysis();
       return;
     }
     if (text.indexOf('督办任务进展') >= 0 || text.indexOf('督办进展') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       showToast('查看督办进展（演示功能）');
       return;
     }
     if (text.indexOf('巡查报告') >= 0 || text.indexOf('生成报告') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       showToast('生成巡查报告（演示功能）');
       return;
     }
     if (text.indexOf('哪些行动') >= 0 || text.indexOf('有什么行动') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       // 跳转到待确认行动场景
       if (window.switchScene) window.switchScene('pending-actions');
       else showToast('查看待确认行动（演示功能）');
       return;
     }
     if (text.indexOf('业务组') >= 0 || text.indexOf('片区展示') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       renderMonthlyReportRestructured();
       return;
     }
     if (text.indexOf('保存为模板') >= 0 || text.indexOf('月报模板') >= 0) {
-      if (input) {
-        input.value = '';
-        input.blur();
-      }
       renderSaveTemplate();
       return;
     }
-    showToast('正在分析你的问题…（演示回复）');
-    setTimeout(function () {
-      if (input) input.value = '';
-    }, 300);
+    // 其他 → 通用假回复
+    simulateAIResponse(text);
   }
 
   // ─── sceneContent 容器追加（带滚动） ─────────────────────

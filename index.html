@@ -54,6 +54,7 @@
     <link rel="stylesheet" href="css/assistant.css" />
     <link rel="stylesheet" href="css/mobile.css" />
     <link rel="stylesheet" href="css/utilities.css" />
+    <link rel="stylesheet" href="css/inspection.css" />
   </head>
   <body>
     <!-- ═══ 主控 Agent 初始化场景 ═════════════════════════════════════ -->
@@ -148,7 +149,7 @@
       <!-- ─── 演示菜单（右上角） ──────────────────────────── -->
       <div class="demo-menu-wrap" id="demoMenuWrap">
         <div class="demo-menu demo-corner-menu" id="demoMenu">
-          <div class="demo-menu-item" data-cmd="openDemoPage" data-arg="special-inspection-prototype.html">
+          <div class="demo-menu-item" data-cmd="switchScene" data-arg="special-inspection">
             <i data-lucide="file-search" width="14" height="14"></i> 智能专项检查
           </div>
           <div class="demo-menu-item" data-cmd="resetAndCloseMenu">
@@ -237,6 +238,7 @@
       <div class="action-modal-body" id="actionModalBody">
         <!-- Dynamic content -->
       </div>
+      <div class="action-modal-footer" id="actionModalFooter" style="display:none"></div>
     </div>
 
     <!-- ─── 指标配置弹窗 ─────────────────────────────────────────── -->

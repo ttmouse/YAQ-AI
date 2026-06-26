@@ -1,0 +1,140 @@
+/* ═════════════════════════════════════════════════════════════════════
+   智能专项检查（Special Inspection）— 场景辅助样式
+   主场景使用框架的 .section-head / .info-card 等样式，此处仅补充专用组件
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ─── 按钮 ────────────────────────────────────────────────────── */
+.si-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.15s;
+  font-family: inherit;
+}
+.si-btn i {
+  width: 14px;
+  height: 14px;
+}
+.si-btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.si-btn-primary:hover {
+  background: color-mix(in oklch, var(--accent) 85%, black);
+}
+.si-btn-outline {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+.si-btn-outline:hover {
+  background: #f1f5f9;
+}
+.si-btn-success {
+  background: var(--green);
+  color: #fff;
+}
+.si-btn-success:hover {
+  filter: brightness(0.9);
+}
+.si-btn-sm {
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+/* ─── 优先级标签 ──────────────────────────────────────────────── */
+.si-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.si-tag-high {
+  background: #fef2f2;
+  color: var(--red);
+}
+.si-tag-mid {
+  background: #fff7ed;
+  color: var(--orange);
+}
+.si-tag-low {
+  background: #f0fdf4;
+  color: var(--green);
+}
+
+/* ─── 任务编辑弹窗 ────────────────────────────────────────────── */
+.si-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.si-modal-overlay.active {
+  display: flex;
+}
+.si-modal {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 24px;
+  width: 420px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: si-fadeSlideIn 0.25s ease both;
+}
+.si-modal h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.si-modal label {
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+.si-modal input,
+.si-modal select,
+.si-modal textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.si-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* ─── 动画 ────────────────────────────────────────────────────── */
+@keyframes si-fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes si-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
