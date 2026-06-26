@@ -133,6 +133,11 @@
   .scene-content {
     font-size: 13px;
   }
+
+  /* iOS 等移动端使用 overlay scrollbar，取消保留的滚动条槽位避免多余左侧留白 */
+  .center {
+    scrollbar-gutter: auto;
+  }
   .scene-content h2 {
     font-size: 16px !important;
   }
@@ -216,6 +221,18 @@
     margin-bottom: 6px;
     padding: 4px 2px 4px 10px;
   }
+
+  /* 全屏面板底部安全区适配（iOS 底部横条） */
+  .hmodal-body,
+  .tmodal-body,
+  .pa-modal-body,
+  .drawer-body,
+  .action-modal-body {
+    padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+  .ep-body {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
   .global-chat-inner input {
     font-size: 11px;
   }
@@ -259,7 +276,7 @@
   .toast {
     left: 12px;
     right: 12px;
-    bottom: 52px;
+    bottom: calc(52px + env(safe-area-inset-bottom, 0px));
     font-size: 11px;
     padding: 10px 14px;
   }
@@ -444,6 +461,31 @@
   }
   .drill-body {
     grid-template-columns: 1fr;
+  }
+
+  /* 隐患详情弹窗：AI 分析区在移动端折行到内容下方 */
+  .hmodal-body {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .hmodal-ai {
+    width: 100%;
+    flex-shrink: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    padding-left: 0;
+  }
+
+  /* 任务详情弹窗：左右分栏在移动端改为上下堆叠 */
+  .tmodal-body {
+    flex-direction: column;
+  }
+  .tmodal-right {
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .tmodal-divider {
+    display: none;
   }
 }
 

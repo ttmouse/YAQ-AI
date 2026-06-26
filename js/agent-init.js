@@ -1589,14 +1589,6 @@
     var container = document.getElementById('sceneContent');
     if (!container) return;
     var userQuery = '分析一下隐患闭环未关闭的原因';
-    // 先显示用户消息
-    sceneAppend(
-      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
-        '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
-        escapeHtml(userQuery) +
-        '</div>' +
-        '</div>',
-    );
     // 分片定义 Agent 回复内容（逐段展示）
     var sections = [
       // 标题
@@ -1722,14 +1714,6 @@
     var container = document.getElementById('sceneContent');
     if (!container) return;
     var userQuery = '分析一下任务的异常情况';
-    // 先显示用户消息
-    sceneAppend(
-      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
-        '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
-        escapeHtml(userQuery) +
-        '</div>' +
-        '</div>',
-    );
     var sections = [
       // 标题
       '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">📊 任务异常分析</div>',
@@ -1790,13 +1774,6 @@
     var container = document.getElementById('sceneContent');
     if (!container) return;
     var userQuery = '把安全工作组分拆为业务组，并按多个片区展示';
-    sceneAppend(
-      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
-        '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
-        escapeHtml(userQuery) +
-        '</div>' +
-        '</div>',
-    );
     var sections = [
       // 标题
       '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">📊 月报已按业务组 + 片区重组</div>',
