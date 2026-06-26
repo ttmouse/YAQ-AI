@@ -29,6 +29,7 @@
 .app {
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   padding: 0;
   overflow: hidden;
   display: flex;
@@ -4444,6 +4445,7 @@
     left: auto;
     width: 440px;
     height: 100vh;
+    height: 100dvh;
     border-left: 1px solid var(--line);
     transition: right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     transform: none;
