@@ -5835,32 +5835,91 @@
     }).length;
     var closedRate = totalHaz > 0 ? Math.round((closedHaz / totalHaz) * 100) : 0;
 
-    var summary = '';
-    if (overdue) {
-      summary = '该隐患已逾期 <strong>' + h.overdue + ' 天</strong>，';
-      summary += h.level.indexOf('重大') > -1 ? '属于重大事故隐患，需站长立即介入。' : '需尽快处置。';
-    }
-
-    // 综合判断：问题出在哪一端
-    var enterpriseWeak = siRate < 60;
+    var isBeiYuan = h.object.indexOf('北苑') >= 0;
     var repeatIssue = prevSame.length > 0;
-    if (enterpriseWeak || repeatIssue) {
-      summary += '企业自检执行率仅 ' + siRate + '%，隐患闭环率 ' + closedRate + '%，主体责任落实不到位。';
-    }
-    if (repeatIssue) {
-      summary += '同类隐患反复出现 ' + prevSame.length + ' 次，需深挖根因。';
-    }
-    if (!enterpriseWeak && !repeatIssue && !overdue) {
-      summary =
-        '该企业自检执行率 ' +
-        siRate +
-        '%，隐患闭环率 ' +
-        closedRate +
-        '%，整体履职基本到位。详情可查看右侧企业侧边栏。';
+    var enterpriseWeak = siRate < 60;
+    var overdueDays = h.overdue || 0;
+
+    // 政府端分析（基于隐患数据推导）
+    var govIssues = '';
+    var govColor = '#2563eb';
+    if (isBeiYuan) {
+      govIssues =
+        '已多次电话督促（本月 ' +
+        (repeatIssue ? prevSame.length + 1 : 1) +
+        ' 次），已发起督办流程。' +
+        (overdueDays >= 3
+          ? '但仅停留在电话层面，未升级现场核查/停业整顿等实质性措施，跟进力度偏软。'
+          : '需尽快升级为现场核查。');
+    } else {
+      govIssues =
+        '已下发整改通知，责任人已跟进。' +
+        (overdueDays > 0
+          ? '但整改证据链未闭环，未明确验收标准，未引入第三方检测机构，跟进存在盲区。'
+          : '需持续跟踪整改进度。');
     }
 
-    summary += ' 点击上方企业名称查看完整评估报告。';
-    return summary;
+    // 企业端分析
+    var entIssues = '';
+    var entColor = '#dc2626';
+    if (isBeiYuan) {
+      entIssues =
+        '同一问题月内反复 ' +
+        (repeatIssue ? prevSame.length + 1 : 1) +
+        ' 次' +
+        (enterpriseWeak ? '，企业自检率仅 ' + siRate + '%' : '') +
+        '；超期 ' +
+        overdueDays +
+        ' 天仍未提交整改方案，临时管控未确认，配合意愿弱。' +
+        (repeatIssue ? '属屡教不改型。' : '');
+    } else {
+      entIssues =
+        '超期 ' +
+        overdueDays +
+        ' 天未见实质性修复进展，企业未主动报告困难；' +
+        (h.hazard.indexOf('18-25') >= 0 ? '18-25 层消防设施全面失效，是否已联系专业工程公司未知。' : '') +
+        '推进缓慢。';
+    }
+
+    // 研判结论
+    var conclusionLabel = '';
+    var conclusionColor = '';
+    if (isBeiYuan) {
+      conclusionLabel = '企业主体责任问题为主';
+      conclusionColor = '#dc2626';
+    } else if (overdueDays > 0) {
+      conclusionLabel = '政府跟进盲区 + 企业执行不力并存';
+      conclusionColor = '#d97706';
+    } else {
+      conclusionLabel = '企业履职基本到位，持续跟踪';
+      conclusionColor = '#16a34a';
+    }
+
+    var html =
+      // 标题
+      '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:4px">' +
+        '<i data-lucide="brain" width="13" height="13" style="color:#2563eb"></i> AI 异常定位' +
+      '</div>' +
+      // 逾期标签
+      (overdueDays > 0
+        ? '<div style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:8px">⚠ 逾期 ' + overdueDays + ' 天</div>'
+        : '') +
+      // 政府端
+      '<div style="font-size:11px;line-height:1.6;margin-bottom:8px;padding:8px 10px;background:#f0f5ff;border-radius:8px">' +
+        '<div style="font-weight:600;color:#2563eb;margin-bottom:3px;font-size:11px">🏛 政府端 — 监督跟进</div>' +
+        '<div style="color:#475569">' + govIssues + '</div>' +
+      '</div>' +
+      // 企业端
+      '<div style="font-size:11px;line-height:1.6;margin-bottom:8px;padding:8px 10px;background:#fef2f2;border-radius:8px">' +
+        '<div style="font-weight:600;color:#dc2626;margin-bottom:3px;font-size:11px">🏢 企业端 — 主体责任</div>' +
+        '<div style="color:#475569">' + entIssues + '</div>' +
+      '</div>' +
+      // 研判结论
+      '<div style="font-size:11px;line-height:1.5;padding:7px 10px;background:#fff;border-radius:8px;border:1px dashed var(--line)">' +
+        '⚖ 初步研判：<span style="color:' + conclusionColor + ';font-weight:700">' + conclusionLabel + '</span>' +
+      '</div>';
+
+    return html;
   }
 
   function closeHazardModal() {

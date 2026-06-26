@@ -893,7 +893,7 @@
   overflow-y: auto;
 }
 .hmodal-ai {
-  width: 210px;
+  width: 250px;
   flex-shrink: 0;
   overflow-y: auto;
   border-left: 1px solid var(--line);
