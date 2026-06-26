@@ -2081,6 +2081,12 @@
       if (sceneId === 'pending-actions') {
         updateBatchBar();
       }
+      // 月报场景显示快捷输入
+      if (sceneId === 'monthly-report' && window.YAQ.showGlobalQuickChip) {
+        window.YAQ.showGlobalQuickChip([
+          { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
+        ]);
+      }
     }, 80); // 80ms 模拟加载延迟
   }
 
@@ -9176,6 +9182,7 @@
   // 初始化默认 tab — 将初始化场景一键变成顶部 Tab
   var defaultTabs = [
     { id: 'dashboard', label: '工作台' },
+    { id: 'monthly-report', label: '月报' },
     { id: 'hazard-report', label: '重大隐患整改' },
     { id: 'efficiency', label: '履职效能' },
     { id: 'responsibility', label: '主体责任' },
@@ -9183,7 +9190,6 @@
     { id: 'followup', label: '重点跟进' },
     { id: 'pending-actions', label: '待确认行动' },
     { id: 'supervision-track', label: '督办跟踪' },
-    { id: 'monthly-report', label: '月报' },
   ];
   defaultTabs.forEach(function (t) {
     tabs.push(t);
