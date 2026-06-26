@@ -184,6 +184,9 @@
   .hmodal-ai {
     flex: none;
   }
+  .hmodal-ai {
+    width: 100% !important;
+  }
   .hmodal-foot {
     flex-direction: column;
     gap: 6px;
