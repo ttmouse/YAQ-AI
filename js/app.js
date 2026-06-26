@@ -66,7 +66,7 @@
   window.toggleDemoMenu = function () {}; // stub — agent-init.js 加载后替换为真实实现
 
   // ─── 存储版本号 ────────────────────────────────────────────
-  var STORAGE_VERSION = 5;
+  var STORAGE_VERSION = 6;
 
   // ════════════════════════════════════════════════════════════════
   // DOM CACHE — 缓存常用 DOM 引用，避免重复查询
@@ -249,6 +249,7 @@
         resultText: '',
         measures: '已设置警示带，但无专人值守',
         plan: '未提交正式整改方案',
+        aiSummary: '企业主体责任问题为主',
       },
       {
         object: '云栖高层住宅',
@@ -271,6 +272,7 @@
         resultText: '',
         measures: '未采取临时管控措施',
         plan: '整改方案已提交审核中',
+        aiSummary: '政府跟进盲区 + 企业执行不力并存',
       },
       {
         object: '恒源化工',
@@ -606,6 +608,7 @@
         status: '正常推进',
         statusCls: 'stable',
         relatedItems: [],
+        aiSummary: '整体进度正常，3 项隐患已通知整改',
       },
       {
         name: '危化品企业日常巡查',
@@ -694,6 +697,7 @@
         status: '滞后',
         statusCls: 'danger',
         relatedItems: [],
+        aiSummary: '完成率严重滞后，需重点督办',
       },
       {
         name: '2026年01月-2026年06月物流片较大风险检查任务',
@@ -701,20 +705,21 @@
         startDate: '2026-01-01',
         endDate: '2026-06-30',
         covered: 31,
-        rate: '96%',
-        progress: '97%',
+        rate: '74%',
+        progress: '76%',
         hazards: '-',
         majorHazards: '-',
         creator: '范嘉杰',
         region: '物流片',
         risk: '较大风险',
-        lag: false,
+        lag: true,
         type: '专项',
         desc: '物流片较大风险检查覆盖 31 家，完成率 96%，接近尾声。',
         person: '范嘉杰',
         status: '正常推进',
         statusCls: 'stable',
         relatedItems: [],
+        aiSummary: '进度偏慢，建议持续跟进',
       },
     ],
 
@@ -2121,15 +2126,9 @@
     var greeting = hour < 12 ? '早上好' : hour < 18 ? '下午好' : '晚上好';
     html +=
       '<div class="ai-briefing">' +
-      '<div class="ai-briefing-left">' +
-      '<div class="ai-avatar"><i data-lucide="bot" width="16" height="16"></i></div>' +
-      '</div>' +
       '<div class="ai-briefing-body">' +
-      '<div class="ai-briefing-head"><span>' +
-      greeting +
-      '，站长。今天 4 个方向需要关注：安全态势 1 项、风险闭环 1 项、任务进展 1 项、待确认行动 ' +
-      (MOCK.actionItems ? MOCK.actionItems.length : 0) +
-      ' 项。</span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+      '<div class="ai-briefing-head">' +
+      '<span><b>' + greeting + '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
       '</div>' +
       '</div>';
 
@@ -2866,7 +2865,6 @@
       majorOpen: 1, // 未闭环重大隐患（danger）
       majorNew_今日: 1, // 新增重大隐患（danger）
       riskLevelUp_本周: 1, // 风险等级上调（warning）
-      newMajorSignificant_本周: 1, // 新增重大/较大风险主体（warning）
       majorRisk_本周: 1, // 重大风险（warning）
       areaRiskAbnormal_本周: 1, // 风险上升片区（warning）
     };
@@ -2951,11 +2949,21 @@
     html +=
       '<div class="info-card" id="situationCard">' +
       '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
-      '<h3><i data-lucide="activity" aria-hidden="true" class="c-accent"></i> 整体安全态势</h3>' +
-      '<div style="position:relative;margin-left:auto">' +
-      '<button class="metric-config-btn" onclick="openMetricConfig()" title="配置指标"><i data-lucide="sliders-horizontal" width="15" height="15"></i></button>' +
+      '<h3><i data-lucide="activity" aria-hidden="true" class="c-accent"></i> 整体安全态势' +
+      '<span class="situation-hint">' +
+      '<i data-lucide="circle-help" width="14" height="14"></i>' +
+      '<div class="situation-tip">' +
+      '<b>展示逻辑</b><br><br>' +
+      '• <b>置顶指标</b>：你可以在「配置指标」中手动置顶关心的指标，固定显示在最前面<br>' +
+      '• <b>异常优先</b>：异常（🔴）指标排在预警（🟡）指标前面<br>' +
+      '• <b>AI 智能推荐</b>：基于异常等级、优先级和行动紧迫度，动态筛选最值得关注的指标<br>' +
+      '• <b>持平隐藏</b>：无波动的指标默认不展示，减少干扰' +
       '</div>' +
-      '<div style="width:100%;font-size:13px;font-weight:500;color:var(--text);line-height:1.5;margin-top:3px">' +
+      '</span></h3>' +
+      '<div style="position:relative;margin-left:auto">' +
+      '<button class="metric-config-btn hover-show-btn" onclick="openMetricConfig()" title="配置指标"><i data-lucide="sliders-horizontal" width="15" height="15"></i></button>' +
+      '</div>' +
+      '<div style="width:100%;font-size:13px;font-weight:500;color:var(--text);line-height:1.5;margin-top:8px">' +
       summaryText +
       '</div>' +
       '</div>' +
@@ -3024,9 +3032,12 @@
       if (h.status === '已完成') continue;
       shownCount++;
       html +=
-        '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openHazardDetail(\'' +
+        '<div class="hazard-card ' +
+        h.statusCls +
+        '" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openHazardDetail(\'' +
         h.object +
         '\')" title="点击查看详情">' +
+        '<div class="hc-main' + (h.aiSummary ? ' has-ai' : '') + '" style="padding:12px 12px 8px">' +
         '<div class="hc-head">' +
         '<span class="hc-name">' +
         escapeHtml(h.object) +
@@ -3039,20 +3050,24 @@
         '<span>来源 ' +
         h.source +
         '</span>' +
-        '<span class="hc-status ' +
-        h.statusCls +
-        '">' +
-        h.status +
-        '</span>' +
-        '<span>逾期 ' +
+        '<span' +
+        (h.overdue > 0 ? ' style="color:#dc2626;font-weight:600"' : '') +
+        '>逾期 ' +
         (h.overdue > 0 ? h.overdue + '天' : '—') +
         '</span>' +
         '</div>' +
         '<div class="hc-time">' +
-        h.foundDate +
+        (h.foundDate ? h.foundDate.substring(5) : '') +
         ' → ' +
-        h.deadline +
+        (h.deadline ? h.deadline.substring(5) : '') +
         '</div>' +
+        '</div>' +
+        (h.aiSummary
+          ? '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
+            '<i data-lucide="sparkles" width="10" height="10" style="color:#7c3aed;flex-shrink:0"></i>' +
+            '<span>' + h.aiSummary + '</span>' +
+            '</div>'
+          : '') +
         '</div>';
     }
     html += '</div></div>';
@@ -3089,16 +3104,12 @@
       var tcAlert = tc.lag ? (tc.risk === '重大风险' ? '异常' : '警告') : '';
       var tcAlertCls = tc.lag ? (tc.risk === '重大风险' ? 'danger' : 'warning') : '';
       html +=
-        '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openTaskDetail(\'' +
+        '<div class="hazard-card" style="flex:0 0 240px;min-width:220px;cursor:pointer;background:' +
+        (tc.lag ? (tc.risk === '重大风险' ? '#fef2f2' : '#fff7ed') : '#f8f9fc') +
+        '" onclick="openTaskDetail(\'' +
         tc.name.replace(/'/g, "\\'") +
         '\')">' +
-        (tc.lag
-          ? '<div style="position:absolute;top:-1px;left:-1px;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px 0 10px 0;color:#fff;background:' +
-            (tc.risk === '重大风险' ? 'var(--red)' : '#d97706') +
-            ';line-height:1.5;z-index:1">' +
-            tcAlert +
-            '</div>'
-          : '') +
+        '<div class="hc-main' + (tc.aiSummary ? ' has-ai' : '') + '" style="padding:12px;background:#fff">' +
         '<div style="display:flex;align-items:center;gap:8px;margin:0 0 4px">' +
         '<svg width="50" height="50" viewBox="0 0 54 54" style="flex-shrink:0">' +
         '<circle cx="27" cy="27" r="19" fill="none" stroke="#e5e7eb" stroke-width="5"/>' +
@@ -3141,6 +3152,13 @@
         ' → ' +
         tc.endDate +
         '</div>' +
+        '</div>' +
+        (tc.aiSummary
+          ? '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
+            '<i data-lucide="sparkles" width="10" height="10" style="color:#7c3aed;flex-shrink:0"></i>' +
+            '<span>' + tc.aiSummary + '</span>' +
+            '</div>'
+          : '') +
         '</div>';
     }
     html += '</div></div>';
@@ -3282,7 +3300,7 @@
     }
   }
 
-  // ─── 打开行动项确认弹窗（展示待确认行动详细卡片） ──────────
+  // ─── 打开行动项确认弹窗（批量层级下发） ──────────────────
   window.openActionConfirmation = function () {
     var pas = MOCK.pendingActions || [];
     var pendingPas = pas.filter(function (p) { return p.status === 'pending'; });
@@ -3290,21 +3308,90 @@
       if (window.YAQ && window.YAQ.showToast) window.YAQ.showToast('当前暂无待确认行动项');
       return;
     }
+
+    var levelChain = [
+      { key: 'self', label: '站长', color: '#2563eb', bg: '#eef4ff' },
+      { key: 'next', label: '下一级', color: '#7c3aed', bg: '#f4edff' },
+      { key: 'leader', label: '组长', color: '#d97706', bg: '#fff7ed' },
+      { key: 'expert', label: '专家', color: '#059669', bg: '#e6f9f0' },
+      { key: 'enterprise', label: '企业端', color: '#dc2626', bg: '#fef2f2' },
+    ];
+
     var bodyHtml =
       '<div style="padding:4px 0">' +
+
+      // 小安摘要
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:#f0f7ff;border-radius:12px">' +
       '<i data-lucide="bot" width="18" height="18" style="color:var(--accent);flex-shrink:0"></i>' +
-      '<div style="font-size:13px;color:#1e293b;line-height:1.5">小安已基于以上分析为您汇总了 <strong>' + pendingPas.length + ' 项</strong>待确认行动，请逐条审核确认。</div>' +
-      '</div>';
+      '<div style="font-size:13px;color:#1e293b;line-height:1.5">小安已基于以上分析为您汇总了 <strong>' + pendingPas.length + ' 项</strong>待确认行动</div>' +
+      '</div>' +
 
-    for (var i = 0; i < pendingPas.length; i++) {
-      bodyHtml += renderPendingActionCard(pendingPas[i]);
+      // 下发层级设置
+      '<div style="margin-bottom:16px;padding:14px 16px;background:#f8f9fc;border-radius:12px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+      '<span style="font-size:12px;font-weight:600;color:#475569">下发层级</span>' +
+      '<select id="pushLevelSelect" style="font-size:13px;padding:6px 10px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#1e293b;cursor:pointer;outline:none">' +
+      '<option value="enterprise">📬 推送至企业端</option>' +
+      '<option value="expert">👤 推送至专家</option>' +
+      '<option value="leader" selected>👥 推送至组长</option>' +
+      '<option value="next">✅ 推送至下一级</option>' +
+      '<option value="self">👁 仅自己跟进</option>' +
+      '</select>' +
+      '</div>' +
+
+      // 横向层级可视化
+      '<div style="display:flex;align-items:center;gap:0">';
+
+    for (var li = 0; li < levelChain.length; li++) {
+      var lc = levelChain[li];
+      bodyHtml +=
+        '<div style="flex:1;text-align:center;position:relative">' +
+        (li > 0 ? '<div style="position:absolute;top:14px;left:-50%;width:100%;height:2px;background:#e2e8f0;z-index:0"></div>' : '') +
+        '<div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:3px">' +
+        '<div style="width:28px;height:28px;border-radius:50%;background:' + lc.bg + ';color:' + lc.color + ';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">' +
+        lc.label.charAt(0) +
+        '</div>' +
+        '<span style="font-size:10px;color:#64748b">' + lc.label + '</span>' +
+        '</div>' +
+        '</div>';
     }
 
     bodyHtml +=
-      '<div style="text-align:center;margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9">' +
-      '<button onclick="closeActionModal();switchScene(\'pending-actions\')" style="background:none;border:none;color:#94a3b8;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;transition:all .15s" onmouseover="this.style.background=\'#f1f5f9\';this.style.color=\'#334155\'" onmouseout="this.style.background=\'none\';this.style.color=\'#94a3b8\'">' +
-      '查看所有待办 <i data-lucide="chevron-right" width="14" height="14"></i>' +
+      '</div>' +
+      '</div>' +
+
+      // 待确认卡片列表（带复选框）
+      '<div style="margin-bottom:8px">';
+
+    for (var i = 0; i < pendingPas.length; i++) {
+      var pa = pendingPas[i];
+      var typeLabel = pa.actionType === 'supervise' ? '发起督办' : pa.actionType === 'track' ? '重点跟进' : '要求说明';
+      var typeBg = pa.actionType === 'supervise' ? '#fef2f2' : pa.actionType === 'track' ? '#fff7ed' : '#eef4ff';
+      var typeColor = pa.actionType === 'supervise' ? '#dc2626' : pa.actionType === 'track' ? '#d97706' : '#2563eb';
+      bodyHtml +=
+        '<label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin-bottom:8px;border:1px solid #e2e8f0;border-radius:12px;cursor:pointer;transition:border-color .15s;background:#fff" onmouseover="this.style.borderColor=\'#2563eb\'" onmouseout="this.style.borderColor=\'#e2e8f0\'">' +
+        '<input type="checkbox" class="pa-batch-checkbox" value="' + pa.id + '" checked style="margin-top:2px;accent-color:#2563eb;width:16px;height:16px;flex-shrink:0">' +
+        '<div style="flex:1;min-width:0">' +
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">' +
+        '<span style="font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;background:' + typeBg + ';color:' + typeColor + '">' + typeLabel + '</span>' +
+        '<span style="font-size:13px;font-weight:600;color:#1e293b">' + pa.title + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#64748b;line-height:1.5">' + pa.basis.substring(0, 60) + (pa.basis.length > 60 ? '…' : '') + '</div>' +
+        '</div>' +
+        '</label>';
+    }
+
+    bodyHtml +=
+      '</div>' +
+
+      // 底部批量操作
+      '<div style="display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid #f1f5f9">' +
+      '<div style="flex:1;font-size:12px;color:#94a3b8">已选 <strong id="batchSelectedCount" style="color:#1e293b">' + pendingPas.length + '</strong> 项</div>' +
+      '<button onclick="executeBatchPush()" style="background:#2563eb;color:#fff;border:none;border-radius:10px;padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:6px" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+      '<i data-lucide="check" width="16" height="16"></i> 确认发起' +
+      '</button>' +
+      '<button onclick="closeActionModal();switchScene(\'pending-actions\')" style="background:none;border:1px solid #e2e8f0;border-radius:10px;padding:8px 16px;font-size:12px;color:#94a3b8;cursor:pointer;transition:all .15s" onmouseover="this.style.background=\'#f1f5f9\';this.style.color=\'#334155\'" onmouseout="this.style.background=\'none\';this.style.color=\'#94a3b8\'">' +
+      '查看所有待办' +
       '</button>' +
       '</div>' +
       '</div>';
@@ -3314,6 +3401,31 @@
     lucide.createIcons({ container: document.getElementById('actionModalBody') });
     document.getElementById('actionModalOverlay').classList.add('open');
     document.getElementById('actionModal').classList.add('open');
+
+    // 复选框更新计数
+    document.getElementById('actionModalBody').addEventListener('change', function (e) {
+      if (e.target.classList.contains('pa-batch-checkbox')) {
+        var checked = document.querySelectorAll('.pa-batch-checkbox:checked').length;
+        var countEl = document.getElementById('batchSelectedCount');
+        if (countEl) countEl.textContent = checked;
+      }
+    });
+  };
+
+  // ─── 批量确认发起 ──────────────────────────────────────
+  window.executeBatchPush = function () {
+    var select = document.getElementById('pushLevelSelect');
+    var level = select ? select.value : 'leader';
+    var levelNames = {
+      enterprise: '企业端', expert: '专家', leader: '组长', next: '下一级', self: '仅自己跟进',
+    };
+    var checkedBoxes = document.querySelectorAll('.pa-batch-checkbox:checked');
+    if (checkedBoxes.length === 0) {
+      showToast('请至少选择一项行动');
+      return;
+    }
+    closeActionModal();
+    showToast('已批量下发 ' + checkedBoxes.length + ' 项至「' + (levelNames[level] || level) + '」层级');
   };
 
   window.closeActionModal = function () {
@@ -3323,7 +3435,7 @@
 
   // ─── 行动项选择管理 ──────────────────────────────────────────
 
-  var selectedActionItemIdx = {}; // { idx: true }
+  var selectedActionItemIdx = {};
 
   function initActionItemSelection() {
     var items = MOCK.actionItems || [];
@@ -4784,7 +4896,7 @@
       '</div>' +
       // 操作按钮
       '<div class="pa-card-actions">' +
-      '<button class="pa-btn pa-btn-primary" onclick="confirmPendingAction(\'' +
+      '<button class="pa-btn pa-btn-primary" onclick="openPushLevelSelector(\'' +
       pa.id +
       '\')"><i data-lucide="check" width="14" height="14"></i> 确认发起</button>' +
       '<button class="pa-btn" onclick="showToast(\'编辑功能（建设中）\')"><i data-lucide="pencil" width="14" height="14"></i> 编辑</button>' +
@@ -7484,12 +7596,9 @@
         'onmouseenter="showMetricTip(event,this)" onmouseleave="hideMetricTip()"' +
         (m.drilldown ? ' onclick="openMetricDrilldown(this)"' : '') +
         '>' +
-        (m.alert === 'danger'
-          ? '<span class="mc-alert-badge">异常</span>'
-          : m.alert === 'warning'
-            ? '<span class="mc-alert-badge">预警</span>'
-            : '') +
-        '<div class="mc-value"' +
+        '<div class="mc-value' +
+        (m.alert === 'danger' ? ' mc-value-danger' : m.alert === 'warning' ? ' mc-value-warning' : '') +
+        '"' +
         (m.valueColor ? ' style="color:' + m.valueColor + '"' : '') +
         '>' +
         m.value +
@@ -9381,6 +9490,8 @@
   window.showMetricTip = window.YAQ.showMetricTip; // 供指标卡片 onmouseenter 使用
   window.hideMetricTip = window.YAQ.hideMetricTip; // 供指标卡片 onmouseleave 使用
   window.openMetricConfig = window.YAQ.openMetricConfig; // 供指标配置按钮 onclick 使用
+  window.openMemoryPanel = window.YAQ.openMemoryPanel;
+  window.closeMemoryPanel = window.YAQ.closeMemoryPanel;
   window.openAgentConfig = window.YAQ.openAgentConfig; // 供 Agent 配置按钮 onclick 使用
   window.saveAgentPrompt = window.YAQ.saveAgentPrompt; // 供 Agent 提示词保存按钮 onclick 使用
   window.askAI = window.YAQ.askAI; // 供 AI 分析按钮 onclick 使用
@@ -9441,6 +9552,169 @@
   YAQ.closeMenuAndOpenComparison = function () {
     window.closeDemoMenu();
     window.open('ai-vs-traditional-comparison.html', '_blank');
+  };
+  YAQ.openMemoryPanel = function () {
+    window.closeDemoMenu();
+    var panel = document.getElementById('memoryPanel');
+    var overlay = document.getElementById('memoryPanelOverlay');
+    if (panel && overlay) {
+      panel.classList.add('open');
+      overlay.classList.add('open');
+      YAQ.renderMemoryPanel();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        lucide.createIcons({ container: panel });
+      }
+    }
+  };
+  YAQ.closeMemoryPanel = function () {
+    var panel = document.getElementById('memoryPanel');
+    var overlay = document.getElementById('memoryPanelOverlay');
+    if (panel) panel.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  };
+  // ─── 记忆数据（CRUD） ─────────────────────────────
+  YAQ.getMemoryData = function () {
+    var data = JSON.parse(localStorage.getItem('yaq_memory_data'));
+    if (data && Array.isArray(data)) return data;
+    // 默认初始数据
+    return [
+      {
+        label: '沟通风格',
+        cards: [
+          { title: '偏好简洁直接的沟通', desc: '在交流中倾向于使用简短、明确的语句，避免冗长的背景铺垫。喜欢直击问题核心的对话方式。' },
+          { title: '喜欢结构化表达', desc: '偏好有层次、有条理的信息呈现方式，例如分类分点、先结论后展开的沟通结构。' },
+        ],
+      },
+      {
+        label: '个人习惯',
+        cards: [
+          { title: '注重操作反馈', desc: '每次操作后希望立即看到明确的反馈结果，对于无响应的交互会重复确认。' },
+          { title: '偏好视觉确认', desc: '习惯通过视觉变化（如颜色、位置、图标变化）来确认操作是否成功，而非仅文字提示。' },
+        ],
+      },
+      {
+        label: '工作偏好',
+        cards: [
+          { title: '关注数据准确性', desc: '对数据展示的准确性和一致性要求较高，发现数据异常时会及时提出并追查原因。' },
+          { title: '渐进式探索', desc: '倾向于先使用核心功能，逐步了解和尝试更多高级功能，而非一次性全面铺开。' },
+        ],
+      },
+    ];
+  };
+  YAQ.saveMemoryData = function (data) {
+    localStorage.setItem('yaq_memory_data', JSON.stringify(data));
+  };
+  YAQ.renderMemoryPanel = function () {
+    var body = document.getElementById('memoryPanelBody');
+    if (!body) return;
+    var data = YAQ.getMemoryData();
+    var html = '';
+    for (var g = 0; g < data.length; g++) {
+      var group = data[g];
+      html += '<div class="memory-group" data-group="' + g + '">';
+      html += '<div class="memory-group-label">' + YAQ.escapeHtml(group.label) + '</div>';
+      for (var c = 0; c < group.cards.length; c++) {
+        var card = group.cards[c];
+        html +=
+          '<div class="memory-card" data-group="' + g + '" data-card="' + c + '">' +
+            '<div class="memory-card-actions">' +
+              '<button class="memory-card-act" onclick="YAQ.editMemoryCard(' + g + ',' + c + ')" title="编辑">✎</button>' +
+              '<button class="memory-card-act del" onclick="YAQ.deleteMemoryCard(' + g + ',' + c + ')" title="删除">✕</button>' +
+            '</div>' +
+            '<div class="memory-card-title">' + YAQ.escapeHtml(card.title) + '</div>' +
+            '<div class="memory-card-desc">' + YAQ.escapeHtml(card.desc) + '</div>' +
+          '</div>';
+      }
+      // 新增按钮
+      html +=
+        '<button class="memory-add-btn" onclick="YAQ.addMemoryCard(' + g + ')">' +
+          '<i data-lucide="plus" width="12" height="12"></i> 添加记忆' +
+        '</button>';
+      html += '</div>';
+    }
+    body.innerHTML = html;
+  };
+  YAQ.addMemoryCard = function (groupIdx) {
+    var data = YAQ.getMemoryData();
+    if (!data[groupIdx]) return;
+    data[groupIdx].cards.push({ title: '', desc: '' });
+    YAQ.saveMemoryData(data);
+    YAQ.renderMemoryPanel();
+    // 自动进入编辑模式
+    var body = document.getElementById('memoryPanelBody');
+    if (body) {
+      var groups = body.querySelectorAll('.memory-group');
+      var lastCard = groups[groupIdx].querySelector('.memory-card:last-child');
+      if (lastCard) {
+        var cIdx = data[groupIdx].cards.length - 1;
+        YAQ.editMemoryCard(groupIdx, cIdx);
+      }
+    }
+    // 刷新 lucide 图标
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      lucide.createIcons({ container: document.getElementById('memoryPanel') });
+    }
+  };
+  YAQ.editMemoryCard = function (groupIdx, cardIdx) {
+    var data = YAQ.getMemoryData();
+    if (!data[groupIdx] || !data[groupIdx].cards[cardIdx]) return;
+    var card = data[groupIdx].cards[cardIdx];
+    var body = document.getElementById('memoryPanelBody');
+    if (!body) return;
+    // 找到对应卡片元素
+    var cards = body.querySelectorAll('.memory-group[data-group="' + groupIdx + '"] .memory-card');
+    var el = cards[cardIdx];
+    if (!el) return;
+    el.innerHTML =
+      '<div class="memory-card-edit">' +
+        '<input class="mem-edit-title" value="' + YAQ.escapeHtml(card.title) + '" placeholder="记忆标题" />' +
+        '<textarea class="mem-edit-desc" placeholder="记忆描述" style="margin-top:6px">' + YAQ.escapeHtml(card.desc) + '</textarea>' +
+        '<div class="memory-card-edit-btns">' +
+          '<button class="memory-card-save" onclick="YAQ.saveMemoryCard(' + groupIdx + ',' + cardIdx + ')">保存</button>' +
+          '<button class="memory-card-cancel" onclick="YAQ.renderMemoryPanel()">取消</button>' +
+        '</div>' +
+      '</div>';
+  };
+  YAQ.saveMemoryCard = function (groupIdx, cardIdx) {
+    var data = YAQ.getMemoryData();
+    if (!data[groupIdx] || !data[groupIdx].cards[cardIdx]) return;
+    var body = document.getElementById('memoryPanelBody');
+    if (!body) return;
+    var cards = body.querySelectorAll('.memory-group[data-group="' + groupIdx + '"] .memory-card');
+    var el = cards[cardIdx];
+    if (!el) return;
+    var titleInput = el.querySelector('.mem-edit-title');
+    var descInput = el.querySelector('.mem-edit-desc');
+    if (!titleInput) return;
+    var title = titleInput.value.trim();
+    var desc = descInput ? descInput.value.trim() : '';
+    if (!title) return;
+    data[groupIdx].cards[cardIdx] = { title: title, desc: desc };
+    YAQ.saveMemoryData(data);
+    YAQ.renderMemoryPanel();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      lucide.createIcons({ container: document.getElementById('memoryPanel') });
+    }
+  };
+  YAQ.deleteMemoryCard = function (groupIdx, cardIdx) {
+    if (!confirm('确定删除这条记忆吗？')) return;
+    var data = YAQ.getMemoryData();
+    if (!data[groupIdx] || !data[groupIdx].cards[cardIdx]) return;
+    data[groupIdx].cards.splice(cardIdx, 1);
+    YAQ.saveMemoryData(data);
+    YAQ.renderMemoryPanel();
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      lucide.createIcons({ container: document.getElementById('memoryPanel') });
+    }
+  };
+  YAQ.escapeHtml = function (text) {
+    if (!text) return '';
+    return String(text)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   };
   YAQ.openDemoPage = function (url) {
     window.open(url, '_blank');
@@ -9511,6 +9785,113 @@
   // ════════════════════════════════════════════════════════════════
   // 待确认行动交互
   // ════════════════════════════════════════════════════════════════
+
+  // ─── 打开下发层级选择器 ──────────────────────────────────
+  window.openPushLevelSelector = function (paId) {
+    var pa = null;
+    for (var i = 0; i < MOCK.pendingActions.length; i++) {
+      if (MOCK.pendingActions[i].id === paId) {
+        pa = MOCK.pendingActions[i];
+        break;
+      }
+    }
+    if (!pa) {
+      showToast('未找到待确认行动');
+      return;
+    }
+
+    // 构建层级选项（从浅到深）
+    var levels = [
+      { key: 'enterprise', label: '直接推送至企业端', desc: '任务直接下发到企业负责人，跳过内部流转', icon: 'building-2' },
+      { key: 'responsible', label: '推送至责任人', desc: '通知 ' + (pa.chain.responsible ? pa.chain.responsible.person : '—') + '，由其牵头处理', icon: 'user' },
+      { key: 'executor', label: '推送至执行人', desc: '通知 ' + (pa.chain.executor ? pa.chain.executor.person : '—') + '，安排具体执行', icon: 'user-check' },
+      { key: 'coordinator', label: '推送至协同人', desc: '通知 ' + (pa.chain.coordinator ? pa.chain.coordinator.person : '—') + '，协调推进', icon: 'users' },
+      { key: 'reviewer', label: '推送至复核人', desc: '通知 ' + (pa.chain.reviewer ? pa.chain.reviewer.person : '—') + '，审核监督', icon: 'eye' },
+      { key: 'observer', label: '仅推送至关注人', desc: '仅知会 ' + (pa.chain.observer ? pa.chain.observer.person : '—') + '，暂不下发执行', icon: 'bell' },
+    ];
+
+    var bodyHtml =
+      '<div style="padding:4px 0">' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:#f0f7ff;border-radius:12px">' +
+      '<i data-lucide="info" width="18" height="18" style="color:var(--accent);flex-shrink:0"></i>' +
+      '<div style="font-size:13px;color:#1e293b;line-height:1.5">系统可基于责任链将任务逐级下发。请选择本次督办的<span style="font-weight:600">下发深度</span>：</div>' +
+      '</div>' +
+      '<div style="font-size:12px;font-weight:600;color:#64748b;margin-bottom:8px">当前责任链</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding:10px 12px;background:#f8f9fc;border-radius:10px">';
+
+    // 责任链徽章
+    var chainKeys = ['responsible', 'executor', 'coordinator', 'reviewer', 'observer'];
+    var chainLabels = { responsible: '责任人', executor: '执行人', coordinator: '协同人', reviewer: '复核人', observer: '关注人' };
+    for (var ci = 0; ci < chainKeys.length; ci++) {
+      var ck = chainKeys[ci];
+      var role = pa.chain[ck];
+      if (role) {
+        bodyHtml +=
+          '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:4px 8px;color:#475569">' +
+          '<span style="font-weight:500;color:#94a3b8">' + role.label + '</span>' +
+          role.person +
+          '</span>';
+      }
+    }
+    bodyHtml += '</div>';
+
+    // 层级选项（radio卡片）
+    for (var li = 0; li < levels.length; li++) {
+      var lv = levels[li];
+      bodyHtml +=
+        '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .15s;background:#fff" onmouseover="this.style.borderColor=\'#2563eb\';this.style.background=\'#f8faff\'" onmouseout="this.style.borderColor=\'#e2e8f0\';this.style.background=\'#fff\'">' +
+        '<input type="radio" name="pushLevel" value="' + lv.key + '" style="accent-color:#2563eb;width:16px;height:16px;flex-shrink:0"' + (li === 0 ? ' checked' : '') + '>' +
+        '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:600;color:#1e293b">' + lv.label + '</div>' +
+        '<div style="font-size:11px;color:#94a3b8;margin-top:1px">' + lv.desc + '</div>' +
+        '</div>' +
+        '</label>';
+    }
+
+    bodyHtml +=
+      '<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9">' +
+      '<button onclick="executePushLevel(\'' + paId + '\')" style="flex:1;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+      '<i data-lucide="check" width="16" height="16" style="vertical-align:middle;margin-right:6px"></i>确认下发' +
+      '</button>' +
+      '<button onclick="closePushLevelSelector()" style="flex-shrink:0;background:none;border:1px solid #e2e8f0;border-radius:10px;padding:10px 16px;font-size:13px;color:#64748b;cursor:pointer">取消</button>' +
+      '</div>' +
+      '</div>';
+
+    // 复用 action modal 展示
+    document.getElementById('actionModalTitle').innerHTML = '<i data-lucide="layers" aria-hidden="true" style="color:var(--accent)"></i> 设置下发层级';
+    document.getElementById('actionModalBody').innerHTML = bodyHtml;
+    lucide.createIcons({ container: document.getElementById('actionModalBody') });
+    document.getElementById('actionModalOverlay').classList.add('open');
+    document.getElementById('actionModal').classList.add('open');
+    // 保存当前 paId 供后续使用
+    window.__currentPushPaId = paId;
+  };
+
+  window.closePushLevelSelector = function () {
+    closeActionModal();
+    window.__currentPushPaId = null;
+  };
+
+  window.executePushLevel = function (paId) {
+    var selected = document.querySelector('input[name="pushLevel"]:checked');
+    if (!selected) {
+      showToast('请选择下发层级');
+      return;
+    }
+    var level = selected.value;
+    var levelNames = {
+      enterprise: '企业端',
+      responsible: '责任人',
+      executor: '执行人',
+      coordinator: '协同人',
+      reviewer: '复核人',
+      observer: '关注人',
+    };
+    closePushLevelSelector();
+    showToast('已下发至「' + (levelNames[level] || level) + '」层级');
+    // 调用原确认逻辑
+    confirmPendingAction(paId);
+  };
 
   function confirmPendingAction(paId) {
     var pa = null;

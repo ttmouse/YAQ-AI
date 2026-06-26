@@ -163,6 +163,25 @@
           <div class="demo-menu-item" data-cmd="closeMenuAndOpenComparison">
             <i data-lucide="git-compare" width="14" height="14"></i> AI vs 传统流程对比
           </div>
+          <div class="demo-menu-divider"></div>
+          <div class="demo-menu-item" data-cmd="openMemoryPanel">
+            <i data-lucide="brain" width="14" height="14"></i> 记忆
+          </div>
+        </div>
+      </div>
+      <!-- ─── 记忆面板 ────────────────────────────────── -->
+      <div class="memory-panel-overlay" id="memoryPanelOverlay" onclick="YAQ.closeMemoryPanel()"></div>
+      <div class="memory-panel" id="memoryPanel">
+        <div class="memory-panel-head">
+          <div class="memory-panel-title">
+            <i data-lucide="brain" width="18" height="18" style="color: #6366f1"></i> 记忆
+          </div>
+          <button class="memory-panel-close" onclick="YAQ.closeMemoryPanel()">
+            <i data-lucide="x" width="16" height="16"></i>
+          </button>
+        </div>
+        <div class="memory-panel-body" id="memoryPanelBody">
+          <!-- 由 JS 动态渲染 -->
         </div>
       </div>
       <!-- ─── 全局底部浮动输入条（由 Agent 渲染完成后动态显示） ── -->

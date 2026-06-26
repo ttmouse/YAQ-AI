@@ -315,10 +315,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px;
-  border-radius: 14px;
-  border: 1px solid #d7e6ff;
-  background: linear-gradient(135deg, #f2f7ff, var(--surface));
+  padding: 4px 0;
+  border: none;
+  background: none;
   margin-bottom: 10px;
 }
 .ai-briefing-left {
@@ -340,14 +339,20 @@
   min-width: 0;
 }
 .ai-briefing-head {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.6;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+}
+.ai-briefing-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.5;
 }
 .agent-config-btn {
   flex-shrink: 0;
@@ -529,6 +534,12 @@
   color: var(--text);
   line-height: 1.2;
 }
+.metric-card .mc-value.mc-value-danger {
+  color: var(--red);
+}
+.metric-card .mc-value.mc-value-warning {
+  color: var(--orange);
+}
 .metric-card .mc-label {
   font-size: 11px;
   color: var(--muted);
@@ -597,6 +608,14 @@
   background: var(--orange-bg);
   color: #a75605;
   font-weight: 600;
+}
+
+/* ─── 指标卡片背景色：异常/预警 ─────────────────────────── */
+.metric-card.alert-danger {
+  background: #fef2f2;
+}
+.metric-card.alert-warning {
+  background: #fff7ed;
 }
 
 /* ─── 卡片的同比/环比 delta ────────────────────────────── */
@@ -766,15 +785,6 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
   z-index: 1;
 }
 .modal-close:hover {
@@ -2288,11 +2298,26 @@
 
 /* ─── 关键风险闭环卡片 ─────────────────────────────────────── */
 .hazard-card {
-  border: none;
+  border: 1px solid #f1f5f9;
   border-radius: 12px;
-  padding: 12px;
-  background: #f8f9fc;
+  padding: 0;
   position: relative;
+}
+.hazard-card.danger {
+  background: #fef2f2;
+}
+.hazard-card.danger .hc-main {
+  background: #ffffff;
+}
+.hazard-card.warning .hc-main {
+  background: #fff7ed;
+}
+.hazard-card.done .hc-main {
+  background: #f0fdf4;
+}
+.hazard-card .hc-main {
+  background: #f8f9fc;
+  border-radius: 12px;
 }
 .hc-head {
   display: flex;
@@ -2353,7 +2378,6 @@
 .hc-time {
   font-size: 11px;
   color: var(--weak);
-  margin-bottom: 8px;
 }
 .hc-actions {
   display: flex;
@@ -6544,7 +6568,44 @@
 .demo-menu.open {
   display: block;
 }
-.demo-menu-item {
+.situation-hint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 4px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+.situation-hint:hover {
+  color: #6366f1;
+}
+.situation-tip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  width: 280px;
+  background: #1e293b;
+  color: #f1f5f9;
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  z-index: 100;
+  white-space: normal;
+  text-align: left;
+  font-weight: 400;
+}
+.situation-hint:hover .situation-tip {
+  display: block;
+}
+.situation-tip b {
+  color: #fff;
+}
   display: flex;
   align-items: center;
   gap: 8px;
@@ -6563,6 +6624,228 @@
   width: 15px;
   height: 15px;
   color: #64748b;
+}
+.demo-menu-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 4px 8px;
+}
+
+/* ─── 记忆面板 ─────────────────────────────────────────── */
+.memory-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 960;
+  display: none;
+}
+.memory-panel-overlay.open {
+  display: block;
+}
+.memory-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  z-index: 970;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+.memory-panel.open {
+  display: flex;
+}
+.memory-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+.memory-panel-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.memory-panel-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.1s;
+}
+.memory-panel-close:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+.memory-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px 20px;
+}
+.memory-group {
+  margin-bottom: 20px;
+}
+.memory-group:last-child {
+  margin-bottom: 0;
+}
+.memory-group-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.memory-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.memory-card:last-child {
+  margin-bottom: 0;
+}
+.memory-card:hover {
+  border-color: #cbd5e1;
+}
+.memory-card:hover .memory-card-actions {
+  opacity: 1;
+}
+.memory-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.memory-card-desc {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.55;
+}
+.memory-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.memory-card-act {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  transition: background 0.1s;
+}
+.memory-card-act:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+.memory-card-act.del:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.memory-card-edit input,
+.memory-card-edit textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 12.5px;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  background: #fff;
+  color: #1e293b;
+  transition: border-color 0.15s;
+}
+.memory-card-edit input:focus,
+.memory-card-edit textarea:focus {
+  border-color: #6366f1;
+}
+.memory-card-edit textarea {
+  resize: vertical;
+  min-height: 48px;
+}
+.memory-card-edit-btns {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.memory-card-save {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #6366f1;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.memory-card-save:hover {
+  opacity: 0.85;
+}
+.memory-card-cancel {
+  padding: 4px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #64748b;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.memory-card-cancel:hover {
+  background: #f1f5f9;
+}
+.memory-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+.memory-add-btn:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+  background: #f0f0ff;
 }
 
 /* ─── 通知铃铛 + 未读红点（模拟 PWA 推送） ────────────────────── */
