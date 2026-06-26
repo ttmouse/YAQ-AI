@@ -230,10 +230,10 @@
     margin-bottom: 8px;
   }
   .global-chat-quick-wrap .gq-chip {
-    height: 22px;
-    padding: 0 8px;
-    font-size: 10px;
-    line-height: 20px;
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+    line-height: 26px;
   }
 
   /* 对话气泡 */

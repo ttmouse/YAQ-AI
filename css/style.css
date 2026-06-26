@@ -37,6 +37,9 @@
 }
 .top {
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   min-height: 46px;
   border-radius: 0;
   background: var(--surface);
