@@ -215,6 +215,20 @@
   .launcher-panel {
     padding: 24px 16px 40px !important;
   }
+  .launcher-header {
+    margin-bottom: 12px;
+  }
+  .launcher-search {
+    height: 36px;
+    font-size: 13px;
+    padding: 0 10px 0 36px;
+  }
+  .launcher-chips {
+    gap: 6px;
+  }
+  .launcher-item {
+    padding: 10px 12px;
+  }
 
   /* 表格字号 */
   table {
@@ -582,6 +596,19 @@
 @media (max-width: 768px) {
   .launcher-body {
     gap: 16px;
+  }
+  .launcher-header {
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
+  .launcher-search {
+    height: 40px;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 0 12px 0 40px;
+  }
+  .launcher-search-icon {
+    left: 12px;
   }
 }
 
