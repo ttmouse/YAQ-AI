@@ -972,7 +972,7 @@
     var container = document.getElementById('sceneContent');
     if (!container) return;
     var userQuery = '分析一下隐患闭环未关闭的原因';
-    container.innerHTML =
+    container.insertAdjacentHTML('beforeend',
       // 用户消息气泡
       '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-bottom:12px">' +
         '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
@@ -1081,7 +1081,7 @@
             '</table>' +
           '</div>' +
         '</div>' +
-      '</div>';
+      '</div>');
     // 滚动到底部
     var scrollContainer = container.closest('.result') || container.parentElement;
     if (scrollContainer) {
