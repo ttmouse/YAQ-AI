@@ -6230,6 +6230,7 @@
     YAQ.dashboardRedirectAndClose = function() { window.doDashboardRedirect(); window.closeDemoMenu(); };
     YAQ.normalDashboardAndClose = function() { window.doNormalDashboard(); window.closeDemoMenu(); };
     YAQ.closeMenuAndOpenComparison = function() { window.closeDemoMenu(); window.open('ai-vs-traditional-comparison.html','_blank'); };
+    YAQ.openDemoPage = function(url) { window.open(url, '_blank'); };
 
     // ════════════════════════════════════════════════════════════════
     // 事件委托：替代 index.html 中的内联 onclick（#42）
@@ -6262,13 +6263,23 @@
     // ── keydown 委托：替代内联 onkeydown (#73) ──────────
     document.addEventListener('keydown', function(e) {
       var el = e.target.closest('[data-cmd-key]');
-      if (!el) return;
-      var key = el.getAttribute('data-cmd-key');
-      var fn = el.getAttribute('data-cmd');
-      if (e.key !== key) return;
-      e.preventDefault();
-      var func = (window.YAQ && window.YAQ[fn]) || window[fn];
-      if (typeof func === 'function') func(e);
+      if (el) {
+        var key = el.getAttribute('data-cmd-key');
+        if (e.key === key) {
+          e.preventDefault();
+          var fn = el.getAttribute('data-cmd');
+          var func = (window.YAQ && window.YAQ[fn]) || window[fn];
+          if (typeof func === 'function') func(e);
+        }
+      }
+      // Escape 键处理
+      el = e.target.closest('[data-cmd-key-esc]');
+      if (el && e.key === 'Escape') {
+        e.preventDefault();
+        var fn = el.getAttribute('data-cmd-key-esc');
+        var func = (window.YAQ && window.YAQ[fn]) || window[fn];
+        if (typeof func === 'function') func();
+      }
     });
 
     // ── input 委托：替代内联 oninput (#73) ──────────

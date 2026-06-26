@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' https://unpkg.com 'unsafe-inline';
+    script-src 'self' https://unpkg.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://app.17an.com data:;
     font-src 'self' data:;
@@ -106,7 +106,7 @@
         <i data-lucide="more-vertical" width="18" height="18"></i>
       </button>
       <div class="demo-menu demo-corner-menu" id="demoMenu">
-        <div class="demo-menu-item" onclick="window.open('special-inspection-prototype.html','_blank')"><i data-lucide="file-search" width="14" height="14"></i> 智能专项检查 🆕</div>
+        <div class="demo-menu-item" data-cmd="openDemoPage" data-arg="special-inspection-prototype.html"><i data-lucide="file-search" width="14" height="14"></i> 智能专项检查 🆕</div>
         <div class="demo-menu-item" data-cmd="resetAndCloseMenu"><i data-lucide="rotate-ccw" width="14" height="14"></i> 重新初始化</div>
         <div class="demo-menu-item" data-cmd="dashboardRedirectAndClose"><i data-lucide="sparkles" width="14" height="14"></i> 初始化工作台</div>
         <div class="demo-menu-item" data-cmd="normalDashboardAndClose"><i data-lucide="layout-dashboard" width="14" height="14"></i> 日常工作台</div>
@@ -296,7 +296,7 @@
           autocomplete="off"
           data-cmd-input="onLauncherSearch"
           data-cmd-key="Enter" data-cmd="launcherSearchFirst"
-          onkeydown="if(event.key==='Escape')closeLauncher()">
+          data-cmd-key-esc="closeLauncher">
       </div>
       <div class="launcher-chips" id="launchChips"></div>
     </div>
