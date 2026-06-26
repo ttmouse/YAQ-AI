@@ -230,6 +230,22 @@
     transform: none !important;
   }
 
+  /* 行动项确认弹窗 */
+  .action-modal-panel {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    transition: opacity 0.2s, visibility 0.2s !important;
+  }
+  .action-modal-panel.open {
+    transform: none !important;
+  }
+
   /* 企业侧边栏 */
   .ep-panel {
     width: 100% !important;
