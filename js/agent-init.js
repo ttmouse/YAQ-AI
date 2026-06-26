@@ -1310,11 +1310,7 @@
     input.value = '';
 
     // 1) 显示用户消息
-    sceneAppend(
-      '<div class="c-row user">' +
-        '<div class="c-bubble user">' + escapeHtml(text) + '</div>' +
-        '</div>'
-    );
+    sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>');
 
     // 2) 模拟 AI 思考 → 假回复
     simulateAIResponse(text);
@@ -1489,11 +1485,7 @@
 
   function globalChatQuick(text) {
     // 显示用户消息
-    sceneAppend(
-      '<div class="c-row user">' +
-        '<div class="c-bubble user">' + escapeHtml(text) + '</div>' +
-        '</div>'
-    );
+    sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>');
 
     var input = document.getElementById('globalChatInput');
     if (input) input.value = '';

@@ -70,7 +70,7 @@
             id="pwdInput"
             placeholder="输入密码"
             autocomplete="off"
-            onkeydown="if(event.key==='Enter')window.YAQ.pwdSubmit()"
+            onkeydown="if (event.key === 'Enter') window.YAQ.pwdSubmit();"
           />
         </div>
         <div class="pwd-error" id="pwdError"></div>
@@ -259,7 +259,7 @@
       <div class="action-modal-body" id="actionModalBody">
         <!-- Dynamic content -->
       </div>
-      <div class="action-modal-footer" id="actionModalFooter" style="display:none"></div>
+      <div class="action-modal-footer" id="actionModalFooter" style="display: none"></div>
     </div>
 
     <!-- ─── 指标配置弹窗 ─────────────────────────────────────────── -->
@@ -547,8 +547,7 @@
         function getSafeTop() {
           // 方式 1：通过 CSS env() 读取系统安全区域
           var test = document.createElement('div');
-          test.style.cssText =
-            'position:fixed;top:0;left:0;width:1px;height:1px;padding-top:env(safe-area-inset-top)';
+          test.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding-top:env(safe-area-inset-top)';
           document.body.appendChild(test);
           var v = parseInt(getComputedStyle(test).paddingTop, 10);
           document.body.removeChild(test);
@@ -558,10 +557,10 @@
           var h = window.screen.height;
           var w = window.screen.width;
           // portrait 下刘海/灵动岛机型高度
-          if (h >= 896) return 59;  // 14 Pro Max / 15 Plus
-          if (h >= 844) return 54;  // 14 Pro / 15 Pro
-          if (h >= 812) return 44;  // X / XS / 11 Pro
-          return 20;                // SE / 8 及以下
+          if (h >= 896) return 59; // 14 Pro Max / 15 Plus
+          if (h >= 844) return 54; // 14 Pro / 15 Pro
+          if (h >= 812) return 44; // X / XS / 11 Pro
+          return 20; // SE / 8 及以下
         }
 
         var sat = getSafeTop();

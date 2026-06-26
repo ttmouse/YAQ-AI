@@ -11,7 +11,7 @@
   input,
   select,
   textarea,
-  [role="button"],
+  [role='button'],
   [data-cmd],
   .pill,
   .chip,
@@ -47,7 +47,6 @@
 
 /* ─── 手机横屏 / 小平板（≤768px） ────────────────────────────── */
 @media (max-width: 768px) {
-
   .top {
     padding: 0 10px;
     min-height: 46px;
@@ -266,7 +265,9 @@
     max-height: 100% !important;
     border-radius: 0 !important;
     transform: none !important;
-    transition: opacity 0.2s, visibility 0.2s !important;
+    transition:
+      opacity 0.2s,
+      visibility 0.2s !important;
   }
   .action-modal-panel.open {
     transform: none !important;
@@ -636,7 +637,6 @@
   .launcher-panel {
     padding: 16px 12px 32px !important;
   }
-
 }
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
@@ -658,7 +658,6 @@
 /* standalone 模式下 env(safe-area-inset-bottom) 可能失效 */
 /* iPhone 底部横条约 34px，强制给足间距 */
 @media (display-mode: standalone) {
-
   .global-chat-bar {
     margin-bottom: calc(12px + 34px) !important;
   }

@@ -203,13 +203,13 @@
   function hashPwd(s) {
     var h = 0;
     for (var i = 0; i < s.length; i++) {
-      h = (((h << 5) - h) + s.charCodeAt(i)) | 0;
+      h = ((h << 5) - h + s.charCodeAt(i)) | 0;
     }
     var salt = 'yaq!@#2025';
     var mixed = h + salt;
     var h2 = 0;
     for (var j = 0; j < mixed.length; j++) {
-      h2 = (((h2 << 5) - h2) + mixed.charCodeAt(j)) | 0;
+      h2 = ((h2 << 5) - h2 + mixed.charCodeAt(j)) | 0;
     }
     return (h2 >>> 0).toString(36);
   }
@@ -233,7 +233,10 @@
 
     if (hashPwd(pwd) !== PWD_HASH) {
       if (errorEl) errorEl.textContent = '密码错误，请重试';
-      if (input) { input.value = ''; input.focus(); }
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
       return;
     }
 
@@ -256,7 +259,10 @@
     var input = document.getElementById('pwdInput');
     var errorEl = document.getElementById('pwdError');
     if (overlay) {
-      if (input) { input.value = ''; input.focus(); }
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
       if (errorEl) errorEl.textContent = '';
       overlay.classList.add('open');
       // 渲染 Lucide 图标
@@ -264,7 +270,7 @@
         lucide.createIcons({ container: overlay });
       }
     }
-  };
+  }
 
   // ════════════════════════════════════════════════════════════════
   // 企业主体责任 AI 评估数据（mock）— 由 js/data/mock-data.js 注入
@@ -412,7 +418,9 @@
       '<div class="ai-briefing">' +
       '<div class="ai-briefing-body">' +
       '<div class="ai-briefing-head">' +
-      '<span><b>' + greeting + '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+      '<span><b>' +
+      greeting +
+      '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
       '</div>' +
       '</div>';
 
@@ -1321,7 +1329,9 @@
         '" style="flex:0 0 240px;min-width:220px;cursor:pointer" onclick="openHazardDetail(\'' +
         h.object +
         '\')" title="点击查看详情">' +
-        '<div class="hc-main' + (h.aiSummary ? ' has-ai' : '') + '" style="padding:12px 12px 8px">' +
+        '<div class="hc-main' +
+        (h.aiSummary ? ' has-ai' : '') +
+        '" style="padding:12px 12px 8px">' +
         '<div class="hc-head">' +
         '<span class="hc-name">' +
         escapeHtml(h.object) +
@@ -1349,7 +1359,9 @@
         (h.aiSummary
           ? '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
             '<i data-lucide="sparkles" width="10" height="10" style="color:#7c3aed;flex-shrink:0"></i>' +
-            '<span>' + h.aiSummary + '</span>' +
+            '<span>' +
+            h.aiSummary +
+            '</span>' +
             '</div>'
           : '') +
         '</div>';
@@ -1393,7 +1405,9 @@
         '" onclick="openTaskDetail(\'' +
         tc.name.replace(/'/g, "\\'") +
         '\')">' +
-        '<div class="hc-main' + (tc.aiSummary ? ' has-ai' : '') + '" style="padding:12px;background:#fff">' +
+        '<div class="hc-main' +
+        (tc.aiSummary ? ' has-ai' : '') +
+        '" style="padding:12px;background:#fff">' +
         '<div style="display:flex;align-items:center;gap:8px;margin:0 0 4px">' +
         '<svg width="50" height="50" viewBox="0 0 54 54" style="flex-shrink:0">' +
         '<circle cx="27" cy="27" r="19" fill="none" stroke="#e5e7eb" stroke-width="5"/>' +
@@ -1440,7 +1454,9 @@
         (tc.aiSummary
           ? '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
             '<i data-lucide="sparkles" width="10" height="10" style="color:#7c3aed;flex-shrink:0"></i>' +
-            '<span>' + tc.aiSummary + '</span>' +
+            '<span>' +
+            tc.aiSummary +
+            '</span>' +
             '</div>'
           : '') +
         '</div>';
@@ -1587,7 +1603,9 @@
   // ─── 打开行动项确认弹窗（批量层级下发） ──────────────────
   window.openActionConfirmation = function () {
     var pas = MOCK.pendingActions || [];
-    var pendingPas = pas.filter(function (p) { return p.status === 'pending'; });
+    var pendingPas = pas.filter(function (p) {
+      return p.status === 'pending';
+    });
     if (pendingPas.length === 0) {
       if (window.YAQ && window.YAQ.showToast) window.YAQ.showToast('当前暂无待确认行动项');
       return;
@@ -1602,18 +1620,21 @@
     // 计算聚合的异常总数
     var totalAnomalies = 0;
     for (var ai = 0; ai < pendingPas.length; ai++) {
-      totalAnomalies += pendingPas[ai].affectedAnomalies || (pendingPas[ai].mergedFrom ? pendingPas[ai].mergedFrom.length : 0);
+      totalAnomalies +=
+        pendingPas[ai].affectedAnomalies || (pendingPas[ai].mergedFrom ? pendingPas[ai].mergedFrom.length : 0);
     }
 
     var bodyHtml =
       '<div style="padding:4px 0">' +
-
       // 小安摘要
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:12px 14px;background:#f0f7ff;border-radius:12px">' +
       '<i data-lucide="bot" width="18" height="18" style="color:var(--accent);flex-shrink:0"></i>' +
-      '<div style="font-size:13px;color:#1e293b;line-height:1.5">小安已基于 <strong>' + totalAnomalies + ' 项</strong>异常信号，聚合归纳为 <strong>' + pendingPas.length + ' 项</strong>待确认行动</div>' +
+      '<div style="font-size:13px;color:#1e293b;line-height:1.5">小安已基于 <strong>' +
+      totalAnomalies +
+      ' 项</strong>异常信号，聚合归纳为 <strong>' +
+      pendingPas.length +
+      ' 项</strong>待确认行动</div>' +
       '</div>' +
-
       // 待确认行动详细卡片
       '<div style="margin-bottom:8px">';
 
@@ -1621,13 +1642,13 @@
       bodyHtml += renderPendingActionCard(pendingPas[pi]);
     }
 
-    bodyHtml +=
-      '</div>' +
-      '</div>';
+    bodyHtml += '</div>' + '</div>';
 
     var footerHtml =
       '<div style="display:flex;align-items:center;gap:8px">' +
-      '<div style="flex:1;font-size:12px;color:#94a3b8">已选 <strong id="batchSelectedCount" style="color:#1e293b">' + pendingPas.length + '</strong> 项</div>' +
+      '<div style="flex:1;font-size:12px;color:#94a3b8">已选 <strong id="batchSelectedCount" style="color:#1e293b">' +
+      pendingPas.length +
+      '</strong> 项</div>' +
       '<select id="pushLevelSelect" style="font-size:13px;padding:7px 36px 7px 14px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;color:#475569;cursor:pointer;outline:none">' +
       '<option value="enterprise">推送至企业端</option>' +
       '<option value="expert">推送至专家</option>' +
@@ -1640,7 +1661,8 @@
       '</button>' +
       '</div>';
 
-    document.getElementById('actionModalTitle').innerHTML = '<i data-lucide="clipboard-check" aria-hidden="true" style="color:var(--accent)"></i> 确认行动项';
+    document.getElementById('actionModalTitle').innerHTML =
+      '<i data-lucide="clipboard-check" aria-hidden="true" style="color:var(--accent)"></i> 确认行动项';
     document.getElementById('actionModalBody').innerHTML = bodyHtml;
     var footerEl = document.getElementById('actionModalFooter');
     footerEl.innerHTML = footerHtml;
@@ -1655,10 +1677,16 @@
     var select = document.getElementById('pushLevelSelect');
     var level = select ? select.value : 'leader';
     var levelNames = {
-      enterprise: '企业端', expert: '专家', leader: '组长', next: '下一级', self: '仅自己跟进',
+      enterprise: '企业端',
+      expert: '专家',
+      leader: '组长',
+      next: '下一级',
+      self: '仅自己跟进',
     };
     var selected = state.selectedPAIds || {};
-    var ids = Object.keys(selected).filter(function (id) { return selected[id]; });
+    var ids = Object.keys(selected).filter(function (id) {
+      return selected[id];
+    });
     if (ids.length === 0) {
       showToast('请至少选择一项行动');
       return;
@@ -3075,10 +3103,13 @@
           types[events[ei].sourceType] = true;
         }
       }
-      var typeLabels = { '隐患': '隐患', '专项任务': '任务', '趋势': '指标', '主体对象': '主体', '风险预警': '预警' };
+      var typeLabels = { 隐患: '隐患', 专项任务: '任务', 趋势: '指标', 主体对象: '主体', 风险预警: '预警' };
       for (var t in types) {
         if (types.hasOwnProperty(t)) {
-          sourceHtml += '<span class="pa-stat" style="font-size:11px;color:#64748b;background:#f1f5f9;padding:1px 6px;border-radius:4px">' + (typeLabels[t] || t) + '</span>';
+          sourceHtml +=
+            '<span class="pa-stat" style="font-size:11px;color:#64748b;background:#f1f5f9;padding:1px 6px;border-radius:4px">' +
+            (typeLabels[t] || t) +
+            '</span>';
         }
       }
     }
@@ -3173,16 +3204,24 @@
       // 操作类型切换
       '<div class="pa-card-actions">' +
       '<div style="display:flex;gap:4px;flex-wrap:wrap">' +
-      '<button class="pa-btn' + (pa.actionType === 'supervise' ? ' pa-btn-primary' : '') + '" onclick="changePendingAction(\'' +
+      '<button class="pa-btn' +
+      (pa.actionType === 'supervise' ? ' pa-btn-primary' : '') +
+      '" onclick="changePendingAction(\'' +
       pa.id +
       '\', \'supervise\')" style="flex:1;min-width:60px;justify-content:center"><i data-lucide="alert-triangle" width="13" height="13"></i> 督办</button>' +
-      '<button class="pa-btn' + (pa.actionType === 'track' ? ' pa-btn-primary' : '') + '" onclick="changePendingAction(\'' +
+      '<button class="pa-btn' +
+      (pa.actionType === 'track' ? ' pa-btn-primary' : '') +
+      '" onclick="changePendingAction(\'' +
       pa.id +
       '\', \'track\')" style="flex:1;min-width:60px;justify-content:center"><i data-lucide="eye" width="13" height="13"></i> 跟进</button>' +
-      '<button class="pa-btn' + (pa.actionType === 'explain' ? ' pa-btn-primary' : '') + '" onclick="changePendingAction(\'' +
+      '<button class="pa-btn' +
+      (pa.actionType === 'explain' ? ' pa-btn-primary' : '') +
+      '" onclick="changePendingAction(\'' +
       pa.id +
       '\', \'explain\')" style="flex:1;min-width:60px;justify-content:center"><i data-lucide="help-circle" width="13" height="13"></i> 说明</button>' +
-      '<button class="pa-btn' + (pa.actionType === 'meeting' ? ' pa-btn-primary' : '') + '" onclick="changePendingAction(\'' +
+      '<button class="pa-btn' +
+      (pa.actionType === 'meeting' ? ' pa-btn-primary' : '') +
+      '" onclick="changePendingAction(\'' +
       pa.id +
       '\', \'meeting\')" style="flex:1;min-width:60px;justify-content:center"><i data-lucide="message-square" width="13" height="13"></i> 开会</button>' +
       '<button class="pa-btn pa-btn-muted" onclick="ignorePendingAction(\'' +
@@ -7864,7 +7903,10 @@
       {
         label: '沟通风格',
         cards: [
-          { title: '偏好简洁直接的沟通', desc: '在交流中倾向于使用简短、明确的语句，避免冗长的背景铺垫。喜欢直击问题核心的对话方式。' },
+          {
+            title: '偏好简洁直接的沟通',
+            desc: '在交流中倾向于使用简短、明确的语句，避免冗长的背景铺垫。喜欢直击问题核心的对话方式。',
+          },
           { title: '喜欢结构化表达', desc: '偏好有层次、有条理的信息呈现方式，例如分类分点、先结论后展开的沟通结构。' },
         ],
       },
@@ -7872,7 +7914,10 @@
         label: '个人习惯',
         cards: [
           { title: '注重操作反馈', desc: '每次操作后希望立即看到明确的反馈结果，对于无响应的交互会重复确认。' },
-          { title: '偏好视觉确认', desc: '习惯通过视觉变化（如颜色、位置、图标变化）来确认操作是否成功，而非仅文字提示。' },
+          {
+            title: '偏好视觉确认',
+            desc: '习惯通过视觉变化（如颜色、位置、图标变化）来确认操作是否成功，而非仅文字提示。',
+          },
         ],
       },
       {
@@ -7899,19 +7944,37 @@
       for (var c = 0; c < group.cards.length; c++) {
         var card = group.cards[c];
         html +=
-          '<div class="memory-card" data-group="' + g + '" data-card="' + c + '">' +
-            '<div class="memory-card-actions">' +
-              '<button class="memory-card-act" onclick="YAQ.editMemoryCard(' + g + ',' + c + ')" title="编辑">✎</button>' +
-              '<button class="memory-card-act del" onclick="YAQ.deleteMemoryCard(' + g + ',' + c + ')" title="删除">✕</button>' +
-            '</div>' +
-            '<div class="memory-card-title">' + YAQ.escapeHtml(card.title) + '</div>' +
-            '<div class="memory-card-desc">' + YAQ.escapeHtml(card.desc) + '</div>' +
+          '<div class="memory-card" data-group="' +
+          g +
+          '" data-card="' +
+          c +
+          '">' +
+          '<div class="memory-card-actions">' +
+          '<button class="memory-card-act" onclick="YAQ.editMemoryCard(' +
+          g +
+          ',' +
+          c +
+          ')" title="编辑">✎</button>' +
+          '<button class="memory-card-act del" onclick="YAQ.deleteMemoryCard(' +
+          g +
+          ',' +
+          c +
+          ')" title="删除">✕</button>' +
+          '</div>' +
+          '<div class="memory-card-title">' +
+          YAQ.escapeHtml(card.title) +
+          '</div>' +
+          '<div class="memory-card-desc">' +
+          YAQ.escapeHtml(card.desc) +
+          '</div>' +
           '</div>';
       }
       // 新增按钮
       html +=
-        '<button class="memory-add-btn" onclick="YAQ.addMemoryCard(' + g + ')">' +
-          '<i data-lucide="plus" width="12" height="12"></i> 添加记忆' +
+        '<button class="memory-add-btn" onclick="YAQ.addMemoryCard(' +
+        g +
+        ')">' +
+        '<i data-lucide="plus" width="12" height="12"></i> 添加记忆' +
         '</button>';
       html += '</div>';
     }
@@ -7950,12 +8013,20 @@
     if (!el) return;
     el.innerHTML =
       '<div class="memory-card-edit">' +
-        '<input class="mem-edit-title" value="' + YAQ.escapeHtml(card.title) + '" placeholder="记忆标题" />' +
-        '<textarea class="mem-edit-desc" placeholder="记忆描述" style="margin-top:6px">' + YAQ.escapeHtml(card.desc) + '</textarea>' +
-        '<div class="memory-card-edit-btns">' +
-          '<button class="memory-card-save" onclick="YAQ.saveMemoryCard(' + groupIdx + ',' + cardIdx + ')">保存</button>' +
-          '<button class="memory-card-cancel" onclick="YAQ.renderMemoryPanel()">取消</button>' +
-        '</div>' +
+      '<input class="mem-edit-title" value="' +
+      YAQ.escapeHtml(card.title) +
+      '" placeholder="记忆标题" />' +
+      '<textarea class="mem-edit-desc" placeholder="记忆描述" style="margin-top:6px">' +
+      YAQ.escapeHtml(card.desc) +
+      '</textarea>' +
+      '<div class="memory-card-edit-btns">' +
+      '<button class="memory-card-save" onclick="YAQ.saveMemoryCard(' +
+      groupIdx +
+      ',' +
+      cardIdx +
+      ')">保存</button>' +
+      '<button class="memory-card-cancel" onclick="YAQ.renderMemoryPanel()">取消</button>' +
+      '</div>' +
       '</div>';
   };
   YAQ.saveMemoryCard = function (groupIdx, cardIdx) {
@@ -8085,12 +8156,42 @@
 
     // 构建层级选项（从浅到深）
     var levels = [
-      { key: 'enterprise', label: '直接推送至企业端', desc: '任务直接下发到企业负责人，跳过内部流转', icon: 'building-2' },
-      { key: 'responsible', label: '推送至责任人', desc: '通知 ' + (pa.chain.responsible ? pa.chain.responsible.person : '—') + '，由其牵头处理', icon: 'user' },
-      { key: 'executor', label: '推送至执行人', desc: '通知 ' + (pa.chain.executor ? pa.chain.executor.person : '—') + '，安排具体执行', icon: 'user-check' },
-      { key: 'coordinator', label: '推送至协同人', desc: '通知 ' + (pa.chain.coordinator ? pa.chain.coordinator.person : '—') + '，协调推进', icon: 'users' },
-      { key: 'reviewer', label: '推送至复核人', desc: '通知 ' + (pa.chain.reviewer ? pa.chain.reviewer.person : '—') + '，审核监督', icon: 'eye' },
-      { key: 'observer', label: '仅推送至关注人', desc: '仅知会 ' + (pa.chain.observer ? pa.chain.observer.person : '—') + '，暂不下发执行', icon: 'bell' },
+      {
+        key: 'enterprise',
+        label: '直接推送至企业端',
+        desc: '任务直接下发到企业负责人，跳过内部流转',
+        icon: 'building-2',
+      },
+      {
+        key: 'responsible',
+        label: '推送至责任人',
+        desc: '通知 ' + (pa.chain.responsible ? pa.chain.responsible.person : '—') + '，由其牵头处理',
+        icon: 'user',
+      },
+      {
+        key: 'executor',
+        label: '推送至执行人',
+        desc: '通知 ' + (pa.chain.executor ? pa.chain.executor.person : '—') + '，安排具体执行',
+        icon: 'user-check',
+      },
+      {
+        key: 'coordinator',
+        label: '推送至协同人',
+        desc: '通知 ' + (pa.chain.coordinator ? pa.chain.coordinator.person : '—') + '，协调推进',
+        icon: 'users',
+      },
+      {
+        key: 'reviewer',
+        label: '推送至复核人',
+        desc: '通知 ' + (pa.chain.reviewer ? pa.chain.reviewer.person : '—') + '，审核监督',
+        icon: 'eye',
+      },
+      {
+        key: 'observer',
+        label: '仅推送至关注人',
+        desc: '仅知会 ' + (pa.chain.observer ? pa.chain.observer.person : '—') + '，暂不下发执行',
+        icon: 'bell',
+      },
     ];
 
     var bodyHtml =
@@ -8104,14 +8205,22 @@
 
     // 责任链徽章
     var chainKeys = ['responsible', 'executor', 'coordinator', 'reviewer', 'observer'];
-    var chainLabels = { responsible: '责任人', executor: '执行人', coordinator: '协同人', reviewer: '复核人', observer: '关注人' };
+    var chainLabels = {
+      responsible: '责任人',
+      executor: '执行人',
+      coordinator: '协同人',
+      reviewer: '复核人',
+      observer: '关注人',
+    };
     for (var ci = 0; ci < chainKeys.length; ci++) {
       var ck = chainKeys[ci];
       var role = pa.chain[ck];
       if (role) {
         bodyHtml +=
           '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:4px 8px;color:#475569">' +
-          '<span style="font-weight:500;color:#94a3b8">' + role.label + '</span>' +
+          '<span style="font-weight:500;color:#94a3b8">' +
+          role.label +
+          '</span>' +
           role.person +
           '</span>';
       }
@@ -8122,18 +8231,28 @@
     for (var li = 0; li < levels.length; li++) {
       var lv = levels[li];
       bodyHtml +=
-        '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .15s;background:#fff" onmouseover="this.style.borderColor=\'#2563eb\';this.style.background=\'#f8faff\'" onmouseout="this.style.borderColor=\'#e2e8f0\';this.style.background=\'#fff\'">' +
-        '<input type="radio" name="pushLevel" value="' + lv.key + '" style="accent-color:#2563eb;width:16px;height:16px;flex-shrink:0"' + (li === 0 ? ' checked' : '') + '>' +
+        "<label style=\"display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all .15s;background:#fff\" onmouseover=\"this.style.borderColor='#2563eb';this.style.background='#f8faff'\" onmouseout=\"this.style.borderColor='#e2e8f0';this.style.background='#fff'\">" +
+        '<input type="radio" name="pushLevel" value="' +
+        lv.key +
+        '" style="accent-color:#2563eb;width:16px;height:16px;flex-shrink:0"' +
+        (li === 0 ? ' checked' : '') +
+        '>' +
         '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;font-weight:600;color:#1e293b">' + lv.label + '</div>' +
-        '<div style="font-size:11px;color:#94a3b8;margin-top:1px">' + lv.desc + '</div>' +
+        '<div style="font-size:13px;font-weight:600;color:#1e293b">' +
+        lv.label +
+        '</div>' +
+        '<div style="font-size:11px;color:#94a3b8;margin-top:1px">' +
+        lv.desc +
+        '</div>' +
         '</div>' +
         '</label>';
     }
 
     bodyHtml +=
       '<div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f1f5f9">' +
-      '<button onclick="executePushLevel(\'' + paId + '\')" style="flex:1;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+      '<button onclick="executePushLevel(\'' +
+      paId +
+      '\')" style="flex:1;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
       '<i data-lucide="check" width="16" height="16" style="vertical-align:middle;margin-right:6px"></i>确认下发' +
       '</button>' +
       '<button onclick="closePushLevelSelector()" style="flex-shrink:0;background:none;border:1px solid #e2e8f0;border-radius:10px;padding:10px 16px;font-size:13px;color:#64748b;cursor:pointer">取消</button>' +
@@ -8141,7 +8260,8 @@
       '</div>';
 
     // 复用 action modal 展示
-    document.getElementById('actionModalTitle').innerHTML = '<i data-lucide="layers" aria-hidden="true" style="color:var(--accent)"></i> 设置下发层级';
+    document.getElementById('actionModalTitle').innerHTML =
+      '<i data-lucide="layers" aria-hidden="true" style="color:var(--accent)"></i> 设置下发层级';
     document.getElementById('actionModalBody').innerHTML = bodyHtml;
     lucide.createIcons({ container: document.getElementById('actionModalBody') });
     document.getElementById('actionModalOverlay').classList.add('open');
@@ -8228,7 +8348,13 @@
       return;
     }
 
-    var typeLabels = { supervise: '督办', explain: '要求说明', track: '加入跟进', observe: '暂不观察', meeting: '开会讨论' };
+    var typeLabels = {
+      supervise: '督办',
+      explain: '要求说明',
+      track: '加入跟进',
+      observe: '暂不观察',
+      meeting: '开会讨论',
+    };
     var label = typeLabels[newType] || '其他';
     pa.actionType = newType;
 
@@ -8468,23 +8594,91 @@
   // ─── 检查要点（统一适用于所有选中企业） ────────────────
   var SI_CHECKPOINTS = [
     // ── 危化品管理类 ──
-    { id: 'p1', name: '危险化学品储罐区安全设施检查', standard: '对照《危险化学品安全管理条例》', priority: '高优', selected: true, scope: '危化', cat: '危化品管理' },
-    { id: 'p2', name: '防雷防静电设施检测报告核查', standard: '防雷防静电设施检测报告', priority: '高优', selected: true, scope: '危化', cat: '危化品管理' },
-    { id: 'p3', name: '化学品安全技术说明书（SDS）检查', standard: 'SDS 完整性及更新情况', priority: '中', selected: true, scope: '危化', cat: '危化品管理' },
+    {
+      id: 'p1',
+      name: '危险化学品储罐区安全设施检查',
+      standard: '对照《危险化学品安全管理条例》',
+      priority: '高优',
+      selected: true,
+      scope: '危化',
+      cat: '危化品管理',
+    },
+    {
+      id: 'p2',
+      name: '防雷防静电设施检测报告核查',
+      standard: '防雷防静电设施检测报告',
+      priority: '高优',
+      selected: true,
+      scope: '危化',
+      cat: '危化品管理',
+    },
+    {
+      id: 'p3',
+      name: '化学品安全技术说明书（SDS）检查',
+      standard: 'SDS 完整性及更新情况',
+      priority: '中',
+      selected: true,
+      scope: '危化',
+      cat: '危化品管理',
+    },
     // ── 应急消防类 ──
-    { id: 'p4', name: '应急演练记录及预案评估', standard: '应急演练频次及预案有效性', priority: '中', selected: true, scope: '全部', cat: '应急消防' },
-    { id: 'p8', name: '消防设施及疏散通道检查', standard: '消防设施月度检查记录', priority: '高优', selected: false, scope: '全部', cat: '应急消防' },
+    {
+      id: 'p4',
+      name: '应急演练记录及预案评估',
+      standard: '应急演练频次及预案有效性',
+      priority: '中',
+      selected: true,
+      scope: '全部',
+      cat: '应急消防',
+    },
+    {
+      id: 'p8',
+      name: '消防设施及疏散通道检查',
+      standard: '消防设施月度检查记录',
+      priority: '高优',
+      selected: false,
+      scope: '全部',
+      cat: '应急消防',
+    },
     // ── 环保危废类 ──
-    { id: 'p5', name: '危废暂存间规范检查', standard: '危废标识、台账、储存规范', priority: '中', selected: true, scope: '全部', cat: '环保危废' },
+    {
+      id: 'p5',
+      name: '危废暂存间规范检查',
+      standard: '危废标识、台账、储存规范',
+      priority: '中',
+      selected: true,
+      scope: '全部',
+      cat: '环保危废',
+    },
     // ── 生产作业类 ──
-    { id: 'p6', name: '有限空间作业审批流程检查', standard: '有限空间作业审批及监护制度', priority: '低', selected: true, scope: '工贸', cat: '生产作业' },
-    { id: 'p7', name: '安全生产责任制落实情况', standard: '安全生产责任制文件及执行记录', priority: '中', selected: false, scope: '全部', cat: '生产作业' },
+    {
+      id: 'p6',
+      name: '有限空间作业审批流程检查',
+      standard: '有限空间作业审批及监护制度',
+      priority: '低',
+      selected: true,
+      scope: '工贸',
+      cat: '生产作业',
+    },
+    {
+      id: 'p7',
+      name: '安全生产责任制落实情况',
+      standard: '安全生产责任制文件及执行记录',
+      priority: '中',
+      selected: false,
+      scope: '全部',
+      cat: '生产作业',
+    },
   ];
 
   var SI_STEPS = [
     { label: '📄 文档分类', detail: '识别为危化品专项检查通知（2026年第三季度）', conf: '98%' },
     { label: '📋 检查要点提取', detail: '提取 8 项检查要点（危化品储罐、防雷防静电、SDS、应急管理等）', conf: '95%' },
-    { label: '🎯 对象范围识别', detail: '识别良渚街道 23 家相关企业（危化品使用企业 8 家、工贸企业 15 家）', conf: '92%' },
+    {
+      label: '🎯 对象范围识别',
+      detail: '识别良渚街道 23 家相关企业（危化品使用企业 8 家、工贸企业 15 家）',
+      conf: '92%',
+    },
     { label: '✅ 任务生成', detail: '按企业 × 检查要点生成检查任务，自动匹配负责人', conf: '90%' },
   ];
 
@@ -8495,17 +8689,19 @@
       '<div class="section-head"><h2><i data-lucide="file-search" aria-hidden="true" class="c-accent"></i> 智能专项检查</h2></div>' +
       // ── 模式切换 Tab ──────────────────────────────
       '<div style="display:flex;gap:4px;margin-bottom:16px;background:#f1f5f9;border-radius:8px;padding:3px;font-size:13px">' +
-        '<button class="si-mode-tab si-mode-tab-active" id="siTabDoc" onclick="YAQ.siSwitchMode(\'doc\')" style="flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:600;background:var(--surface);color:var(--text)">' +
-          '<i data-lucide="file-text" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 基于发文创建' +
-        '</button>' +
-        '<button class="si-mode-tab" id="siTabGoal" onclick="YAQ.siSwitchMode(\'goal\')" style="flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:500;background:transparent;color:var(--weak)">' +
-          '<i data-lucide="target" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 基于目标创建' +
-        '</button>' +
+      '<button class="si-mode-tab si-mode-tab-active" id="siTabDoc" onclick="YAQ.siSwitchMode(\'doc\')" style="flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:600;background:var(--surface);color:var(--text)">' +
+      '<i data-lucide="file-text" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 基于发文创建' +
+      '</button>' +
+      '<button class="si-mode-tab" id="siTabGoal" onclick="YAQ.siSwitchMode(\'goal\')" style="flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:500;background:transparent;color:var(--weak)">' +
+      '<i data-lucide="target" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 基于目标创建' +
+      '</button>' +
       '</div>' +
       '<div id="siModeContent"></div>';
 
     // 默认展示基于发文模式
-    setTimeout(function () { YAQ.siRenderDocMode(); }, 0);
+    setTimeout(function () {
+      YAQ.siRenderDocMode();
+    }, 0);
 
     return html;
   }
@@ -8537,12 +8733,12 @@
     if (!content) return;
     content.innerHTML =
       '<p style="font-size:13px;color:var(--weak);margin-bottom:16px;line-height:1.6">' +
-        '模拟 AI 解析专项检查通知文件，自动识别受检企业清单和检查要点，分步确认后生成检查任务。' +
+      '模拟 AI 解析专项检查通知文件，自动识别受检企业清单和检查要点，分步确认后生成检查任务。' +
       '</p>' +
       '<div style="margin-bottom:20px">' +
-        '<button class="si-btn si-btn-primary" id="siStartBtn" onclick="YAQ.siStartDemo()">' +
-          '<i data-lucide="play" width="14" height="14"></i> ▶ 开始模拟' +
-        '</button>' +
+      '<button class="si-btn si-btn-primary" id="siStartBtn" onclick="YAQ.siStartDemo()">' +
+      '<i data-lucide="play" width="14" height="14"></i> ▶ 开始模拟' +
+      '</button>' +
       '</div>' +
       '<div id="siDemoContent"></div>';
     lucide.createIcons({ scope: content });
@@ -8553,16 +8749,16 @@
     if (!content) return;
     content.innerHTML =
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;text-align:center;padding:40px 20px">' +
-        '<div style="font-size:40px;margin-bottom:12px">🎯</div>' +
-        '<div style="font-size:16px;font-weight:600;margin-bottom:8px">基于目标创建专项</div>' +
-        '<div style="font-size:13px;color:var(--weak);line-height:1.7;max-width:400px;margin:0 auto">' +
-          '管理者设定检查目标，AI 自动分析目标、匹配受检企业范围、生成检查要点和任务清单。' +
-          '<br><br>' +
-          '例如：<em>"帮我找出良渚街道所有危化企业中，近三个月未完成应急演练的企业，生成一次专项检查任务"</em>' +
-        '</div>' +
-        '<div style="margin-top:24px;padding:10px 16px;background:#f8fafc;border:1px dashed var(--line);border-radius:8px;font-size:12px;color:var(--weak);display:inline-block">' +
-          '🚧 此功能正在开发中，敬请期待' +
-        '</div>' +
+      '<div style="font-size:40px;margin-bottom:12px">🎯</div>' +
+      '<div style="font-size:16px;font-weight:600;margin-bottom:8px">基于目标创建专项</div>' +
+      '<div style="font-size:13px;color:var(--weak);line-height:1.7;max-width:400px;margin:0 auto">' +
+      '管理者设定检查目标，AI 自动分析目标、匹配受检企业范围、生成检查要点和任务清单。' +
+      '<br><br>' +
+      '例如：<em>"帮我找出良渚街道所有危化企业中，近三个月未完成应急演练的企业，生成一次专项检查任务"</em>' +
+      '</div>' +
+      '<div style="margin-top:24px;padding:10px 16px;background:#f8fafc;border:1px dashed var(--line);border-radius:8px;font-size:12px;color:var(--weak);display:inline-block">' +
+      '🚧 此功能正在开发中，敬请期待' +
+      '</div>' +
       '</div>';
     lucide.createIcons({ scope: content });
   };
@@ -8571,7 +8767,11 @@
 
   YAQ.siStartDemo = function () {
     var btn = document.getElementById('siStartBtn');
-    if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'default'; }
+    if (btn) {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'default';
+    }
 
     var content = document.getElementById('siDemoContent');
     if (!content) return;
@@ -8580,9 +8780,11 @@
     // 展示 AI 解析过程
     content.innerHTML =
       '<div class="info-card" id="siStepParsing" style="animation:si-fadeSlideIn 0.4s ease both">' +
-        '<div class="info-card-head"><h3><i data-lucide="file-text" width="16" height="16" style="color:var(--accent)"></i> 📄 AI 正在解析专项检查通知...</h3></div>' +
-        '<div style="padding:8px 0;font-size:13px;color:var(--weak)">扫描文档：<strong>' + SI_DOC_NAME + '</strong></div>' +
-        '<div style="margin:8px 0"><div style="display:flex;flex-direction:column;gap:6px;padding:4px 0" id="siThinkSteps"></div></div>' +
+      '<div class="info-card-head"><h3><i data-lucide="file-text" width="16" height="16" style="color:var(--accent)"></i> 📄 AI 正在解析专项检查通知...</h3></div>' +
+      '<div style="padding:8px 0;font-size:13px;color:var(--weak)">扫描文档：<strong>' +
+      SI_DOC_NAME +
+      '</strong></div>' +
+      '<div style="margin:8px 0"><div style="display:flex;flex-direction:column;gap:6px;padding:4px 0" id="siThinkSteps"></div></div>' +
       '</div>';
     lucide.createIcons({ scope: content });
 
@@ -8590,24 +8792,39 @@
     if (stepsContainer) {
       for (var si = 0; si < SI_STEPS.length; si++) {
         (function (idx) {
-          setTimeout(function () {
-            var s = SI_STEPS[idx];
-            var el = document.createElement('div');
-            el.style.cssText = 'display:flex;align-items:center;gap:6px;padding:4px 8px;background:#f8fafc;border-radius:6px;font-size:12px;animation:si-fadeIn 0.3s ease both';
-            el.innerHTML =
-              '<span style="font-weight:600;color:var(--accent);min-width:80px">' + s.label + '</span>' +
-              '<span style="color:var(--text);flex:1">' + s.detail + '</span>' +
-              '<span style="color:var(--weak);font-size:10px">(' + s.conf + ')</span>';
-            stepsContainer.appendChild(el);
-            var ws = document.getElementById('workspace');
-            if (ws) ws.scrollTop = ws.scrollHeight;
-          }, (idx + 1) * 700);
+          setTimeout(
+            function () {
+              var s = SI_STEPS[idx];
+              var el = document.createElement('div');
+              el.style.cssText =
+                'display:flex;align-items:center;gap:6px;padding:4px 8px;background:#f8fafc;border-radius:6px;font-size:12px;animation:si-fadeIn 0.3s ease both';
+              el.innerHTML =
+                '<span style="font-weight:600;color:var(--accent);min-width:80px">' +
+                s.label +
+                '</span>' +
+                '<span style="color:var(--text);flex:1">' +
+                s.detail +
+                '</span>' +
+                '<span style="color:var(--weak);font-size:10px">(' +
+                s.conf +
+                ')</span>';
+              stepsContainer.appendChild(el);
+              var ws = document.getElementById('workspace');
+              if (ws) ws.scrollTop = ws.scrollHeight;
+            },
+            (idx + 1) * 700,
+          );
         })(si);
       }
     }
 
     // 解析完成后 → 第一步：确认企业清单
-    setTimeout(function () { YAQ.siShowCompanies(); }, SI_STEPS.length * 700 + 600);
+    setTimeout(
+      function () {
+        YAQ.siShowCompanies();
+      },
+      SI_STEPS.length * 700 + 600,
+    );
   };
 
   // ─── 第一步：确认受检企业 ─────────────────────────────────
@@ -8623,28 +8840,52 @@
       var riskColor = c.risk === '高' ? 'var(--red)' : c.risk === '中' ? 'var(--orange)' : 'var(--weak)';
       companyRows +=
         '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-bottom:4px">' +
-          '<input type="checkbox" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer" ' + (c.selected ? 'checked' : '') + ' onchange="YAQ.siToggleCompany(\'' + c.id + '\')">' +
-          '<div style="flex:1;font-size:13px;font-weight:500">' + escapeHtml(c.name) + '</div>' +
-          '<span style="font-size:10px;padding:1px 8px;border-radius:999px;background:' + (c.type === '危化' ? '#fef2f2' : '#f0fdf4') + ';color:' + (c.type === '危化' ? 'var(--red)' : 'var(--green)') + ';font-weight:600">' + c.type + '</span>' +
-          '<span style="font-size:11px;color:' + riskColor + ';font-weight:600">● ' + c.risk + '风险</span>' +
+        '<input type="checkbox" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer" ' +
+        (c.selected ? 'checked' : '') +
+        ' onchange="YAQ.siToggleCompany(\'' +
+        c.id +
+        '\')">' +
+        '<div style="flex:1;font-size:13px;font-weight:500">' +
+        escapeHtml(c.name) +
+        '</div>' +
+        '<span style="font-size:10px;padding:1px 8px;border-radius:999px;background:' +
+        (c.type === '危化' ? '#fef2f2' : '#f0fdf4') +
+        ';color:' +
+        (c.type === '危化' ? 'var(--red)' : 'var(--green)') +
+        ';font-weight:600">' +
+        c.type +
+        '</span>' +
+        '<span style="font-size:11px;color:' +
+        riskColor +
+        ';font-weight:600">● ' +
+        c.risk +
+        '风险</span>' +
         '</div>';
     }
 
-    var selectedCount = SI_COMPANIES.filter(function(c){return c.selected}).length;
+    var selectedCount = SI_COMPANIES.filter(function (c) {
+      return c.selected;
+    }).length;
 
     content.innerHTML =
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="building-2" width="16" height="16" style="color:var(--accent)"></i> 🏭 第一步：确认受检企业</h3>' +
-          '<span class="info-card-badge" style="background:var(--accent);color:#fff">已选 ' + selectedCount + ' 家</span>' +
-        '</div>' +
-        '<div style="font-size:12px;color:var(--weak);margin-bottom:10px;line-height:1.6">' +
-          'AI 从通知中识别出良渚街道 <strong>23 家</strong>相关企业，请勾选本次专项检查需要覆盖的企业：' +
-        '</div>' +
-        '<div id="siCompanyList">' + companyRows + '</div>' +
-        '<div style="display:flex;gap:8px;margin-top:12px">' +
-          '<button class="si-btn si-btn-primary" id="siConfirmCompaniesBtn" onclick="YAQ.siConfirmCompanies()">✅ 确认企业清单（' + selectedCount + ' 家）</button>' +
-        '</div>' +
+      '<div class="info-card-head">' +
+      '<h3><i data-lucide="building-2" width="16" height="16" style="color:var(--accent)"></i> 🏭 第一步：确认受检企业</h3>' +
+      '<span class="info-card-badge" style="background:var(--accent);color:#fff">已选 ' +
+      selectedCount +
+      ' 家</span>' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--weak);margin-bottom:10px;line-height:1.6">' +
+      'AI 从通知中识别出良渚街道 <strong>23 家</strong>相关企业，请勾选本次专项检查需要覆盖的企业：' +
+      '</div>' +
+      '<div id="siCompanyList">' +
+      companyRows +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:12px">' +
+      '<button class="si-btn si-btn-primary" id="siConfirmCompaniesBtn" onclick="YAQ.siConfirmCompanies()">✅ 确认企业清单（' +
+      selectedCount +
+      ' 家）</button>' +
+      '</div>' +
       '</div>';
     lucide.createIcons({ scope: content });
     var ws = document.getElementById('workspace');
@@ -8653,9 +8894,14 @@
 
   YAQ.siToggleCompany = function (id) {
     for (var i = 0; i < SI_COMPANIES.length; i++) {
-      if (SI_COMPANIES[i].id === id) { SI_COMPANIES[i].selected = !SI_COMPANIES[i].selected; break; }
+      if (SI_COMPANIES[i].id === id) {
+        SI_COMPANIES[i].selected = !SI_COMPANIES[i].selected;
+        break;
+      }
     }
-    var count = SI_COMPANIES.filter(function(c){return c.selected}).length;
+    var count = SI_COMPANIES.filter(function (c) {
+      return c.selected;
+    }).length;
     var badge = document.querySelector('.info-card-badge');
     if (badge) badge.textContent = '已选 ' + count + ' 家';
     var btn = document.getElementById('siConfirmCompaniesBtn');
@@ -8682,38 +8928,70 @@
     }
     var catKeys = Object.keys(categories);
 
-    var totalSelected = SI_CHECKPOINTS.filter(function(p){return p.selected}).length;
+    var totalSelected = SI_CHECKPOINTS.filter(function (p) {
+      return p.selected;
+    }).length;
 
     // 构建分类分组 UI
     var catHtml = '';
     for (var ci = 0; ci < catKeys.length; ci++) {
       var catName = catKeys[ci];
       var items = categories[catName];
-      var catSelected = items.filter(function(p){return p.selected}).length;
+      var catSelected = items.filter(function (p) {
+        return p.selected;
+      }).length;
       var catAll = catSelected === items.length;
 
       catHtml +=
         '<div style="margin-bottom:8px;border:1px solid var(--line);border-radius:8px;overflow:hidden">' +
-          // 分类头（可点击展开）
-          '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;cursor:pointer" onclick="YAQ.siToggleCat(\'' + catName + '\')">' +
-            '<span style="font-size:10px;color:var(--weak);transition:transform 0.15s" id="siCatArrow_' + catName.replace(/\s/g, '') + '">▶</span>' +
-            '<span style="flex:1;font-weight:600;font-size:13px">' + catName + '</span>' +
-            '<span style="font-size:11px;color:var(--weak)">' + catSelected + '/' + items.length + ' 项</span>' +
-            '<input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ' + (catAll ? 'checked' : '') + ' onchange="YAQ.siToggleCatAll(\'' + catName + '\', this.checked)">' +
-          '</div>' +
-          // 明细列表（默认展开）
-          '<div id="siCatBody_' + catName.replace(/\s/g, '') + '">';
+        // 分类头（可点击展开）
+        '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;cursor:pointer" onclick="YAQ.siToggleCat(\'' +
+        catName +
+        '\')">' +
+        '<span style="font-size:10px;color:var(--weak);transition:transform 0.15s" id="siCatArrow_' +
+        catName.replace(/\s/g, '') +
+        '">▶</span>' +
+        '<span style="flex:1;font-weight:600;font-size:13px">' +
+        catName +
+        '</span>' +
+        '<span style="font-size:11px;color:var(--weak)">' +
+        catSelected +
+        '/' +
+        items.length +
+        ' 项</span>' +
+        '<input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ' +
+        (catAll ? 'checked' : '') +
+        ' onchange="YAQ.siToggleCatAll(\'' +
+        catName +
+        '\', this.checked)">' +
+        '</div>' +
+        // 明细列表（默认展开）
+        '<div id="siCatBody_' +
+        catName.replace(/\s/g, '') +
+        '">';
       for (var pj = 0; pj < items.length; pj++) {
         var p = items[pj];
         var tagClass = p.priority === '高优' ? 'si-tag-high' : p.priority === '中' ? 'si-tag-mid' : 'si-tag-low';
         catHtml +=
           '<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 12px 6px 32px;border-top:1px solid var(--line-light);background:var(--surface)">' +
-            '<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ' + (p.selected ? 'checked' : '') + ' onchange="YAQ.siToggleCheckpoint(\'' + p.id + '\')">' +
-            '<div style="flex:1;font-size:12px">' +
-              '<span class="si-tag ' + tagClass + '" style="margin-right:4px">' + p.priority + '</span>' +
-              escapeHtml(p.name) +
-              '<div style="font-size:10px;color:var(--weak);margin-top:1px">' + escapeHtml(p.standard) + ' · ' + p.scope + '</div>' +
-            '</div>' +
+          '<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ' +
+          (p.selected ? 'checked' : '') +
+          ' onchange="YAQ.siToggleCheckpoint(\'' +
+          p.id +
+          '\')">' +
+          '<div style="flex:1;font-size:12px">' +
+          '<span class="si-tag ' +
+          tagClass +
+          '" style="margin-right:4px">' +
+          p.priority +
+          '</span>' +
+          escapeHtml(p.name) +
+          '<div style="font-size:10px;color:var(--weak);margin-top:1px">' +
+          escapeHtml(p.standard) +
+          ' · ' +
+          p.scope +
+          '</div>' +
+          '</div>' +
           '</div>';
       }
       catHtml += '</div></div>';
@@ -8721,17 +8999,23 @@
 
     content.innerHTML +=
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="clipboard-check" width="16" height="16" style="color:var(--accent)"></i> 📋 第二步：确认检查要点</h3>' +
-          '<span class="info-card-badge" style="background:var(--accent);color:#fff">已选 ' + totalSelected + ' 项</span>' +
-        '</div>' +
-        '<div style="font-size:12px;color:var(--weak);margin-bottom:10px;line-height:1.6">' +
-          '以下检查要点按分类组织，适用于所有选中企业。大类可全选/取消，点击分类标题可展开收起明细：' +
-        '</div>' +
-        '<div id="siCheckpointList">' + catHtml + '</div>' +
-        '<div style="display:flex;gap:8px;margin-top:12px">' +
-          '<button class="si-btn si-btn-primary" id="siConfirmCpBtn" onclick="YAQ.siGenerateTasks()">✅ 确认检查要点，自动生成任务（' + totalSelected + ' 项）</button>' +
-        '</div>' +
+      '<div class="info-card-head">' +
+      '<h3><i data-lucide="clipboard-check" width="16" height="16" style="color:var(--accent)"></i> 📋 第二步：确认检查要点</h3>' +
+      '<span class="info-card-badge" style="background:var(--accent);color:#fff">已选 ' +
+      totalSelected +
+      ' 项</span>' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--weak);margin-bottom:10px;line-height:1.6">' +
+      '以下检查要点按分类组织，适用于所有选中企业。大类可全选/取消，点击分类标题可展开收起明细：' +
+      '</div>' +
+      '<div id="siCheckpointList">' +
+      catHtml +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:12px">' +
+      '<button class="si-btn si-btn-primary" id="siConfirmCpBtn" onclick="YAQ.siGenerateTasks()">✅ 确认检查要点，自动生成任务（' +
+      totalSelected +
+      ' 项）</button>' +
+      '</div>' +
       '</div>';
     lucide.createIcons({ scope: content });
     var ws = document.getElementById('workspace');
@@ -8760,7 +9044,10 @@
 
   YAQ.siToggleCheckpoint = function (id) {
     for (var i = 0; i < SI_CHECKPOINTS.length; i++) {
-      if (SI_CHECKPOINTS[i].id === id) { SI_CHECKPOINTS[i].selected = !SI_CHECKPOINTS[i].selected; break; }
+      if (SI_CHECKPOINTS[i].id === id) {
+        SI_CHECKPOINTS[i].selected = !SI_CHECKPOINTS[i].selected;
+        break;
+      }
     }
     YAQ.siRebuildCheckpoints();
   };
@@ -8784,36 +9071,72 @@
     }
     var catKeys = Object.keys(categories);
 
-    var totalSelected = SI_CHECKPOINTS.filter(function(p){return p.selected}).length;
+    var totalSelected = SI_CHECKPOINTS.filter(function (p) {
+      return p.selected;
+    }).length;
 
     var catHtml = '';
     for (var ci = 0; ci < catKeys.length; ci++) {
       var catName = catKeys[ci];
       var items = categories[catName];
-      var catSelected = items.filter(function(p){return p.selected}).length;
+      var catSelected = items.filter(function (p) {
+        return p.selected;
+      }).length;
       var catAll = catSelected === items.length;
       var isExpanded = expandedState[catName] !== false;
 
       catHtml +=
         '<div style="margin-bottom:8px;border:1px solid var(--line);border-radius:8px;overflow:hidden">' +
-          '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;cursor:pointer" onclick="YAQ.siToggleCat(\'' + catName + '\')">' +
-            '<span style="font-size:10px;color:var(--weak);transition:transform 0.15s;' + (isExpanded ? 'transform:rotate(90deg)' : '') + '" id="siCatArrow_' + catName.replace(/\s/g, '') + '">▶</span>' +
-            '<span style="flex:1;font-weight:600;font-size:13px">' + catName + '</span>' +
-            '<span style="font-size:11px;color:var(--weak)">' + catSelected + '/' + items.length + ' 项</span>' +
-            '<input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ' + (catAll ? 'checked' : '') + ' onchange="YAQ.siToggleCatAll(\'' + catName + '\', this.checked)">' +
-          '</div>' +
-          '<div id="siCatBody_' + catName.replace(/\s/g, '') + '" style="' + (isExpanded ? '' : 'display:none') + '">';
+        '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;cursor:pointer" onclick="YAQ.siToggleCat(\'' +
+        catName +
+        '\')">' +
+        '<span style="font-size:10px;color:var(--weak);transition:transform 0.15s;' +
+        (isExpanded ? 'transform:rotate(90deg)' : '') +
+        '" id="siCatArrow_' +
+        catName.replace(/\s/g, '') +
+        '">▶</span>' +
+        '<span style="flex:1;font-weight:600;font-size:13px">' +
+        catName +
+        '</span>' +
+        '<span style="font-size:11px;color:var(--weak)">' +
+        catSelected +
+        '/' +
+        items.length +
+        ' 项</span>' +
+        '<input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ' +
+        (catAll ? 'checked' : '') +
+        ' onchange="YAQ.siToggleCatAll(\'' +
+        catName +
+        '\', this.checked)">' +
+        '</div>' +
+        '<div id="siCatBody_' +
+        catName.replace(/\s/g, '') +
+        '" style="' +
+        (isExpanded ? '' : 'display:none') +
+        '">';
       for (var pj = 0; pj < items.length; pj++) {
         var p = items[pj];
         var tagClass = p.priority === '高优' ? 'si-tag-high' : p.priority === '中' ? 'si-tag-mid' : 'si-tag-low';
         catHtml +=
           '<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 12px 6px 32px;border-top:1px solid var(--line-light);background:var(--surface)">' +
-            '<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ' + (p.selected ? 'checked' : '') + ' onchange="YAQ.siToggleCheckpoint(\'' + p.id + '\')">' +
-            '<div style="flex:1;font-size:12px">' +
-              '<span class="si-tag ' + tagClass + '" style="margin-right:4px">' + p.priority + '</span>' +
-              escapeHtml(p.name) +
-              '<div style="font-size:10px;color:var(--weak);margin-top:1px">' + escapeHtml(p.standard) + ' · ' + p.scope + '</div>' +
-            '</div>' +
+          '<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ' +
+          (p.selected ? 'checked' : '') +
+          ' onchange="YAQ.siToggleCheckpoint(\'' +
+          p.id +
+          '\')">' +
+          '<div style="flex:1;font-size:12px">' +
+          '<span class="si-tag ' +
+          tagClass +
+          '" style="margin-right:4px">' +
+          p.priority +
+          '</span>' +
+          escapeHtml(p.name) +
+          '<div style="font-size:10px;color:var(--weak);margin-top:1px">' +
+          escapeHtml(p.standard) +
+          ' · ' +
+          p.scope +
+          '</div>' +
+          '</div>' +
           '</div>';
       }
       catHtml += '</div></div>';
@@ -8836,58 +9159,89 @@
     var content = document.getElementById('siDemoContent');
     if (!content) return;
 
-    var companies = SI_COMPANIES.filter(function(c){return c.selected});
-    var checkpoints = SI_CHECKPOINTS.filter(function(p){return p.selected});
+    var companies = SI_COMPANIES.filter(function (c) {
+      return c.selected;
+    });
+    var checkpoints = SI_CHECKPOINTS.filter(function (p) {
+      return p.selected;
+    });
 
     // 计算实际任务数：每家企业的适用检查点
     var totalTasks = 0;
     for (var ci = 0; ci < companies.length; ci++) {
-      totalTasks += checkpoints.filter(function(p){
+      totalTasks += checkpoints.filter(function (p) {
         return p.scope === '全部' || p.scope === companies[ci].type;
       }).length;
     }
 
-    var highCount = checkpoints.filter(function(p){return p.selected && p.priority === '高优'}).length;
+    var highCount = checkpoints.filter(function (p) {
+      return p.selected && p.priority === '高优';
+    }).length;
 
     // 默认截止日期
     var now = new Date();
     var defaultEnd = new Date(now);
     defaultEnd.setDate(defaultEnd.getDate() + 30);
     var dateStr = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
-    var endStr = defaultEnd.getFullYear() + '-' + String(defaultEnd.getMonth() + 1).padStart(2, '0') + '-' + String(defaultEnd.getDate()).padStart(2, '0');
+    var endStr =
+      defaultEnd.getFullYear() +
+      '-' +
+      String(defaultEnd.getMonth() + 1).padStart(2, '0') +
+      '-' +
+      String(defaultEnd.getDate()).padStart(2, '0');
 
     content.innerHTML +=
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="clipboard-check" width="16" height="16" style="color:var(--accent)"></i> ✅ 任务生成确认</h3>' +
-          '<span class="info-card-badge" style="background:var(--green);color:#fff">' + totalTasks + ' 项任务</span>' +
-        '</div>' +
-        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">' +
-          '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
-            '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + companies.length + '</div>' +
-            '<div style="font-size:11px;color:var(--weak)">受检企业</div>' +
-          '</div>' +
-          '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
-            '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + checkpoints.length + '</div>' +
-            '<div style="font-size:11px;color:var(--weak)">检查要点</div>' +
-          '</div>' +
-          '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
-            '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + totalTasks + '</div>' +
-            '<div style="font-size:11px;color:var(--weak)">生成任务数</div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="font-size:13px;line-height:1.7;margin-bottom:14px;padding:8px 0">' +
-          '📋 共涉及 <strong>' + companies.length + ' 家</strong>企业，<strong>' + checkpoints.length + ' 项</strong>检查要点（高优 ' + highCount + ' 项），' +
-          '预计生成 <strong>' + totalTasks + ' 项</strong>检查任务。<br>' +
-          '📅 检查周期：<strong>' + dateStr + '</strong> 至' +
-        '</div>' +
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:#f8fafc;border:1px solid var(--line);border-radius:6px">' +
-          '<span style="font-size:13px;font-weight:500;white-space:nowrap">⏰ 截止时间</span>' +
-          '<input type="date" id="siDeadlineInput" value="' + endStr + '" style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px;font-family:inherit">' +
-        '</div>' +
-        '<div style="display:flex;gap:8px">' +
-          '<button class="si-btn si-btn-success" onclick="YAQ.siShowResult()">✅ 确认下发</button>' +
-        '</div>' +
+      '<div class="info-card-head">' +
+      '<h3><i data-lucide="clipboard-check" width="16" height="16" style="color:var(--accent)"></i> ✅ 任务生成确认</h3>' +
+      '<span class="info-card-badge" style="background:var(--green);color:#fff">' +
+      totalTasks +
+      ' 项任务</span>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">' +
+      '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
+      '<div style="font-size:24px;font-weight:700;color:var(--accent)">' +
+      companies.length +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--weak)">受检企业</div>' +
+      '</div>' +
+      '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
+      '<div style="font-size:24px;font-weight:700;color:var(--accent)">' +
+      checkpoints.length +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--weak)">检查要点</div>' +
+      '</div>' +
+      '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
+      '<div style="font-size:24px;font-weight:700;color:var(--accent)">' +
+      totalTasks +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--weak)">生成任务数</div>' +
+      '</div>' +
+      '</div>' +
+      '<div style="font-size:13px;line-height:1.7;margin-bottom:14px;padding:8px 0">' +
+      '📋 共涉及 <strong>' +
+      companies.length +
+      ' 家</strong>企业，<strong>' +
+      checkpoints.length +
+      ' 项</strong>检查要点（高优 ' +
+      highCount +
+      ' 项），' +
+      '预计生成 <strong>' +
+      totalTasks +
+      ' 项</strong>检查任务。<br>' +
+      '📅 检查周期：<strong>' +
+      dateStr +
+      '</strong> 至' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:#f8fafc;border:1px solid var(--line);border-radius:6px">' +
+      '<span style="font-size:13px;font-weight:500;white-space:nowrap">⏰ 截止时间</span>' +
+      '<input type="date" id="siDeadlineInput" value="' +
+      endStr +
+      '" style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px;font-family:inherit">' +
+      '</div>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button class="si-btn si-btn-success" onclick="YAQ.siShowResult()">✅ 确认下发</button>' +
+      '</div>' +
       '</div>';
     lucide.createIcons({ scope: content });
     var ws = document.getElementById('workspace');
@@ -8898,50 +9252,74 @@
     var content = document.getElementById('siDemoContent');
     if (!content) return;
 
-    var selectedCompanies = SI_COMPANIES.filter(function(c){return c.selected});
-    var selectedCheckpoints = SI_CHECKPOINTS.filter(function(p){return p.selected});
+    var selectedCompanies = SI_COMPANIES.filter(function (c) {
+      return c.selected;
+    });
+    var selectedCheckpoints = SI_CHECKPOINTS.filter(function (p) {
+      return p.selected;
+    });
     var totalTasks = 0;
     for (var ci = 0; ci < selectedCompanies.length; ci++) {
       var c = selectedCompanies[ci];
-      totalTasks += selectedCheckpoints.filter(function(p){
+      totalTasks += selectedCheckpoints.filter(function (p) {
         return p.scope === '全部' || p.scope === c.type;
       }).length;
     }
-    var highCount = selectedCheckpoints.filter(function(p){return p.selected && p.priority === '高优'}).length;
+    var highCount = selectedCheckpoints.filter(function (p) {
+      return p.selected && p.priority === '高优';
+    }).length;
 
     content.innerHTML +=
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px;border-color:#bbf7d0">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="check-circle" width="16" height="16" style="color:var(--green)"></i> ✅ 专项检查任务已下发</h3>' +
-          '<span class="info-card-badge" style="background:var(--green);color:#fff">已完成</span>' +
-        '</div>' +
-        '<div style="font-size:12px;color:var(--weak);margin-bottom:12px">任务已生成并下发，共 ' + totalTasks + ' 项任务进入执行阶段。</div>' +
-        '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:8px">' +
-          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">🏭 受检企业</div>' +
-            '<div style="font-size:22px;font-weight:700">' + selectedCompanies.length + '</div>' +
-            '<div style="font-size:11px;color:var(--weak);margin-top:2px">危化 ' + selectedCompanies.filter(function(c){return c.type==='危化'}).length + ' 家 · 工贸 ' + selectedCompanies.filter(function(c){return c.type==='工贸'}).length + ' 家</div>' +
-          '</div>' +
-          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 检查要点</div>' +
-            '<div style="font-size:22px;font-weight:700">' + selectedCheckpoints.length + '</div>' +
-            '<div style="font-size:11px;color:var(--weak);margin-top:2px">其中高优 ' + highCount + ' 项</div>' +
-          '</div>' +
-          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 生成任务数</div>' +
-            '<div style="font-size:22px;font-weight:700">' + totalTasks + '</div>' +
-            '<div style="font-size:11px;color:var(--weak);margin-top:2px">按企业 × 检查要点生成</div>' +
-          '</div>' +
-          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">⏰ 时间范围</div>' +
-            '<div style="font-size:22px;font-weight:700">30 天</div>' +
-            '<div style="font-size:11px;color:var(--weak);margin-top:2px">7月1日 - 7月30日</div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="padding:10px 12px;background:var(--accent-light);border:1px solid #bfdbfe;border-radius:8px;font-size:12px;line-height:1.7">' +
-          '<strong>💡 下一步操作：</strong>' +
-          '任务已同步到「专项检查进度指标卡」「逾期任务预警」「专家复核」等模块。' +
-        '</div>' +
+      '<div class="info-card-head">' +
+      '<h3><i data-lucide="check-circle" width="16" height="16" style="color:var(--green)"></i> ✅ 专项检查任务已下发</h3>' +
+      '<span class="info-card-badge" style="background:var(--green);color:#fff">已完成</span>' +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--weak);margin-bottom:12px">任务已生成并下发，共 ' +
+      totalTasks +
+      ' 项任务进入执行阶段。</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:8px">' +
+      '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
+      '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">🏭 受检企业</div>' +
+      '<div style="font-size:22px;font-weight:700">' +
+      selectedCompanies.length +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--weak);margin-top:2px">危化 ' +
+      selectedCompanies.filter(function (c) {
+        return c.type === '危化';
+      }).length +
+      ' 家 · 工贸 ' +
+      selectedCompanies.filter(function (c) {
+        return c.type === '工贸';
+      }).length +
+      ' 家</div>' +
+      '</div>' +
+      '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
+      '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 检查要点</div>' +
+      '<div style="font-size:22px;font-weight:700">' +
+      selectedCheckpoints.length +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--weak);margin-top:2px">其中高优 ' +
+      highCount +
+      ' 项</div>' +
+      '</div>' +
+      '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
+      '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 生成任务数</div>' +
+      '<div style="font-size:22px;font-weight:700">' +
+      totalTasks +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--weak);margin-top:2px">按企业 × 检查要点生成</div>' +
+      '</div>' +
+      '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
+      '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">⏰ 时间范围</div>' +
+      '<div style="font-size:22px;font-weight:700">30 天</div>' +
+      '<div style="font-size:11px;color:var(--weak);margin-top:2px">7月1日 - 7月30日</div>' +
+      '</div>' +
+      '</div>' +
+      '<div style="padding:10px 12px;background:var(--accent-light);border:1px solid #bfdbfe;border-radius:8px;font-size:12px;line-height:1.7">' +
+      '<strong>💡 下一步操作：</strong>' +
+      '任务已同步到「专项检查进度指标卡」「逾期任务预警」「专家复核」等模块。' +
+      '</div>' +
       '</div>';
 
     // Restore button
