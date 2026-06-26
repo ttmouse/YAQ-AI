@@ -1674,7 +1674,7 @@
       }
     }
 
-    closeActionModal();
+    window.closeActionModal();
 
     if (hasMeeting) {
       showToast('已创建会议待办，请前往设置议程与会议资料');
@@ -8151,7 +8151,7 @@
   };
 
   window.closePushLevelSelector = function () {
-    closeActionModal();
+    window.closeActionModal();
     window.__currentPushPaId = null;
   };
 
@@ -8170,7 +8170,7 @@
       reviewer: '复核人',
       observer: '关注人',
     };
-    closePushLevelSelector();
+    window.closePushLevelSelector();
     showToast('已下发至「' + (levelNames[level] || level) + '」层级');
     // 调用原确认逻辑
     confirmPendingAction(paId);
