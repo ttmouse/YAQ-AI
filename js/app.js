@@ -123,6 +123,7 @@
     regArrow: document.getElementById('regArrow'),
     regulationBody: document.getElementById('regulationBody'),
     sceneContent: document.getElementById('sceneContent'),
+    situationTip: document.getElementById('situationTip'),
     sceneList: document.getElementById('sceneList'),
     selectedMetricsList: document.getElementById('selectedMetricsList'),
     taskModal: document.getElementById('taskModal'),
@@ -1242,15 +1243,8 @@
       '<div class="info-card" id="situationCard">' +
       '<div class="info-card-head" style="flex-wrap:wrap;gap:0">' +
       '<h3><i data-lucide="activity" aria-hidden="true" class="c-accent"></i> 整体安全态势' +
-      '<span class="situation-hint">' +
+      '<span class="situation-hint" onmouseenter="showSituationTip(event)" onmouseleave="scheduleHideSituationTip()">' +
       '<i data-lucide="circle-help" width="14" height="14"></i>' +
-      '<div class="situation-tip">' +
-      '<b>展示逻辑</b><br><br>' +
-      '• <b>置顶指标</b>：你可以在「配置指标」中手动置顶关心的指标，固定显示在最前面<br>' +
-      '• <b>异常优先</b>：异常（🔴）指标排在预警（🟡）指标前面<br>' +
-      '• <b>AI 智能推荐</b>：基于异常等级、优先级和行动紧迫度，动态筛选最值得关注的指标<br>' +
-      '• <b>持平隐藏</b>：无波动的指标默认不展示，减少干扰' +
-      '</div>' +
       '</span></h3>' +
       '<div style="position:relative;margin-left:auto">' +
       '<button class="metric-config-btn hover-show-btn" onclick="openMetricConfig()" title="配置指标"><i data-lucide="sliders-horizontal" width="15" height="15"></i></button>' +
@@ -6289,6 +6283,7 @@
 
   // ─── 指标说明浮层 ─────────────────────────────────────────────
   var _tipHideTimer = null;
+  var _sitTipTimer = null;
 
   function showMetricTip(e, arg) {
     if (!arg) return;
@@ -6446,6 +6441,72 @@
 
   function doHideTip(tip) {
     if (!tip) tip = $dom.metricTip;
+    tip.onmouseenter = null;
+    tip.onmouseleave = null;
+    tip.classList.remove('show');
+  }
+
+  // ─── 整体安全态势展示逻辑浮层 ────────────────────────────
+  var SITUATION_TIP_HTML =
+    '<b>展示逻辑</b><br><br>' +
+    '• <b>置顶指标</b>：你可以在「配置指标」中手动置顶关心的指标，固定显示在最前面<br>' +
+    '• <b>异常优先</b>：异常（🔴）指标排在预警（🟡）指标前面<br>' +
+    '• <b>AI 智能推荐</b>：基于异常等级、优先级和行动紧迫度，动态筛选最值得关注的指标<br>' +
+    '• <b>持平隐藏</b>：无波动的指标默认不展示，减少干扰';
+
+  function showSituationTip(e) {
+    var tip = $dom.situationTip;
+    if (!tip) return;
+    if (_sitTipTimer) {
+      clearTimeout(_sitTipTimer);
+      _sitTipTimer = null;
+    }
+    tip.innerHTML = SITUATION_TIP_HTML;
+    tip.classList.add('show');
+
+    var hint = e.currentTarget;
+    var rect = hint.getBoundingClientRect();
+    var tipW = tip.offsetWidth || 280;
+    var tipH = tip.offsetHeight || 250;
+    // 默认在图标下方居中
+    var left = rect.left + rect.width / 2 - tipW / 2;
+    var top = rect.bottom + 6;
+    // 超出右边界 → 右对齐
+    if (left + tipW > window.innerWidth - 8) left = window.innerWidth - tipW - 8;
+    // 超出左边界 → 左对齐
+    if (left < 8) left = 8;
+    // 下方空间不够 → 放上方
+    if (top + tipH > window.innerHeight - 8) top = rect.top - tipH - 6;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+
+    // 鼠标进入浮层 → 取消隐藏
+    tip.onmouseenter = function () {
+      if (_sitTipTimer) {
+        clearTimeout(_sitTipTimer);
+        _sitTipTimer = null;
+      }
+    };
+    // 离开浮层 → 立即隐藏
+    tip.onmouseleave = function () {
+      hideSituationTip();
+    };
+  }
+
+  function scheduleHideSituationTip() {
+    if (_sitTipTimer) clearTimeout(_sitTipTimer);
+    _sitTipTimer = setTimeout(function () {
+      hideSituationTip();
+    }, 250);
+  }
+
+  function hideSituationTip() {
+    var tip = $dom.situationTip;
+    if (!tip) return;
+    if (_sitTipTimer) {
+      clearTimeout(_sitTipTimer);
+      _sitTipTimer = null;
+    }
     tip.onmouseenter = null;
     tip.onmouseleave = null;
     tip.classList.remove('show');
@@ -7714,6 +7775,9 @@
     // ─── 指标提示/下钻 ───
     showMetricTip: showMetricTip,
     hideMetricTip: hideMetricTip,
+    showSituationTip: showSituationTip,
+    hideSituationTip: hideSituationTip,
+    scheduleHideSituationTip: scheduleHideSituationTip,
     openMetricDrilldown: openMetricDrilldown,
     copyTipContent: copyTipContent,
 
@@ -7811,6 +7875,9 @@
   window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)
   window.showMetricTip = window.YAQ.showMetricTip; // 供指标卡片 onmouseenter 使用
   window.hideMetricTip = window.YAQ.hideMetricTip; // 供指标卡片 onmouseleave 使用
+  window.showSituationTip = window.YAQ.showSituationTip; // 供整体安全态势提示图标 onmouseenter 使用
+  window.hideSituationTip = window.YAQ.hideSituationTip;
+  window.scheduleHideSituationTip = window.YAQ.scheduleHideSituationTip;
   window.openMetricConfig = window.YAQ.openMetricConfig; // 供指标配置按钮 onclick 使用
   window.openMemoryPanel = window.YAQ.openMemoryPanel;
   window.closeMemoryPanel = window.YAQ.closeMemoryPanel;

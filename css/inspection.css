@@ -85,14 +85,25 @@
 }
 .si-modal {
   background: var(--surface);
-  border-radius: 14px;
-  padding: 24px;
-  width: 420px;
-  max-width: 90vw;
-  max-height: 80vh;
+  border-radius: 0;
+  padding: 24px 18px;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
   animation: si-fadeSlideIn 0.25s ease both;
+}
+@media (min-width: 769px) {
+  .si-modal {
+    border-radius: 14px;
+    padding: 24px;
+    width: 420px;
+    max-width: 90vw;
+    max-height: 80vh;
+    height: auto;
+  }
 }
 .si-modal h3 {
   font-size: 16px;

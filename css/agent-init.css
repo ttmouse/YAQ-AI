@@ -4,8 +4,8 @@
 
 .init-overlay {
   position: fixed;
-  top: calc(52px + constant(safe-area-inset-top));
-  top: calc(52px + env(safe-area-inset-top));
+  top: calc(46px + constant(safe-area-inset-top));
+  top: calc(46px + env(safe-area-inset-top));
   left: 0;
   right: 0;
   bottom: 0;
@@ -15,6 +15,12 @@
   flex-direction: column;
   overflow: hidden;
 }
+@media (min-width: 769px) {
+  .init-overlay {
+    top: calc(52px + constant(safe-area-inset-top));
+    top: calc(52px + env(safe-area-inset-top));
+  }
+}
 .init-overlay.active {
   display: flex;
 }
@@ -22,19 +28,34 @@
 .init-container {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
   padding: 0;
   background: #f5f7fb;
-  margin-bottom: 4px;
+}
+@media (min-width: 769px) {
+  .init-container {
+    overflow-y: auto;
+  }
 }
 .init-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 16px 0 20px;
+  max-width: 100%;
+  margin: 0;
+  padding: 16px 12px 20px;
+}
+@media (min-width: 769px) {
+  .init-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 0 20px;
+  }
 }
 .init-container::-webkit-scrollbar {
   width: 6px;
@@ -78,13 +99,13 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 10px 20px;
+  padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid #e2eaf8;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #475569;
   cursor: pointer;
@@ -92,6 +113,12 @@
   font-family: inherit;
   line-height: 1.3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+@media (min-width: 769px) {
+  .init-quick-wrap .q-chip {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
 }
 .init-quick-wrap .q-chip:hover {
   border-color: #94a3b8;
@@ -113,10 +140,10 @@
 .init-chat-bar {
   position: relative;
   margin: 0 auto;
-  margin-bottom: calc(16px + constant(safe-area-inset-bottom));
-  margin-bottom: calc(16px + env(safe-area-inset-bottom));
-  width: calc(100% - 32px);
-  max-width: 720px;
+  margin-bottom: calc(8px + constant(safe-area-inset-bottom));
+  margin-bottom: calc(8px + env(safe-area-inset-bottom));
+  width: calc(100% - 24px);
+  max-width: 100%;
   height: 46px;
   display: flex;
   align-items: center;
@@ -132,16 +159,29 @@
   box-sizing: border-box;
   flex-shrink: 0;
 }
+@media (min-width: 769px) {
+  .init-chat-bar {
+    margin-bottom: calc(16px + constant(safe-area-inset-bottom));
+    margin-bottom: calc(16px + env(safe-area-inset-bottom));
+    width: calc(100% - 32px);
+    max-width: 720px;
+  }
+}
 .init-chat-bar .init-chat-input {
   flex: 1;
   height: 36px;
   border: none;
   outline: none;
-  font-size: 13.5px;
+  font-size: 12px;
   font-family: inherit;
   color: #1e293b;
   background: transparent;
   padding: 0;
+}
+@media (min-width: 769px) {
+  .init-chat-bar .init-chat-input {
+    font-size: 13.5px;
+  }
 }
 .init-chat-bar .init-chat-input::placeholder {
   color: #b0bcca;
@@ -336,9 +376,14 @@
 /* ═════ 偏好卡片网格 ═══════════════════════════════════════════ */
 .pref-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 8px;
   padding: 0;
+}
+@media (min-width: 481px) {
+  .pref-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 .pref-card {
   background: #fff;
@@ -743,9 +788,14 @@
 /* ═════ 能力卡片网格 ═══════════════════════════════════════════ */
 .ability-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   max-width: 540px;
+}
+@media (min-width: 769px) {
+  .ability-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 /* ═════ 生成任务卡片 ═══════════════════════════════════════════ */
@@ -941,12 +991,18 @@
   right: 0;
   bottom: 0;
   background: #fff;
-  border-radius: 28px 28px 0 0;
-  padding: 20px 22px 24px;
+  border-radius: 0;
+  padding: 20px 18px 24px;
   z-index: 920;
   transform: translateY(105%);
   transition: transform 0.3s ease-out;
   box-shadow: 0 -12px 40px rgba(15, 23, 42, 0.15);
+}
+@media (min-width: 769px) {
+  .conv-sheet {
+    border-radius: 28px 28px 0 0;
+    padding: 20px 22px 24px;
+  }
 }
 .conv-sheet.show {
   transform: translateY(0);
