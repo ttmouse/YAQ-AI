@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+    default-src 'self';
+    script-src 'self' https://unpkg.com 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' https://app.17an.com data:;
+    font-src 'self' data:;
+    connect-src 'self';
+  "
+    />
+    <title>智能专项检查任务生成 — 交互原型</title>
+    <script
+      src="https://unpkg.com/lucide@1.21.0/dist/umd/lucide.min.js"
+      integrity="sha384-xphWpUp6pRlNpM8BxCtyoW96oteA0kPxUX0VP6V32gICuE4ViDFBfaoyj5BS7M4w"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* ─── Prototype variables (complement tokens.css) ──────── */
+      :root {
+        --accent-light: color-mix(in oklch, var(--accent) 8%, transparent);
+        --accent-dark: oklch(44% 0.17 255);
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        --radius: 10px;
+      }
+
+      /* ─── Prototype layout overrides (differs from main app) ─── */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+      }
+      .center {
+        flex: 1;
+        overflow-y: auto;
+        padding: 0;
+      }
+      .workspace {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 20px 16px 100px;
+      }
+
+      /* ─── Prototype-specific components ───────────────────── */
+      .scene-header {
+        margin-bottom: 20px;
+      }
+      .scene-header h1 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .scene-header p {
+        font-size: 13px;
+        color: var(--weak);
+      }
+
+      /* ═══ Chat Message Area ══════════════════════════════════ */
+      .msg-area {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .msg {
+        display: flex;
+        gap: 10px;
+        max-width: 85%;
+        animation: fadeSlideIn 0.35s ease both;
+      }
+      .msg.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+      }
+      .msg.ai {
+        align-self: flex-start;
+      }
+      .msg-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .msg.user .msg-avatar {
+        background: #6366f1;
+      }
+      .msg-bubble {
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+      .msg.user .msg-bubble {
+        background: var(--accent);
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .msg.ai .msg-bubble {
+        background: var(--surface);
+        border-bottom-left-radius: 4px;
+        border: 1px solid var(--line);
+      }
+
+      /* ═══ File attachment preview ════════════════════════════ */
+      .file-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+      .file-chip i {
+        width: 14px;
+        height: 14px;
+      }
+
+      /* ═══ Think Chain ════════════════════════════════════════ */
+      .think-chain {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin: 8px 0 4px;
+        font-size: 12.5px;
+        line-height: 1.7;
+      }
+      .think-chain .step {
+        padding: 6px 0;
+        border-bottom: 1px dashed #e2e8f0;
+        opacity: 0;
+        animation: fadeIn 0.4s ease forwards;
+      }
+      .think-chain .step:last-child {
+        border-bottom: none;
+      }
+      .think-chain .step .step-label {
+        font-weight: 600;
+        color: var(--accent);
+        display: inline-block;
+        min-width: 60px;
+      }
+      .think-chain .step .step-detail {
+        color: var(--text);
+      }
+      .think-chain .step .step-conf {
+        color: var(--weak);
+        font-size: 11px;
+        margin-left: 4px;
+      }
+      .think-chain .step.done .step-label {
+        color: var(--green);
+      }
+      .think-chain .step.pending .step-label {
+        color: var(--weak);
+      }
+      .think-chain .step.thinking .step-label {
+        color: var(--accent);
+        animation: pulse 1.2s ease infinite;
+      }
+
+      /* ═══ Confirmation Card ══════════════════════════════════ */
+      .confirm-card {
+        background: var(--accent-light);
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin: 10px 0;
+      }
+      .confirm-card .title {
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .confirm-card .title i {
+        width: 16px;
+        height: 16px;
+        color: var(--accent);
+      }
+      .confirm-card .desc {
+        font-size: 13px;
+        color: #475569;
+        line-height: 1.6;
+        margin-bottom: 12px;
+      }
+      .confirm-card .stats {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+      .confirm-card .stats .stat-item {
+        text-align: center;
+      }
+      .confirm-card .stats .stat-item .num {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .confirm-card .stats .stat-item .label {
+        font-size: 11px;
+        color: var(--weak);
+      }
+      .confirm-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        padding: 8px 20px;
+        border-radius: 8px;
+        border: none;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: 0.15s;
+      }
+      .btn i {
+        width: 14px;
+        height: 14px;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--accent-dark);
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+      }
+      .btn-outline:hover {
+        background: #f1f5f9;
+      }
+      .btn-success {
+        background: var(--green);
+        color: #fff;
+      }
+      .btn-success:hover {
+        filter: brightness(0.9);
+      }
+      .btn-danger {
+        background: transparent;
+        border: 1px solid #fca5a5;
+        color: var(--red);
+      }
+      .btn-danger:hover {
+        background: #fef2f2;
+      }
+      .btn-sm {
+        padding: 5px 12px;
+        font-size: 12px;
+      }
+
+      /* ═══ Task List Preview ══════════════════════════════════ */
+      .task-preview {
+        margin: 12px 0;
+      }
+      .task-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        margin-bottom: 6px;
+        transition: 0.15s;
+      }
+      .task-item:hover {
+        border-color: #bfdbfe;
+      }
+      .task-item .task-check {
+        margin-top: 2px;
+        width: 16px;
+        height: 16px;
+        accent-color: var(--accent);
+        cursor: pointer;
+      }
+      .task-item .task-body {
+        flex: 1;
+      }
+      .task-item .task-body .task-name {
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .task-item .task-body .task-meta {
+        font-size: 11px;
+        color: var(--weak);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .task-item .task-body .task-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+      }
+      .task-item .task-body .task-meta i {
+        width: 10px;
+        height: 10px;
+      }
+      .tag {
+        display: inline-block;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .tag-high {
+        background: #fef2f2;
+        color: var(--red);
+      }
+      .tag-mid {
+        background: #fff7ed;
+        color: var(--orange);
+      }
+      .tag-low {
+        background: #f0fdf4;
+        color: var(--green);
+      }
+
+      /* ═══ Schedule Preview ═══════════════════════════════════ */
+      .schedule-bar {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        height: 28px;
+        margin: 8px 0;
+      }
+      .schedule-bar .seg {
+        height: 100%;
+        border-radius: 3px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: #fff;
+        font-weight: 600;
+        min-width: 0;
+      }
+
+      /* ═══ Result Dashboard ═══════════════════════════════════ */
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .dash-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .dash-card .dash-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--weak);
+        margin-bottom: 4px;
+      }
+      .dash-card .dash-val {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .dash-card .dash-sub {
+        font-size: 11px;
+        color: var(--weak);
+        margin-top: 2px;
+      }
+
+      /* ═══ Global Chat Bar ════════════════════════════════════ */
+      .global-chat-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        padding: 10px 16px;
+        z-index: 100;
+      }
+      .global-chat-inner {
+        max-width: 860px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f1f5f9;
+        border-radius: 24px;
+        padding: 4px 4px 4px 16px;
+        border: 1px solid var(--line);
+        transition: 0.15s;
+      }
+      .global-chat-inner:focus-within {
+        border-color: var(--accent);
+        background: var(--surface);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+      .global-chat-inner input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-size: 13px;
+        color: var(--text);
+        outline: none;
+        font-family: inherit;
+        padding: 8px 0;
+      }
+      .global-chat-inner input::placeholder {
+        color: var(--weak);
+      }
+      .chat-btn {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--weak);
+        transition: 0.15s;
+        flex-shrink: 0;
+      }
+      .chat-btn:hover {
+        background: #e2e8f0;
+        color: var(--text);
+      }
+      .chat-btn.send {
+        background: var(--accent);
+        color: #fff;
+      }
+      .chat-btn.send:hover {
+        background: var(--accent-dark);
+      }
+      .chat-btn i {
+        width: 16px;
+        height: 16px;
+      }
+      .upload-preview {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--accent-light);
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        padding: 4px 10px 4px 6px;
+        font-size: 11px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .upload-preview i {
+        width: 12px;
+        height: 12px;
+        color: var(--accent);
+      }
+      .upload-preview .remove-upload {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: var(--weak);
+        padding: 0;
+        display: flex;
+      }
+      .upload-preview .remove-upload i {
+        width: 12px;
+        height: 12px;
+      }
+      .upload-preview .remove-upload:hover {
+        color: var(--red);
+      }
+
+      /* ═══ Modal (Drawer) ═════════════════════════════════════ */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 200;
+        display: none;
+        animation: fadeIn 0.2s ease;
+      }
+      .modal-overlay.active {
+        display: block;
+      }
+      .modal-panel {
+        position: fixed;
+        top: 0;
+        right: -480px;
+        width: 480px;
+        max-width: 100vw;
+        height: 100vh;
+        background: var(--surface);
+        z-index: 201;
+        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.12);
+        display: flex;
+        flex-direction: column;
+        transition: right 0.3s ease;
+      }
+      .modal-panel.active {
+        right: 0;
+      }
+      .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--line);
+        flex-shrink: 0;
+      }
+      .modal-head h3 {
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .modal-close-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 18px;
+        color: var(--weak);
+        padding: 4px;
+      }
+      .modal-close-btn:hover {
+        color: var(--text);
+      }
+      .modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+      .modal-foot {
+        border-top: 1px solid var(--line);
+        padding: 12px 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      /* ═══ Typing indicator ═══════════════════════════════════ */
+      .typing {
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+        padding: 4px 0;
+      }
+      .typing span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--weak);
+        animation: typingBounce 1.2s ease infinite;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      /* ═══ Animations ════════════════════════════════════════ */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes fadeSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @keyframes typingBounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-6px);
+        }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ═══ Status banner ══════════════════════════════════════ */
+      .status-banner {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 12px;
+      }
+      .status-banner.processing {
+        background: #eff6ff;
+        color: var(--accent);
+        border: 1px solid #bfdbfe;
+      }
+      .status-banner.done {
+        background: #f0fdf4;
+        color: var(--green);
+        border: 1px solid #bbf7d0;
+      }
+
+      /* ═══ Hidden file input ══════════════════════════════════ */
+      #fileInput {
+        display: none;
+      }
+
+      /* ═══ Responsive ═════════════════════════════════════════ */
+      @media (max-width: 640px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+        .msg {
+          max-width: 95%;
+        }
+        .modal-panel {
+          width: 100vw;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+  <body>
+    <!-- ═══ Top Bar ════════════════════════════════════════════ -->
+    <div class="top">
+      <div class="brand">
+        <img src="https://app.17an.com/dsb/dsb-new/ea0dd430_2026-6-24/static/img/logo.16c3ec2.png" alt="logo" />
+        <div class="tab-strip">
+          <span>综合监管</span>
+          <span>隐患闭环</span>
+          <span class="active">专项检查</span>
+          <span>履职效能</span>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="pill"><i data-lucide="building-2"></i> 良渚应急消防管理站</span>
+        <span class="pill" id="topDate"></span>
+        <span class="pill"><i data-lucide="user"></i> 站长</span>
+      </div>
+    </div>
+
+    <!-- ═══ Main ═══════════════════════════════════════════════ -->
+    <div class="main">
+      <div class="center">
+        <div class="workspace" id="workspace">
+          <!-- Scene Header -->
+          <div class="scene-header">
+            <h1>📋 专项检查</h1>
+            <p>上传检查方案文档，AI 自动解析生成可执行检查任务</p>
+          </div>
+
+          <!-- Message Area -->
+          <div class="msg-area" id="msgArea">
+            <!-- Messages will be dynamically inserted -->
+          </div>
+
+          <!-- Result Dashboard -->
+          <div id="dashboardArea"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Global Chat Bar ════════════════════════════════════ -->
+    <div class="global-chat-bar">
+      <div class="global-chat-inner" id="chatInner">
+        <!-- Upload preview (hidden initially) -->
+        <div id="uploadPreview" style="display: none"></div>
+
+        <input
+          type="text"
+          id="chatInput"
+          placeholder="上传文件或输入指令，例如：帮我生成专项检查任务"
+          autocomplete="off"
+        />
+
+        <button class="chat-btn" id="uploadBtn" title="上传文件">
+          <i data-lucide="paperclip"></i>
+        </button>
+        <button class="chat-btn send" id="sendBtn" title="发送">
+          <i data-lucide="arrow-up"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ File Input (hidden) ════════════════════════════════ -->
+    <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.png,.jpg,.jpeg" />
+
+    <!-- ═══ Task Edit Modal ════════════════════════════════════ -->
+    <div class="modal-overlay" id="taskModalOverlay"></div>
+    <div class="modal-panel" id="taskModal">
+      <div class="modal-head">
+        <h3>✏️ 编辑检查任务</h3>
+        <button class="modal-close-btn" onclick="closeTaskEdit()">✕</button>
+      </div>
+      <div class="modal-body" id="taskEditBody">
+        <!-- Dynamic content -->
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" onclick="closeTaskEdit()">取消</button>
+        <button class="btn btn-primary" onclick="saveTaskEdit()">保存修改</button>
+      </div>
+    </div>
+
+    <script>
+      // ═══════════════════════════════════════════════════════════
+      //  State
+      // ═══════════════════════════════════════════════════════════
+      const state = {
+        phase: 'idle', // idle | uploaded | parsing | parsed | generating | generated | confirming | done
+        uploadedFile: null,
+        currentStep: 0,
+        confirmedParse: false,
+        confirmedTasks: false,
+        confirmedSchedule: false,
+        taskEditIndex: -1,
+      };
+
+      // ═══════════════════════════════════════════════════════════
+      //  Simulated Data
+      // ═══════════════════════════════════════════════════════════
+      const SIM_DOC_NAME = '关于开展2026年第三季度危化品使用企业专项检查的通知.pdf';
+
+      const SIM_THINK_STEPS = [
+        { label: '文档类型识别', detail: '→ "专项检查通知"（置信度 96%）', done: false },
+        { label: '检查范围提取', detail: '→ 辖区内所有危化品使用企业，共 23 家', done: false },
+        { label: '检查标准提取', detail: '→ 《危化品安全管理条例》第 X 条 / 消防设施配备标准', done: false },
+        { label: '时间要求提取', detail: '→ 2026 年 7 月 1 日 - 7 月 30 日（30 天）', done: false },
+        {
+          label: '责任分工提取',
+          detail: '→ 消防安全组（李明）负责危化类，企业安全组（范嘉杰）负责工贸类',
+          done: false,
+        },
+      ];
+
+      const SIM_TASKS = [
+        {
+          id: 1,
+          priority: '高优',
+          name: '危化企业消防设施检查',
+          target: '恒源化工等 8 家危化企业',
+          standard: '消防栓/喷淋/烟感系统',
+          person: '李明',
+          deadline: '7月1日-7月15日',
+          checked: true,
+        },
+        {
+          id: 2,
+          priority: '高优',
+          name: '危化企业应急预案核查',
+          target: '恒源化工等 8 家危化企业',
+          standard: '预案完整性/演练记录',
+          person: '李明',
+          deadline: '7月1日-7月15日',
+          checked: true,
+        },
+        {
+          id: 3,
+          priority: '中',
+          name: '危化企业危化品存储检查',
+          target: '恒源化工等 8 家危化企业',
+          standard: '存储规范/通风/防泄漏',
+          person: '李明',
+          deadline: '7月5日-7月20日',
+          checked: true,
+        },
+        {
+          id: 4,
+          priority: '中',
+          name: '工贸企业消防通道检查',
+          target: '宏达建材等 15 家工贸企业',
+          standard: '通道畅通/标识清晰',
+          person: '范嘉杰',
+          deadline: '7月3日-7月25日',
+          checked: true,
+        },
+        {
+          id: 5,
+          priority: '中',
+          name: '工贸企业电气安全检查',
+          target: '宏达建材等 15 家工贸企业',
+          standard: '电气线路/接地保护',
+          person: '范嘉杰',
+          deadline: '7月3日-7月25日',
+          checked: true,
+        },
+        {
+          id: 6,
+          priority: '低',
+          name: '企业安全培训记录抽查',
+          target: '全部 23 家',
+          standard: '培训频次/参训率',
+          person: '范嘉杰',
+          deadline: '7月10日-7月28日',
+          checked: true,
+        },
+      ];
+
+      // ═══════════════════════════════════════════════════════════
+      //  DOM refs
+      // ═══════════════════════════════════════════════════════════
+      const $ = id => document.getElementById(id);
+      const msgArea = $('msgArea');
+      const dashboardArea = $('dashboardArea');
+      const chatInput = $('chatInput');
+      const uploadPreview = $('uploadPreview');
+      const fileInput = $('fileInput');
+
+      // ═══════════════════════════════════════════════════════════
+      //  Helpers
+      // ═══════════════════════════════════════════════════════════
+      function now() {
+        const d = new Date();
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      }
+
+      function scrollBottom() {
+        const ws = document.querySelector('.workspace');
+        setTimeout(() => ws?.scrollIntoView({ behavior: 'smooth', block: 'end' }), 50);
+      }
+
+      function sleep(ms) {
+        return new Promise(r => setTimeout(r, ms));
+      }
+
+      function addMsg(role, html) {
+        const div = document.createElement('div');
+        div.className = `msg ${role}`;
+        const avatar =
+          role === 'user'
+            ? `<div class="msg-avatar"><i data-lucide="user" width="14" height="14"></i></div>`
+            : `<div class="msg-avatar"><i data-lucide="bot" width="14" height="14"></i></div>`;
+        div.innerHTML = `${avatar}<div class="msg-bubble">${html}</div>`;
+        msgArea.appendChild(div);
+        lucide.createIcons({ scope: div });
+        scrollBottom();
+        return div;
+      }
+
+      function addTyping() {
+        const div = document.createElement('div');
+        div.className = 'msg ai';
+        div.innerHTML = `<div class="msg-avatar"><i data-lucide="bot" width="14" height="14"></i></div>
+        <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+        div.id = 'typingIndicator';
+        msgArea.appendChild(div);
+        lucide.createIcons({ scope: div });
+        scrollBottom();
+        return div;
+      }
+
+      function removeTyping() {
+        const el = $('typingIndicator');
+        if (el) el.remove();
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Step-by-step thinking chain rendering
+      // ═══════════════════════════════════════════════════════════
+      function renderThinkChain(steps, containerId) {
+        let container = document.getElementById(containerId);
+        if (!container) {
+          container = document.createElement('div');
+          container.className = 'think-chain';
+          container.id = containerId;
+          // Insert after the last AI message
+          const msgs = msgArea.querySelectorAll('.msg.ai');
+          if (msgs.length) msgs[msgs.length - 1].after(container);
+          else msgArea.appendChild(container);
+          scrollBottom();
+        }
+        container.innerHTML = steps
+          .map(
+            (s, i) => `
+        <div class="step ${s.done ? 'done' : i === state.currentStep ? 'thinking' : 'pending'}" data-step="${i}">
+          <span class="step-label">${s.done ? '✅' : i === state.currentStep ? '⏳' : '⏸️'} ${s.label}</span>
+          <span class="step-conf">${s.done ? s.detail : i === state.currentStep ? '分析中...' : '等待中'}</span>
+        </div>
+      `,
+          )
+          .join('');
+        scrollBottom();
+      }
+
+      async function animateThinkSteps() {
+        const steps = SIM_THINK_STEPS;
+        state.currentStep = 0;
+        renderThinkChain(steps, 'thinkChain');
+
+        for (let i = 0; i < steps.length; i++) {
+          await sleep(800 + Math.random() * 600);
+          steps[i].done = true;
+          state.currentStep = i + 1;
+          renderThinkChain(steps, 'thinkChain');
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Confirmation cards
+      // ═══════════════════════════════════════════════════════════
+      function showParseConfirmCard() {
+        const card = document.createElement('div');
+        card.className = 'confirm-card';
+        card.id = 'parseConfirmCard';
+        card.innerHTML = `
+        <div class="title"><i data-lucide="file-text"></i> 🔍 文档解析完成 — 请确认解析结果</div>
+        <div class="desc">
+          AI 已从文档中提取出以下关键信息，请核实是否准确。如有个别字段不准确，可点击「调整」修改。
+        </div>
+        <div style="background:var(--surface);border-radius:8px;padding:12px 14px;margin-bottom:12px;border:1px solid var(--line);font-size:12.5px;line-height:1.7">
+          <div><strong>📄 文档名称：</strong>关于开展2026年第三季度危化品使用企业专项检查的通知</div>
+          <div><strong>🎯 检查范围：</strong>辖区内所有危化品使用企业（共 23 家）</div>
+          <div><strong>📋 检查标准：</strong>《危化品安全管理条例》《消防设施配备标准》</div>
+          <div><strong>⏰ 时间要求：</strong>2026年7月1日 - 7月30日（共 30 天）</div>
+          <div><strong>👤 责任分工：</strong>消防安全组（李明）→ 危化类 &nbsp;|&nbsp; 企业安全组（范嘉杰）→ 工贸类</div>
+        </div>
+        <div class="confirm-actions">
+          <button class="btn btn-primary btn-sm" onclick="confirmParse()"><i data-lucide="check"></i> 确认无误</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('已切换到编辑模式（原型演示）')"><i data-lucide="pencil"></i> 调整字段</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('已重新解析（原型演示）')"><i data-lucide="rotate-ccw"></i> 重新解析</button>
+        </div>
+      `;
+        msgArea.appendChild(card);
+        lucide.createIcons({ scope: card });
+        scrollBottom();
+      }
+
+      async function showTaskConfirmCard() {
+        const card = document.createElement('div');
+        card.className = 'confirm-card';
+        card.id = 'taskConfirmCard';
+        card.innerHTML = `
+        <div class="title"><i data-lucide="list-checks"></i> 📋 AI 已生成 ${SIM_TASKS.length} 项检查任务 — 请逐条确认</div>
+        <div class="desc">
+          AI 根据文档要求拆解为以下可执行检查任务。已自动分配负责人和期限。
+          勾选确认的任务将进入执行计划，未勾选的暂不下发。
+        </div>
+        <div class="task-preview" id="taskPreviewList">
+          ${SIM_TASKS.map(
+            t => `
+            <div class="task-item" data-task-id="${t.id}">
+              <input type="checkbox" class="task-check" ${t.checked ? 'checked' : ''} onchange="toggleTask(${t.id})">
+              <div class="task-body">
+                <div class="task-name">
+                  <span class="tag tag-${t.priority === '高优' ? 'high' : t.priority === '中' ? 'mid' : 'low'}">${t.priority}</span>
+                  ${t.name}
+                </div>
+                <div class="task-meta">
+                  <span><i data-lucide="building-2"></i> ${t.target}</span>
+                  <span><i data-lucide="clipboard-list"></i> ${t.standard}</span>
+                  <span><i data-lucide="user"></i> ${t.person}</span>
+                  <span><i data-lucide="calendar"></i> ${t.deadline}</span>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="openTaskEdit(${t.id})" style="flex-shrink:0;padding:3px 8px;font-size:11px">✏️</button>
+            </div>
+          `,
+          ).join('')}
+        </div>
+        <div class="confirm-actions" style="margin-top:12px">
+          <button class="btn btn-primary btn-sm" onclick="confirmTasks()"><i data-lucide="check"></i> 确认选中（${SIM_TASKS.filter(t => t.checked).length}项）</button>
+          <button class="btn btn-outline btn-sm" onclick="selectAllTasks(true)"><i data-lucide="check-square"></i> 全选</button>
+          <button class="btn btn-outline btn-sm" onclick="selectAllTasks(false)"><i data-lucide="square"></i> 取消全选</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('已添加自定义任务（原型演示）')"><i data-lucide="plus"></i> 添加任务</button>
+        </div>
+      `;
+        msgArea.appendChild(card);
+        lucide.createIcons({ scope: card });
+        scrollBottom();
+      }
+
+      async function showScheduleConfirmCard() {
+        const card = document.createElement('div');
+        card.className = 'confirm-card';
+        card.id = 'scheduleConfirmCard';
+        card.innerHTML = `
+        <div class="title"><i data-lucide="calendar-check"></i> 📅 执行计划已生成 — 请确认排期方案</div>
+        <div class="desc">
+          AI 已根据任务优先级、人员负荷和期限，自动生成以下执行计划。
+        </div>
+        <div style="background:var(--surface);border-radius:8px;padding:14px;margin-bottom:12px;border:1px solid var(--line)">
+          <div style="font-size:12px;font-weight:600;margin-bottom:8px">📊 排期甘特图（7月1日 - 7月30日）</div>
+          <div class="schedule-bar">
+            <div class="seg" style="flex:3;background:var(--red)">高优</div>
+            <div class="seg" style="flex:4;background:var(--orange)">中</div>
+            <div class="seg" style="flex:3;background:var(--green)">低</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--weak);margin-bottom:12px">
+            <span>7月1日</span><span>7月10日</span><span>7月20日</span><span>7月30日</span>
+          </div>
+          <div style="font-size:12px;line-height:1.8">
+            <div><strong>🔴 高优任务（3项）</strong> — 7/1 - 7/15 &nbsp; <span class="tag tag-high">李明 · 负荷 60%</span></div>
+            <div><strong>🟠 中任务（2项）</strong> — 7/3 - 7/25 &nbsp; <span class="tag tag-mid">范嘉杰 · 负荷 45%</span></div>
+            <div><strong>🟢 低任务（1项）</strong> — 7/10 - 7/28 &nbsp; <span class="tag tag-low">范嘉杰</span></div>
+            <div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--line);color:var(--weak)">
+              📌 里程碑：7/15 中期检查 · 7/25 汇总上报 · 7/30 总结归档
+            </div>
+          </div>
+        </div>
+        <div class="confirm-actions">
+          <button class="btn btn-primary btn-sm" onclick="confirmSchedule()"><i data-lucide="check"></i> 确认排期并下发</button>
+          <button class="btn btn-outline btn-sm" onclick="showToast('已切换到排期编辑模式（原型演示）')"><i data-lucide="pencil"></i> 调整排期</button>
+        </div>
+      `;
+        msgArea.appendChild(card);
+        lucide.createIcons({ scope: card });
+        scrollBottom();
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Confirmation handlers
+      // ═══════════════════════════════════════════════════════════
+      async function confirmParse() {
+        state.confirmedParse = true;
+        const card = $('parseConfirmCard');
+        if (card) {
+          card.style.borderColor = '#bbf7d0';
+          card.style.background = '#f0fdf4';
+          card.querySelector('.confirm-actions').innerHTML =
+            `<span style="color:var(--green);font-size:13px;font-weight:500">✅ 已确认 — AI 继续生成检查任务...</span>`;
+        }
+        await sleep(800);
+        await generateTasks();
+      }
+
+      function toggleTask(id) {
+        const t = SIM_TASKS.find(t => t.id === id);
+        if (t) t.checked = !t.checked;
+        const count = SIM_TASKS.filter(t => t.checked).length;
+        const btn = document.querySelector('#taskConfirmCard .btn-primary');
+        if (btn) btn.innerHTML = `<i data-lucide="check"></i> 确认选中（${count}项）`;
+        lucide.createIcons();
+      }
+
+      function selectAllTasks(v) {
+        SIM_TASKS.forEach(t => (t.checked = v));
+        document.querySelectorAll('.task-check').forEach(cb => (cb.checked = v));
+        const count = SIM_TASKS.filter(t => t.checked).length;
+        const btn = document.querySelector('#taskConfirmCard .btn-primary');
+        if (btn) btn.innerHTML = `<i data-lucide="check"></i> 确认选中（${count}项）`;
+      }
+
+      async function confirmTasks() {
+        state.confirmedTasks = true;
+        const card = $('taskConfirmCard');
+        if (card) {
+          card.style.borderColor = '#bbf7d0';
+          card.style.background = '#f0fdf4';
+          card.querySelector('.confirm-actions').innerHTML =
+            `<span style="color:var(--green);font-size:13px;font-weight:500">✅ 已确认 ${SIM_TASKS.filter(t => t.checked).length} 项任务 — AI 生成执行计划...</span>`;
+        }
+        await sleep(800);
+        await generateSchedule();
+      }
+
+      async function confirmSchedule() {
+        state.confirmedSchedule = true;
+        const card = $('scheduleConfirmCard');
+        if (card) {
+          card.style.borderColor = '#bbf7d0';
+          card.style.background = '#f0fdf4';
+          card.querySelector('.confirm-actions').innerHTML =
+            `<span style="color:var(--green);font-size:13px;font-weight:500">✅ 已确认下发！任务已推送到工作台</span>`;
+        }
+        await sleep(500);
+        showResultDashboard();
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Task Edit Modal
+      // ═══════════════════════════════════════════════════════════
+      function openTaskEdit(id) {
+        const t = SIM_TASKS.find(t => t.id === id);
+        if (!t) return;
+        state.taskEditIndex = id;
+        $('taskEditBody').innerHTML = `
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">任务名称</label>
+          <input class="edit-input" id="editName" value="${t.name}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">检查对象</label>
+          <input class="edit-input" id="editTarget" value="${t.target}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">检查标准</label>
+          <input class="edit-input" id="editStandard" value="${t.standard}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">负责人</label>
+          <select id="editPerson" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px">
+            <option ${t.person === '李明' ? 'selected' : ''}>李明</option>
+            <option ${t.person === '范嘉杰' ? 'selected' : ''}>范嘉杰</option>
+            <option ${t.person === '王磊' ? 'selected' : ''}>王磊</option>
+            <option ${t.person === '张毅' ? 'selected' : ''}>张毅</option>
+          </select>
+        </div>
+        <div style="margin-bottom:8px">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">期限</label>
+          <input class="edit-input" id="editDeadline" value="${t.deadline}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px">
+        </div>
+      `;
+        $('taskModalOverlay').classList.add('active');
+        $('taskModal').classList.add('active');
+      }
+
+      function closeTaskEdit() {
+        $('taskModalOverlay').classList.remove('active');
+        $('taskModal').classList.remove('active');
+      }
+
+      function saveTaskEdit() {
+        const t = SIM_TASKS.find(t => t.id === state.taskEditIndex);
+        if (!t) return;
+        t.name = document.getElementById('editName')?.value || t.name;
+        t.target = document.getElementById('editTarget')?.value || t.target;
+        t.standard = document.getElementById('editStandard')?.value || t.standard;
+        t.person = document.getElementById('editPerson')?.value || t.person;
+        t.deadline = document.getElementById('editDeadline')?.value || t.deadline;
+        closeTaskEdit();
+        // Re-render task list
+        const list = $('taskPreviewList');
+        if (list) {
+          list.innerHTML = SIM_TASKS.map(
+            t => `
+          <div class="task-item" data-task-id="${t.id}">
+            <input type="checkbox" class="task-check" ${t.checked ? 'checked' : ''} onchange="toggleTask(${t.id})">
+            <div class="task-body">
+              <div class="task-name">
+                <span class="tag tag-${t.priority === '高优' ? 'high' : t.priority === '中' ? 'mid' : 'low'}">${t.priority}</span>
+                ${t.name}
+              </div>
+              <div class="task-meta">
+                <span><i data-lucide="building-2"></i> ${t.target}</span>
+                <span><i data-lucide="clipboard-list"></i> ${t.standard}</span>
+                <span><i data-lucide="user"></i> ${t.person}</span>
+                <span><i data-lucide="calendar"></i> ${t.deadline}</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="openTaskEdit(${t.id})" style="flex-shrink:0;padding:3px 8px;font-size:11px">✏️</button>
+          </div>
+        `,
+          ).join('');
+          lucide.createIcons();
+        }
+        showToast('✅ 任务已更新');
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Result Dashboard
+      // ═══════════════════════════════════════════════════════════
+      function showResultDashboard() {
+        const checkedCount = SIM_TASKS.filter(t => t.checked).length;
+        const highCount = SIM_TASKS.filter(t => t.checked && t.priority === '高优').length;
+        dashboardArea.innerHTML = `
+        <div class="status-banner done">
+          <i data-lucide="check-circle" width="16" height="16"></i>
+          专项检查任务已生成并下发！共 ${checkedCount} 项任务进入执行阶段。
+        </div>
+        <div class="dashboard">
+          <div class="dash-card">
+            <div class="dash-title">📋 进行中任务</div>
+            <div class="dash-val">${checkedCount}</div>
+            <div class="dash-sub">其中高优 ${highCount} 项</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-title">⏰ 时间范围</div>
+            <div class="dash-val">30 天</div>
+            <div class="dash-sub">7月1日 - 7月30日</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-title">👤 执行人员</div>
+            <div class="dash-val">2 人</div>
+            <div class="dash-sub">李明 · 范嘉杰</div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-title">🎯 覆盖企业</div>
+            <div class="dash-val">23 家</div>
+            <div class="dash-sub">危化 8 家 · 工贸 15 家</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:14px;background:var(--accent-light);border:1px solid #bfdbfe;border-radius:10px;font-size:12px;line-height:1.7">
+          <strong>💡 下一步操作：</strong>
+          任务已同步到「专项检查进度指标卡」「逾期任务预警」「专家复核」等模块。
+          可在底部输入框中继续追问，例如："查看李明组的任务进度" 或 "调整范嘉杰的排期"。
+        </div>
+      `;
+        lucide.createIcons({ scope: dashboardArea });
+        scrollBottom();
+        state.phase = 'done';
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Main Flow
+      // ═══════════════════════════════════════════════════════════
+      async function startFlow() {
+        if (state.phase !== 'idle') return;
+        state.phase = 'uploaded';
+
+        // 1. User message
+        const fileName = state.uploadedFile?.name || SIM_DOC_NAME;
+        addMsg(
+          'user',
+          `
+        <div class="file-chip"><i data-lucide="file-text"></i> ${fileName}</div>
+        <div>帮我根据这份文件生成专项检查任务</div>
+      `,
+        );
+
+        await sleep(600);
+
+        // 2. AI initial response + thinking chain
+        addTyping();
+        await sleep(1500);
+        removeTyping();
+
+        addMsg(
+          'ai',
+          `
+        <div style="font-weight:600;margin-bottom:6px">📄 收到文件，开始解析文档...</div>
+        <div style="font-size:12px;color:var(--weak)">正在扫描文档结构并提取关键信息</div>
+      `,
+        );
+
+        await sleep(500);
+        await animateThinkSteps();
+
+        // 3. Show parse confirm card
+        await sleep(400);
+        showParseConfirmCard();
+        state.phase = 'parsed';
+      }
+
+      async function generateTasks() {
+        state.phase = 'generating';
+        addTyping();
+        await sleep(1200);
+        removeTyping();
+
+        addMsg(
+          'ai',
+          `
+        <div style="font-weight:600;margin-bottom:6px">🧠 文档解析完成，正在拆解检查任务...</div>
+        <div style="font-size:12px;color:var(--weak)">
+          AI 根据文档中的检查要求、对象分类和标准，拆解为 ${SIM_TASKS.length} 项可执行任务。
+          已自动匹配负责人和期限。
+        </div>
+      `,
+        );
+
+        await sleep(600);
+        showTaskConfirmCard();
+        state.phase = 'generated';
+      }
+
+      async function generateSchedule() {
+        addTyping();
+        await sleep(1000);
+        removeTyping();
+
+        addMsg(
+          'ai',
+          `
+        <div style="font-weight:600;margin-bottom:6px">📊 任务已确认，正在生成执行计划...</div>
+        <div style="font-size:12px;color:var(--weak)">
+          已考虑任务优先级、人员负荷（李明 60%、范嘉杰 45%）和期限要求。
+        </div>
+      `,
+        );
+
+        await sleep(600);
+        showScheduleConfirmCard();
+        state.phase = 'confirming';
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  File upload
+      // ═══════════════════════════════════════════════════════════
+      $('uploadBtn').addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        state.uploadedFile = file;
+        const ext = file.name.split('.').pop().toUpperCase();
+        const iconMap = {
+          PDF: 'file-text',
+          DOC: 'file-text',
+          DOCX: 'file-text',
+          TXT: 'file-text',
+          PNG: 'image',
+          JPG: 'image',
+          JPEG: 'image',
+        };
+        const icon = iconMap[ext] || 'paperclip';
+        uploadPreview.innerHTML = `
+        <div class="upload-preview">
+          <i data-lucide="${icon}"></i>
+          <span>${file.name}</span>
+          <button class="remove-upload" onclick="clearUpload()"><i data-lucide="x"></i></button>
+        </div>
+      `;
+        uploadPreview.style.display = 'block';
+        chatInput.placeholder = '输入指令或直接发送...';
+        lucide.createIcons({ scope: uploadPreview });
+      });
+
+      window.clearUpload = function () {
+        state.uploadedFile = null;
+        uploadPreview.style.display = 'none';
+        uploadPreview.innerHTML = '';
+        chatInput.placeholder = '上传文件或输入指令，例如：帮我生成专项检查任务';
+        fileInput.value = '';
+      };
+
+      // ═══════════════════════════════════════════════════════════
+      //  Send handler
+      // ═══════════════════════════════════════════════════════════
+      $('sendBtn').addEventListener('click', handleSend);
+      chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleSend();
+      });
+
+      function handleSend() {
+        const text = chatInput.value.trim();
+        const hasFile = state.uploadedFile !== null;
+
+        if (!text && !hasFile) return;
+
+        if (
+          hasFile ||
+          text.includes('专项检查') ||
+          text.includes('检查任务') ||
+          text.includes('上传') ||
+          text.includes('文档') ||
+          text.includes('文件')
+        ) {
+          if (state.phase === 'idle') {
+            chatInput.value = '';
+            startFlow();
+            return;
+          }
+        }
+
+        // General chat response
+        if (text) {
+          addMsg('user', text);
+          chatInput.value = '';
+          addTyping();
+          setTimeout(() => {
+            removeTyping();
+            addMsg(
+              'ai',
+              `已收到您的指令。${state.phase === 'done' ? '当前专项检查任务已在执行中，您可以通过「专项检查进度指标卡」查看最新进展。' : '您可以上传一份专项检查文档，AI 将自动为您生成检查任务。'}`,
+            );
+            scrollBottom();
+          }, 1000);
+        }
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Toast
+      // ═══════════════════════════════════════════════════════════
+      function showToast(msg) {
+        let t = document.getElementById('toast');
+        if (!t) {
+          t = document.createElement('div');
+          t.id = 'toast';
+          t.style.cssText =
+            'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:999;animation:fadeSlideIn .3s ease;box-shadow:0 4px 12px rgba(0,0,0,.2)';
+          document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.style.opacity = '1';
+        clearTimeout(t._hide);
+        t._hide = setTimeout(() => {
+          t.style.opacity = '0';
+          t.style.transition = 'opacity .3s';
+        }, 2500);
+      }
+
+      // ═══════════════════════════════════════════════════════════
+      //  Init
+      // ═══════════════════════════════════════════════════════════
+      document.getElementById('topDate').textContent = new Date().toLocaleDateString('zh-CN', {
+        month: 'long',
+        day: 'numeric',
+        weekday: 'short',
+      });
+
+      // Welcome message
+      addMsg(
+        'ai',
+        `
+      <div style="font-weight:600;margin-bottom:4px">👋 你好，我是应擎 AI 安全助手</div>
+      <div style="font-size:12.5px;line-height:1.7">
+        <p>我可以帮你：</p>
+        <p>📄 上传专项检查文档 → 自动解析生成检查任务</p>
+        <p>📋 查看现有检查任务进度</p>
+        <p>🔍 回答关于安全隐患的问题</p>
+        <div style="margin-top:8px;padding:8px 10px;background:#f1f5f9;border-radius:6px;font-size:12px;color:var(--weak)">
+          💡 <strong>试试：</strong>点击下方的 📎 按钮上传一份专项检查文档，然后说"帮我生成检查任务"
+        </div>
+      </div>
+    `,
+      );
+
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
