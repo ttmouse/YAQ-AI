@@ -954,6 +954,14 @@
     showToast('正在分析你的问题…（演示回复）');
     input.value = '';
   }
+  function globalChatQuick(text) {
+    var input = document.getElementById('globalChatInput');
+    if (input) input.value = text;
+    showToast('正在分析你的问题…（演示回复）');
+    setTimeout(function() {
+      if (input) input.value = '';
+    }, 300);
+  }
   function init() {
     if (ls.get(STORAGE_KEY) === 'true') {
       setTimeout(function() { if (window.renderScene) window.renderScene('dashboard'); }, 50);
@@ -1006,6 +1014,7 @@
     convChatVoice: convChatVoice,
     convQuickReply: convQuickReply,
     globalChatSend: globalChatSend,
+    globalChatQuick: globalChatQuick,
 
     // ─── 关注项选择 ───
     togglePref: togglePref,
@@ -1033,6 +1042,7 @@
   window.convChatSend = window.YAQ.convChatSend;
   window.convChatVoice = window.YAQ.convChatVoice;
   window.globalChatSend = window.YAQ.globalChatSend;
+  window.globalChatQuick = window.YAQ.globalChatQuick;
   window.doDashboardRedirect = window.YAQ.doDashboardRedirect;
   window.doNormalDashboard = window.YAQ.doNormalDashboard;
   window.resetInit = window.YAQ.resetInit;

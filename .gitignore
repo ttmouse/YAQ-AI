@@ -22,3 +22,4 @@ dist/
 # Node dependencies
 node_modules/
 .workbuddy/
+.alma-snapshots

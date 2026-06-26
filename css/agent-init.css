@@ -24,7 +24,7 @@
   min-height: 100%;
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px 16px 160px; /* 增加底部留白，防止内容被输入框遮挡 */
+  padding: 16px 0 160px; /* 无水平内边距，与底栏左对齐 */
 }
 .init-container::-webkit-scrollbar { width: 6px; }
 .init-container::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
@@ -34,10 +34,10 @@
 /* ─── 浮动卡片（复选框选择面板等，位于聊天内容区与输入框之间） ─────*/
 #initFloatCard {
   position: absolute;
-  left: 50%; transform: translateX(-50%);
+  left: 0; right: 0; margin: 0 auto;
   bottom: 82px;
   width: calc(100% - 32px);
-  max-width: 540px;
+  max-width: 720px;
   z-index: 15;
   pointer-events: auto;
   animation: fadeUp .35s ease-out both;
@@ -86,10 +86,9 @@
 /* ─── 底部浮动输入条 ──────────────────────────────────────────── */
 .init-chat-bar {
   position: absolute;
-  left: 50%; transform: translateX(-50%);
+  left: 0; right: 0; margin: 0 auto;
   bottom: 24px;
   width: calc(100% - 32px);
-  margin: 0 auto;
   max-width: 720px;
   height: 46px;
   display: flex;
@@ -98,18 +97,7 @@
   background: rgba(255,255,255,.96);
   border: 1px solid #e2eaf8;
   border-radius: 23px;
-  padding: 0 4px 0 16px;
-  box-shadow: 0 4px 20px rgba(17,24,39,.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 10;
-  box-sizing: border-box;
-}
-  gap: 6px;
-  background: rgba(255,255,255,.96);
-  border: 1px solid #e2eaf8;
-  border-radius: 23px;
-  padding: 0 4px 0 16px;
+  padding: 0 14px 0 16px;
   box-shadow: 0 4px 20px rgba(17,24,39,.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -347,7 +335,6 @@
   border: none;
   border-radius: 14px;
   padding: 14px;
-  max-width: 540px;
 }
 .pref-card-wrap .attn-list {
   gap: 4px;

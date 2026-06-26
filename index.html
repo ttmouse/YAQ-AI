@@ -10,11 +10,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' https://unpkg.com;
+    script-src 'self' 'unsafe-inline' https://unpkg.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://app.17an.com data:;
     font-src 'self' data:;
-    connect-src 'self';
+    connect-src 'self' https://unpkg.com;
   ">
   <meta property="og:title" content="站长每日监管闭环工作台">
   <meta property="og:description" content="基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人">
@@ -51,11 +51,11 @@
     <div id="initFloatCard"></div>
     <div class="init-chat-bar">
       <input type="text" class="init-chat-input" id="initChatInput" placeholder="直接对话，例如：帮我看好重大隐患"
-        data-cmd-key="Enter" data-cmd="convChatSend">
-      <button class="init-chat-btn" data-cmd="convChatVoice" title="语音输入">
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.convChatSend()}">
+      <button class="init-chat-btn" onclick="window.convChatVoice()" title="语音输入">
         <i data-lucide="mic" width="16" height="16"></i>
       </button>
-      <button class="init-chat-send" data-cmd="convChatSend" title="发送">
+      <button class="init-chat-send" onclick="window.convChatSend()" title="发送">
         <i data-lucide="arrow-up" width="16" height="16"></i>
       </button>
     </div>
