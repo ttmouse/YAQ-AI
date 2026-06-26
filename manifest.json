@@ -5,9 +5,13 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#6366f1",
   "theme_color": "#6366f1",
   "orientation": "portrait-primary",
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "zh-CN",
+  "dir": "ltr",
   "icons": [
     {
       "src": "favicon.svg",
@@ -18,7 +22,8 @@
     {
       "src": "apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
