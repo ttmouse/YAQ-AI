@@ -241,8 +241,8 @@
   .global-chat-inner input { font-size: 11px; }
   .global-chat-inner .global-chat-btn,
   .global-chat-inner .global-chat-mic { width: 28px; height: 28px; }
-  .global-chat-quick { padding: 0 28px 4px 0; gap: 4px; }
-  .gc-quick-chip { height: 22px; padding: 0 8px; font-size: 10px; line-height: 20px; }
+  .global-chat-quick-wrap { bottom: 56px; gap: 4px; }
+  .global-chat-quick-wrap .gq-chip { height: 22px; padding: 0 8px; font-size: 10px; line-height: 20px; }
 
   /* 对话气泡 */
   .bubble { font-size: 12px; padding: 7px 9px; }

@@ -114,6 +114,12 @@
       </div>
     </div>
     <!-- ─── 全局底部浮动输入条 ────────────────────────────── -->
+    <div class="global-chat-quick-wrap" id="globalChatQuickWrap">
+      <button class="gq-chip" onclick="YAQ.globalChatQuick('分析一下隐患闭环未关闭的原因')">🔍 分析超期未闭环原因</button>
+      <button class="gq-chip" onclick="YAQ.globalChatQuick('今天有哪些到期未整改的隐患')">⚠️ 到期未整改</button>
+      <button class="gq-chip" onclick="YAQ.globalChatQuick('各个片区的隐患闭环率排名')">📊 闭环率排名</button>
+      <button class="gq-chip" onclick="YAQ.globalChatQuick('帮我生成今天的巡查报告')">📋 生成巡查报告</button>
+    </div>
     <div class="global-chat-bar">
       <div class="global-chat-inner">
         <input type="text" id="globalChatInput" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降"

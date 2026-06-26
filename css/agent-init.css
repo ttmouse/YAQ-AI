@@ -341,14 +341,15 @@
 }
 .card-confirm-btn {
   display: block;
-  width: 100%;
-  margin-top: 12px;
-  padding: 10px 0;
-  border-radius: 12px;
+  width: fit-content;
+  margin-left: auto;
+  margin-top: 10px;
+  padding: 6px 14px;
+  border-radius: 8px;
   border: none;
   background: #2563eb;
   color: #fff;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
