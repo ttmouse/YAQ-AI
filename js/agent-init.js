@@ -1365,6 +1365,23 @@
       showToast('生成巡查报告（演示功能）');
       return;
     }
+    if (text.indexOf('哪些行动') >= 0 || text.indexOf('有什么行动') >= 0) {
+      if (input) {
+        input.value = '';
+        input.blur();
+      }
+      renderAvailableActions();
+      return;
+    }
+    if (text.indexOf('我要发起督办') >= 0 || text.indexOf('发起督办') >= 0) {
+      if (input) {
+        input.value = '';
+        input.blur();
+      }
+      if (window.YAQ.openDrawer) window.YAQ.openDrawer('supervise');
+      else showToast('发起督办（演示功能）');
+      return;
+    }
     showToast('正在分析你的问题…（演示回复）');
     setTimeout(function () {
       if (input) input.value = '';
@@ -1603,8 +1620,63 @@
       showGlobalQuickChip([
         { label: '最近的督办任务进展怎样', text: '最近的督办任务进展怎样' },
         { label: '生成巡查报告', text: '帮我生成今天的巡查报告' },
+        { label: '我可以有哪些行动？', text: '我可以有哪些行动' },
       ]);
     });
+  }
+
+  // ═══ 可用行动展示 ═══════════════════════════════════════════════
+  function renderAvailableActions() {
+    var container = document.getElementById('sceneContent');
+    if (!container) return;
+    var userQuery = '我可以有哪些行动？';
+    sceneAppend(
+      '<div class="c-row user" style="animation:fadeUp .3s ease-out both;margin-top:16px;margin-bottom:12px">' +
+        '<div class="c-bubble user" style="align-self:flex-end;flex:0 1 auto;max-width:75%;background:#2563eb;color:#fff;border:none;border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:14px;line-height:1.5">' +
+          escapeHtml(userQuery) +
+        '</div>' +
+      '</div>',
+    );
+    // 可用行动列表
+    var actions = [
+      { icon: '⚡', label: '发起督办', desc: '对超期未整改或反复出现的隐患，发起专项督办任务', action: 'supervise' },
+      { icon: '🔍', label: '查看督办进展', desc: '查看当前所有督办任务的进展和反馈情况', action: 'track' },
+      { icon: '📋', label: '生成巡查报告', desc: '基于今日数据生成巡查报告，可下发或打印', action: 'report' },
+      { icon: '🏢', label: '查看重点主体', desc: '查看高风险等级企业的安全管理状态', action: 'subjects' },
+      { icon: '👥', label: '查看团队履职', desc: '查看各监管组和村社的履职效能数据', action: 'efficiency' },
+    ];
+    var html = '<div class="c-row agent" style="animation:fadeUp .35s ease-out both">' +
+      '<div class="c-bubble" style="flex:1;min-width:0;background:#fff;border:1px solid #e2eaf8;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.04)">' +
+      '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:12px">当前可执行的操作</div>';
+    for (var i = 0; i < actions.length; i++) {
+      var a = actions[i];
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;border:1px solid #eef2f6;border-radius:12px;cursor:pointer;transition:background .12s" onclick="YAQ.execAction(\'' + a.action + '\')" onmouseover="this.style.background=\'#f8fafc\'" onmouseout="this.style.background=\'\'">' +
+        '<span style="font-size:18px;flex-shrink:0">' + a.icon + '</span>' +
+        '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:600;color:#1e293b">' + a.label + '</div>' +
+        '<div style="font-size:11.5px;color:#64748b;margin-top:1px">' + a.desc + '</div>' +
+        '</div>' +
+        '<span style="color:var(--blue);font-size:11px;font-weight:600;flex-shrink:0">选择 →</span>' +
+        '</div>';
+    }
+    html += '</div></div>';
+    sceneAppend(html);
+    if (window.lucide) lucide.createIcons();
+  }
+
+  // ═══ 执行行动（可用行动列表中选择） ═════════════════════════
+  function execAction(action) {
+    var actions = {
+      supervise: { label: '发起督办', text: '我要发起督办' },
+      track: { label: '查看督办进展', text: '最近的督办任务进展怎样' },
+      report: { label: '生成巡查报告', text: '帮我生成今天的巡查报告' },
+      subjects: { label: '查看重点主体', text: '查看重点主体' },
+      efficiency: { label: '查看团队履职', text: '查看团队履职情况' },
+    };
+    var act = actions[action];
+    if (!act) return;
+    // 通过 globalChatQuick 触发，这样芯片消失逻辑也一致
+    globalChatQuick(act.text);
   }
   function init() {
     if (ls.get(STORAGE_KEY) === 'true') {
@@ -1690,6 +1762,7 @@
     reEnable: reEnable,
     toggleDemoMenu: toggleDemoMenu,
     closeDemoMenu: closeDemoMenu,
+    execAction: execAction,
   });
 
   // ════════════════════════════════════════════════════════════════
