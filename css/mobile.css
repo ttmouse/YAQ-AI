@@ -4,6 +4,35 @@
    桌面端 = 全量判断与分析工作台
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ─── 移动端适配：交互元素无延迟 ────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [data-cmd],
+  .pill,
+  .chip,
+  .q-chip,
+  .goal-chip,
+  .tab,
+  .nav-item,
+  .work-item,
+  .hazard-item,
+  .block-card,
+  .metric-card,
+  .attn-card,
+  .pref-card,
+  .choice-card,
+  .intent-chip,
+  .assistant-sug,
+  .demo-menu-item {
+    touch-action: manipulation;
+  }
+}
+
 /* ─── 平板（≤1024px）：缩小间距与字号 ────────────────────────── */
 @media (max-width: 1024px) {
   .result {
