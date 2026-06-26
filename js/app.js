@@ -3908,8 +3908,9 @@
     var dSys = MOCK.disposalSystemic || [];
 
     function renderLevels(arr, tagPrefix) {
-      if (!arr || arr.length === 0)
-        {return '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无分级处置数据</div>';}
+      if (!arr || arr.length === 0) {
+        return '<div style="padding:16px 0;text-align:center;color:var(--muted);font-size:13px">暂无分级处置数据</div>';
+      }
       var h = '';
       for (var li = 0; li < arr.length; li++) {
         var lv = arr[li];
@@ -5897,25 +5898,35 @@
     var html =
       // 标题
       '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:4px">' +
-        '<i data-lucide="brain" width="13" height="13" style="color:#2563eb"></i> AI 异常定位' +
+      '<i data-lucide="brain" width="13" height="13" style="color:#2563eb"></i> AI 异常定位' +
       '</div>' +
       // 逾期标签
       (overdueDays > 0
-        ? '<div style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:8px">⚠ 逾期 ' + overdueDays + ' 天</div>'
+        ? '<div style="background:#fef2f2;color:#dc2626;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;display:inline-block;margin-bottom:8px">⚠ 逾期 ' +
+          overdueDays +
+          ' 天</div>'
         : '') +
       // 政府端
       '<div style="font-size:11px;line-height:1.6;margin-bottom:8px;padding:8px 10px;background:#f0f5ff;border-radius:8px">' +
-        '<div style="font-weight:600;color:#2563eb;margin-bottom:3px;font-size:11px">🏛 政府端 — 监督跟进</div>' +
-        '<div style="color:#475569">' + govIssues + '</div>' +
+      '<div style="font-weight:600;color:#2563eb;margin-bottom:3px;font-size:11px">🏛 政府端 — 监督跟进</div>' +
+      '<div style="color:#475569">' +
+      govIssues +
+      '</div>' +
       '</div>' +
       // 企业端
       '<div style="font-size:11px;line-height:1.6;margin-bottom:8px;padding:8px 10px;background:#fef2f2;border-radius:8px">' +
-        '<div style="font-weight:600;color:#dc2626;margin-bottom:3px;font-size:11px">🏢 企业端 — 主体责任</div>' +
-        '<div style="color:#475569">' + entIssues + '</div>' +
+      '<div style="font-weight:600;color:#dc2626;margin-bottom:3px;font-size:11px">🏢 企业端 — 主体责任</div>' +
+      '<div style="color:#475569">' +
+      entIssues +
+      '</div>' +
       '</div>' +
       // 研判结论
       '<div style="font-size:11px;line-height:1.5;padding:7px 10px;background:#fff;border-radius:8px;border:1px dashed var(--line)">' +
-        '⚖ 初步研判：<span style="color:' + conclusionColor + ';font-weight:700">' + conclusionLabel + '</span>' +
+      '⚖ 初步研判：<span style="color:' +
+      conclusionColor +
+      ';font-weight:700">' +
+      conclusionLabel +
+      '</span>' +
       '</div>';
 
     return html;
@@ -6170,8 +6181,8 @@
   function epRenderTab(data, tab) {
     if (tab === 'overview') return epRenderRecentHazards(data.hazards);
     if (tab === 'hazards') return epRenderHazardCards(data.hazards);
-    if (tab === 'selfinspect')
-      {return epRenderList(data.selfInspections, '自检自查记录', function (s) {
+    if (tab === 'selfinspect') {
+      return epRenderList(data.selfInspections, '自检自查记录', function (s) {
         var dotCls = s.statusCls || 'neutral';
         var issueText =
           s.issues > 0
@@ -6201,9 +6212,10 @@
           issueText +
           '</div></div></div>'
         );
-      });}
-    if (tab === 'expert')
-      {return epRenderList(data.expertRecords, '专家履职记录', function (e) {
+      });
+    }
+    if (tab === 'expert') {
+      return epRenderList(data.expertRecords, '专家履职记录', function (e) {
         var dotCls = e.statusCls || 'neutral';
         return (
           '<div class="ep-hist-item">' +
@@ -6227,9 +6239,10 @@
           e.org +
           '</div></div></div>'
         );
-      });}
-    if (tab === 'training')
-      {return epRenderList(data.trainingRecords, '培训记录', function (t) {
+      });
+    }
+    if (tab === 'training') {
+      return epRenderList(data.trainingRecords, '培训记录', function (t) {
         return (
           '<div class="ep-hist-item">' +
           '<span class="ep-hist-dot done"></span>' +
@@ -6250,7 +6263,8 @@
           t.attendees +
           ' 人</div></div></div>'
         );
-      });}
+      });
+    }
     if (tab === 'dimensions') {
       var html =
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
@@ -6337,8 +6351,9 @@
   }
 
   function epRenderRecentHazards(hazards) {
-    if (!hazards || hazards.length === 0)
-      {return '<div style="text-align:center;padding:20px 0;color:var(--weak);font-size:13px">暂无隐患记录</div>';}
+    if (!hazards || hazards.length === 0) {
+      return '<div style="text-align:center;padding:20px 0;color:var(--weak);font-size:13px">暂无隐患记录</div>';
+    }
     var sorted = hazards.slice().sort(function (a, b) {
       return a.foundDate < b.foundDate ? 1 : -1;
     });
@@ -6416,8 +6431,9 @@
     for (var i = 0; i < items.length; i++) {
       html += itemFn(items[i]);
     }
-    if (items.length === 0)
-      {html += '<div style="text-align:center;padding:24px 0;color:var(--weak);font-size:13px">暂无记录</div>';}
+    if (items.length === 0) {
+      html += '<div style="text-align:center;padding:24px 0;color:var(--weak);font-size:13px">暂无记录</div>';
+    }
     return html;
   }
 
@@ -6970,12 +6986,15 @@
 
     // 定位分析：条线 → 区域 → 责任
     rightHtml += '<div class="tma-block">' + '<div class="tma-label">定位分析</div>';
-    if (task.line)
-      {rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>条线：' + task.line + '</div>';}
-    if (task.region)
-      {rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>区域：' + task.region + '</div>';}
-    if (task.person)
-      {rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>责任：' + task.person + '</div>';}
+    if (task.line) {
+      rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>条线：' + task.line + '</div>';
+    }
+    if (task.region) {
+      rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>区域：' + task.region + '</div>';
+    }
+    if (task.person) {
+      rightHtml += '<div class="tma-item"><span class="tma-dot orange"></span>责任：' + task.person + '</div>';
+    }
     rightHtml += '</div>';
 
     // 关联对象
@@ -7427,8 +7446,9 @@
       var alertCls = m.alert ? ' alert-' + m.alert : '';
       // 卡片 hover 提示信息：desc + 基线对照（如有）
       var tipParts = [m.desc || ''];
-      if (m.compare)
-        {tipParts.push('vs ' + m.compare.baselineLabel + ' ' + m.compare.baselineValue + '  ' + m.compare.delta);}
+      if (m.compare) {
+        tipParts.push('vs ' + m.compare.baselineLabel + ' ' + m.compare.baselineValue + '  ' + m.compare.delta);
+      }
       var tipText = tipParts.join('\n');
       html +=
         '<div class="metric-card' +
@@ -8863,14 +8883,16 @@
     if (entry.type === 'enterprise') {
       if (meta.region) metaHtml += '<span class="sri-tag sri-tag-region">' + $_escapeHtml(meta.region) + '</span>';
       if (meta.level && meta.level.indexOf('重大') > -1) metaHtml += '<span class="sri-tag sri-tag-danger">重大</span>';
-      else if (meta.level && meta.level.indexOf('一般') > -1)
-        {metaHtml += '<span class="sri-tag sri-tag-warn">一般</span>';}
+      else if (meta.level && meta.level.indexOf('一般') > -1) {
+        metaHtml += '<span class="sri-tag sri-tag-warn">一般</span>';
+      }
       if (meta.status === '超期未整改') metaHtml += '<span class="sri-tag sri-tag-danger">超期</span>';
     } else if (entry.type === 'task') {
       if (meta.region) metaHtml += '<span class="sri-tag sri-tag-region">' + $_escapeHtml(meta.region) + '</span>';
       if (meta.status) metaHtml += '<span class="sri-tag sri-tag-info">' + $_escapeHtml(meta.status) + '</span>';
-      if (meta.progress)
-        {metaHtml += '<span class="sri-tag sri-tag-progress">' + $_escapeHtml(meta.progress) + '</span>';}
+      if (meta.progress) {
+        metaHtml += '<span class="sri-tag sri-tag-progress">' + $_escapeHtml(meta.progress) + '</span>';
+      }
     } else if (entry.type === 'workItem') {
       if (meta.risk && meta.risk.indexOf('重大') > -1) metaHtml += '<span class="sri-tag sri-tag-danger">重大</span>';
       if (meta.status) metaHtml += '<span class="sri-tag sri-tag-info">' + $_escapeHtml(meta.status) + '</span>';

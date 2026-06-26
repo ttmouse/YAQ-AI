@@ -460,8 +460,9 @@ describe('evaluateRule', () => {
             triggered = actual >= p.value;
             break;
         }
-        if (triggered)
-          {detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';}
+        if (triggered) {
+          detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
+        }
         break;
       }
       case 'timeWindow': {
@@ -475,8 +476,9 @@ describe('evaluateRule', () => {
             triggered = actual >= p.value;
             break;
         }
-        if (triggered)
-          {detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';}
+        if (triggered) {
+          detail = p.target + ' = ' + actual + p.unit + ' (阈值 ' + p.operator + ' ' + p.value + p.unit + ')';
+        }
         break;
       }
       case 'behavior': {

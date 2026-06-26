@@ -3244,11 +3244,11 @@
   height: 16px;
 }
 /* 隐藏关键风险闭环卡片横向滚动条 */
-.info-card > div[style*="overflow-x:auto"] {
+.info-card > div[style*='overflow-x:auto'] {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.info-card > div[style*="overflow-x:auto"]::-webkit-scrollbar {
+.info-card > div[style*='overflow-x:auto']::-webkit-scrollbar {
   display: none;
 }
 .info-card-link {
