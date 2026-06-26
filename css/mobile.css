@@ -526,7 +526,11 @@
   .metric-config-btn,
   .agent-config-btn,
   .aib-btn,
-  .goal-input-btn {
+  .goal-input-btn,
+  .hmfoot-action,
+  .hmfoot-copy,
+  .init-chat-btn,
+  .init-chat-send {
     min-width: 44px;
     min-height: 44px;
     display: inline-flex;
