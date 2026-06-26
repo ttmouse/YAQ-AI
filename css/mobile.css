@@ -424,6 +424,68 @@
   }
 }
 
+/* ─── 行动项确认弹窗 — 移动端底部抽屉式 ────────────────────── */
+/* 桌面端用 scale 动画居中，移动端改为从底部滑入 */
+/* 覆盖 style.css 中 action-modal-panel 的 top:0 + opacity 过渡 */
+@media (max-width: 768px) {
+  .action-modal-panel {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 85vh !important;
+    border-radius: 16px 16px 0 0 !important;
+    transform: translateY(100%) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+    /* 拖拽手柄 */
+  }
+  .action-modal-panel::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 8px auto 0;
+    flex-shrink: 0;
+  }
+  .action-modal-panel.open {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  .action-modal-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .action-modal-header h3 {
+    font-size: 15px;
+  }
+  .action-modal-body {
+    padding: 12px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .action-modal-footer {
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom, 0px));
+    flex-shrink: 0;
+  }
+  /* 遮罩层保持可见 */
+  .action-modal-overlay {
+    z-index: 109;
+  }
+  .action-modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 /* ─── 超小屏（≤400px）特殊适配 ────────────────────────────── */
 @media (max-width: 400px) {
   /* 能力卡片网格在极小屏变回 1 列 */
