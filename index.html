@@ -517,6 +517,29 @@
           });
         }
       })();
+
+      /* ═══ iOS PWA Safe Area 修复：读取 env() 并应用到顶栏 ═══ */
+      (function () {
+        if (!window.navigator.standalone) return; // 仅 PWA 模式
+
+        var test = document.createElement('div');
+        test.style.cssText =
+          'position:fixed;top:0;left:0;width:1px;height:1px;pointer-events:none;padding-top:env(safe-area-inset-top)';
+        document.body.appendChild(test);
+
+        requestAnimationFrame(function () {
+          var sat = parseInt(getComputedStyle(test).paddingTop, 10) || 0;
+          document.body.removeChild(test);
+
+          if (sat > 0) {
+            var top = document.querySelector('.top');
+            if (top) top.style.paddingTop = sat + 'px';
+
+            var initOv = document.querySelector('.init-overlay');
+            if (initOv) initOv.style.top = 52 + sat + 'px';
+          }
+        });
+      })();
     </script>
   </body>
 </html>

@@ -10170,20 +10170,41 @@
 
   var SI_DOC_NAME = '关于开展2026年第三季度危化品使用企业专项检查的通知.pdf';
 
-  var SI_TASKS = [
-    { id: 1, name: '危险化学品储罐区安全设施检查', target: '危化品使用企业', standard: '对照《危险化学品安全管理条例》', priority: '高优', person: '李明', deadline: '7月10日', checked: true },
-    { id: 2, name: '防雷防静电设施检测报告核查', target: '危化品使用企业', standard: '防雷防静电设施检测报告', priority: '高优', person: '李明', deadline: '7月12日', checked: true },
-    { id: 3, name: '化学品安全技术说明书（SDS）检查', target: '危化品使用企业', standard: 'SDS 完整性及更新情况', priority: '中', person: '范嘉杰', deadline: '7月15日', checked: true },
-    { id: 4, name: '应急演练记录及预案评估', target: '工贸企业', standard: '应急演练频次及预案有效性', priority: '中', person: '范嘉杰', deadline: '7月18日', checked: false },
-    { id: 5, name: '危废暂存间规范检查', target: '工贸企业', standard: '危废标识、台账、储存规范', priority: '中', person: '李明', deadline: '7月20日', checked: false },
-    { id: 6, name: '有限空间作业审批流程检查', target: '工贸企业', standard: '有限空间作业审批及监护制度', priority: '低', person: '范嘉杰', deadline: '7月25日', checked: false },
+  // ─── 企业清单（从通知中解析出的 23 家） ─────────────────
+  var SI_COMPANIES = [
+    { id: 'c1', name: '杭州富强化工有限公司', type: '危化', risk: '高', selected: true },
+    { id: 'c2', name: '余杭区良渚涂料厂', type: '危化', risk: '高', selected: true },
+    { id: 'c3', name: '杭州华星化工有限公司', type: '危化', risk: '中', selected: true },
+    { id: 'c4', name: '杭州博源科技有限公司', type: '危化', risk: '中', selected: true },
+    { id: 'c5', name: '杭州宏业精细化工', type: '危化', risk: '低', selected: false },
+    { id: 'c6', name: '杭州双龙机械制造', type: '工贸', risk: '中', selected: true },
+    { id: 'c7', name: '良渚食品加工有限公司', type: '工贸', risk: '中', selected: true },
+    { id: 'c8', name: '杭州南方包装材料厂', type: '工贸', risk: '低', selected: false },
+    { id: 'c9', name: '杭州亚细亚纺织有限公司', type: '工贸', risk: '低', selected: false },
+    { id: 'c10', name: '杭州大地混凝土有限公司', type: '工贸', risk: '中', selected: true },
+  ];
+
+  // ─── 检查要点（统一适用于所有选中企业） ────────────────
+  var SI_CHECKPOINTS = [
+    // ── 危化品管理类 ──
+    { id: 'p1', name: '危险化学品储罐区安全设施检查', standard: '对照《危险化学品安全管理条例》', priority: '高优', selected: true, scope: '危化', cat: '危化品管理' },
+    { id: 'p2', name: '防雷防静电设施检测报告核查', standard: '防雷防静电设施检测报告', priority: '高优', selected: true, scope: '危化', cat: '危化品管理' },
+    { id: 'p3', name: '化学品安全技术说明书（SDS）检查', standard: 'SDS 完整性及更新情况', priority: '中', selected: true, scope: '危化', cat: '危化品管理' },
+    // ── 应急消防类 ──
+    { id: 'p4', name: '应急演练记录及预案评估', standard: '应急演练频次及预案有效性', priority: '中', selected: true, scope: '全部', cat: '应急消防' },
+    { id: 'p8', name: '消防设施及疏散通道检查', standard: '消防设施月度检查记录', priority: '高优', selected: false, scope: '全部', cat: '应急消防' },
+    // ── 环保危废类 ──
+    { id: 'p5', name: '危废暂存间规范检查', standard: '危废标识、台账、储存规范', priority: '中', selected: true, scope: '全部', cat: '环保危废' },
+    // ── 生产作业类 ──
+    { id: 'p6', name: '有限空间作业审批流程检查', standard: '有限空间作业审批及监护制度', priority: '低', selected: true, scope: '工贸', cat: '生产作业' },
+    { id: 'p7', name: '安全生产责任制落实情况', standard: '安全生产责任制文件及执行记录', priority: '中', selected: false, scope: '全部', cat: '生产作业' },
   ];
 
   var SI_STEPS = [
     { label: '📄 文档分类', detail: '识别为危化品专项检查通知（2026年第三季度）', conf: '98%' },
-    { label: '📋 检查要点提取', detail: '提取 4 大类 16 项检查要点（危化品储罐 5 项、防雷防静电 3 项、SDS 4 项、应急管理 4 项）', conf: '95%' },
-    { label: '🎯 对象范围识别', detail: '覆盖良渚街道 23 家相关企业（危化品使用企业 8 家、工贸企业 15 家）', conf: '92%' },
-    { label: '✅ 任务生成', detail: '拆解为 6 项可执行检查任务，已匹配负责人和期限', conf: '90%' },
+    { label: '📋 检查要点提取', detail: '提取 8 项检查要点（危化品储罐、防雷防静电、SDS、应急管理等）', conf: '95%' },
+    { label: '🎯 对象范围识别', detail: '识别良渚街道 23 家相关企业（危化品使用企业 8 家、工贸企业 15 家）', conf: '92%' },
+    { label: '✅ 任务生成', detail: '按企业 × 检查要点生成检查任务，自动匹配负责人', conf: '90%' },
   ];
 
   // ─── 渲染入口 ──────────────────────────────────────────────
@@ -10191,30 +10212,83 @@
   function renderSpecialInspection() {
     var html =
       '<div class="section-head"><h2><i data-lucide="file-search" aria-hidden="true" class="c-accent"></i> 智能专项检查</h2></div>' +
+      // ── 模式切换 Tab ──────────────────────────────
+      '<div style="display:flex;gap:4px;margin-bottom:16px;background:#f1f5f9;border-radius:8px;padding:3px;font-size:13px">' +
+        '<button class="si-mode-tab si-mode-tab-active" id="siTabDoc" onclick="YAQ.siSwitchMode(\'doc\')" style="flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:600;background:var(--surface);color:var(--text)">' +
+          '<i data-lucide="file-text" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 基于发文创建' +
+        '</button>' +
+        '<button class="si-mode-tab" id="siTabGoal" onclick="YAQ.siSwitchMode(\'goal\')" style="flex:1;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-weight:500;background:transparent;color:var(--weak)">' +
+          '<i data-lucide="target" width="14" height="14" style="vertical-align:middle;margin-right:4px"></i> 基于目标创建' +
+        '</button>' +
+      '</div>' +
+      '<div id="siModeContent"></div>';
+
+    // 默认展示基于发文模式
+    setTimeout(function () { YAQ.siRenderDocMode(); }, 0);
+
+    return html;
+  }
+
+  // ─── 模式切换 ──────────────────────────────────────────────
+
+  YAQ.siSwitchMode = function (mode) {
+    var tabDoc = document.getElementById('siTabDoc');
+    var tabGoal = document.getElementById('siTabGoal');
+    if (tabDoc) {
+      tabDoc.style.background = mode === 'doc' ? 'var(--surface)' : 'transparent';
+      tabDoc.style.color = mode === 'doc' ? 'var(--text)' : 'var(--weak)';
+      tabDoc.style.fontWeight = mode === 'doc' ? '600' : '500';
+    }
+    if (tabGoal) {
+      tabGoal.style.background = mode === 'goal' ? 'var(--surface)' : 'transparent';
+      tabGoal.style.color = mode === 'goal' ? 'var(--text)' : 'var(--weak)';
+      tabGoal.style.fontWeight = mode === 'goal' ? '600' : '500';
+    }
+    if (mode === 'doc') {
+      YAQ.siRenderDocMode();
+    } else {
+      YAQ.siRenderGoalMode();
+    }
+  };
+
+  YAQ.siRenderDocMode = function () {
+    var content = document.getElementById('siModeContent');
+    if (!content) return;
+    content.innerHTML =
       '<p style="font-size:13px;color:var(--weak);margin-bottom:16px;line-height:1.6">' +
-        '模拟 AI 解析专项检查通知文件并自动生成检查任务的完整流程。点击下方按钮开始演示。' +
+        '模拟 AI 解析专项检查通知文件，自动识别受检企业清单和检查要点，分步确认后生成检查任务。' +
       '</p>' +
       '<div style="margin-bottom:20px">' +
         '<button class="si-btn si-btn-primary" id="siStartBtn" onclick="YAQ.siStartDemo()">' +
           '<i data-lucide="play" width="14" height="14"></i> ▶ 开始模拟' +
         '</button>' +
       '</div>' +
-      '<div id="siDemoContent"></div>' +
-      // Task edit modal
-      '<div class="si-modal-overlay" id="siModalOverlay">' +
-        '<div class="si-modal" id="siModal">' +
-          '<h3>✏️ 编辑检查任务</h3>' +
-          '<div id="siModalBody"></div>' +
+      '<div id="siDemoContent"></div>';
+    lucide.createIcons({ scope: content });
+  };
+
+  YAQ.siRenderGoalMode = function () {
+    var content = document.getElementById('siModeContent');
+    if (!content) return;
+    content.innerHTML =
+      '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;text-align:center;padding:40px 20px">' +
+        '<div style="font-size:40px;margin-bottom:12px">🎯</div>' +
+        '<div style="font-size:16px;font-weight:600;margin-bottom:8px">基于目标创建专项</div>' +
+        '<div style="font-size:13px;color:var(--weak);line-height:1.7;max-width:400px;margin:0 auto">' +
+          '管理者设定检查目标，AI 自动分析目标、匹配受检企业范围、生成检查要点和任务清单。' +
+          '<br><br>' +
+          '例如：<em>"帮我找出良渚街道所有危化企业中，近三个月未完成应急演练的企业，生成一次专项检查任务"</em>' +
+        '</div>' +
+        '<div style="margin-top:24px;padding:10px 16px;background:#f8fafc;border:1px dashed var(--line);border-radius:8px;font-size:12px;color:var(--weak);display:inline-block">' +
+          '🚧 此功能正在开发中，敬请期待' +
         '</div>' +
       '</div>';
-
-    return html;
-  }
+    lucide.createIcons({ scope: content });
+  };
 
   // ─── 演示流程 ──────────────────────────────────────────────
 
   YAQ.siStartDemo = function () {
-    // Disable button
     var btn = document.getElementById('siStartBtn');
     if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'default'; }
 
@@ -10222,20 +10296,15 @@
     if (!content) return;
     content.innerHTML = '';
 
-    // Step 1: 正在解析...
+    // 展示 AI 解析过程
     content.innerHTML =
       '<div class="info-card" id="siStepParsing" style="animation:si-fadeSlideIn 0.4s ease both">' +
-        '<div class="info-card-head"><h3><i data-lucide="file-text" width="16" height="16" style="color:var(--accent)"></i> 📄 文档解析中</h3></div>' +
-        '<div style="padding:8px 0;font-size:13px;color:var(--weak)">' +
-          '正在扫描文档：<strong>' + SI_DOC_NAME + '</strong>' +
-        '</div>' +
-        '<div style="margin:8px 0">' +
-          '<div style="display:flex;flex-direction:column;gap:6px;padding:4px 0" id="siThinkSteps"></div>' +
-        '</div>' +
+        '<div class="info-card-head"><h3><i data-lucide="file-text" width="16" height="16" style="color:var(--accent)"></i> 📄 AI 正在解析专项检查通知...</h3></div>' +
+        '<div style="padding:8px 0;font-size:13px;color:var(--weak)">扫描文档：<strong>' + SI_DOC_NAME + '</strong></div>' +
+        '<div style="margin:8px 0"><div style="display:flex;flex-direction:column;gap:6px;padding:4px 0" id="siThinkSteps"></div></div>' +
       '</div>';
     lucide.createIcons({ scope: content });
 
-    // Animate thinking steps
     var stepsContainer = document.getElementById('siThinkSteps');
     if (stepsContainer) {
       for (var si = 0; si < SI_STEPS.length; si++) {
@@ -10256,117 +10325,284 @@
       }
     }
 
-    // Step 2: 解析完成 → 确认卡片
-    setTimeout(function () { YAQ.siShowParseResult(); }, SI_STEPS.length * 700 + 600);
+    // 解析完成后 → 第一步：确认企业清单
+    setTimeout(function () { YAQ.siShowCompanies(); }, SI_STEPS.length * 700 + 600);
   };
 
-  YAQ.siShowParseResult = function () {
+  // ─── 第一步：确认受检企业 ─────────────────────────────────
+
+  YAQ.siShowCompanies = function () {
     var content = document.getElementById('siDemoContent');
     if (!content) return;
+    content.innerHTML = '';
 
-    // Replace parsing card with result
+    var companyRows = '';
+    for (var i = 0; i < SI_COMPANIES.length; i++) {
+      var c = SI_COMPANIES[i];
+      var riskColor = c.risk === '高' ? 'var(--red)' : c.risk === '中' ? 'var(--orange)' : 'var(--weak)';
+      companyRows +=
+        '<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-bottom:4px">' +
+          '<input type="checkbox" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer" ' + (c.selected ? 'checked' : '') + ' onchange="YAQ.siToggleCompany(\'' + c.id + '\')">' +
+          '<div style="flex:1;font-size:13px;font-weight:500">' + escapeHtml(c.name) + '</div>' +
+          '<span style="font-size:10px;padding:1px 8px;border-radius:999px;background:' + (c.type === '危化' ? '#fef2f2' : '#f0fdf4') + ';color:' + (c.type === '危化' ? 'var(--red)' : 'var(--green)') + ';font-weight:600">' + c.type + '</span>' +
+          '<span style="font-size:11px;color:' + riskColor + ';font-weight:600">● ' + c.risk + '风险</span>' +
+        '</div>';
+    }
+
+    var selectedCount = SI_COMPANIES.filter(function(c){return c.selected}).length;
+
     content.innerHTML =
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both">' +
         '<div class="info-card-head">' +
-          '<h3><i data-lucide="check-circle" width="16" height="16" style="color:var(--green)"></i> ✅ 文档解析完成</h3>' +
-          '<span class="info-card-badge" style="background:var(--green);color:#fff">解析成功</span>' +
+          '<h3><i data-lucide="building-2" width="16" height="16" style="color:var(--accent)"></i> 🏭 第一步：确认受检企业</h3>' +
+          '<span class="info-card-badge" style="background:var(--accent);color:#fff">已选 ' + selectedCount + ' 家</span>' +
         '</div>' +
-        '<div style="padding:8px 0;font-size:13px;line-height:1.7">' +
-          '已识别文件：<strong>' + SI_DOC_NAME + '</strong><br>' +
-          '检查类型：危化品专项检查 | 覆盖企业：23 家 | 检查项：16 项' +
+        '<div style="font-size:12px;color:var(--weak);margin-bottom:10px;line-height:1.6">' +
+          'AI 从通知中识别出良渚街道 <strong>23 家</strong>相关企业，请勾选本次专项检查需要覆盖的企业：' +
         '</div>' +
-        '<div style="display:flex;gap:12px;margin:8px 0 12px">' +
-          '<div style="flex:1;text-align:center;padding:8px;background:var(--accent-light);border-radius:8px">' +
-            '<div style="font-size:22px;font-weight:700;color:var(--accent)">23</div>' +
-            '<div style="font-size:11px;color:var(--weak)">覆盖企业</div>' +
+        '<div id="siCompanyList">' + companyRows + '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px">' +
+          '<button class="si-btn si-btn-primary" id="siConfirmCompaniesBtn" onclick="YAQ.siConfirmCompanies()">✅ 确认企业清单（' + selectedCount + ' 家）</button>' +
+        '</div>' +
+      '</div>';
+    lucide.createIcons({ scope: content });
+    var ws = document.getElementById('workspace');
+    if (ws) ws.scrollTop = ws.scrollHeight;
+  };
+
+  YAQ.siToggleCompany = function (id) {
+    for (var i = 0; i < SI_COMPANIES.length; i++) {
+      if (SI_COMPANIES[i].id === id) { SI_COMPANIES[i].selected = !SI_COMPANIES[i].selected; break; }
+    }
+    var count = SI_COMPANIES.filter(function(c){return c.selected}).length;
+    var badge = document.querySelector('.info-card-badge');
+    if (badge) badge.textContent = '已选 ' + count + ' 家';
+    var btn = document.getElementById('siConfirmCompaniesBtn');
+    if (btn) btn.innerHTML = '✅ 确认企业清单（' + count + ' 家）';
+  };
+
+  YAQ.siConfirmCompanies = function () {
+    // 第二步：确认检查要点
+    YAQ.siShowCheckpoints();
+  };
+
+  // ─── 第二步：确认检查要点 ─────────────────────────────────
+
+  YAQ.siShowCheckpoints = function () {
+    var content = document.getElementById('siDemoContent');
+    if (!content) return;
+
+    // 按分类聚合
+    var categories = {};
+    for (var i = 0; i < SI_CHECKPOINTS.length; i++) {
+      var p = SI_CHECKPOINTS[i];
+      if (!categories[p.cat]) categories[p.cat] = [];
+      categories[p.cat].push(p);
+    }
+    var catKeys = Object.keys(categories);
+
+    var totalSelected = SI_CHECKPOINTS.filter(function(p){return p.selected}).length;
+
+    // 构建分类分组 UI
+    var catHtml = '';
+    for (var ci = 0; ci < catKeys.length; ci++) {
+      var catName = catKeys[ci];
+      var items = categories[catName];
+      var catSelected = items.filter(function(p){return p.selected}).length;
+      var catAll = catSelected === items.length;
+
+      catHtml +=
+        '<div style="margin-bottom:8px;border:1px solid var(--line);border-radius:8px;overflow:hidden">' +
+          // 分类头（可点击展开）
+          '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;cursor:pointer" onclick="YAQ.siToggleCat(\'' + catName + '\')">' +
+            '<span style="font-size:10px;color:var(--weak);transition:transform 0.15s" id="siCatArrow_' + catName.replace(/\s/g, '') + '">▶</span>' +
+            '<span style="flex:1;font-weight:600;font-size:13px">' + catName + '</span>' +
+            '<span style="font-size:11px;color:var(--weak)">' + catSelected + '/' + items.length + ' 项</span>' +
+            '<input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ' + (catAll ? 'checked' : '') + ' onchange="YAQ.siToggleCatAll(\'' + catName + '\', this.checked)">' +
           '</div>' +
-          '<div style="flex:1;text-align:center;padding:8px;background:var(--accent-light);border-radius:8px">' +
-            '<div style="font-size:22px;font-weight:700;color:var(--accent)">16</div>' +
+          // 明细列表（默认展开）
+          '<div id="siCatBody_' + catName.replace(/\s/g, '') + '">';
+      for (var pj = 0; pj < items.length; pj++) {
+        var p = items[pj];
+        var tagClass = p.priority === '高优' ? 'si-tag-high' : p.priority === '中' ? 'si-tag-mid' : 'si-tag-low';
+        catHtml +=
+          '<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 12px 6px 32px;border-top:1px solid var(--line-light);background:var(--surface)">' +
+            '<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ' + (p.selected ? 'checked' : '') + ' onchange="YAQ.siToggleCheckpoint(\'' + p.id + '\')">' +
+            '<div style="flex:1;font-size:12px">' +
+              '<span class="si-tag ' + tagClass + '" style="margin-right:4px">' + p.priority + '</span>' +
+              escapeHtml(p.name) +
+              '<div style="font-size:10px;color:var(--weak);margin-top:1px">' + escapeHtml(p.standard) + ' · ' + p.scope + '</div>' +
+            '</div>' +
+          '</div>';
+      }
+      catHtml += '</div></div>';
+    }
+
+    content.innerHTML +=
+      '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="clipboard-check" width="16" height="16" style="color:var(--accent)"></i> 📋 第二步：确认检查要点</h3>' +
+          '<span class="info-card-badge" style="background:var(--accent);color:#fff">已选 ' + totalSelected + ' 项</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--weak);margin-bottom:10px;line-height:1.6">' +
+          '以下检查要点按分类组织，适用于所有选中企业。大类可全选/取消，点击分类标题可展开收起明细：' +
+        '</div>' +
+        '<div id="siCheckpointList">' + catHtml + '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:12px">' +
+          '<button class="si-btn si-btn-primary" id="siConfirmCpBtn" onclick="YAQ.siGenerateTasks()">✅ 确认检查要点，自动生成任务（' + totalSelected + ' 项）</button>' +
+        '</div>' +
+      '</div>';
+    lucide.createIcons({ scope: content });
+    var ws = document.getElementById('workspace');
+    if (ws) ws.scrollTop = ws.scrollHeight;
+  };
+
+  YAQ.siToggleCat = function (catName) {
+    var bodyId = 'siCatBody_' + catName.replace(/\s/g, '');
+    var body = document.getElementById(bodyId);
+    var arrowId = 'siCatArrow_' + catName.replace(/\s/g, '');
+    var arrow = document.getElementById(arrowId);
+    if (!body) return;
+    var isHidden = body.style.display === 'none';
+    body.style.display = isHidden ? 'block' : 'none';
+    if (arrow) arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+  };
+
+  YAQ.siToggleCatAll = function (catName, checked) {
+    for (var i = 0; i < SI_CHECKPOINTS.length; i++) {
+      if (SI_CHECKPOINTS[i].cat === catName) {
+        SI_CHECKPOINTS[i].selected = checked;
+      }
+    }
+    YAQ.siRebuildCheckpoints();
+  };
+
+  YAQ.siToggleCheckpoint = function (id) {
+    for (var i = 0; i < SI_CHECKPOINTS.length; i++) {
+      if (SI_CHECKPOINTS[i].id === id) { SI_CHECKPOINTS[i].selected = !SI_CHECKPOINTS[i].selected; break; }
+    }
+    YAQ.siRebuildCheckpoints();
+  };
+
+  YAQ.siRebuildCheckpoints = function () {
+    var list = document.getElementById('siCheckpointList');
+    if (!list) return;
+
+    // 保存各分类的展开状态
+    var expandedState = {};
+    for (var ci = 0; ci < catKeys.length; ci++) {
+      var body = document.getElementById('siCatBody_' + catKeys[ci].replace(/\s/g, ''));
+      if (body) expandedState[catKeys[ci]] = body.style.display !== 'none';
+    }
+
+    var categories = {};
+    for (var i = 0; i < SI_CHECKPOINTS.length; i++) {
+      var p = SI_CHECKPOINTS[i];
+      if (!categories[p.cat]) categories[p.cat] = [];
+      categories[p.cat].push(p);
+    }
+    var catKeys = Object.keys(categories);
+
+    var totalSelected = SI_CHECKPOINTS.filter(function(p){return p.selected}).length;
+
+    var catHtml = '';
+    for (var ci = 0; ci < catKeys.length; ci++) {
+      var catName = catKeys[ci];
+      var items = categories[catName];
+      var catSelected = items.filter(function(p){return p.selected}).length;
+      var catAll = catSelected === items.length;
+      var isExpanded = expandedState[catName] !== false;
+
+      catHtml +=
+        '<div style="margin-bottom:8px;border:1px solid var(--line);border-radius:8px;overflow:hidden">' +
+          '<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f8fafc;cursor:pointer" onclick="YAQ.siToggleCat(\'' + catName + '\')">' +
+            '<span style="font-size:10px;color:var(--weak);transition:transform 0.15s;' + (isExpanded ? 'transform:rotate(90deg)' : '') + '" id="siCatArrow_' + catName.replace(/\s/g, '') + '">▶</span>' +
+            '<span style="flex:1;font-weight:600;font-size:13px">' + catName + '</span>' +
+            '<span style="font-size:11px;color:var(--weak)">' + catSelected + '/' + items.length + ' 项</span>' +
+            '<input type="checkbox" style="width:15px;height:15px;accent-color:var(--accent);cursor:pointer" ' + (catAll ? 'checked' : '') + ' onchange="YAQ.siToggleCatAll(\'' + catName + '\', this.checked)">' +
+          '</div>' +
+          '<div id="siCatBody_' + catName.replace(/\s/g, '') + '" style="' + (isExpanded ? '' : 'display:none') + '">';
+      for (var pj = 0; pj < items.length; pj++) {
+        var p = items[pj];
+        var tagClass = p.priority === '高优' ? 'si-tag-high' : p.priority === '中' ? 'si-tag-mid' : 'si-tag-low';
+        catHtml +=
+          '<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 12px 6px 32px;border-top:1px solid var(--line-light);background:var(--surface)">' +
+            '<input type="checkbox" style="margin-top:2px;width:14px;height:14px;accent-color:var(--accent);cursor:pointer" ' + (p.selected ? 'checked' : '') + ' onchange="YAQ.siToggleCheckpoint(\'' + p.id + '\')">' +
+            '<div style="flex:1;font-size:12px">' +
+              '<span class="si-tag ' + tagClass + '" style="margin-right:4px">' + p.priority + '</span>' +
+              escapeHtml(p.name) +
+              '<div style="font-size:10px;color:var(--weak);margin-top:1px">' + escapeHtml(p.standard) + ' · ' + p.scope + '</div>' +
+            '</div>' +
+          '</div>';
+      }
+      catHtml += '</div></div>';
+    }
+
+    list.innerHTML = catHtml;
+
+    // Update badge
+    var badge = document.querySelector('.info-card .info-card-badge');
+    if (badge) badge.textContent = '已选 ' + totalSelected + ' 项';
+    var btn = document.getElementById('siConfirmCpBtn');
+    if (btn) btn.innerHTML = '✅ 确认检查要点，自动生成任务（' + totalSelected + ' 项）';
+
+    lucide.createIcons({ scope: list });
+  };
+
+  // ─── 第三步：任务汇总 + 截止时间 ──────────────────────────
+
+  YAQ.siGenerateTasks = function () {
+    var content = document.getElementById('siDemoContent');
+    if (!content) return;
+
+    var companies = SI_COMPANIES.filter(function(c){return c.selected});
+    var checkpoints = SI_CHECKPOINTS.filter(function(p){return p.selected});
+
+    // 计算实际任务数：每家企业的适用检查点
+    var totalTasks = 0;
+    for (var ci = 0; ci < companies.length; ci++) {
+      totalTasks += checkpoints.filter(function(p){
+        return p.scope === '全部' || p.scope === companies[ci].type;
+      }).length;
+    }
+
+    var highCount = checkpoints.filter(function(p){return p.selected && p.priority === '高优'}).length;
+
+    // 默认截止日期
+    var now = new Date();
+    var defaultEnd = new Date(now);
+    defaultEnd.setDate(defaultEnd.getDate() + 30);
+    var dateStr = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
+    var endStr = defaultEnd.getFullYear() + '-' + String(defaultEnd.getMonth() + 1).padStart(2, '0') + '-' + String(defaultEnd.getDate()).padStart(2, '0');
+
+    content.innerHTML +=
+      '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px">' +
+        '<div class="info-card-head">' +
+          '<h3><i data-lucide="clipboard-check" width="16" height="16" style="color:var(--accent)"></i> ✅ 任务生成确认</h3>' +
+          '<span class="info-card-badge" style="background:var(--green);color:#fff">' + totalTasks + ' 项任务</span>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">' +
+          '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
+            '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + companies.length + '</div>' +
+            '<div style="font-size:11px;color:var(--weak)">受检企业</div>' +
+          '</div>' +
+          '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
+            '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + checkpoints.length + '</div>' +
             '<div style="font-size:11px;color:var(--weak)">检查要点</div>' +
           '</div>' +
-          '<div style="flex:1;text-align:center;padding:8px;background:var(--accent-light);border-radius:8px">' +
-            '<div style="font-size:22px;font-weight:700;color:var(--accent)">6</div>' +
-            '<div style="font-size:11px;color:var(--weak)">待生成任务</div>' +
+          '<div style="text-align:center;padding:10px;background:var(--accent-light);border-radius:8px">' +
+            '<div style="font-size:24px;font-weight:700;color:var(--accent)">' + totalTasks + '</div>' +
+            '<div style="font-size:11px;color:var(--weak)">生成任务数</div>' +
           '</div>' +
         '</div>' +
-        '<div style="display:flex;gap:8px">' +
-          '<button class="si-btn si-btn-primary" onclick="YAQ.siShowTasks()">✅ 确认，生成检查任务</button>' +
+        '<div style="font-size:13px;line-height:1.7;margin-bottom:14px;padding:8px 0">' +
+          '📋 共涉及 <strong>' + companies.length + ' 家</strong>企业，<strong>' + checkpoints.length + ' 项</strong>检查要点（高优 ' + highCount + ' 项），' +
+          '预计生成 <strong>' + totalTasks + ' 项</strong>检查任务。<br>' +
+          '📅 检查周期：<strong>' + dateStr + '</strong> 至' +
         '</div>' +
-      '</div>';
-    lucide.createIcons({ scope: content });
-    var ws = document.getElementById('workspace');
-    if (ws) ws.scrollTop = ws.scrollHeight;
-  };
-
-  YAQ.siShowTasks = function () {
-    var content = document.getElementById('siDemoContent');
-    if (!content) return;
-
-    var taskHtml = '<div style="margin:4px 0">';
-    for (var i = 0; i < SI_TASKS.length; i++) {
-      var t = SI_TASKS[i];
-      var tagClass = t.priority === '高优' ? 'si-tag-high' : t.priority === '中' ? 'si-tag-mid' : 'si-tag-low';
-      taskHtml +=
-        '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:6px">' +
-          '<input type="checkbox" style="margin-top:2px;width:16px;height:16px;accent-color:var(--accent);cursor:pointer" ' + (t.checked ? 'checked' : '') + ' onchange="YAQ.siToggleTask(' + t.id + ')">' +
-          '<div style="flex:1">' +
-            '<div style="font-weight:600;font-size:13px;margin-bottom:2px"><span class="si-tag ' + tagClass + '">' + t.priority + '</span> ' + escapeHtml(t.name) + '</div>' +
-            '<div style="font-size:11px;color:var(--weak);display:flex;flex-wrap:wrap;gap:6px">' +
-              '<span><i data-lucide="building-2" width="10" height="10"></i> ' + escapeHtml(t.target) + '</span>' +
-              '<span><i data-lucide="clipboard-list" width="10" height="10"></i> ' + escapeHtml(t.standard) + '</span>' +
-              '<span><i data-lucide="user" width="10" height="10"></i> ' + escapeHtml(t.person) + '</span>' +
-              '<span><i data-lucide="calendar" width="10" height="10"></i> ' + escapeHtml(t.deadline) + '</span>' +
-            '</div>' +
-          '</div>' +
-          '<button class="si-btn si-btn-outline si-btn-sm" onclick="YAQ.siOpenTaskEdit(' + t.id + ')" style="flex-shrink:0;padding:3px 8px;font-size:11px">✏️</button>' +
-        '</div>';
-    }
-    taskHtml += '</div>';
-
-    content.innerHTML +=
-      '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="list-todo" width="16" height="16" style="color:var(--accent)"></i> 📋 检查任务列表</h3>' +
-          '<span class="info-card-badge" style="background:var(--accent);color:#fff">' + SI_TASKS.length + ' 项</span>' +
-        '</div>' +
-        '<div style="font-size:12px;color:var(--weak);margin-bottom:8px">AI 根据文件内容拆解出以下检查任务。勾选或编辑后确认：</div>' +
-        taskHtml +
-        '<div style="display:flex;gap:8px;margin-top:8px">' +
-          '<button class="si-btn si-btn-success" onclick="YAQ.siShowSchedule()">✅ 确认任务，生成排期</button>' +
-        '</div>' +
-      '</div>';
-    lucide.createIcons({ scope: content });
-    var ws = document.getElementById('workspace');
-    if (ws) ws.scrollTop = ws.scrollHeight;
-  };
-
-  YAQ.siToggleTask = function (id) {
-    for (var i = 0; i < SI_TASKS.length; i++) {
-      if (SI_TASKS[i].id === id) { SI_TASKS[i].checked = !SI_TASKS[i].checked; break; }
-    }
-  };
-
-  YAQ.siShowSchedule = function () {
-    var content = document.getElementById('siDemoContent');
-    if (!content) return;
-
-    content.innerHTML +=
-      '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px">' +
-        '<div class="info-card-head">' +
-          '<h3><i data-lucide="calendar-range" width="16" height="16" style="color:var(--accent)"></i> 📊 执行计划</h3>' +
-          '<span class="info-card-badge" style="background:var(--orange);color:#fff">待确认</span>' +
-        '</div>' +
-        '<div style="font-size:12px;color:var(--weak);margin-bottom:12px">任务已按优先级和人员负荷分配排期：</div>' +
-        '<div style="display:flex;align-items:center;gap:2px;height:28px;margin-bottom:12px">' +
-          '<div style="height:100%;border-radius:3px;flex:1.5;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:600;background:#2563eb">李明 - 危化</div>' +
-          '<div style="height:100%;border-radius:3px;flex:1;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:600;background:#7c3aed">李明 - 工贸</div>' +
-          '<div style="height:100%;border-radius:3px;flex:1;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:600;background:#059669">范嘉杰 - 危化</div>' +
-          '<div style="height:100%;border-radius:3px;flex:1.5;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:600;background:#d97706">范嘉杰 - 工贸</div>' +
-        '</div>' +
-        '<div style="font-size:12px;line-height:1.7;margin-bottom:12px">' +
-          '📅 时间范围：<strong>7月1日 - 7月30日</strong>（共 30 天）<br>' +
-          '👤 执行人员：李明（3 项）、范嘉杰（3 项）<br>' +
-          '🎯 覆盖企业：23 家（危化 8 家 · 工贸 15 家）' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;background:#f8fafc;border:1px solid var(--line);border-radius:6px">' +
+          '<span style="font-size:13px;font-weight:500;white-space:nowrap">⏰ 截止时间</span>' +
+          '<input type="date" id="siDeadlineInput" value="' + endStr + '" style="flex:1;padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-size:13px;font-family:inherit">' +
         '</div>' +
         '<div style="display:flex;gap:8px">' +
           '<button class="si-btn si-btn-success" onclick="YAQ.siShowResult()">✅ 确认下发</button>' +
@@ -10381,12 +10617,16 @@
     var content = document.getElementById('siDemoContent');
     if (!content) return;
 
-    var checkedCount = 0;
-    var highCount = 0;
-    for (var i = 0; i < SI_TASKS.length; i++) {
-      if (SI_TASKS[i].checked) checkedCount++;
-      if (SI_TASKS[i].checked && SI_TASKS[i].priority === '高优') highCount++;
+    var selectedCompanies = SI_COMPANIES.filter(function(c){return c.selected});
+    var selectedCheckpoints = SI_CHECKPOINTS.filter(function(p){return p.selected});
+    var totalTasks = 0;
+    for (var ci = 0; ci < selectedCompanies.length; ci++) {
+      var c = selectedCompanies[ci];
+      totalTasks += selectedCheckpoints.filter(function(p){
+        return p.scope === '全部' || p.scope === c.type;
+      }).length;
     }
+    var highCount = selectedCheckpoints.filter(function(p){return p.selected && p.priority === '高优'}).length;
 
     content.innerHTML +=
       '<div class="info-card" style="animation:si-fadeSlideIn 0.4s ease both;margin-top:12px;border-color:#bbf7d0">' +
@@ -10394,27 +10634,27 @@
           '<h3><i data-lucide="check-circle" width="16" height="16" style="color:var(--green)"></i> ✅ 专项检查任务已下发</h3>' +
           '<span class="info-card-badge" style="background:var(--green);color:#fff">已完成</span>' +
         '</div>' +
-        '<div style="font-size:12px;color:var(--weak);margin-bottom:12px">任务已生成并下发，共 ' + checkedCount + ' 项任务进入执行阶段。</div>' +
+        '<div style="font-size:12px;color:var(--weak);margin-bottom:12px">任务已生成并下发，共 ' + totalTasks + ' 项任务进入执行阶段。</div>' +
         '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:8px">' +
           '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 进行中任务</div>' +
-            '<div style="font-size:22px;font-weight:700">' + checkedCount + '</div>' +
+            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">🏭 受检企业</div>' +
+            '<div style="font-size:22px;font-weight:700">' + selectedCompanies.length + '</div>' +
+            '<div style="font-size:11px;color:var(--weak);margin-top:2px">危化 ' + selectedCompanies.filter(function(c){return c.type==='危化'}).length + ' 家 · 工贸 ' + selectedCompanies.filter(function(c){return c.type==='工贸'}).length + ' 家</div>' +
+          '</div>' +
+          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
+            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 检查要点</div>' +
+            '<div style="font-size:22px;font-weight:700">' + selectedCheckpoints.length + '</div>' +
             '<div style="font-size:11px;color:var(--weak);margin-top:2px">其中高优 ' + highCount + ' 项</div>' +
+          '</div>' +
+          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
+            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">📋 生成任务数</div>' +
+            '<div style="font-size:22px;font-weight:700">' + totalTasks + '</div>' +
+            '<div style="font-size:11px;color:var(--weak);margin-top:2px">按企业 × 检查要点生成</div>' +
           '</div>' +
           '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
             '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">⏰ 时间范围</div>' +
             '<div style="font-size:22px;font-weight:700">30 天</div>' +
             '<div style="font-size:11px;color:var(--weak);margin-top:2px">7月1日 - 7月30日</div>' +
-          '</div>' +
-          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">👤 执行人员</div>' +
-            '<div style="font-size:22px;font-weight:700">2 人</div>' +
-            '<div style="font-size:11px;color:var(--weak);margin-top:2px">李明 · 范嘉杰</div>' +
-          '</div>' +
-          '<div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--weak);margin-bottom:4px">🎯 覆盖企业</div>' +
-            '<div style="font-size:22px;font-weight:700">23 家</div>' +
-            '<div style="font-size:11px;color:var(--weak);margin-top:2px">危化 8 家 · 工贸 15 家</div>' +
           '</div>' +
         '</div>' +
         '<div style="padding:10px 12px;background:var(--accent-light);border:1px solid #bfdbfe;border-radius:8px;font-size:12px;line-height:1.7">' +
@@ -10438,124 +10678,6 @@
     if (ws) ws.scrollTop = ws.scrollHeight;
   };
 
-  // ─── 任务编辑弹窗 ──────────────────────────────────────────
-
-  YAQ.siOpenTaskEdit = function (id) {
-    var t = null;
-    for (var i = 0; i < SI_TASKS.length; i++) {
-      if (SI_TASKS[i].id === id) { t = SI_TASKS[i]; break; }
-    }
-    if (!t) return;
-
-    var persons = ['李明', '范嘉杰', '王磊', '张毅'];
-    var personOpts = '';
-    for (var pi = 0; pi < persons.length; pi++) {
-      personOpts += '<option' + (t.person === persons[pi] ? ' selected' : '') + '>' + persons[pi] + '</option>';
-    }
-
-    document.getElementById('siModalBody').innerHTML =
-      '<div style="margin-bottom:16px">' +
-        '<label>任务名称</label>' +
-        '<textarea id="siEditName" rows="2">' + escapeHtml(t.name) + '</textarea>' +
-      '</div>' +
-      '<div style="margin-bottom:16px">' +
-        '<label>检查对象</label>' +
-        '<input id="siEditTarget" value="' + escapeHtml(t.target) + '">' +
-      '</div>' +
-      '<div style="margin-bottom:16px">' +
-        '<label>检查标准</label>' +
-        '<input id="siEditStandard" value="' + escapeHtml(t.standard) + '">' +
-      '</div>' +
-      '<div style="margin-bottom:16px">' +
-        '<label>负责人</label>' +
-        '<select id="siEditPerson">' + personOpts + '</select>' +
-      '</div>' +
-      '<div style="margin-bottom:8px">' +
-        '<label>期限</label>' +
-        '<input id="siEditDeadline" value="' + escapeHtml(t.deadline) + '">' +
-      '</div>' +
-      '<div class="si-modal-actions">' +
-        '<button class="si-btn si-btn-outline" onclick="YAQ.siCloseTaskEdit()">取消</button>' +
-        '<button class="si-btn si-btn-primary" onclick="YAQ.siSaveTaskEdit()">保存</button>' +
-      '</div>';
-
-    document.getElementById('siModalOverlay').classList.add('active');
-  };
-
-  YAQ.siCloseTaskEdit = function () {
-    document.getElementById('siModalOverlay').classList.remove('active');
-  };
-
-  YAQ.siSaveTaskEdit = function () {
-    var t = null;
-    var editIdx = -1;
-    var name = document.getElementById('siEditName')?.value;
-    var target = document.getElementById('siEditTarget')?.value;
-    var standard = document.getElementById('siEditStandard')?.value;
-    var person = document.getElementById('siEditPerson')?.value;
-    var deadline = document.getElementById('siEditDeadline')?.value;
-    if (!name) { showToast('请填写任务名称'); return; }
-
-    // Find task by matching name (simple approach)
-    for (var i = 0; i < SI_TASKS.length; i++) {
-      if (SI_TASKS[i].name === name || SI_TASKS[i].name.indexOf(name.substring(0, 4)) >= 0) {
-        t = SI_TASKS[i]; editIdx = i; break;
-      }
-    }
-    if (!t) { showToast('请先关闭弹窗后重试'); }
-    if (t) {
-      t.name = name;
-      t.target = target || t.target;
-      t.standard = standard || t.standard;
-      t.person = person || t.person;
-      t.deadline = deadline || t.deadline;
-    }
-    document.getElementById('siModalOverlay').classList.remove('active');
-
-    // Re-render task list if visible
-    YAQ.siRefreshTasks();
-    showToast('✅ 任务已更新');
-  };
-
-  YAQ.siRefreshTasks = function () {
-    var content = document.getElementById('siDemoContent');
-    if (!content) return;
-    // Find the task card and rebuild it
-    var taskCards = content.querySelectorAll('.info-card');
-    for (var ci = 0; ci < taskCards.length; ci++) {
-      var card = taskCards[ci];
-      if (card.querySelector('.si-task-item')) {
-        // This is the task card - rebuild its task items
-        var listContainer = card.querySelector('[style*="margin:4px 0"]') || card.querySelector('div:first-child');
-        if (listContainer) {
-          var taskHtml = '';
-          for (var i = 0; i < SI_TASKS.length; i++) {
-            var t = SI_TASKS[i];
-            var tagClass = t.priority === '高优' ? 'si-tag-high' : t.priority === '中' ? 'si-tag-mid' : 'si-tag-low';
-            taskHtml +=
-              '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;margin-bottom:6px">' +
-                '<input type="checkbox" style="margin-top:2px;width:16px;height:16px;accent-color:var(--accent);cursor:pointer" ' + (t.checked ? 'checked' : '') + ' onchange="YAQ.siToggleTask(' + t.id + ')">' +
-                '<div style="flex:1">' +
-                  '<div style="font-weight:600;font-size:13px;margin-bottom:2px"><span class="si-tag ' + tagClass + '">' + t.priority + '</span> ' + escapeHtml(t.name) + '</div>' +
-                  '<div style="font-size:11px;color:var(--weak);display:flex;flex-wrap:wrap;gap:6px">' +
-                    '<span><i data-lucide="building-2" width="10" height="10"></i> ' + escapeHtml(t.target) + '</span>' +
-                    '<span><i data-lucide="clipboard-list" width="10" height="10"></i> ' + escapeHtml(t.standard) + '</span>' +
-                    '<span><i data-lucide="user" width="10" height="10"></i> ' + escapeHtml(t.person) + '</span>' +
-                    '<span><i data-lucide="calendar" width="10" height="10"></i> ' + escapeHtml(t.deadline) + '</span>' +
-                  '</div>' +
-                '</div>' +
-                '<button class="si-btn si-btn-outline si-btn-sm" onclick="YAQ.siOpenTaskEdit(' + t.id + ')" style="flex-shrink:0;padding:3px 8px;font-size:11px">✏️</button>' +
-              '</div>';
-          }
-          listContainer.innerHTML = taskHtml;
-          lucide.createIcons({ scope: card });
-        }
-        break;
-      }
-    }
-  };
-
-  // Render default scene
   renderScene('dashboard');
   bindInteractions();
 })();

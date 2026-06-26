@@ -138,3 +138,11 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* ─── 模式切换 Tab ──────────────────────────────────────────── */
+.si-mode-tab {
+  transition: all 0.15s ease;
+}
+.si-mode-tab:hover {
+  opacity: 0.85;
+}

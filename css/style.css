@@ -41,9 +41,11 @@
   border-radius: 0;
   background: var(--surface);
   color: var(--fg);
-  padding: 0 14px;
+  padding-left: 14px;
+  padding-right: 14px;
   padding-top: constant(safe-area-inset-top);
   padding-top: env(safe-area-inset-top);
+  padding-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
