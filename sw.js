@@ -1,29 +1,29 @@
 /* ═══ Service Worker — PWA 离线缓存 ═══════════════════════════════ */
-const CACHE_NAME = 'yaq-ai-v1';
+const CACHE_NAME = 'yaq-ai-v2';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/css/tokens.css',
-  '/css/base.css',
-  '/css/layout.css',
-  '/css/blocks.css',
-  '/css/detail.css',
-  '/css/modal.css',
-  '/css/work-items.css',
-  '/css/assistant.css',
-  '/css/mobile.css',
-  '/css/utilities.css',
-  '/css/agent-init.css',
-  '/js/app.js',
-  '/js/track-store.js',
-  '/js/rules.js',
-  '/js/agent-init.js',
-  '/favicon.svg',
-  '/robots.txt',
-  '/404.html',
-  '/ai-vs-traditional-comparison.html',
-  '/special-inspection-prototype.html'
+  './',
+  './index.html',
+  './css/style.css',
+  './css/tokens.css',
+  './css/base.css',
+  './css/layout.css',
+  './css/blocks.css',
+  './css/detail.css',
+  './css/modal.css',
+  './css/work-items.css',
+  './css/assistant.css',
+  './css/mobile.css',
+  './css/utilities.css',
+  './css/agent-init.css',
+  './js/app.js',
+  './js/track-store.js',
+  './js/rules.js',
+  './js/agent-init.js',
+  './favicon.svg',
+  './robots.txt',
+  './404.html',
+  './ai-vs-traditional-comparison.html',
+  './special-inspection-prototype.html'
 ];
 
 /* ─── 安装：预缓存静态资源 ────────────────────────────────────── */
@@ -72,7 +72,7 @@ self.addEventListener('fetch', function (e) {
       }).catch(function () {
         /* 离线回退：返回 index.html（SPA 路由） */
         if (e.request.headers.get('accept').includes('text/html')) {
-          return caches.match('/index.html');
+          return caches.match('./index.html');
         }
       });
     })
