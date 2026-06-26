@@ -46,9 +46,13 @@ npm run build:html
 echo "🔗 更新 HTML CSS 引用..."
 for html in dist/*.html; do
   # 删除所有 <link rel="stylesheet" href="css/..."> 行
-  sed -i '' '/<link rel="stylesheet" href="css\/.*">/d' "$html"
-  # 在 </head> 前插入合并后的 CSS 引用
-  sed -i '' 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n</head>|' "$html"
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    sed -i '' '/<link rel="stylesheet" href="css\/.*">/d' "$html"
+    sed -i '' 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n</head>|' "$html"
+  else
+    sed -i '/<link rel="stylesheet" href="css\/.*">/d' "$html"
+    sed -i 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n</head>|' "$html"
+  fi
 done
 echo "   $(ls dist/*.html | wc -l | tr -d ' ') 个 HTML 文件已更新"
 
