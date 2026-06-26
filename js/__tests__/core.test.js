@@ -2,27 +2,31 @@
  * YAQ-AI 核心工具函数测试
  *
  * 测试策略：
- * - 优先测试纯函数（无 DOM 依赖或可模拟）
- * - 使用 jsdom 环境处理依赖 DOM 的函数
- * - 逐步覆盖 app.js 中 YAQ 命名空间暴露的公共 API
+ * - 导入 js/__tests__/test-utils.js 中的共享实现（与生产代码一致）
+ * - 对于已暴露到 YAQ 命名空间的函数，直接测试 window.YAQ 版本
+ * - 逐步覆盖 app.js + rules.js 中 YAQ 命名空间暴露的公共 API
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  escapeHtml,
+  safeRender,
+  escHtml,
+  severityLabel,
+  conditionTypeLabel,
+  createLS,
+} from './test-utils.js';
 
-// ─── escapeHtml（位于 app.js 中 IIFE 内部，通过 YAQ.escapeHtml 暴露） ──
+// ─── escapeHtml（与 app.js 中 YAQ.escapeHtml 实现一致） ──
 
 describe('escapeHtml', () => {
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
-    return div.innerHTML;
-  }
+  // 注：生产环境中应使用 window.YAQ.escapeHtml
+  // 此处导入 test-utils.js 的共享实现以确保与生产代码同步
 
   it('应转义 < > & " \' 字符', () => {
     const result = escapeHtml('<script>alert("xss")</script>');
     expect(result).toContain('&lt;script&gt;');
     expect(result).toContain('&lt;/script&gt;');
-    // jsdom 的 createTextNode 引号行为与浏览器略有不同
     expect(result).not.toContain('<script>');
   });
 
@@ -46,7 +50,8 @@ describe('escapeHtml', () => {
 // ─── localStorage 封装（YAQ.ls） ──
 
 describe('localStorage wrapper (YAQ.ls)', () => {
-  // 模拟 localStorage
+  let ls;
+
   beforeEach(() => {
     const store = {};
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(
@@ -58,23 +63,8 @@ describe('localStorage wrapper (YAQ.ls)', () => {
     vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(
       (key) => { delete store[key]; },
     );
+    ls = createLS();
   });
-
-  const ls = {
-    get(key, fallback) {
-      try {
-        const v = localStorage.getItem(key);
-        return v !== null ? v : fallback;
-      } catch { return fallback; }
-    },
-    set(key, val) {
-      try { localStorage.setItem(key, val); return true; }
-      catch { return false; }
-    },
-    remove(key) {
-      try { localStorage.removeItem(key); } catch { /* noop */ }
-    },
-  };
 
   it('set 后 get 应返回相同值', () => {
     ls.set('testKey', 'testValue');
@@ -101,7 +91,7 @@ describe('localStorage wrapper (YAQ.ls)', () => {
 
   it('应能存储数字', () => {
     ls.set('num', 42);
-    expect(ls.get('num')).toBe('42');  // localStorage 存储为字符串
+    expect(ls.get('num')).toBe('42');
   });
 });
 
@@ -109,38 +99,19 @@ describe('localStorage wrapper (YAQ.ls)', () => {
 
 describe('safeRender', () => {
   it('正常函数应返回其执行结果', () => {
-    function safeRender(fn, fallbackMsg) {
-      try { return fn(); }
-      catch (e) {
-        return '<div class="error-state">' + (fallbackMsg || '渲染异常') + '</div>';
-      }
-    }
     expect(safeRender(() => 'rendered OK')).toBe('rendered OK');
   });
 
   it('异常时应返回错误 fallback', () => {
-    function safeRender(fn, fallbackMsg) {
-      try { return fn(); }
-      catch (e) {
-        return '<div class="error-state">' + (fallbackMsg || '渲染异常') + '</div>';
-      }
-    }
     const result = safeRender(() => { throw new Error('boom'); }, '出错了');
     expect(result).toContain('error-state');
     expect(result).toContain('出错了');
   });
 });
 
-// ─── rules.js 中的 escHtml ──
+// ─── escHtml（与 rules.js 中的实现一致） ──
 
 describe('escHtml (rules.js)', () => {
-  function escHtml(s) {
-    if (typeof s !== 'string') return '' + s;
-    const d = document.createElement('div');
-    d.appendChild(document.createTextNode(s));
-    return d.innerHTML;
-  }
-
   it('应转义特殊 HTML 字符', () => {
     expect(escHtml('<script>')).toBe('&lt;script&gt;');
   });
@@ -156,14 +127,9 @@ describe('escHtml (rules.js)', () => {
   });
 });
 
-// ─── rules.js 中的 severityLabel ──
+// ─── severityLabel ──
 
 describe('severityLabel', () => {
-  function severityLabel(sev) {
-    const map = { danger: '危险', warning: '预警', info: '提示' };
-    return map[sev] || sev;
-  }
-
   it('应返回正确的标签', () => {
     expect(severityLabel('danger')).toBe('危险');
     expect(severityLabel('warning')).toBe('预警');
@@ -175,17 +141,9 @@ describe('severityLabel', () => {
   });
 });
 
-// ─── rules.js 中的 conditionTypeLabel ──
+// ─── conditionTypeLabel ──
 
 describe('conditionTypeLabel', () => {
-  function conditionTypeLabel(type) {
-    const map = {
-      threshold: '阈值', timeWindow: '超时', comparison: '对比',
-      trend: '趋势', behavior: '行为', composite: '复合',
-    };
-    return map[type] || type;
-  }
-
   it('应返回正确的类型标签', () => {
     expect(conditionTypeLabel('threshold')).toBe('阈值');
     expect(conditionTypeLabel('timeWindow')).toBe('超时');
@@ -197,7 +155,7 @@ describe('conditionTypeLabel', () => {
   });
 });
 
-// ─── 规则模板匹配测试（rules.js 中的 AI_TEMPLATES） ──
+// ─── 规则模板匹配测试 ──
 
 describe('Rule AI Templates (rules.js)', () => {
   const templates = [
@@ -207,10 +165,7 @@ describe('Rule AI Templates (rules.js)', () => {
       parse(input) {
         const m = input.match(this.pattern);
         if (!m) return null;
-        return {
-          name: this.label,
-          threshold: parseInt(m[1]),
-        };
+        return { name: this.label, threshold: parseInt(m[1]) };
       },
     },
     {
