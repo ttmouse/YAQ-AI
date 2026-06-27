@@ -56,6 +56,19 @@
   box-shadow: 0 1px 0 var(--border);
   gap: 6px;
 }
+
+/* ═══ 桌面端默认：显示桌面元素，隐藏移动端元素 ═══════════════════════ */
+.brand-desktop,
+.meta-desktop {
+  display: flex;
+  align-items: center;
+}
+
+.brand-mobile,
+.meta-mobile {
+  display: none;
+}
+
 @media (min-width: 769px) {
   .top {
     min-height: 52px;

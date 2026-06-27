@@ -126,28 +126,55 @@
       <!-- ─── 顶栏 ─────────────────────────────────────────────────── -->
       <div class="top">
         <div class="brand">
-          <img
-            src="https://app.17an.com/dsb/dsb-new/ea0dd430_2026-6-24/static/img/logo.16c3ec2.png"
-            alt="logo"
-            style="height: 22px; width: auto"
-          />
-          <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" title="切换场景">
-            <i data-lucide="menu" width="18" height="18"></i>
-          </button>
-          <div class="tab-strip" id="tabStrip"></div>
+          <!-- 桌面端：Logo + 汉堡 + Tab -->
+          <div class="brand-desktop">
+            <img
+              src="https://app.17an.com/dsb/dsb-new/ea0dd430_2026-6-24/static/img/logo.16c3ec2.png"
+              alt="logo"
+              style="height: 22px; width: auto"
+            />
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" title="切换场景">
+              <i data-lucide="menu" width="18" height="18"></i>
+            </button>
+            <div class="tab-strip" id="tabStrip"></div>
+          </div>
+          <!-- 移动端：头像 + 名称 + 组织 -->
+          <div class="brand-mobile">
+            <div class="mobile-user-info">
+              <div class="mobile-avatar" id="mobileAvatar">
+                <i data-lucide="user" width="20" height="20"></i>
+              </div>
+              <div class="mobile-name-group">
+                <span class="mobile-username" id="mobileUsername">杨站长</span>
+                <span class="mobile-org" id="mobileOrg">良渚应急消防管理站</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="meta">
-          <span class="notif-bell" id="notifBell" title="通知">
-            <i data-lucide="bell" width="16" height="16"></i>
-            <span class="notif-badge" id="notifBadge">3</span>
-          </span>
-          <div class="topbar-search" data-cmd="openLauncher" title="搜索">
-            <i data-lucide="search" width="16" height="16"></i>
+          <!-- 桌面端：通知 + 搜索 + 组织切换 -->
+          <div class="meta-desktop">
+            <span class="notif-bell" id="notifBell" title="通知">
+              <i data-lucide="bell" width="16" height="16"></i>
+              <span class="notif-badge" id="notifBadge">3</span>
+            </span>
+            <div class="topbar-search" data-cmd="openLauncher" title="搜索">
+              <i data-lucide="search" width="16" height="16"></i>
+            </div>
+            <span class="pill org-switch" data-cmd="toggleDemoMenu" title="演示菜单" id="orgSwitch">
+              良渚应急消防管理站
+              <i data-lucide="chevron-down" width="12" height="12"></i>
+            </span>
           </div>
-          <span class="pill org-switch" data-cmd="toggleDemoMenu" title="演示菜单" id="orgSwitch">
-            良渚应急消防管理站
-            <i data-lucide="chevron-down" width="12" height="12"></i>
-          </span>
+          <!-- 移动端：搜索 + +号 -->
+          <div class="meta-mobile">
+            <div class="topbar-search" data-cmd="openLauncher" title="搜索">
+              <i data-lucide="search" width="20" height="20"></i>
+            </div>
+            <button class="mobile-plus-btn" id="mobilePlusBtn" title="更多">
+              <i data-lucide="plus" width="22" height="22"></i>
+            </button>
+          </div>
         </div>
       </div>
 
