@@ -7,7 +7,7 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta
       http-equiv="Content-Security-Policy"
       content="
@@ -48,7 +48,7 @@
       media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
     />
     <meta name="theme-color" content="#f8f9fc" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1e1e2e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#1a1b2e" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
     <!-- 禁止自动识别电话/地址（管理后台不需要） -->
     <meta name="format-detection" content="telephone=no,address=no,email=no" />
@@ -106,7 +106,7 @@
           id="initChatInput"
           placeholder="直接对话，例如：帮我看好重大隐患"
           onkeydown="
-            if (event.key === 'Enter' || event.key === ' ') {
+            if (event.key === 'Enter') {
               event.preventDefault();
               window.convChatSend();
             }
@@ -367,21 +367,21 @@
           <span class="hmodal-dot" id="hazardModalDot" style="background: var(--red)"></span>
           <span id="hazardModalName">隐患详情</span>
         </div>
-        <button class="hmodal-close" data-cmd="closeHazardModal">✕</button>
+        <button class="hmodal-close" data-cmd="closeHazardModal" aria-label="关闭"><i data-lucide="x" width="16" height="16"></i></button>
       </div>
       <div class="hmodal-body" id="hazardModalBody"></div>
       <div class="hmodal-foot">
         <div class="hmfoot-actions">
-          <button class="hmfoot-action primary" title="督办" data-cmd="openDrawer" data-arg="supervise">
+          <button class="hmfoot-action primary" title="督办" aria-label="督办" data-cmd="openDrawer" data-arg="supervise">
             <i data-lucide="megaphone" width="14" height="14"></i><span>督办</span>
           </button>
-          <button class="hmfoot-action" title="现场核查" data-cmd="openDrawer" data-arg="inspect">
+          <button class="hmfoot-action" title="现场核查" aria-label="现场核查" data-cmd="openDrawer" data-arg="inspect">
             <i data-lucide="search" width="14" height="14"></i><span>现场核查</span>
           </button>
-          <button class="hmfoot-action" title="会议议题" data-cmd="openDrawer" data-arg="meeting">
+          <button class="hmfoot-action" title="会议议题" aria-label="会议议题" data-cmd="openDrawer" data-arg="meeting">
             <i data-lucide="calendar" width="14" height="14"></i><span>会议议题</span>
           </button>
-          <button class="hmfoot-action" title="持续跟踪" data-cmd="showToast" data-arg="已加入持续跟踪">
+          <button class="hmfoot-action" title="持续跟踪" aria-label="持续跟踪" data-cmd="showToast" data-arg="已加入持续跟踪">
             <i data-lucide="pin" width="14" height="14"></i><span>跟踪</span>
           </button>
         </div>
@@ -399,7 +399,7 @@
           <i data-lucide="target" width="16" height="16" style="color: var(--accent)"></i>
           <span id="taskModalName">任务详情</span>
         </div>
-        <button class="tmodal-close" data-cmd="closeTaskModal">✕</button>
+        <button class="tmodal-close" data-cmd="closeTaskModal" aria-label="关闭"><i data-lucide="x" width="16" height="16"></i></button>
       </div>
       <div class="tmodal-body" id="taskModalBody">
         <div class="tmodal-left" id="taskModalLeft"></div>
@@ -416,7 +416,7 @@
           <i data-lucide="clipboard-check" width="18" height="18" style="color: var(--accent)"></i>
           <span>待确认督办</span>
         </div>
-        <button class="pa-modal-close" data-cmd="closePAModal">✕</button>
+        <button class="pa-modal-close" data-cmd="closePAModal" aria-label="关闭"><i data-lucide="x" width="16" height="16"></i></button>
       </div>
       <div class="pa-modal-body" id="paModalBody">
         <!-- 由 JS 渲染 -->
@@ -528,52 +528,44 @@
         };
       })();
 
-      /* ═══ 移动端：弹窗打开时自动隐藏底部聊天栏（:has() 回退） ═══ */
-      (function () {
-        if (!('ontouchstart' in window)) return;
-        var modalSelectors = [
-          '#hazardModal',
-          '#taskModal',
-          '#metricModal',
-          '#paModal',
-          '#drillFloat',
-          '#actionModal',
-          '.memory-panel.open',
-        ];
-        var chatBar = document.querySelector('.global-chat-bar');
-        if (!chatBar) return;
-
-        function checkModals() {
-          var anyOpen = false;
-          for (var i = 0; i < modalSelectors.length; i++) {
-            var el = document.querySelector(modalSelectors[i]);
-            if (el) {
-              var style = window.getComputedStyle(el);
-              if (style.display !== 'none' && style.visibility !== 'hidden') {
-                anyOpen = true;
-                break;
-              }
-            }
-          }
-          chatBar.style.display = anyOpen ? 'none' : '';
-        }
-
-        // 用 MutationObserver 监听 modal 显示状态变化（比事件更可靠）
-        var observer = new MutationObserver(function () {
-          checkModals();
-        });
-        observer.observe(document.body, {
-          attributes: true,
-          attributeFilter: ['style', 'class'],
-          subtree: true,
-        });
-
-        // 初始化检查
-        setTimeout(checkModals, 500);
-      })();
+      /* ═══ 移动端：弹窗打开时隐藏底部聊天栏 — 由 mobile.css :has() 处理 ═══ */
+      /* CSS 选择器 body:has(.modal-panel[style*='display: flex']) .global-chat-bar { display: none; }
+         更可靠、零 JS 开销。移除了之前重复的 MutationObserver 实现。 */
     </script>
 
     <script src="js/data/mock-data.js"></script>
+    <!-- ═══ PWA 安装横幅（Android Chrome）═══════════════════════ -->
+    <div id="pwaInstallBanner" class="pwa-install-banner" aria-hidden="true">
+      <div class="pwa-install-content">
+        <div class="pwa-install-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="pwa-install-text">
+          <div class="pwa-install-title">安装「应擎工作台」</div>
+          <div class="pwa-install-desc">添加到主屏幕，快速访问</div>
+        </div>
+        <button class="pwa-install-btn" id="pwaInstallBtn">安装</button>
+        <button class="pwa-install-close" id="pwaInstallClose" aria-label="关闭">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ 断网指示器 ════════════════════════════════════════════ -->
+    <div id="offlineIndicator" class="offline-indicator" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+      <span>网络已断开，部分功能不可用</span>
+    </div>
+
+    <!-- ═══ SW 更新提示 ═══════════════════════════════════════════ -->
+    <div id="swUpdateToast" class="sw-update-toast" aria-hidden="true">
+      <span>有新版本可用</span>
+      <button id="swUpdateBtn">刷新</button>
+      <button id="swUpdateClose" aria-label="关闭">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
     <script src="js/app.js"></script>
     <script src="js/track-store.js"></script>
     <script src="js/rules.js"></script>
@@ -583,7 +575,22 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
-          navigator.serviceWorker.register('./sw.js').catch(function () {});
+          navigator.serviceWorker.register('./sw.js').then(function (reg) {
+            // SW 版本更新提示
+            reg.addEventListener('updatefound', function () {
+              var newSW = reg.installing;
+              if (!newSW) return;
+              newSW.addEventListener('statechange', function () {
+                if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                  var toast = document.getElementById('swUpdateToast');
+                  if (toast) {
+                    toast.classList.add('visible');
+                    toast.setAttribute('aria-hidden', 'false');
+                  }
+                }
+              });
+            });
+          }).catch(function () {});
         });
       }
 
@@ -628,76 +635,96 @@
         }
       })();
 
-      /* ═══ iOS PWA Safe Area 修复 ════════════════════════════════ */
+      /* ═══ PWA Safe Area 修复（合并顶部 + 底部安全区）═══════════════ */
+      /* 策略：优先信任 env()，仅在 iOS standalone 时用屏幕高度兜底 */
       (function () {
-        if (!window.navigator.standalone) return; // 仅 iOS PWA 模式
+        var isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        if (!isStandalone) return;
 
-        // 添加 pwa-standalone 类，CSS 可针对此做额外适配
+        // 添加 CSS class
         document.documentElement.classList.add('pwa-standalone');
-        document.documentElement.classList.add('pwa-ios');
+        var isIOS = !!window.navigator.standalone;
+        if (isIOS) document.documentElement.classList.add('pwa-ios');
+
+        /* ─── 读取 env(safe-area-inset-top) ───────────────────────── */
+        function readEnv(property) {
+          var test = document.createElement('div');
+          test.style.cssText = 'position:fixed;left:0;width:1px;height:1px;' + property + ':env(' + property + ')';
+          document.body.appendChild(test);
+          var v = parseInt(getComputedStyle(test)[property === 'padding-top' ? 'paddingTop' : 'paddingBottom'], 10);
+          document.body.removeChild(test);
+          return v;
+        }
 
         function getSafeTop() {
-          // 方式 1：通过 CSS env() 读取系统安全区域（最可靠）
-          var test = document.createElement('div');
-          test.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding-top:env(safe-area-inset-top)';
-          document.body.appendChild(test);
-          var v = parseInt(getComputedStyle(test).paddingTop, 10);
-          document.body.removeChild(test);
+          var v = readEnv('padding-top');
           if (v && v >= 10) return v;
-
-          // 方式 2：env() 未生效时，根据屏幕尺寸推算（仅 iOS PWA）
+          // iOS standalone 兜底：屏幕高度推算
+          if (!isIOS) return 0;
           var h = window.screen.height;
-          var w = window.screen.width;
           var ratio = window.devicePixelRatio || 1;
-
-          // 统一规则：高度>=896px 的 iPhone 有刘海/灵动岛
-          // 动态岛/刘海机型 top = 59px（包含状态栏）
-          if (h * ratio >= 2000 || h >= 896) return 59; // 14 Pro Max / 15 Plus / 16 系列
-          if (h >= 844) return 54; // 14 Pro / 15 Pro
-          if (h >= 812) return 44; // X / XS / 11 Pro / 12/13 mini
-          return 20; // SE / 8 及以下
+          if (h * ratio >= 2000 || h >= 896) return 59;
+          if (h >= 844) return 54;
+          if (h >= 812) return 44;
+          return 20;
         }
 
         var sat = getSafeTop();
-
-        // 应用到所有需要 safe-area 的覆盖层
-        var targets = [
-          '.init-overlay',
-          '.app .top',
-          '.memory-panel',
-          '.launcher-panel',
-          '.action-modal-panel',
-          '.si-modal',
-        ];
-        targets.forEach(function (sel) {
+        var topTargets = ['.init-overlay', '.app .top', '.memory-panel', '.launcher-panel', '.action-modal-panel', '.si-modal'];
+        topTargets.forEach(function (sel) {
           var els = document.querySelectorAll(sel);
           for (var i = 0; i < els.length; i++) {
             els[i].style.setProperty('--pwa-safe-top', sat + 'px');
           }
         });
+        document.documentElement.style.setProperty('--safe-top-real', sat + 'px');
+        if (sat >= 44) document.documentElement.classList.add('has-notch');
 
-        // 监听 orientation change，重新计算（iPad 横竖屏切换时 safe area 变化）
+        function getSafeBottom() {
+          var v = readEnv('padding-bottom');
+          if (v && v >= 10) return v;
+          // iOS standalone 兜底
+          if (!isIOS) return 0;
+          var h = window.screen.height;
+          if (h >= 812) return 34;
+          return 0;
+        }
+
+        var sab = getSafeBottom();
+        document.documentElement.style.setProperty('--pwa-safe-bottom', sab + 'px');
+
+        /* ─── 统一 orientation change 处理 ──────────────────────── */
         window.addEventListener('orientationchange', function () {
           setTimeout(function () {
             var sat2 = getSafeTop();
-            targets.forEach(function (sel) {
+            topTargets.forEach(function (sel) {
               var els = document.querySelectorAll(sel);
               for (var i = 0; i < els.length; i++) {
                 els[i].style.setProperty('--pwa-safe-top', sat2 + 'px');
               }
             });
-            // 通知 CSS 重新适配
             document.documentElement.style.setProperty('--safe-top-real', sat2 + 'px');
+
+            var sab2 = getSafeBottom();
+            document.documentElement.style.setProperty('--pwa-safe-bottom', sab2 + 'px');
           }, 300);
         });
+      })();
 
-        // 立即设置 CSS 变量
-        document.documentElement.style.setProperty('--safe-top-real', sat + 'px');
-
-        /* ═══ 检测是否为 notch/灵动岛 机型，以便 CSS 做差异化处理 ═══ */
-        if (sat >= 44) {
-          document.documentElement.classList.add('has-notch');
-        }
+      /* ═══ VisualViewport 键盘适配（Android PWA + iOS） ═══════════ */
+      /* 当键盘弹出时，fixed 定位元素在部分浏览器中可能被遮挡，
+         通过 --keyboard-inset CSS 变量动态补偿底部间距 */
+      (function () {
+        if (!('visualViewport' in window)) return;
+        var initialHeight = window.innerHeight;
+        window.visualViewport.addEventListener('resize', function () {
+          var diff = initialHeight - window.visualViewport.height;
+          if (diff > 100) {
+            document.documentElement.style.setProperty('--keyboard-inset', diff + 'px');
+          } else {
+            document.documentElement.style.removeProperty('--keyboard-inset');
+          }
+        });
       })();
 
       /* ═══ 移动端键盘弹出时输入框自动滚入可视区 ══════════════════ */
@@ -710,6 +737,138 @@
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }, 300);
         });
+      })();
+
+      /* ═══ PWA 安装提示（Android Chrome）═══════════════════════════ */
+      (function () {
+        var deferredPrompt = null;
+        var banner = document.getElementById('pwaInstallBanner');
+        var installBtn = document.getElementById('pwaInstallBtn');
+        var closeBtn = document.getElementById('pwaInstallClose');
+        if (!banner) return;
+
+        // 检查是否已安装或 30 天内忽略过
+        function shouldShowBanner() {
+          try {
+            var val = localStorage.getItem('pwa-install-dismissed');
+            if (!val) return true;
+            if (val === 'installed') return false;
+            var ts = parseInt(val, 10);
+            if (isNaN(ts)) return true;
+            return Date.now() - ts > 30 * 24 * 60 * 60 * 1000;
+          } catch (e) { return true; }
+        }
+
+        window.addEventListener('beforeinstallprompt', function (e) {
+          e.preventDefault();
+          deferredPrompt = e;
+          if (shouldShowBanner()) {
+            banner.classList.add('visible');
+            banner.setAttribute('aria-hidden', 'false');
+          }
+        });
+
+        if (installBtn) {
+          installBtn.addEventListener('click', function () {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function () {
+              deferredPrompt = null;
+              banner.classList.remove('visible');
+              banner.setAttribute('aria-hidden', 'true');
+            });
+          });
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function () {
+            banner.classList.remove('visible');
+            banner.setAttribute('aria-hidden', 'true');
+            try { localStorage.setItem('pwa-install-dismissed', Date.now()); } catch (e) {}
+          });
+        }
+
+        window.addEventListener('appinstalled', function () {
+          banner.classList.remove('visible');
+          banner.setAttribute('aria-hidden', 'true');
+          deferredPrompt = null;
+          try { localStorage.setItem('pwa-install-dismissed', 'installed'); } catch (e) {}
+        });
+      })();
+
+      /* ═══ 断网检测指示器 ════════════════════════════════════════════ */
+      (function () {
+        var indicator = document.getElementById('offlineIndicator');
+        if (!indicator) return;
+
+        function update() {
+          var offline = !navigator.onLine;
+          indicator.classList.toggle('visible', offline);
+          indicator.setAttribute('aria-hidden', String(!offline));
+        }
+
+        window.addEventListener('online', update);
+        window.addEventListener('offline', update);
+        update();
+      })();
+
+      /* ═══ SW 版本更新提示 ═══════════════════════════════════════════ */
+      (function () {
+        if (!('serviceWorker' in navigator)) return;
+        var toast = document.getElementById('swUpdateToast');
+        var refreshBtn = document.getElementById('swUpdateBtn');
+        var closeBtn = document.getElementById('swUpdateClose');
+        if (!toast) return;
+
+        // 接收 SW 激活后的消息（注册在上一段 script 中完成）
+        navigator.serviceWorker.addEventListener('message', function (e) {
+          if (e.data && e.data.type === 'sw-updated') {
+            // 已经激活，直接刷新
+            if (!toast.classList.contains('visible')) {
+              toast.classList.add('visible');
+              toast.setAttribute('aria-hidden', 'false');
+            }
+          }
+        });
+
+        if (refreshBtn) {
+          refreshBtn.addEventListener('click', function () {
+            toast.classList.remove('visible');
+            toast.setAttribute('aria-hidden', 'true');
+            // 发送 skip-waiting 让新 SW 接管
+            navigator.serviceWorker.ready.then(function (reg) {
+              if (reg.waiting) {
+                reg.waiting.postMessage('skip-waiting');
+              }
+            });
+            // 等待 controllerchange 后刷新
+            var onControllerChange = function () {
+              navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
+              window.location.reload();
+            };
+            navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
+          });
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function () {
+            toast.classList.remove('visible');
+            toast.setAttribute('aria-hidden', 'true');
+          });
+        }
+      })();
+
+      /* ═══ PWA 独立模式：阻止 iOS 边缘滑动返回 ──────────────────── */
+      /* 仅在最左侧 4px 区域阻止，跳过按钮/输入以免阻塞边缘 UI */
+      (function () {
+        if (!window.navigator.standalone) return;
+        var edgeWidth = 4;
+        document.addEventListener('touchstart', function (e) {
+          if (e.touches.length !== 1 || e.touches[0].clientX >= edgeWidth) return;
+          var target = e.target;
+          if (target && (target.tagName === 'BUTTON' || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.closest('button, input, textarea, [role="button"]'))) return;
+          e.preventDefault();
+        }, { passive: false });
       })();
     </script>
   </body>

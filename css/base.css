@@ -56,6 +56,11 @@ input {
   background: none;
   touch-action: manipulation;
 }
+
+/* iOS Safari: 禁止输入框聚焦时自动缩放（font-size < 16px 时触发） */
+input, textarea, select {
+  font-size: 16px !important;
+}
 p {
   margin: 0;
   text-wrap: pretty;
