@@ -111,8 +111,8 @@
   }
   /* ═══ 移动端顶部导航：钉钉风格 ═══════════════════════════════════ */
   .top {
-    min-height: 52px;
-    padding: env(safe-area-inset-top, 0px) 12px 0;
+    min-height: 56px;
+    padding: env(safe-area-inset-top, 0px) 12px 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
