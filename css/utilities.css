@@ -161,3 +161,91 @@
 .overflow-hidden {
   overflow: hidden;
 }
+
+/* ═══ Skeleton / Shimmer 加载骨架屏 ══════════════════════════ */
+/* 用于内容加载时的占位动画，提升感知性能 */
+.skeleton {
+  background: var(--fg-soft);
+  border-radius: var(--r-sm);
+  position: relative;
+  overflow: hidden;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, var(--fg) 8%, transparent) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 常用骨架屏变体 */
+.skeleton-text {
+  height: 12px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+.skeleton-text:last-child {
+  width: 60%;
+}
+.skeleton-title {
+  height: 18px;
+  margin-bottom: 12px;
+  width: 40%;
+}
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  flex-shrink: 0;
+}
+.skeleton-card {
+  height: 80px;
+  border-radius: var(--r-lg);
+}
+.skeleton-metric {
+  height: 60px;
+  width: 100px;
+  border-radius: var(--r-lg);
+}
+.skeleton-chip {
+  height: 28px;
+  width: 60px;
+  border-radius: var(--r-full);
+}
+.skeleton-button {
+  height: 36px;
+  width: 80px;
+  border-radius: var(--r-md);
+}
+
+/* 深色模式下 skeleton 高光更柔和 */
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: var(--fg-muted);
+  }
+  .skeleton::after {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklch, var(--fg) 12%, transparent) 50%,
+      transparent 100%
+    );
+  }
+}
+
+/* 关闭动画偏好时隐藏 skeleton 动画 */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+    background: var(--fg-muted);
+  }
+}

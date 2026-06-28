@@ -8,6 +8,19 @@
 (function () {
   'use strict';
 
+  // ─── Lucide 安全调用封装 ─────
+  function refreshIcons(opts) {
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      if (!opts) {
+        lucide.createIcons();
+      } else if (opts.scope || opts.container || opts.attrs) {
+        lucide.createIcons(opts);
+      } else {
+        lucide.createIcons({ container: opts });
+      }
+    }
+  }
+
   // ─── localStorage 封装：复用 app.js 中已定义的 YAQ.ls ─────
   var ls = (window.YAQ && window.YAQ.ls) || {
     get: function (key, fallback) {
@@ -749,14 +762,16 @@
     html += '  </div>';
     if (aiZoneVisible) {
       html += '  <div class="rules-ai-body">';
-      html += '    <div class="rules-ai-input-row">';
-      html +=
-        '      <input type="text" id="aiRuleInput" class="rules-ai-input" placeholder="说一句话就能配置规则，例如：企业连续30天未登录标记为危险" value="' +
-        escHtml(aiInput) +
-        '" onkeydown="if(event.key===\'Enter\')window.parseAiRule()" />';
-      html +=
-        '      <button class="rules-ai-btn" onclick="window.parseAiRule()"><i data-lucide="wand-2" aria-hidden="true"></i> 解析</button>';
-      html += '    </div>';
+      html += '    ' + BottomInputBar.render({
+        placeholder: '说一句话就能配置规则，例如：企业连续30天未登录标记为危险',
+        inputId: 'aiRuleInput',
+        sendCommand: 'parseAiRule',
+        variant: 'purple',
+        sendIcon: 'wand-2',
+        sendButtonText: '解析',
+        showMic: false,
+        inputValue: aiInput
+      });
       html += '    <div class="rules-ai-hints">试试：';
       var examples = getAIExamples();
       for (var i = 0; i < Math.min(examples.length, 4); i++) {
@@ -1009,7 +1024,7 @@
     container.id = 'rulesDetailContainer';
     container.innerHTML = html;
     document.body.appendChild(container);
-    lucide.createIcons({ container: container });
+    refreshIcons(container);
   }
 
   function closeRuleDetail() {
@@ -1045,7 +1060,7 @@
       }
     }
     container.innerHTML = html;
-    lucide.createIcons();
+    refreshIcons();
   }
 
   function switchRulesDim(dimId) {
@@ -1100,7 +1115,7 @@
         previewHtml += '  </div>';
         previewHtml += '</div>';
         hints.insertAdjacentHTML('afterend', previewHtml);
-        lucide.createIcons();
+        refreshIcons();
       }
       showRulesToast('AI 已解析规则，请确认');
     } else {
@@ -1166,7 +1181,7 @@
       body.style.display = 'none';
       toggle.innerHTML = '展开 <i data-lucide="chevron-down" aria-hidden="true"></i>';
     }
-    lucide.createIcons();
+    refreshIcons();
   }
 
   function toggleAiZone() {
@@ -1189,7 +1204,7 @@
     if (icon) {
       icon.innerHTML = '<i data-lucide="chevron-' + (aiZoneVisible ? 'up' : 'down') + '" aria-hidden="true"></i>';
     }
-    lucide.createIcons();
+    refreshIcons();
   }
 
   function getTodayHitCount() {
@@ -1207,14 +1222,16 @@
   // 重建 AI 配置区展开内容
   function rebuildAiZoneBody(zone) {
     var bodyHtml = '<div class="rules-ai-body">';
-    bodyHtml += '    <div class="rules-ai-input-row">';
-    bodyHtml +=
-      '      <input type="text" id="aiRuleInput" class="rules-ai-input" placeholder="说一句话就能配置规则，例如：企业连续30天未登录标记为危险" value="' +
-      escHtml(aiInput) +
-      '" onkeydown="if(event.key===\'Enter\')window.parseAiRule()" />';
-    bodyHtml +=
-      '      <button class="rules-ai-btn" onclick="window.parseAiRule()"><i data-lucide="wand-2" aria-hidden="true"></i> 解析</button>';
-    bodyHtml += '    </div>';
+    bodyHtml += '    ' + BottomInputBar.render({
+      placeholder: '说一句话就能配置规则，例如：企业连续30天未登录标记为危险',
+      inputId: 'aiRuleInput',
+      sendCommand: 'parseAiRule',
+      variant: 'purple',
+      sendIcon: 'wand-2',
+      sendButtonText: '解析',
+      showMic: false,
+      inputValue: aiInput
+    });
     bodyHtml += '    <div class="rules-ai-hints">试试：';
     var examples = getAIExamples();
     for (var i = 0; i < Math.min(examples.length, 4); i++) {
@@ -1254,7 +1271,7 @@
     if (header) {
       header.insertAdjacentHTML('afterend', bodyHtml);
     }
-    lucide.createIcons();
+    refreshIcons();
   }
 
   // 更新页头摘要计数（不重绘页面）
@@ -1403,7 +1420,7 @@
   window.renderRulesPage = function () {
     var container = document.getElementById('sceneContent');
     container.innerHTML = renderRulesPage();
-    lucide.createIcons();
+    refreshIcons();
     // 首次加载渲染规则列表
     renderRulesList();
     // 保存规则变更

@@ -6,14 +6,17 @@
   position: fixed;
   top: calc(46px + constant(safe-area-inset-top));
   top: calc(46px + env(safe-area-inset-top));
-  left: 0;
   right: 0;
+  width: 420px;
+  max-width: 100%;
   bottom: 0;
   z-index: 900;
   background: #f5f7fb;
   display: none;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+  border-left: 1px solid #e2e8f0;
 }
 @media (min-width: 769px) {
   .init-overlay {
@@ -57,6 +60,31 @@
     padding: 16px 0 20px;
   }
 }
+.init-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.9);
+  color: #64748b;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.15s;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.init-close-btn:hover {
+  background: #fff;
+  color: #1e293b;
+  border-color: #94a3b8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
 .init-container::-webkit-scrollbar {
   width: 6px;
 }
@@ -221,12 +249,15 @@
   background: #1d4ed8;
 }
 
-/* 移动端：增大触摸目标至 44px（Apple HIG） */
+/* 移动端：输入框按钮保持紧凑，与外框留有间距 */
 @media (max-width: 768px) {
+  .init-chat-bar {
+    padding: 0 8px 0 14px;
+  }
   .init-chat-bar .init-chat-btn,
   .init-chat-bar .init-chat-send {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
   }
 }
 

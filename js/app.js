@@ -547,7 +547,11 @@
       // Agent 内容渲染完成后，显示对应的快捷输入
       if (window.YAQ.showGlobalQuickChip) {
         if (sceneId === 'dashboard') {
-          window.YAQ.showGlobalQuickChip([{ label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' }]);
+          var chips = [{ label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' }];
+          if (window.innerWidth <= 768) {
+            chips.push({ label: '查看行动建议', text: '查看行动建议' });
+          }
+          window.YAQ.showGlobalQuickChip(chips);
         } else if (sceneId === 'monthly-report') {
           window.YAQ.showGlobalQuickChip([
             { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
@@ -1638,9 +1642,11 @@
     }
     html += '</div></div>';
 
-    // ─── 待确认行动项 ────────────────────────────────────────
+    // ─── 待确认行动项（移动端隐藏） ──────────────────────────
     html +=
-      '<div class="info-card">' +
+      '<div class="info-card' +
+      (window.innerWidth <= 768 ? ' hide-mobile' : '') +
+      '">' +
       '<div class="info-card-head"><h3><i data-lucide="clipboard-check" aria-hidden="true" class="c-accent"></i> 待确认行动项</h3></div>' +
       renderActionItems() +
       '</div>';
@@ -5236,10 +5242,7 @@
       initialMsgHtml +
       '</div></div>' +
       '</div>' +
-      '<div class="drill-ai-bar">' +
-      '<input class="dmsg-input" id="dmsgInput" placeholder="追问..." onkeydown="if(event.key==\'Enter\')askAI()">' +
-      '<button class="dmsg-send" onclick="askAI()"><i data-lucide="send" width="14" height="14"></i></button>' +
-      '</div>' +
+      BottomInputBar.render({ placeholder: '追问...', inputId: 'dmsgInput', sendCommand: 'askAI', variant: 'compact', iconSize: 14, sendIcon: 'send' }) +
       '</div>';
 
     $dom.drillBody.innerHTML = listHtml + aiHtml;

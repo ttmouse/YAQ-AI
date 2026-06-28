@@ -1248,8 +1248,12 @@
         '<div class="intent-chip" onclick="YAQ.doIntent(\'' + intents[i] + '\')"><span>' + intents[i] + '</span></div>';
     }
     html += '</div></div>';
-    html +=
-      '<div class="agent-input-bar"><input type="text" placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降" id="dashboardQuery" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();YAQ.doDashboardQuery()}"><button class="aib-btn" onclick="YAQ.doDashboardQuery()"><i data-lucide="send" width="16" height="16"></i></button></div>';
+    html += BottomInputBar.render({
+      placeholder: '直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降',
+      inputId: 'dashboardQuery',
+      sendCommand: 'doDashboardQuery',
+      variant: 'inline'
+    });
     return html;
   }
   function doIntent(label) {
@@ -1515,6 +1519,12 @@
     }
     if (text.indexOf('巡查报告') >= 0 || text.indexOf('生成报告') >= 0) {
       showToast('生成巡查报告（演示功能）');
+      return;
+    }
+    if (text.indexOf('行动建议') >= 0) {
+      // 跳转到待确认行动场景
+      if (window.switchScene) window.switchScene('pending-actions');
+      else showToast('查看行动建议（演示功能）');
       return;
     }
     if (text.indexOf('哪些行动') >= 0 || text.indexOf('有什么行动') >= 0) {
@@ -1902,12 +1912,30 @@
     }
     var overlay = document.getElementById('initOverlay');
     if (overlay) {
-      var mainEl = document.querySelector('.main');
-      if (mainEl) mainEl.style.display = 'none';
+      // 不再隐藏 .main，让用户可以在初始化过程中自由切换场景
       overlay.style.display = 'flex';
       overlay.classList.add('active');
       var box = document.getElementById('chatBox');
       if (box) box.innerHTML = '';
+      // 添加关闭按钮（若尚未添加）
+      if (!document.getElementById('initCloseBtn')) {
+        var closeBtn = document.createElement('button');
+        closeBtn.id = 'initCloseBtn';
+        closeBtn.innerHTML = '<i data-lucide="x" width="18" height="18"></i>';
+        closeBtn.className = 'init-close-btn';
+        closeBtn.title = '关闭初始化面板（稍后可通过菜单重新打开）';
+        closeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          overlay.classList.remove('active');
+          overlay.style.display = 'none';
+        });
+        var container = overlay.querySelector('.init-container');
+        if (container) {
+          container.style.position = 'relative';
+          container.appendChild(closeBtn);
+        }
+        if (window.refreshIcons) refreshIcons(closeBtn);
+      }
       startConversation();
     }
   }
@@ -1995,7 +2023,12 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      window.addEventListener('yaq:booted', init);
+      if (window._yaqBooted) {
+        // bootApp 在 DOMContentLoaded 之前已执行（脚本同步加载时常见）
+        setTimeout(init, 0);
+      } else {
+        window.addEventListener('yaq:booted', init);
+      }
     });
   } else if (window._yaqBooted) {
     // bootApp 已执行完毕（事件已发射，监听器注册晚了），直接调用 init

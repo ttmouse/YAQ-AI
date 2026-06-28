@@ -35,9 +35,12 @@
 
     <!-- ═══ PWA — iOS 添加到主屏幕 + Android TWA ══════════════════ -->
     <link rel="manifest" href="manifest.json" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="应擎工作台" />
+    <meta name="theme-color" content="#f8f9fc" />
     <!-- iOS 所有尺寸图标 -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon.png" />
@@ -50,8 +53,6 @@
       href="apple-touch-icon.png"
       media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
     />
-    <meta name="theme-color" content="#f8f9fc" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1a1b2e" media="(prefers-color-scheme: dark)" />
     <meta name="mobile-web-app-capable" content="yes" />
     <!-- 禁止自动识别电话/地址（管理后台不需要） -->
     <meta name="format-detection" content="telephone=no,address=no,email=no" />
@@ -102,25 +103,11 @@
       <div class="init-quick-wrap" id="initQuickWrap"></div>
       <!-- 浮动卡片容器：渲染勾选面板（attn-card）、Agent开关等，位于聊天内容区与输入框之间 -->
       <div id="initFloatCard"></div>
+      <!-- init-chat-bar 由 BottomInputBar 组件规范生成（等价 BottomInputBar.render({variant:'init'})） -->
       <div class="init-chat-bar">
-        <input
-          type="text"
-          class="init-chat-input"
-          id="initChatInput"
-          placeholder="直接对话，例如：帮我看好重大隐患"
-          onkeydown="
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              window.convChatSend();
-            }
-          "
-        />
-        <button class="init-chat-btn" onclick="window.convChatVoice()" title="语音输入">
-          <i data-lucide="mic" width="16" height="16"></i>
-        </button>
-        <button class="init-chat-send" onclick="window.convChatSend()" title="发送">
-          <i data-lucide="arrow-up" width="16" height="16"></i>
-        </button>
+        <input type="text" class="init-chat-input" id="initChatInput" placeholder="直接对话，例如：帮我看好重大隐患" data-cmd-key="Enter" data-cmd="convChatSend" />
+        <button class="init-chat-btn" data-cmd="convChatVoice" title="语音输入"><i data-lucide="mic" width="16" height="16"></i></button>
+        <button class="init-chat-send" data-cmd="convChatSend" title="发送"><i data-lucide="arrow-up" width="16" height="16"></i></button>
       </div>
     </div>
 
@@ -260,6 +247,7 @@
           <!-- 由 JS 动态渲染 -->
         </div>
       </div>
+      <!-- global-chat-bar 由 BottomInputBar 组件规范生成（variant:'pill'） -->
       <div class="global-chat-bar">
         <div class="global-chat-inner">
           <input
@@ -527,6 +515,7 @@
     </div>
 
     <script src="js/lucide.min.js"></script>
+    <script src="js/components/bottom-input-bar.js"></script>
     <script>
       // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
       (function () {
@@ -600,6 +589,20 @@
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
+      </div>
+    </div>
+
+    <!-- ═══ iOS PWA 安装引导（iOS Safari 分享菜单 → 添加到主屏幕） ═══ -->
+    <div id="pwaIosGuide" class="pwa-ios-guide" aria-hidden="true">
+      <div class="pwa-ios-guide-content">
+        <div class="pwa-ios-guide-icon">📱</div>
+        <div class="pwa-ios-guide-title">安装「应擎工作台」</div>
+        <ol class="pwa-ios-guide-steps">
+          <li>点击底部分享按钮 <span aria-label="分享">⎔</span></li>
+          <li>向下滑动并选择「添加到主屏幕」</li>
+          <li>点击右上角「添加」</li>
+        </ol>
+        <button class="pwa-ios-guide-btn" id="pwaIosGuideBtn">知道了</button>
       </div>
     </div>
 
@@ -830,6 +833,120 @@
         });
       })();
 
+      /* ═══ 移动端：底部 Sheet 滑动手势关闭（swipe-to-dismiss）══════════ */
+      /* Material Design 底部弹窗标准交互模式 */
+      (function () {
+        if (!('ontouchstart' in window)) return;
+        var SHEET_SELECTORS = [
+          '.action-modal-panel', '.pa-modal-panel', '.modal-panel',
+          '.drill-float', '.conv-sheet', '.memory-panel'
+        ];
+        var threshold = 80; // 下滑 px 阈值触发关闭
+        var startY = 0;
+        var currentY = 0;
+        var isDragging = false;
+        var activeSheet = null;
+        var initialTransform = 0;
+        var maxDrag = 200; // 最大拖动距离
+
+        function findSheet(el) {
+          while (el) {
+            if (el.classList && SHEET_SELECTORS.some(function (sel) {
+              return el.matches && el.matches(sel);
+            })) return el;
+            el = el.parentElement;
+          }
+          return null;
+        }
+
+        function isSheetOpen(sheet) {
+          // 判断底栏是否已打开
+          return sheet.classList.contains('open') ||
+                 (sheet.style.display && sheet.style.display !== 'none' &&
+                  sheet.style.display !== '');
+        }
+
+        function getCloseTrigger(sheet) {
+          // 找遮罩层或关闭按钮
+          var overlay = sheet.closest('[class*="overlay"]');
+          if (overlay) return overlay;
+          return sheet;
+        }
+
+        function dragStart(e) {
+          // 只处理顶部40px内的触摸（避免干扰内容滚动）
+          var touch = e.touches[0];
+          var sheet = findSheet(e.target);
+          if (!sheet) return;
+          // 在 sheet 顶部区域或拖拽手柄区域开始拖动
+          var rect = sheet.getBoundingClientRect();
+          var relY = touch.clientY - rect.top;
+          var dragHandle = sheet.querySelector('::before') || sheet.firstElementChild;
+          if (relY > 50) return; // 只允许从顶部50px区域开始拖
+          if (!isSheetOpen(sheet)) return;
+
+          startY = touch.clientY;
+          currentY = startY;
+          isDragging = true;
+          activeSheet = sheet;
+          initialTransform = 0;
+          sheet.style.transition = 'none';
+        }
+
+        function dragMove(e) {
+          if (!isDragging || !activeSheet) return;
+          var touch = e.touches[0];
+          currentY = touch.clientY;
+          var delta = currentY - startY;
+          if (delta < 0) delta = 0; // 不允许上拉
+          delta = Math.min(delta, maxDrag);
+          activeSheet.style.transform = 'translateY(' + delta + 'px)';
+          // 同时调节遮罩透明度
+          var overlay = activeSheet.closest('[class*="overlay"]');
+          if (overlay) {
+            overlay.style.transition = 'none';
+            overlay.style.opacity = Math.max(0, 1 - delta / maxDrag);
+          }
+        }
+
+        function dragEnd() {
+          if (!isDragging || !activeSheet) return;
+          var delta = currentY - startY;
+          activeSheet.style.transition = '';
+          var overlay = activeSheet.closest('[class*="overlay"]');
+          if (overlay) overlay.style.transition = '';
+
+          if (delta > threshold) {
+            // 超过阈值 → 关闭
+            activeSheet.style.transform = 'translateY(100%)';
+            if (overlay) overlay.style.opacity = '0';
+            setTimeout(function () {
+              if (!activeSheet) return;
+              activeSheet.style.transform = '';
+              if (overlay) {
+                overlay.style.opacity = '';
+                // 触发关闭：隐藏 overlay
+                var closeTrigger = getCloseTrigger(activeSheet);
+                closeTrigger.classList.remove('open');
+                if (closeTrigger.style.display) closeTrigger.style.display = 'none';
+              }
+              activeSheet = null;
+            }, 200);
+          } else {
+            // 未超过阈值 → 弹回
+            activeSheet.style.transform = '';
+            if (overlay) overlay.style.opacity = '';
+          }
+          isDragging = false;
+          activeSheet = null;
+        }
+
+        document.addEventListener('touchstart', dragStart, { passive: true });
+        document.addEventListener('touchmove', dragMove, { passive: true });
+        document.addEventListener('touchend', dragEnd, { passive: true });
+        document.addEventListener('touchcancel', dragEnd, { passive: true });
+      })();
+
       /* ═══ PWA 安装提示（Android Chrome）═══════════════════════════ */
       (function () {
         var deferredPrompt = null;
@@ -891,6 +1008,46 @@
             localStorage.setItem('pwa-install-dismissed', 'installed');
           } catch (e) {}
         });
+      })();
+
+      /* ═══ iOS PWA 安装引导（非独立模式的 iOS Safari）══════════════ */
+      (function () {
+        // 仅 iOS Safari 非 standalone 模式显示
+        var isIOS = !!window.navigator.standalone !== undefined && !window.navigator.standalone;
+        var isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        if (isStandalone) return;
+
+        var guide = document.getElementById('pwaIosGuide');
+        var btn = document.getElementById('pwaIosGuideBtn');
+        if (!guide) return;
+
+        function shouldShowGuide() {
+          try {
+            var val = localStorage.getItem('pwa-ios-guide-dismissed');
+            if (val === 'true') return false;
+            return true;
+          } catch (e) {
+            return true;
+          }
+        }
+
+        if (shouldShowGuide()) {
+          // 延迟显示，等待页面加载完成
+          setTimeout(function () {
+            guide.classList.add('visible');
+            guide.setAttribute('aria-hidden', 'false');
+          }, 2000);
+        }
+
+        if (btn) {
+          btn.addEventListener('click', function () {
+            guide.classList.remove('visible');
+            guide.setAttribute('aria-hidden', 'true');
+            try {
+              localStorage.setItem('pwa-ios-guide-dismissed', 'true');
+            } catch (e) {}
+          });
+        }
       })();
 
       /* ═══ 断网检测指示器 ════════════════════════════════════════════ */

@@ -48,6 +48,9 @@
 /* ─── 手机横屏 / 小平板（≤768px） ────────────────────────────── */
 @media (max-width: 768px) {
   /* Toast 位置调整 */
+  .hide-mobile {
+    display: none !important;
+  }
   .toast {
     left: 16px;
     right: 16px;
@@ -220,6 +223,9 @@
   /* Init overlay 适配 */
   .init-overlay {
     top: calc(52px + env(safe-area-inset-top));
+    width: 100%;
+    border-left: none;
+    box-shadow: none;
   }
 
   /* 月报侧边栏 */
@@ -1388,4 +1394,206 @@ html.pwa-standalone .launcher-body {
   padding-bottom: calc(
     24px + var(--pwa-safe-bottom, env(safe-area-inset-bottom, 34px)) + var(--keyboard-inset, 0px)
   ) !important;
+}
+
+/* ═══ 微交互：触控反馈 ════════════════════════════════════════ */
+/* 符合 Material Design 触控涟漪精神，使用简洁的 scale + opacity 反馈 */
+@media (hover: none) and (pointer: coarse) {
+  /* 可交互元素按下微缩反馈 */
+  .work-item:active,
+  .hazard-item:active,
+  .block-card:active,
+  .metric-card:active,
+  .attn-card:active,
+  .pref-card:active,
+  .choice-card:active,
+  .launcher-item:active,
+  .sri-item:active,
+  .nav-item:active,
+  .stat-card:active,
+  .eff-card:active,
+  .matrix-card:active {
+    transform: scale(0.97);
+    transition: transform 0.1s var(--ease);
+  }
+
+  /* 按钮按下反馈 */
+  button:not(:disabled):active,
+  [role='button']:not(:disabled):active,
+  .pill:active,
+  .chip:active {
+    transform: scale(0.95);
+    transition: transform 0.08s var(--ease);
+  }
+
+  /* 列表项按下加深背景 */
+  .work-item:active,
+  .hazard-item:active,
+  .nav-item:active {
+    background: var(--active-bg) !important;
+  }
+}
+
+/* ─── 微交互：过渡动画（仅 touch 设备） ───────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  .toast {
+    transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+  }
+  .toast.visible {
+    animation: toastSlideUp 0.25s var(--ease) both;
+  }
+}
+
+@keyframes toastSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ═══ 辅助功能：减少动画（prefers-reduced-motion） ════════════ */
+/* WCAG 成功标准 2.3.3 — 动画来自交互 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* 底部 Sheet 弹窗直接显现 */
+  .action-modal-panel,
+  .pa-modal-panel,
+  .modal-panel,
+  .drill-float {
+    animation: none !important;
+    transition: none !important;
+  }
+  .action-modal-panel.open,
+  .pa-modal-panel[style*='display: flex'],
+  .modal-panel[style*='display: flex'],
+  .drill-float.open {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ═══ 触控反馈：iOS-style active 态（系统级 feedback） ═════════ */
+@media (hover: none) and (pointer: coarse) {
+  /* 快速闪现的 active 背景 */
+  .launcher-item:active .li-icon,
+  .sri-item:active .sri-icon {
+    transform: scale(0.92);
+    transition: transform 0.08s var(--ease);
+  }
+
+  /* 搜索框清除按钮放大触控目标 */
+  .launcher-search-clear {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ═══ PWA 安装横幅 — 移动端适配 ══════════════════════════════ */
+@media (max-width: 768px) {
+  .pwa-install-banner {
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  .pwa-install-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    min-height: 44px;
+    border-radius: 10px;
+  }
+  .pwa-install-close {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ═══ iOS PWA 安装引导提示 ═══════════════════════════════════ */
+/* 在 iOS Safari 中显示，引导用户通过「分享→添加到主屏幕」安装 */
+.pwa-ios-guide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 60px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.pwa-ios-guide.visible {
+  display: flex;
+}
+.pwa-ios-guide-content {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px 20px 20px;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+}
+.pwa-ios-guide-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  color: var(--accent);
+}
+.pwa-ios-guide-title {
+  font-size: 17px;
+  font-weight: 650;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+.pwa-ios-guide-steps {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  text-align: left;
+  padding: 0 4px;
+  margin-bottom: 16px;
+}
+.pwa-ios-guide-steps li {
+  margin-bottom: 6px;
+  list-style: decimal inside;
+}
+.pwa-ios-guide-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 44px;
+}
+.pwa-ios-guide-btn:active {
+  opacity: 0.8;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .pwa-ios-guide {
+    background: rgba(0, 0, 0, 0.75);
+  }
 }

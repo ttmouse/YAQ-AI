@@ -1,7 +1,7 @@
 /* ═══ Service Worker — PWA 离线缓存（Network-First 策略）═══════════ */
 /* 管理后台数据动态变化，使用 Network-First 确保数据新鲜，
    离线时回退到缓存保障基本可用。 */
-var CACHE_NAME = 'yaq-ai-v3';
+var CACHE_NAME = 'yaq-ai-v6';
 var STATIC_ASSETS = [
   './',
   './index.html',
@@ -42,6 +42,13 @@ self.addEventListener('install', function (e) {
   self.skipWaiting();
 });
 
+/* ─── 消息：接收 skip-waiting 指令 ──────────────────────────────── */
+self.addEventListener('message', function (e) {
+  if (e.data === 'skip-waiting') {
+    self.skipWaiting();
+  }
+});
+
 /* ─── 激活：清理旧缓存 ────────────────────────────────────────── */
 self.addEventListener('activate', function (e) {
   e.waitUntil(
@@ -71,13 +78,14 @@ self.addEventListener('fetch', function (e) {
   // ─── 外部 CDN：不缓存 ──────────────────────────────────────────
   if (url.hostname !== self.location.hostname) return;
 
-  // ─── 静态资源（CSS/JS/图片/字体等）：Cache-First ────────────────
+  // ─── 静态资源（CSS/JS/图片/字体等）：Stale-While-Revalidate ────
+  /* 先返回缓存（快速），同时后台更新缓存，下次访问即为最新版本 */
   var staticExts = ['css', 'js', 'png', 'svg', 'jpg', 'jpeg', 'gif', 'webp', 'woff', 'woff2', 'ttf', 'ico'];
   if (staticExts.indexOf(ext) !== -1) {
     e.respondWith(
       caches.match(e.request).then(function (cached) {
-        if (cached) return cached;
-        return fetch(e.request).then(function (response) {
+        // 立即返回缓存，同时发起网络请求更新缓存
+        var fetchPromise = fetch(e.request).then(function (response) {
           if (response && response.status === 200) {
             var clone = response.clone();
             caches.open(CACHE_NAME).then(function (cache) {
@@ -85,7 +93,11 @@ self.addEventListener('fetch', function (e) {
             });
           }
           return response;
+        }).catch(function () {
+          return null;
         });
+        // 有缓存则先返回，后台静默更新；无缓存则等网络
+        return cached || fetchPromise;
       })
     );
     return;
