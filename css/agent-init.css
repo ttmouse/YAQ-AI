@@ -3,34 +3,15 @@
    ═════════════════════════════════════════════════════════════════════ */
 
 .init-overlay {
-  position: fixed;
-  top: calc(46px + constant(safe-area-inset-top));
-  top: calc(46px + env(safe-area-inset-top));
-  right: 0;
-  width: 420px;
-  max-width: 100%;
-  bottom: 0;
-  z-index: 900;
-  background: #f5f7fb;
   display: none;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
-  border-left: 1px solid #e2e8f0;
-}
-@media (min-width: 769px) {
-  .init-overlay {
-    top: calc(52px + constant(safe-area-inset-top));
-    top: calc(52px + env(safe-area-inset-top));
-  }
+  width: 100%;
+  height: 100%;
+  background: #f5f7fb;
 }
 .init-overlay.active {
   display: flex;
-}
-
-/* 初始化场景激活时隐藏主应用底部输入条，避免重复输入框 */
-body:has(.init-overlay.active) .global-chat-bar {
-  display: none !important;
 }
 
 .init-container {

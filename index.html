@@ -95,18 +95,6 @@
       </div>
     </div>
 
-    <!-- ═══ 主控 Agent 初始化场景 ═════════════════════════════════════ -->
-    <div class="init-overlay" id="initOverlay">
-      <div class="init-container">
-        <div class="init-content" id="chatBox"></div>
-      </div>
-      <div class="init-quick-wrap" id="initQuickWrap"></div>
-      <!-- 浮动卡片容器：渲染勾选面板（attn-card）、Agent开关等，位于聊天内容区与输入框之间 -->
-      <div id="initFloatCard"></div>
-      <!-- init-chat-bar 由 BottomInputBar 组件动态渲染 -->
-      <div id="initChatBarMount"></div>
-    </div>
-
     <!-- ═══ 杨站长工作台 v18 — 3 列布局 ════════════════════════════════ -->
     <div class="app">
       <!-- ─── 顶栏 ─────────────────────────────────────────────────── -->
@@ -243,8 +231,24 @@
           <!-- 由 JS 动态渲染 -->
         </div>
       </div>
-      <!-- global-chat-bar 由 BottomInputBar 组件动态渲染 -->
-      <div id="globalChatBarMount"></div>
+      <!-- global-chat-bar 全局底部输入条（固定在底部，各场景复用） -->
+      <div class="global-chat-bar">
+        <div class="global-chat-inner">
+          <input
+            type="text"
+            id="globalChatInput"
+            placeholder="直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降"
+            data-cmd-key="Enter"
+            data-cmd="globalChatSend"
+          />
+          <button class="global-chat-mic" data-cmd="convChatVoice" title="语音输入">
+            <i data-lucide="mic" width="16" height="16"></i>
+          </button>
+          <button class="global-chat-btn" data-cmd="globalChatSend" title="发送">
+            <i data-lucide="arrow-up" width="16" height="16"></i>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ─── Drawer Overlay ───────────────────────────────────────────── -->
@@ -497,6 +501,7 @@
     <script src="js/lucide.min.js"></script>
     <script src="js/components/bottom-input-bar.js"></script>
     <script>
+      // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
       (function () {
         if (typeof lucide === 'undefined' || !lucide.createIcons) return;
         var orig = lucide.createIcons;
