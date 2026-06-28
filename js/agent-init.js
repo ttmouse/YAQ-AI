@@ -1983,9 +1983,6 @@
     // ─── 聊天交互 ───
     convChatSend: convChatSend,
     convChatVoice: convChatVoice,
-    convChatAttach: function () {
-      showToast('文件上传功能即将上线');
-    },
     convQuickReply: convQuickReply,
     globalChatSend: globalChatSend,
     globalChatQuick: globalChatQuick,
