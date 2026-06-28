@@ -6806,6 +6806,8 @@
   height: auto;
   min-height: 38px;
   margin: 0 auto 6px;
+  margin: 0 auto calc(6px + constant(safe-area-inset-bottom));
+  margin: 0 auto calc(6px + env(safe-area-inset-bottom));
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid #e2eaf8;
   border-radius: 23px;

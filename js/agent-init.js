@@ -875,19 +875,10 @@
   function doEnter() {
     showActions([]);
     ls.set(STORAGE_KEY, 'true');
-    // 关闭初始化遮罩，显示工作台
-    var overlay = document.getElementById('initOverlay');
-    if (overlay) {
-      overlay.classList.remove('active');
-      overlay.style.display = 'none';
+    // 标记初始化完成，切换到工作台
+    if (window.switchScene) {
+      window.switchScene('dashboard');
     }
-    var mainEl = document.querySelector('.main');
-    if (mainEl) mainEl.style.display = '';
-    // 清空工作区，播放首次诊断
-    var sc = document.getElementById('sceneContent');
-    if (sc) sc.innerHTML = '';
-    var centerEl = document.querySelector('.center');
-    if (centerEl) centerEl.scrollTop = 0;
     setTimeout(startFirstDiagnosis, 300);
   }
 
@@ -1023,7 +1014,7 @@
   }
 
   function convChatSend() {
-    var input = document.getElementById('initChatInput');
+    var input = document.getElementById('globalChatInput') || document.getElementById('initChatInput');
     if (!input || !input.value.trim()) return;
     var val = input.value.trim();
     input.value = '';
@@ -1090,7 +1081,7 @@
     }
   }
   function convChatVoice() {
-    var input = document.getElementById('initChatInput');
+    var input = document.getElementById('globalChatInput') || document.getElementById('initChatInput');
     if (!input) return;
     // 检测当前页面上下文，决定模拟内容
     var prefGrid = document.getElementById('prefGrid');
@@ -1260,6 +1251,12 @@
     showToast('正在查看「' + label + '」…（演示回复）');
   }
   function doDashboardRedirect() {
+    // 关闭初始化浮窗
+    var ov = document.getElementById('initOverlay');
+    if (ov && ov.classList.contains('active')) {
+      ov.classList.remove('active');
+      ov.style.display = 'none';
+    }
     // 进入初始化工作台（诊断视图）
     var sc = document.getElementById('sceneContent');
     if (sc) sc.innerHTML = '';
@@ -1268,6 +1265,12 @@
     }, 200);
   }
   function doNormalDashboard() {
+    // 关闭初始化浮窗
+    var ov = document.getElementById('initOverlay');
+    if (ov && ov.classList.contains('active')) {
+      ov.classList.remove('active');
+      ov.style.display = 'none';
+    }
     if (window.renderScene) window.renderScene('dashboard');
   }
   function doDashboardQuery() {
@@ -1473,6 +1476,17 @@
     return null;
   }
  // ─── 全局快捷芯片：追加到消息流中，跟随内容滚动 ──
+  // ─── 全局输入条：根据场景更新占位符和命令 ──────────────
+  function updateGlobalInputBar(opts) {
+    if (!opts) opts = {};
+    var input = document.getElementById('globalChatInput');
+    var sendBtn = document.querySelector('.global-chat-btn');
+    if (!input) return;
+    input.placeholder = opts.placeholder || '直接问应擎总控...';
+    input.setAttribute('data-cmd', opts.sendCommand || 'globalChatSend');
+    if (sendBtn) sendBtn.setAttribute('data-cmd', opts.sendCommand || 'globalChatSend');
+  }
+
   function showGlobalQuickChip(chips) {
     if (!chips || chips.length === 0) return;
     var html = '<div class="quick-chips-row" id="globalQuickChipsInline">';
@@ -1910,33 +1924,9 @@
       }, 50);
       return;
     }
-    var overlay = document.getElementById('initOverlay');
-    if (overlay) {
-      // 不再隐藏 .main，让用户可以在初始化过程中自由切换场景
-      overlay.style.display = 'flex';
-      overlay.classList.add('active');
-      var box = document.getElementById('chatBox');
-      if (box) box.innerHTML = '';
-      // 添加关闭按钮（若尚未添加）
-      if (!document.getElementById('initCloseBtn')) {
-        var closeBtn = document.createElement('button');
-        closeBtn.id = 'initCloseBtn';
-        closeBtn.innerHTML = '<i data-lucide="x" width="18" height="18"></i>';
-        closeBtn.className = 'init-close-btn';
-        closeBtn.title = '关闭初始化面板（稍后可通过菜单重新打开）';
-        closeBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          overlay.classList.remove('active');
-          overlay.style.display = 'none';
-        });
-        var container = overlay.querySelector('.init-container');
-        if (container) {
-          container.style.position = 'relative';
-          container.appendChild(closeBtn);
-        }
-        if (window.refreshIcons) refreshIcons(closeBtn);
-      }
-      startConversation();
+    // 切换到初始化场景（渲染在 #sceneContent 中，不再是浮窗）
+    if (window.switchScene) {
+      window.switchScene('agent-init');
     }
   }
 
@@ -1990,6 +1980,7 @@
     globalChatSend: globalChatSend,
     globalChatQuick: globalChatQuick,
     showGlobalQuickChip: showGlobalQuickChip,
+    updateGlobalInputBar: updateGlobalInputBar,
 
     // ─── 关注项选择 ───
     togglePref: togglePref,
@@ -2007,6 +1998,7 @@
     // ─── UI 辅助 ───
     closeSheet: closeSheet,
     reEnable: reEnable,
+    startConversation: startConversation,
     toggleDemoMenu: toggleDemoMenu,
     closeDemoMenu: closeDemoMenu,
   });

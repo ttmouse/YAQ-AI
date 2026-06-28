@@ -524,6 +524,9 @@
           case 'special-inspection':
             html = renderSpecialInspection();
             break;
+          case 'agent-init':
+            html = renderInitScene();
+            break;
           case 'monthly-report':
             html = renderMonthlyReport();
             break;
@@ -543,6 +546,21 @@
       // 同步批量操作栏状态
       if (sceneId === 'pending-actions') {
         updateBatchBar();
+      }
+      // 初始化场景：渲染完成后启动对话
+      if (sceneId === 'agent-init' && typeof window.YAQ.startConversation === 'function') {
+        setTimeout(window.YAQ.startConversation, 100);
+      }
+      // 更新全局底部输入条（placeholder + 命令）
+      if (window.YAQ.updateGlobalInputBar) {
+        var inputOpts = { placeholder: '直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降', sendCommand: 'globalChatSend' };
+        if (sceneId === 'agent-init') {
+          inputOpts.placeholder = '长按直接语音输入';
+          inputOpts.sendCommand = 'convChatSend';
+        } else if (sceneId === 'rules') {
+          inputOpts.placeholder = '输入规则描述...';
+        }
+        window.YAQ.updateGlobalInputBar(inputOpts);
       }
       // Agent 内容渲染完成后，显示对应的快捷输入
       if (window.YAQ.showGlobalQuickChip) {
@@ -572,6 +590,19 @@
         }
       });
     }, 80); // 80ms 模拟加载延迟
+  }
+
+  // ─── 初始化场景 ─────────────────────────────────────────
+  function renderInitScene() {
+    var html = '';
+    html += '<div class="init-overlay active" id="initOverlay">';
+    html += '  <div class="init-container">';
+    html += '    <div class="init-content" id="chatBox"></div>';
+    html += '  </div>';
+    html += '  <div class="init-quick-wrap" id="initQuickWrap"></div>';
+    html += '  <div id="initFloatCard"></div>';
+    html += '</div>';
+    return html;
   }
 
   // ─── 主控 Agent 扩展内容（初始化后总控台顶部显示） ──────────
@@ -5695,6 +5726,13 @@
       _switchTimer = null;
     }
 
+    // 切换到其他场景时关闭初始化浮窗
+    var initOv = document.getElementById('initOverlay');
+    if (initOv && initOv.classList.contains('active')) {
+      initOv.classList.remove('active');
+      initOv.style.display = 'none';
+    }
+
     state.activeScene = sceneId;
 
     // 非月报场景时隐藏侧边栏
@@ -5743,6 +5781,7 @@
       'supervision-track': '🔍 督办跟踪',
       'monthly-report': '📅 月报',
       'special-inspection': '🔍 智能专项检查',
+      'agent-init': '🤖 初始化引导',
     };
 
     _switchTimer = setTimeout(function () {
@@ -5991,6 +6030,7 @@
       'supervision-track': '🔍 督办跟踪',
       'monthly-report': '📅 月报',
       'special-inspection': '🔍 智能专项检查',
+      'agent-init': '🤖 初始化引导',
     };
     var name = sceneNames[sceneId] || sceneId;
 
@@ -7839,6 +7879,7 @@
     'supervision-track': '督办跟踪',
     'monthly-report': '月报',
     'special-inspection': '智能专项检查',
+    'agent-init': '初始化引导',
   };
 
   function switchTab(sceneId) {
