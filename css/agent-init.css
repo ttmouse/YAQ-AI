@@ -184,7 +184,7 @@ body:has(.init-overlay.active) .global-chat-bar {
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid #e2eaf8;
   border-radius: 23px;
-  padding: 0 14px 0 16px;
+  padding: 0 14px 0 8px;
   box-shadow: 0 4px 20px rgba(17, 24, 39, 0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -218,6 +218,25 @@ body:has(.init-overlay.active) .global-chat-bar {
 }
 .init-chat-bar .init-chat-input::placeholder {
   color: #b0bcca;
+}
+.init-chat-bar .init-chat-attach {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #e2eaf8;
+  background: transparent;
+  color: #94a3b8;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: all 0.15s;
+  margin-right: 2px;
+}
+.init-chat-bar .init-chat-attach:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #f8faff;
 }
 .init-chat-bar .init-chat-btn {
   width: 34px;
@@ -257,7 +276,11 @@ body:has(.init-overlay.active) .global-chat-bar {
 /* 移动端：输入框按钮保持紧凑，与外框留有间距 */
 @media (max-width: 768px) {
   .init-chat-bar {
-    padding: 0 8px 0 14px;
+    padding: 0 8px 0 6px;
+  }
+  .init-chat-bar .init-chat-attach {
+    width: 34px;
+    height: 34px;
   }
   .init-chat-bar .init-chat-btn,
   .init-chat-bar .init-chat-send {
