@@ -553,7 +553,7 @@
       }
       // 更新全局底部输入条（placeholder + 命令）
       if (window.YAQ.updateGlobalInputBar) {
-        var inputOpts = { placeholder: '直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降', sendCommand: 'globalChatSend' };
+        var inputOpts = { placeholder: '直接问小安，例如：帮我看一下物流片区为什么隐患闭环率下降', sendCommand: 'globalChatSend' };
         if (sceneId === 'agent-init') {
           inputOpts.placeholder = '长按直接语音输入';
           inputOpts.sendCommand = 'convChatSend';
@@ -667,28 +667,24 @@
 
   // ─── Dashboard ───────────────────────────────────────────────────
 
-  function renderDashboard() {
+  function renderDashboard(skipGreeting) {
     var p = MOCK.priority;
-
     var html = '';
-
-    // ─── 首次诊断后跳过 Agent 扩展内容和问候 ──────────────
-    if (ls.get('yaq_agent_initialized') === 'true') {
-      // 初始化后直接显示日报，不展示扩展条和问候
-    }
 
     // ─── 问候 ──────────────────────────────────────────────────
     var hour = new Date().getHours();
     var greeting = hour < 12 ? '早上好' : hour < 18 ? '下午好' : '晚上好';
-    html +=
-      '<div class="ai-briefing">' +
-      '<div class="ai-briefing-body">' +
-      '<div class="ai-briefing-head">' +
-      '<span><b>' +
-      greeting +
+    if (!skipGreeting) {
+      html +=
+        '<div class="ai-briefing">' +
+        '<div class="ai-briefing-body">' +
+        '<div class="ai-briefing-head">' +
+        '<span><b>' +
+        greeting +
       '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
       '</div>' +
       '</div>';
+    }
 
     // ─── 整体安全态势（指标卡两排） ────────────────────────────
     // 四级风险统计
@@ -1734,7 +1730,7 @@
     return html;
   }
 
-  // ─── 重点跟进操作函数 ──────────────────────────────────────
+  // ─── 日常工作台三大板块（供对话流追加） ──────────────────
   function doFollowupAction(action, itemName) {
     var map = {
       继续督办: function () {
@@ -8015,6 +8011,7 @@
     switchTab: switchTab,
     closeTab: closeTab,
     renderScene: renderScene,
+    renderDashboard: renderDashboard,
 
     // ─── UI 工具 ───
     showToast: showToast,
@@ -8169,6 +8166,7 @@
   window.closePAModal = window.YAQ.closePAModal;
   window.renderScene = window.YAQ.renderScene;
   window.escapeHtml = window.YAQ.escapeHtml; // 供 agent-init.js 等后续脚本使用
+  window.renderDashboard = window.YAQ.renderDashboard;
   window.switchScene = window.YAQ.switchScene; // 供移动端底部导航 onclick 使用
   window.onMetricSearch = window.YAQ.onMetricSearch; // 供指标搜索 oninput 使用 (#53)
   window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)

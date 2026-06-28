@@ -36,15 +36,8 @@
   flex-direction: column;
   gap: 10px;
   max-width: 100%;
-  margin: 0;
-  padding: 16px 12px 20px;
-}
-@media (min-width: 769px) {
-  .init-content {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 16px 0 20px;
-  }
+  margin: 0 auto;
+  padding: 0;
 }
 .init-close-btn {
   position: absolute;

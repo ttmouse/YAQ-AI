@@ -37,7 +37,6 @@
 @media (max-width: 1024px) {
   .result {
     max-width: 100%;
-    padding: 0 10px;
   }
   .global-chat-bar {
     width: calc(100% - 20px);
@@ -232,10 +231,6 @@
   #mrSidebar {
     top: 52px !important;
     z-index: 90 !important;
-  }
-
-  .result {
-    padding: 0 8px;
   }
 
   /* 内容区字号 */
