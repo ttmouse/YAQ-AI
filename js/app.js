@@ -2,6 +2,21 @@
   'use strict';
 
   // ════════════════════════════════════════════════════════════════
+  // Lucide 安全调用封装：避免 CDN 未加载时报错
+  // ════════════════════════════════════════════════════════════════
+  function refreshIcons(opts) {
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      if (!opts) {
+        lucide.createIcons();
+      } else if (opts.scope || opts.container || opts.attrs) {
+        lucide.createIcons(opts);
+      } else {
+        lucide.createIcons({ container: opts });
+      }
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════
   // 全局错误处理 — 防止白屏
   // ════════════════════════════════════════════════════════════════
   window.addEventListener('error', function (e) {
@@ -139,6 +154,7 @@
 
   // ─── YAQ 命名空间 — 后续脚本（agent-init.js/track-store.js）会补充更多方法 ──
   var YAQ = {};
+  window.YAQ = YAQ;
 
   // ════════════════════════════════════════════════════════════════
   // 自定义弹窗（替换原生 prompt/confirm — 移动端体验差不可接受）
@@ -415,9 +431,7 @@
       if (errorEl) errorEl.textContent = '';
       overlay.classList.add('open');
       // 渲染 Lucide 图标
-      if (typeof lucide !== 'undefined' && lucide.createIcons) {
-        lucide.createIcons({ container: overlay });
-      }
+      refreshIcons(overlay);
     }
   }
 
@@ -525,7 +539,7 @@
         html = renderError('渲染异常', '请尝试刷新页面或切换场景。' + (e.message ? ' (' + e.message + ')' : ''));
       }
       container.innerHTML = html;
-      lucide.createIcons();
+      refreshIcons();
       // 同步批量操作栏状态
       if (sceneId === 'pending-actions') {
         updateBatchBar();
@@ -1828,7 +1842,7 @@
     var footerEl = document.getElementById('actionModalFooter');
     footerEl.innerHTML = footerHtml;
     footerEl.style.display = 'block';
-    lucide.createIcons({ container: document.getElementById('actionModalBody') });
+    refreshIcons(document.getElementById('actionModalBody'));
     document.getElementById('actionModalOverlay').classList.add('open');
     document.getElementById('actionModal').classList.add('open');
   };
@@ -2062,7 +2076,7 @@
     }
 
     $dom.drawerBody.innerHTML = bodyHtml;
-    lucide.createIcons({ container: $dom.drawerBody });
+    refreshIcons($dom.drawerBody);
     $dom.drawerPanel.classList.add('open');
     $dom.drawerOverlay.classList.add('open');
   }
@@ -2808,7 +2822,7 @@
       var container = $dom.sceneContent;
       if (container && state.activeScene === 'disposal') {
         container.innerHTML = renderDisposal();
-        lucide.createIcons();
+        refreshIcons();
       }
       showToast('处置建议已更新（模拟）', 'mock');
     }, 800);
@@ -3791,7 +3805,7 @@
     }
     html += '</div>';
     content.innerHTML = html;
-    lucide.createIcons();
+    refreshIcons();
   }
 
   function hideMrSidebar() {
@@ -3967,7 +3981,7 @@
     var sc = document.getElementById('sceneContent');
     if (sc) {
       sc.innerHTML = renderMonthlyReport();
-      lucide.createIcons();
+      refreshIcons();
     }
     showToast(MR_SECTION_VISIBLE[sectionId] ? '已显示该模块' : '已隐藏该模块');
   };
@@ -4007,7 +4021,7 @@
       var sc = document.getElementById('sceneContent');
       if (sc) {
         sc.innerHTML = renderMonthlyReport();
-        lucide.createIcons();
+        refreshIcons();
       }
       showToast('✅ 同比分析模块已添加至报告底部');
     }, 800);
@@ -4043,7 +4057,7 @@
     var sc = document.getElementById('sceneContent');
     if (sc) {
       sc.innerHTML = renderMonthlyReport();
-      lucide.createIcons();
+      refreshIcons();
     }
     showToast('已恢复月报默认结构');
   };
@@ -4064,7 +4078,7 @@
     var sc = document.getElementById('sceneContent');
     if (sc) {
       sc.innerHTML = renderMonthlyReport();
-      lucide.createIcons();
+      refreshIcons();
     }
   };
 
@@ -4105,7 +4119,7 @@
       if (i < content.sections.length - 1) bodyHtml += '<div class="drawer-divider"></div>';
     }
     $dom.drawerBody.innerHTML = bodyHtml;
-    lucide.createIcons({ container: $dom.drawerBody });
+    refreshIcons($dom.drawerBody);
 
     $dom.drawerPanel.classList.add('open');
     $dom.drawerOverlay.classList.add('open');
@@ -4216,7 +4230,7 @@
       '\')"><i data-lucide="check" width="14" height="14"></i> 保存配置</button>';
 
     $dom.drawerBody.innerHTML = bodyHtml;
-    lucide.createIcons({ container: $dom.drawerBody });
+    refreshIcons($dom.drawerBody);
 
     // 预览 cron 变化
     var selectEl = $dom.agentScheduleSelect;
@@ -4704,7 +4718,7 @@
     $dom.epTabContent.innerHTML = epRenderTab(data, 'hazards');
     $dom.epPanel.classList.add('open');
     window.__epData = data;
-    lucide.createIcons({ container: $dom.epTabContent });
+    refreshIcons($dom.epTabContent);
   }
 
   function closeEnterprisePanel() {
@@ -4725,7 +4739,7 @@
     // 更新内容区
     $dom.epTabContent.innerHTML = epRenderTab(data, tab);
     window.__epActiveTab = tab;
-    lucide.createIcons({ container: $dom.epTabContent });
+    refreshIcons($dom.epTabContent);
   }
 
   function epRenderFixedTop(data) {
@@ -5254,7 +5268,7 @@
       };
     }
 
-    lucide.createIcons({ container: $dom.drillBody });
+    refreshIcons($dom.drillBody);
 
     $dom.drillFloat.classList.add('open');
     $dom.drillOverlay.classList.add('open');
@@ -5292,7 +5306,7 @@
     setTimeout(function () {
       conv.innerHTML += '<div class="dmsg agent"><div class="dmsg-bubble">' + answer + '</div></div>';
       conv.scrollTop = conv.scrollHeight;
-      lucide.createIcons({ container: conv });
+      refreshIcons(conv);
     }, 600);
   }
 
@@ -5651,7 +5665,7 @@
 
     $dom.taskModalRight.innerHTML = rightHtml;
 
-    lucide.createIcons({ container: $dom.taskModalRight });
+    refreshIcons($dom.taskModalRight);
     $dom.taskModalOverlay.style.display = 'block';
     $dom.taskModal.style.display = 'flex';
   }
@@ -5755,7 +5769,7 @@
           '渲染异常',
           '场景切换时发生错误，请刷新页面或重试。' + (e.message ? ' (' + e.message + ')' : ''),
         );
-        lucide.createIcons();
+        refreshIcons();
       }
       renderTabs();
       ws.classList.remove('scanning');
@@ -5825,7 +5839,7 @@
           '</div>';
         $dom.drawerBody.innerHTML = resultHtml;
         $dom.drawerCancel.style.display = 'none';
-        lucide.createIcons({ container: $dom.drawerBody });
+        refreshIcons($dom.drawerBody);
         showToast('✅ 已发起 ' + count + ' 条督办，通知已发送');
         return;
       }
@@ -5856,7 +5870,7 @@
         '</div>';
       $dom.drawerBody.innerHTML = resultHtml;
       $dom.drawerCancel.style.display = 'none';
-      lucide.createIcons({ container: $dom.drawerBody });
+      refreshIcons($dom.drawerBody);
 
       // 保存生成的文案供复制
       window.__lastGeneratedText = generated;
@@ -6139,7 +6153,7 @@
     $dom.metricModalOverlay.style.display = 'block';
     $dom.metricModal.style.display = 'flex';
     renderMetricCheckboxes();
-    lucide.createIcons({ container: $dom.metricModal });
+    refreshIcons($dom.metricModal);
   }
 
   function closeMetricConfig() {
@@ -6368,7 +6382,7 @@
         '</div>';
     }
     $dom.selectedMetricsList.innerHTML = html;
-    lucide.createIcons({ container: $dom.selectedMetricsList });
+    refreshIcons($dom.selectedMetricsList);
   }
 
   // ─── 拖拽排序 ─────────────────────────────────────────────────
@@ -6568,7 +6582,7 @@
     if (!html) return;
     tip.innerHTML = html;
     tip.classList.add('show');
-    lucide.createIcons({ container: tip });
+    refreshIcons(tip);
 
     // 鼠标进入浮层 → 取消隐藏
     tip.onmouseenter = function () {
@@ -6793,7 +6807,7 @@
           break;
       }
       container.innerHTML = html;
-      lucide.createIcons();
+      refreshIcons();
     } catch (e) {
       console.error('[YAQ] saveMetricConfig 渲染异常:', e);
       container.innerHTML =
@@ -7398,7 +7412,7 @@
     }
     el.innerHTML = html;
     el.classList.add('show');
-    if (window.lucide) lucide.createIcons(el);
+    if (window.lucide) refreshIcons(el);
   }
 
   // 点击搜索历史标签
@@ -7458,7 +7472,7 @@
         html = '<div class="launcher-empty">未找到 "<strong>' + $_escapeHtml(query) + '</strong>" 相关的结果</div>';
       }
       $dom.launcherBody.innerHTML = html;
-      lucide.createIcons({ container: $dom.launcherBody });
+      refreshIcons($dom.launcherBody);
       return;
     }
 
@@ -7543,7 +7557,7 @@
     }
 
     $dom.launcherBody.innerHTML = html;
-    lucide.createIcons({ container: $dom.launcherBody });
+    refreshIcons($dom.launcherBody);
   }
 
   // 渲染搜索结果项（带类型图标、高亮、摘要）
@@ -7658,9 +7672,17 @@
     $dom.launcherSearch.value = '';
     renderLauncher();
     renderSearchChips();
+    // 移动端：锁定背景滚动
+    if (window.innerWidth <= 768) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = '-' + window.scrollY + 'px';
+      document.body.dataset.scrollY = window.scrollY;
+    }
     setTimeout(function () {
       $dom.launcherSearch.focus();
-    }, 100);
+    }, 150);
   }
 
   function closeLauncher() {
@@ -7668,6 +7690,16 @@
     $dom.launcherOverlay.classList.remove('open');
     var chipsEl = $dom.launchChips;
     if (chipsEl) chipsEl.classList.remove('show');
+    // 移动端：恢复背景滚动
+    if (document.body.dataset.scrollY !== undefined) {
+      var scrollY = parseInt(document.body.dataset.scrollY, 10) || 0;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      delete document.body.dataset.scrollY;
+      window.scrollTo(0, scrollY);
+    }
   }
 
   function onLauncherSearch() {
@@ -8124,9 +8156,7 @@
       panel.classList.add('open');
       overlay.classList.add('open');
       YAQ.renderMemoryPanel();
-      if (typeof lucide !== 'undefined' && lucide.createIcons) {
-        lucide.createIcons({ container: panel });
-      }
+      refreshIcons(panel);
     }
   };
   YAQ.closeMemoryPanel = function () {
@@ -8238,9 +8268,7 @@
       }
     }
     // 刷新 lucide 图标
-    if (typeof lucide !== 'undefined' && lucide.createIcons) {
-      lucide.createIcons({ container: document.getElementById('memoryPanel') });
-    }
+    refreshIcons(document.getElementById('memoryPanel'));
   };
   YAQ.editMemoryCard = function (groupIdx, cardIdx) {
     var data = YAQ.getMemoryData();
@@ -8287,9 +8315,7 @@
     data[groupIdx].cards[cardIdx] = { title: title, desc: desc };
     YAQ.saveMemoryData(data);
     YAQ.renderMemoryPanel();
-    if (typeof lucide !== 'undefined' && lucide.createIcons) {
-      lucide.createIcons({ container: document.getElementById('memoryPanel') });
-    }
+    refreshIcons(document.getElementById('memoryPanel'));
   };
   YAQ.deleteMemoryCard = function (groupIdx, cardIdx) {
     if (!confirm('确定删除这条记忆吗？')) return;
@@ -8298,9 +8324,7 @@
     data[groupIdx].cards.splice(cardIdx, 1);
     YAQ.saveMemoryData(data);
     YAQ.renderMemoryPanel();
-    if (typeof lucide !== 'undefined' && lucide.createIcons) {
-      lucide.createIcons({ container: document.getElementById('memoryPanel') });
-    }
+    refreshIcons(document.getElementById('memoryPanel'));
   };
   YAQ.escapeHtml = function (text) {
     if (!text) return '';
@@ -8334,6 +8358,8 @@
     // ── 命令分发：[data-cmd] (+ 可选 data-arg) — 通用模式
     el = e.target.closest('[data-cmd]');
     if (el) {
+      // 如果元素同时声明了 data-cmd-key，说明该命令只应在按键时触发，跳过点击
+      if (el.hasAttribute('data-cmd-key')) return;
       fn = el.getAttribute('data-cmd');
       arg = el.getAttribute('data-arg');
       // 先查 YAQ 命名空间，再查 window
@@ -8504,7 +8530,7 @@
     document.getElementById('actionModalTitle').innerHTML =
       '<i data-lucide="layers" aria-hidden="true" style="color:var(--accent)"></i> 设置下发层级';
     document.getElementById('actionModalBody').innerHTML = bodyHtml;
-    lucide.createIcons({ container: document.getElementById('actionModalBody') });
+    refreshIcons(document.getElementById('actionModalBody'));
     document.getElementById('actionModalOverlay').classList.add('open');
     document.getElementById('actionModal').classList.add('open');
     // 保存当前 paId 供后续使用
@@ -8982,7 +9008,7 @@
       '</button>' +
       '</div>' +
       '<div id="siDemoContent"></div>';
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
   };
 
   YAQ.siRenderGoalMode = function () {
@@ -9001,7 +9027,7 @@
       '🚧 此功能正在开发中，敬请期待' +
       '</div>' +
       '</div>';
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
   };
 
   // ─── 演示流程 ──────────────────────────────────────────────
@@ -9027,7 +9053,7 @@
       '</strong></div>' +
       '<div style="margin:8px 0"><div style="display:flex;flex-direction:column;gap:6px;padding:4px 0" id="siThinkSteps"></div></div>' +
       '</div>';
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
 
     var stepsContainer = document.getElementById('siThinkSteps');
     if (stepsContainer) {
@@ -9128,7 +9154,7 @@
       ' 家）</button>' +
       '</div>' +
       '</div>';
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
     var ws = document.getElementById('workspace');
     if (ws) ws.scrollTop = ws.scrollHeight;
   };
@@ -9258,7 +9284,7 @@
       ' 项）</button>' +
       '</div>' +
       '</div>';
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
     var ws = document.getElementById('workspace');
     if (ws) ws.scrollTop = ws.scrollHeight;
   };
@@ -9391,7 +9417,7 @@
     var btn = document.getElementById('siConfirmCpBtn');
     if (btn) btn.innerHTML = '✅ 确认检查要点，自动生成任务（' + totalSelected + ' 项）';
 
-    lucide.createIcons({ scope: list });
+    refreshIcons({ scope: list });
   };
 
   // ─── 第三步：任务汇总 + 截止时间 ──────────────────────────
@@ -9484,7 +9510,7 @@
       '<button class="si-btn si-btn-success" onclick="YAQ.siShowResult()">✅ 确认下发</button>' +
       '</div>' +
       '</div>';
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
     var ws = document.getElementById('workspace');
     if (ws) ws.scrollTop = ws.scrollHeight;
   };
@@ -9570,10 +9596,10 @@
       btn.style.opacity = '';
       btn.style.cursor = '';
       btn.innerHTML = '<i data-lucide="rotate-ccw" width="14" height="14"></i> 🔄 重新模拟';
-      lucide.createIcons({ scope: btn });
+      refreshIcons({ scope: btn });
     }
 
-    lucide.createIcons({ scope: content });
+    refreshIcons({ scope: content });
     var ws = document.getElementById('workspace');
     if (ws) ws.scrollTop = ws.scrollHeight;
   };
@@ -9583,8 +9609,10 @@
   // ════════════════════════════════════════════════════════════════
 
   window.bootApp = function () {
+    window._yaqBooted = true;
     renderScene('dashboard');
     bindInteractions();
+    window.dispatchEvent(new Event('yaq:booted'));
   };
 
   // 启动密码保护检查（弹窗或直接 boot）

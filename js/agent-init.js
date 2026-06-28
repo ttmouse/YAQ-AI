@@ -5,6 +5,13 @@
 (function () {
   'use strict';
 
+  // ─── Lucide 安全调用封装：避免 CDN 未加载时报错 ─────
+  function refreshIcons(containerId) {
+    if (typeof lucide !== 'undefined' && lucide.createIcons) {
+      lucide.createIcons({ container: document.getElementById(containerId || 'initOverlay') });
+    }
+  }
+
   // ─── localStorage 封装：复用 app.js 中已定义的 YAQ.ls ─────
   var ls = (window.YAQ && window.YAQ.ls) || {
     get: function (key, fallback) {
@@ -250,7 +257,7 @@
 
     function typeToken() {
       if (ti >= tokens.length) {
-        lucide.createIcons({ container: document.getElementById('initOverlay') });
+        refreshIcons('initOverlay');
         if (callback) callback();
         return;
       }
@@ -344,7 +351,7 @@
     setTimeout(function () {
       typeText('我们先完成初始化设置，把日常监管安排起来。准备好了吗？', function () {
         showActions([{ label: '准备好了', click: 'YAQ.doWelcomeNext()', primary: true }]);
-        lucide.createIcons({ container: document.getElementById('initOverlay') });
+        refreshIcons('initOverlay');
       });
     }, 600);
   }
@@ -364,7 +371,7 @@
             '</div>',
         );
         showActions([{ label: '好的，继续', click: 'YAQ.doContinueAbility()', primary: true }]);
-        lucide.createIcons({ container: document.getElementById('initOverlay') });
+        refreshIcons('initOverlay');
       });
     }, 350);
   }
@@ -445,7 +452,7 @@
     adjustChatPadding();
     var inp = document.getElementById('initChatInput');
     if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
-    lucide.createIcons({ container: document.getElementById('initOverlay') });
+    refreshIcons('initOverlay');
   }
 
   /** 根据浮动卡片高度调整聊天区域底部 padding */
@@ -544,7 +551,7 @@
       var ct = document.querySelector('.init-container');
       if (ct) ct.scrollTop = ct.scrollHeight;
     }
-    lucide.createIcons({ container: document.getElementById('initOverlay') });
+    refreshIcons('initOverlay');
   }
 
   function showGenTasks(tasks) {
@@ -567,7 +574,7 @@
             }, 200);
             setTimeout(function () {
               showActions([{ label: '进入工作台', click: 'YAQ.doEnter()', primary: true }]);
-              lucide.createIcons({ container: document.getElementById('initOverlay') });
+              refreshIcons('initOverlay');
             }, 500);
           }, 500);
         }, 400);
@@ -588,7 +595,7 @@
           '<div class="gen-task-status">已开启</div>' +
           '</div>',
       );
-      lucide.createIcons({ container: document.getElementById('initOverlay') });
+      refreshIcons('initOverlay');
       i++;
       setTimeout(nextTask, 350);
     }
@@ -678,7 +685,7 @@
           html += '</div>';
           chatAppend(html);
           showActions([{ label: '继续设置提醒边界', click: 'YAQ.doContinue("boundary")', primary: true }]);
-          lucide.createIcons({ container: document.getElementById('initOverlay') });
+          refreshIcons('initOverlay');
         });
       }, 350);
     } else if (phase === 'boundary') {
@@ -714,7 +721,7 @@
           ruleHtml += '</div>';
           chatAppend(ruleHtml);
           showActions([{ label: '生成管理心跳计划', click: 'YAQ.doGenerate()', primary: true, large: true }]);
-          lucide.createIcons({ container: document.getElementById('initOverlay') });
+          refreshIcons('initOverlay');
         });
       }, 350);
     }
@@ -860,7 +867,7 @@
       '</div></div>';
     chatAppend(html);
     showActions([{ label: '进入工作台', click: 'YAQ.doEnter()', primary: true, large: true }]);
-    lucide.createIcons({ container: document.getElementById('initOverlay') });
+    refreshIcons('initOverlay');
     window._initUserMode = userMode;
   }
 
@@ -932,7 +939,7 @@
         doneMsg.innerHTML =
           '<i data-lucide="check-circle" width="16" height="16" style="color:#16a34a"></i> 首次诊断完成，报告已生成。';
         sc.appendChild(doneMsg);
-        lucide.createIcons({ container: document.getElementById('initOverlay') });
+        refreshIcons('initOverlay');
         var container = document.querySelector('.init-container') || document.querySelector('.center');
         if (container) container.scrollTop = container.scrollHeight;
         // 保存所有文案（欢迎语 + 诊断完成消息），渲染 dashboard 后重新插入顶部
@@ -949,7 +956,7 @@
               headerWrap.style.cssText = 'margin-bottom:16px';
               headerWrap.innerHTML = savedHeader.join('');
               sc.insertBefore(headerWrap, sc.firstChild);
-              lucide.createIcons({ container: document.getElementById('initOverlay') });
+              refreshIcons('initOverlay');
             }
           }
         }, 600);
@@ -958,7 +965,7 @@
       var step = thinkSteps[idx];
       statusLine.innerHTML =
         '<i data-lucide="' + step.icon + '" width="14" height="14" style="flex-shrink:0"></i> ' + step.text;
-      lucide.createIcons({ container: document.getElementById('initOverlay') });
+      refreshIcons('initOverlay');
       var ct = document.querySelector('.center') || document.querySelector('.init-container');
       if (ct) ct.scrollTop = ct.scrollHeight;
       idx++;
@@ -1009,7 +1016,7 @@
           }
         }
         typeText('好的，已加上。', function () {
-          lucide.createIcons({ container: document.getElementById('initOverlay') });
+          refreshIcons('initOverlay');
         });
       }, 500);
     }, 600);
@@ -1061,7 +1068,7 @@
             { label: '调整关注重点', click: 'YAQ.doContinue("attention")', primary: true },
             { label: '直接生成方案', click: 'YAQ.doQuickFinish()' },
           ]);
-          lucide.createIcons({ container: document.getElementById('initOverlay') });
+          refreshIcons('initOverlay');
         });
       }, 350);
     } else if (mode === 'what') {
@@ -1070,14 +1077,14 @@
           '正在整理能力清单…',
           '在日常监管中，我可以：<br><br>• <strong>盯</strong> — 重大隐患、重点主体、专项进度、团队履职<br>• <strong>判</strong> — 区分正常波动、待确认和重大风险<br>• <strong>整</strong> — 态势简报、隐患日报、会议材料、月报草稿<br>• <strong>推</strong> — 督办提议、会议议题、现场核查<br>• <strong>醒</strong> — 只在需要你关注时推送<br><br>你现在最想让我先盯什么？',
           function () {
-            lucide.createIcons({ container: document.getElementById('initOverlay') });
+            refreshIcons('initOverlay');
           },
         );
       }, 350);
     } else {
       setTimeout(function () {
         typeResponse('正在同步你的偏好…', '好的，已记录。有什么需要调整的随时告诉我。', function () {
-          lucide.createIcons({ container: document.getElementById('initOverlay') });
+          refreshIcons('initOverlay');
         });
       }, 350);
     }
@@ -1115,7 +1122,7 @@
           if (periodEl) periodEl.textContent = '每月 28 日';
           // 回复
           typeText('好的，已调整。月报改为每月 28 日生成。', function () {
-            lucide.createIcons({ container: document.getElementById('initOverlay') });
+            refreshIcons('initOverlay');
           });
         }, 600);
         return;
@@ -1157,7 +1164,7 @@
     bar.innerHTML =
       '<i data-lucide="alert-triangle" width="16" height="16"></i><span>应擎总控尚未启用，当前仅展示基础工作台。</span><button class="adb-btn" onclick="YAQ.reEnable()">启用主控 Agent</button>';
     ws.insertBefore(bar, ws.firstChild);
-    lucide.createIcons({ container: ws });
+    refreshIcons(ws);
   }
   function reEnable() {
     var bar = document.getElementById('disabledBar');
@@ -1293,10 +1300,10 @@
   // 点击外部关闭菜单
   document.addEventListener('click', function (e) {
     var wrap = document.getElementById('demoMenuWrap');
-    var orgSwitch = document.getElementById('orgSwitch');
+    var plusBtn = document.getElementById('desktopPlusBtn');
     if (wrap && !wrap.contains(e.target)) {
-      // 如果点击的是站点名称（orgSwitch）或其内部，不关闭菜单
-      if (orgSwitch && (e.target === orgSwitch || orgSwitch.contains(e.target))) {
+      // 如果点击的是加号按钮或其内部，不关闭菜单
+      if (plusBtn && (e.target === plusBtn || plusBtn.contains(e.target))) {
         return;
       }
       var menu = document.getElementById('demoMenu');
@@ -1461,16 +1468,10 @@
     // 默认不显示快捷芯片
     return null;
   }
-  // ─── 全局快捷芯片：在 globalChatQuickWrap 中显示新芯片 ──
+ // ─── 全局快捷芯片：追加到消息流中，跟随内容滚动 ──
   function showGlobalQuickChip(chips) {
-    var wrap = document.getElementById('globalChatQuickWrap');
-    if (!wrap) return;
-    if (!chips || chips.length === 0) {
-      wrap.style.display = 'none';
-      return;
-    }
-    wrap.style.display = 'flex';
-    var html = '';
+    if (!chips || chips.length === 0) return;
+    var html = '<div class="quick-chips-row" id="globalQuickChipsInline">';
     for (var i = 0; i < chips.length; i++) {
       var c = chips[i];
       html +=
@@ -1478,9 +1479,14 @@
         c.text.replace(/'/g, "\\'") +
         '\')">' +
         c.label +
+        '<svg class="gq-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>' +
         '</button>';
     }
-    wrap.innerHTML = html;
+    html += '</div>';
+    sceneAppend(html);
+    // 滚动到底部，让芯片可见
+    var container = document.getElementById('sceneContent');
+    if (container) container.scrollTop = container.scrollHeight;
   }
 
   function globalChatQuick(text) {
@@ -1489,9 +1495,9 @@
 
     var input = document.getElementById('globalChatInput');
     if (input) input.value = '';
-    // 隐藏快捷芯片
-    var quickWrap = document.getElementById('globalChatQuickWrap');
-    if (quickWrap) quickWrap.style.display = 'none';
+    // 隐藏已展示的快捷芯片（从消息流中移除）
+    var inlineChips = document.getElementById('globalQuickChipsInline');
+    if (inlineChips) inlineChips.remove();
     if (input) input.blur();
 
     // 根据关键词路由到具体场景
@@ -1563,7 +1569,7 @@
         var idx = 0;
         function appendNext() {
           if (idx >= sections.length) {
-            if (window.lucide) lucide.createIcons();
+            refreshIcons();
             if (callback) callback();
             return;
           }
@@ -1699,7 +1705,7 @@
           '<div style="font-size:11px;color:#94a3b8;margin-top:6px">基于以上分析自动生成待确认行动，可前往审核确认</div>' +
           '</div>';
         respBubble.insertAdjacentHTML('beforeend', btnHtml);
-        if (window.lucide) lucide.createIcons();
+        refreshIcons();
       }
     });
   }
@@ -1988,8 +1994,13 @@
   window.closeDemoMenu = window.YAQ.closeDemoMenu;
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function () {
+      window.addEventListener('yaq:booted', init);
+    });
+  } else if (window._yaqBooted) {
+    // bootApp 已执行完毕（事件已发射，监听器注册晚了），直接调用 init
+    setTimeout(init, 0);
   } else {
-    init();
+    window.addEventListener('yaq:booted', init);
   }
 })();

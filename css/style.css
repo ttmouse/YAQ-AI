@@ -119,22 +119,6 @@
     font-size: 12px;
   }
 }
-.org-switch {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border-radius: 999px;
-  padding: 6px 10px;
-  color: #64748b;
-  transition: background 0.15s;
-}
-.org-switch:hover {
-  background: #f1f5f9;
-  color: #334155;
-}
 .main {
   flex: 1;
   min-height: 0;
@@ -2727,8 +2711,32 @@
   color: #334155;
 }
 .topbar-search svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+/* 桌面端加号菜单按钮（与搜索图标风格统一） */
+.topbar-plus-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #64748b;
+  background: none;
+  border: none;
+  transition: background 0.15s;
+}
+.topbar-plus-btn:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+.topbar-plus-btn svg {
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 .topbar-search-placeholder {
@@ -2797,6 +2805,19 @@
   display: flex;
 }
 
+/* ─── 启动台头部行布局 ───────────────────────────────── */
+.launcher-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 800px;
+}
+/* 桌面端隐藏关闭按钮（点击遮罩或 ESC 关闭） */
+.launcher-close-btn {
+  display: none;
+}
+
 /* ─── 搜索栏 ─────────────────────────────────────────────── */
 .launcher-header {
   flex-shrink: 0;
@@ -2805,6 +2826,8 @@
 }
 .launcher-search-wrap {
   position: relative;
+  flex: 1;
+  min-width: 0;
   width: 100%;
   max-width: 800px;
 }
@@ -6734,6 +6757,47 @@
   color: #334155;
   background: rgba(255, 255, 255, 0.98);
 }
+/* 快捷芯片内联在消息流中（跟随滚动） */
+.quick-chips-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 0 2px;
+  margin-top: 2px;
+}
+.quick-chips-row .gq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.45em 0.9em;
+  min-height: 40px;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: rgba(248, 250, 252, 0.9);
+  color: #475569;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: inherit;
+  line-height: 1.3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.quick-chips-row .gq-chip:hover {
+  border-color: #94a3b8;
+  color: #334155;
+  background: rgba(255, 255, 255, 0.98);
+}
+.gq-chip-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  opacity: 0.45;
+  transition: opacity 0.12s;
+}
+.quick-chips-row .gq-chip:hover .gq-chip-icon {
+  opacity: 0.75;
+}
 .global-chat-bar {
   flex-shrink: 0;
   align-self: center;
@@ -6846,18 +6910,20 @@
   position: absolute;
   right: 0;
   top: 100%;
-  min-width: 150px;
   background: var(--surface);
   border: 1px solid #e2eaf8;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  padding: 6px;
+  padding: 8px;
   display: none;
   z-index: 100;
   margin-top: 4px;
 }
 .demo-menu.open {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 160px;
 }
 .situation-hint {
   position: relative;
@@ -6896,12 +6962,13 @@
 }
 .demo-menu-item {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
   font-size: 13px;
-  color: #334155;
+  color: #475569;
   cursor: pointer;
   transition: background 0.1s;
   white-space: nowrap;
@@ -6910,14 +6977,19 @@
   background: #f1f5f9;
 }
 .demo-menu-item svg {
-  width: 15px;
-  height: 15px;
-  color: #64748b;
+  width: 18px !important;
+  height: 18px !important;
+  color: #475569;
+  flex-shrink: 0;
+}
+.demo-menu-item span {
+  display: inline;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #475569;
 }
 .demo-menu-divider {
-  height: 1px;
-  background: #e2e8f0;
-  margin: 4px 8px;
+  display: none;
 }
 
 /* ─── 记忆面板 ─────────────────────────────────────────── */
@@ -7267,4 +7339,141 @@
 }
 .pwd-btn:active {
   transform: scale(0.98);
+}
+
+/* ══════════════════════════════════════════════════════════
+   PWA — SW 更新提示条（底部浮动）
+   ══════════════════════════════════════════════════════════ */
+.sw-update-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1e1e2e;
+  color: #fff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
+}
+.sw-update-toast.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.sw-update-toast button {
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 8px;
+  padding: 4px 10px;
+  transition: opacity 0.15s;
+}
+.sw-update-toast button:active {
+  opacity: 0.7;
+}
+#swUpdateBtn {
+  background: #6366f1;
+  color: #fff;
+  font-weight: 600;
+}
+#swUpdateClose {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   PWA — 断网指示器
+   ══════════════════════════════════════════════════════════ */
+.offline-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #f97316;
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 12px;
+  z-index: 9998;
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+}
+.offline-indicator.visible {
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   PWA — 安装提示横幅（Android Chrome）
+   ══════════════════════════════════════════════════════════ */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1e1e2e;
+  color: #fff;
+  padding: 12px 16px;
+  z-index: 9998;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+  display: flex;
+  align-items: center;
+}
+.pwa-install-banner.visible {
+  transform: translateY(0);
+}
+.pwa-install-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.pwa-install-icon {
+  color: #6366f1;
+  flex-shrink: 0;
+}
+.pwa-install-text {
+  flex: 1;
+  min-width: 0;
+}
+.pwa-install-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.pwa-install-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.pwa-install-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.pwa-install-close {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
 }
