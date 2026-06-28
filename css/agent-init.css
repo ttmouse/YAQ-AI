@@ -28,6 +28,11 @@
   display: flex;
 }
 
+/* 初始化场景激活时隐藏主应用底部输入条，避免重复输入框 */
+body:has(.init-overlay.active) .global-chat-bar {
+  display: none !important;
+}
+
 .init-container {
   flex: 1;
   min-height: 0;
