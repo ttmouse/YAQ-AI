@@ -9615,6 +9615,17 @@
     window._yaqBooted = true;
     renderScene('dashboard');
     bindInteractions();
+    // 渲染主应用底部输入条
+    var gmount = document.getElementById('globalChatBarMount');
+    if (gmount && typeof BottomInputBar !== 'undefined') {
+      gmount.outerHTML = BottomInputBar.render({
+        variant: 'pill',
+        placeholder: '直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降',
+        inputId: 'globalChatInput',
+        sendCommand: 'globalChatSend',
+        voiceCommand: 'convChatVoice'
+      });
+    }
     window.dispatchEvent(new Event('yaq:booted'));
   };
 

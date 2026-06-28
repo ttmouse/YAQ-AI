@@ -1937,6 +1937,18 @@
         if (window.refreshIcons) refreshIcons(closeBtn);
       }
       startConversation();
+      // 渲染初始化场景底部输入条
+      var imount = document.getElementById('initChatBarMount');
+      if (imount && typeof BottomInputBar !== 'undefined') {
+        imount.outerHTML = BottomInputBar.render({
+          variant: 'init',
+          placeholder: '长按直接语音输入',
+          inputId: 'initChatInput',
+          sendCommand: 'convChatSend',
+          voiceCommand: 'convChatVoice',
+          leadingHtml: '<button class="init-chat-attach" data-cmd="convChatAttach" title="上传文件"><i data-lucide="plus" width="16" height="16"></i></button>'
+        });
+      }
     }
   }
 

@@ -497,36 +497,6 @@
     <script src="js/lucide.min.js"></script>
     <script src="js/components/bottom-input-bar.js"></script>
     <script>
-      // 渲染初始化场景底部输入条
-      (function () {
-        var mount = document.getElementById('initChatBarMount');
-        if (mount && typeof BottomInputBar !== 'undefined') {
-          mount.outerHTML = BottomInputBar.render({
-            variant: 'init',
-            placeholder: '长按直接语音输入',
-            inputId: 'initChatInput',
-            sendCommand: 'convChatSend',
-            voiceCommand: 'convChatVoice',
-            leadingHtml: '<button class="init-chat-attach" data-cmd="convChatAttach" title="上传文件"><i data-lucide="plus" width="16" height="16"></i></button>'
-          });
-        }
-      })();
-      // 渲染主应用底部输入条
-      (function () {
-        var mount = document.getElementById('globalChatBarMount');
-        if (mount && typeof BottomInputBar !== 'undefined') {
-          mount.outerHTML = BottomInputBar.render({
-            variant: 'pill',
-            placeholder: '直接问应擎总控，例如：帮我看一下物流片区为什么隐患闭环率下降',
-            inputId: 'globalChatInput',
-            sendCommand: 'globalChatSend',
-            voiceCommand: 'convChatVoice'
-          });
-        }
-      })();
-    </script>
-    <script>
-      // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
       (function () {
         if (typeof lucide === 'undefined' || !lucide.createIcons) return;
         var orig = lucide.createIcons;
