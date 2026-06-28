@@ -33,6 +33,46 @@
   }
 }
 
+/* ─── PWA 场景切换过渡：骨架屏 → 实际内容的淡化过渡 ─────── */
+/* 配合 JS 场景切换时的 opacity dip，避免移动端骨架屏直接跳变为实际内容的视觉突兀 */
+@media (max-width: 768px) {
+  .scene-content {
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* ─── CSS Containment：提升长列表滚动渲染性能 ──────────── */
+/* 对移动端常见的可滚动长列表启用 content-visibility，跳过视口外渲染 */
+.work-items-list,
+.assistant-body,
+.hazard-list-wrap,
+.followup-list,
+.supervision-list,
+.monthly-report-content {
+  content-visibility: auto;
+  contain-intrinsic-size: 120px;
+}
+
+/* ─── 防止 UI 框架文字被意外选中 ─────────────────────────── */
+/* 移动端 PWA 类似原生应用，不应出现文字选中高亮干扰体验 */
+.top,
+.tab-strip,
+.modal-head,
+.modal-foot,
+.drawer-head,
+.drawer-foot,
+.toast,
+.offline-indicator,
+.pwa-install-banner,
+.sw-update-toast,
+.metric-value,
+.metric-label,
+.mc-value,
+.mc-label {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* ─── 平板（≤1024px）：缩小间距与字号 ────────────────────────── */
 @media (max-width: 1024px) {
   .result {
@@ -339,6 +379,10 @@
     margin-bottom: 6px;
     padding: 5px 6px 5px 12px;
   }
+  .global-chat-bar:focus-within {
+    padding: 10px 6px 4px 12px;
+    margin-bottom: 12px;
+  }
 
   /* 全屏面板底部安全区适配（iOS 底部横条） */
   .hmodal-body,
@@ -351,7 +395,7 @@
   .ep-body {
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
-  .global-chat-inner input {
+  .global-chat-inner textarea {
     font-size: 11px;
   }
   .global-chat-inner .global-chat-btn,
@@ -360,6 +404,9 @@
     height: 36px;
     min-width: 36px;
     min-height: 36px;
+  }
+  .global-chat-inner .global-chat-btn-icon {
+    margin-left: -2px;
   }
   .global-chat-quick-wrap {
     gap: 4px;
@@ -736,6 +783,30 @@
   }
 }
 
+/* ═══ PWA 独立模式：阻止 iOS 下拉刷新（弹性滚动） ═══════════════════ */
+/* iOS 添加到主屏幕后，默认下拉手势会触发页面刷新，破坏 app 交互。
+   此处禁止 body 级别的 overscroll，同时保留内容区域内部滚动。 */
+@media (display-mode: standalone) {
+  html,
+  body {
+    overscroll-behavior: none;
+  }
+  .center,
+  .modal-body,
+  .hmodal-body,
+  .tmodal-body,
+  .drawer-body,
+  .action-modal-body,
+  .pa-modal-body,
+  .assistant-body,
+  .work-items-list,
+  .scene-content,
+  .memory-panel-body,
+  .launcher-body {
+    overscroll-behavior: contain;
+  }
+}
+
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
 /* ─── PWA 独立模式（iOS 添加到主屏幕后） ────────────────────────── */
 /* standalone 模式下 env(safe-area-inset-bottom) 在部分 iOS 版本可能失效 */
@@ -743,12 +814,12 @@
 @media (display-mode: standalone) {
   /* 全局聊天栏底部间距（涵盖所有断点，不限于 480px） */
   .global-chat-bar {
-    margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
+    margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px) + var(--keyboard-inset, 0px)) !important;
   }
 
   /* 初始化场景输入条底部间距 */
   .init-chat-bar {
-    margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
+    margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px) + var(--keyboard-inset, 0px)) !important;
   }
 
   /* 顶部导航栏避开 iOS 状态栏（PWA 独立模式） */
@@ -834,10 +905,13 @@ html.pwa-standalone .init-overlay {
   top: calc(52px + var(--pwa-safe-top, env(safe-area-inset-top, 20px)));
 }
 html.pwa-standalone .init-chat-bar {
-  margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
+  margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px) + var(--keyboard-inset, 0px)) !important;
 }
 html.pwa-standalone .global-chat-bar {
-  margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px)) !important;
+  margin-bottom: calc(12px + env(safe-area-inset-bottom, 34px) + var(--keyboard-inset, 0px)) !important;
+}
+html.pwa-standalone .global-chat-bar:focus-within {
+  margin-bottom: 12px !important;
 }
 
 /* ─── Windows PWA Title Bar 区域（window-controls-overlay） ──── */
@@ -1586,9 +1660,168 @@ html.pwa-standalone .launcher-body {
   opacity: 0.8;
 }
 
-/* 深色模式适配 */
+/* ═══ 深色模式完整适配 ════════════════════════════════════════════ */
 @media (prefers-color-scheme: dark) {
   .pwa-ios-guide {
     background: rgba(0, 0, 0, 0.75);
+  }
+
+  /* 顶栏 & 搜索按钮深色适配 */
+  .meta-mobile .topbar-search,
+  .mobile-plus-btn {
+    color: var(--muted, #a0a0b0);
+  }
+
+  /* 移动端底栏输入框 */
+  .global-chat-inner textarea {
+    color: var(--fg, #e4e4e7);
+  }
+  .global-chat-inner textarea::placeholder {
+    color: var(--muted, #6b6b80);
+  }
+
+  /* 底部 sheet 弹窗 */
+  .action-modal-panel,
+  .pa-modal-panel,
+  .modal-panel,
+  .drill-float {
+    background: var(--surface, #1c1c1e);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Sheet 拖拽手柄 */
+  .action-modal-panel::before,
+  .pa-modal-panel::before,
+  .modal-panel::before,
+  .drill-float::before {
+    background: var(--border, #3a3a3c);
+  }
+
+  /* 待确认督办弹窗 */
+  .pa-modal-head {
+    border-bottom-color: var(--border, #3a3a3c);
+  }
+  .pa-modal-foot {
+    border-top-color: var(--border, #3a3a3c);
+  }
+
+  /* Drawer 面板 */
+  .drawer-panel {
+    background: var(--surface, #1c1c1e);
+  }
+
+  /* 搜索面板背景 */
+  .launcher-panel {
+    background: rgba(0, 0, 0, 0.92);
+  }
+  .sg-group-head {
+    background: rgba(0, 0, 0, 0.88);
+  }
+
+  /* 搜索输入框 */
+  .launcher-search {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0f0f0;
+  }
+  .launcher-search::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* 启动台关闭按钮 */
+  .launcher-close-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .launcher-close-btn:active {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  /* 搜索结果项 */
+  .sri-item:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .launcher-item:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .launcher-item .li-icon {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .launcher-grid .launcher-item .li-icon {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* 全屏弹窗内容区边距 */
+  .modal-head {
+    border-bottom-color: var(--border, #3a3a3c);
+  }
+  .modal-foot {
+    border-top-color: var(--border, #3a3a3c);
+  }
+
+  /* 记忆面板 */
+  .memory-panel {
+    background: var(--surface, #1c1c1e);
+  }
+  .memory-panel-head {
+    border-bottom-color: var(--border, #3a3a3c);
+  }
+
+  /* 演示菜单 */
+  .demo-menu {
+    background: var(--surface, #252526);
+    border-color: var(--border, #3a3a3c);
+  }
+
+  /* 隐患详情弹窗 */
+  .hmodal-ai {
+    border-top-color: var(--border, #3a3a3c);
+  }
+
+  /* 任务详情弹窗 */
+  .tmodal-divider {
+    background: var(--border, #3a3a3c);
+  }
+
+  /* 指标配置弹窗已选区域 */
+  #selectedArea {
+    border-top-color: var(--border, #3a3a3c);
+  }
+
+  /* 企业详情面板 */
+  .ep-panel {
+    background: var(--surface, #1c1c1e);
+  }
+
+  /* 月报侧边栏 */
+  #mrSidebar {
+    background: var(--surface, #1c1c1e);
+    border-left-color: var(--border, #3a3a3c);
+  }
+
+  /* 触控 active 态背景 */
+  .hamburger-btn:active {
+    background: var(--fg-muted, rgba(255,255,255,0.1));
+  }
+
+  /* PWA 安装横幅 */
+  .pwa-install-banner {
+    background: var(--surface, #252526);
+    border-top: 1px solid var(--border, #3a3a3c);
+  }
+
+  /* iOS 安装引导 */
+  .pwa-ios-guide-content {
+    background: var(--surface, #1c1c1e);
+    color: var(--fg, #e4e4e7);
+  }
+  .pwa-ios-guide-steps {
+    color: var(--muted, #a0a0b0);
+  }
+
+  /* 更新提示 */
+  .sw-update-toast {
+    background: var(--surface, #252526);
+    border: 1px solid var(--border, #3a3a3c);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   }
 }

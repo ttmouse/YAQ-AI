@@ -455,12 +455,109 @@
   // ════════════════════════════════════════════════════════════════
 
   // ─── 状态渲染辅助 ────────────────────────────────────────────
-  function renderLoading(msg) {
+  function renderLoading(msg, sceneId) {
+    // 骨架屏：移动端使用内容匹配的骨架，提升感知性能（PWA 首屏体验）
+    var isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      var skeleton = renderSkeleton(sceneId || state.activeScene);
+      if (skeleton) return skeleton;
+    }
+    // 桌面端或 fallback：保持原来的 spinner
     return (
       '<div class="state-loading"><div class="spinner"></div><div class="state-text">' +
       (msg || '加载中…') +
       '</div></div>'
     );
+  }
+
+  // ─── 场景骨架屏生成 ──────────────────────────────────────────
+  function renderSkeleton(sceneId) {
+    var _r = function (str, n) { var r = ''; for (var i = 0; i < n; i++) r += str; return r; };
+    switch (sceneId) {
+      case 'dashboard':
+        return (
+          '<div class="scene-content">' +
+          '<div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding:0 2px">' +
+            _r('<div class="skeleton" style="height:60px;min-width:80px;border-radius:12px;flex-shrink:0"></div>', 4) +
+          '</div>' +
+          '<div class="skeleton skeleton-title" style="margin-bottom:12px"></div>' +
+          _r('<div class="skeleton" style="height:72px;border-radius:12px;margin-bottom:10px"></div>', 3) +
+          '<div class="skeleton skeleton-title" style="margin-top:8px;margin-bottom:12px;width:30%"></div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px">' +
+            _r(
+              '<div style="display:flex;align-items:center;gap:10px">' +
+              '<div class="skeleton" style="width:36px;height:36px;border-radius:999px;flex-shrink:0"></div>' +
+              '<div style="flex:1;display:flex;flex-direction:column;gap:6px">' +
+              '<div class="skeleton" style="height:10px;width:70%;border-radius:4px;background:var(--fg-soft);position:relative;overflow:hidden"></div>' +
+              '<div class="skeleton" style="height:8px;width:40%;border-radius:4px;background:var(--fg-soft);position:relative;overflow:hidden"></div>' +
+              '</div></div>', 3
+            ) +
+          '</div></div>'
+        );
+      case 'hazard-report':
+        return (
+          '<div class="scene-content">' +
+          '<div class="skeleton skeleton-title" style="margin-bottom:14px;width:50%"></div>' +
+          '<div style="display:flex;gap:6px;margin-bottom:16px">' +
+            _r('<div class="skeleton" style="height:26px;width:60px;border-radius:999px;flex-shrink:0"></div>', 3) +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px">' +
+            _r(
+              '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--fg-soft)">' +
+              '<div class="skeleton" style="width:4px;height:40px;border-radius:2px;flex-shrink:0"></div>' +
+              '<div style="flex:1;display:flex;flex-direction:column;gap:5px">' +
+              '<div class="skeleton" style="height:10px;width:65%;border-radius:4px"></div>' +
+              '<div class="skeleton" style="height:8px;width:45%;border-radius:4px"></div>' +
+              '<div class="skeleton" style="height:8px;width:30%;border-radius:4px"></div>' +
+              '</div></div>', 5
+            ) +
+          '</div></div>'
+        );
+      case 'efficiency':
+        return (
+          '<div class="scene-content">' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">' +
+            _r('<div class="skeleton" style="height:70px;border-radius:12px"></div>', 4) +
+          '</div>' +
+          '<div class="skeleton skeleton-title" style="margin-bottom:10px;width:35%"></div>' +
+          _r('<div class="skeleton" style="height:60px;border-radius:12px;margin-bottom:10px"></div>', 3) +
+          '</div>'
+        );
+      case 'disposal':
+      case 'followup':
+      case 'supervision-track':
+        return (
+          '<div class="scene-content">' +
+          '<div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto">' +
+            _r('<div class="skeleton" style="height:80px;min-width:120px;border-radius:12px;flex-shrink:0"></div>', 3) +
+          '</div>' +
+          '<div class="skeleton skeleton-title" style="margin-bottom:10px;width:40%"></div>' +
+          _r('<div class="skeleton" style="height:64px;border-radius:12px;margin-bottom:10px"></div>', 4) +
+          '</div>'
+        );
+      case 'responsibility':
+        return (
+          '<div class="scene-content">' +
+          '<div class="skeleton skeleton-title" style="margin-bottom:12px;width:30%"></div>' +
+          '<div style="display:flex;flex-direction:column;gap:12px">' +
+            _r(
+              '<div style="display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--fg-soft)">' +
+              '<div class="skeleton" style="width:36px;height:36px;border-radius:999px;flex-shrink:0"></div>' +
+              '<div style="flex:1;display:flex;flex-direction:column;gap:5px">' +
+              '<div class="skeleton" style="height:10px;width:55%;border-radius:4px"></div>' +
+              '<div class="skeleton" style="height:8px;width:35%;border-radius:4px"></div>' +
+              '</div></div>', 5
+            ) +
+          '</div></div>'
+        );
+      default:
+        return (
+          '<div class="scene-content">' +
+          '<div class="skeleton skeleton-title" style="margin-bottom:16px;width:35%"></div>' +
+          _r('<div class="skeleton" style="height:72px;border-radius:12px;margin-bottom:12px"></div>', 4) +
+          '</div>'
+        );
+    }
   }
   function renderEmpty(msg, desc) {
     return (
@@ -481,6 +578,28 @@
     );
   }
 
+  /* ═══ 触觉反馈（仅移动端 PWA 独立模式）══════════════════════════ */
+  /* 符合约束 2「交互必有响应」— 关键操作提供触觉确认              */
+  function hapticFeedback(pattern) {
+    if (navigator.vibrate && window.matchMedia('(display-mode: standalone)').matches) {
+      try { navigator.vibrate(pattern || 8); } catch (e) {}
+    }
+  }
+
+  /* ═══ 按钮装载状态 ══════════════════════════════════════════════ */
+  /* 约束 2 + 约束 8：提交/操作按钮应在处理中禁用，防止重复触发    */
+  function showButtonLoading(btn, loading) {
+    if (!btn) return;
+    if (loading) {
+      btn._origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-loader" style="display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spinner 0.6s linear infinite;vertical-align:middle"></span>';
+    } else {
+      btn.disabled = false;
+      if (btn._origHtml) { btn.innerHTML = btn._origHtml; delete btn._origHtml; }
+    }
+  }
+
   function renderScene(sceneId) {
     var container = $dom.sceneContent;
 
@@ -490,7 +609,7 @@
     var savedSceneId = state.activeScene;
 
     // ─── Loading 状态 ────────────────────────────────────────────
-    container.innerHTML = renderLoading();
+    container.innerHTML = renderLoading('加载中…', sceneId);
 
     // 用 setTimeout 让 loading 先渲染，再生成实际内容
     setTimeout(function () {
@@ -541,7 +660,15 @@
         // ─── Error 状态 ──────────────────────────────────────────
         html = renderError('渲染异常', '请尝试刷新页面或切换场景。' + (e.message ? ' (' + e.message + ')' : ''));
       }
+      // 移动端场景切换：opacity 淡化过渡掩盖骨架屏→实际内容的跳变
+      if (window.innerWidth <= 768) {
+        container.style.opacity = '0.65';
+      }
       container.innerHTML = html;
+      // 恢复透明度（CSS transition 驱动 0.65→1.0 的平滑过渡）
+      if (window.innerWidth <= 768) {
+        container.style.opacity = '';
+      }
       refreshIcons();
       // 同步批量操作栏状态
       if (sceneId === 'pending-actions') {
@@ -8250,6 +8377,16 @@
       refreshIcons(panel);
     }
   };
+  YAQ.openUploadedFiles = function () {
+    window.closeDemoMenu();
+    // TODO: navigate to uploaded files view
+    alert('上传的文件 — 功能开发中');
+  };
+  YAQ.openGeneratedReports = function () {
+    window.closeDemoMenu();
+    // TODO: navigate to generated reports view
+    alert('生成的报告 — 功能开发中');
+  };
   YAQ.closeMemoryPanel = function () {
     var panel = document.getElementById('memoryPanel');
     var overlay = document.getElementById('memoryPanelOverlay');
@@ -8469,6 +8606,8 @@
     if (el) {
       var key = el.getAttribute('data-cmd-key');
       if (e.key === key) {
+        // textarea/多行输入: Shift+Enter 换行, Enter 发送
+        if (e.target.tagName === 'TEXTAREA' && e.shiftKey) return;
         e.preventDefault();
         var fn = el.getAttribute('data-cmd');
         var func = (window.YAQ && window.YAQ[fn]) || window[fn];

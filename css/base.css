@@ -191,6 +191,9 @@ ol {
     transform: translateY(0);
   }
 }
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
 @keyframes pulse {
   0%,
   100% {

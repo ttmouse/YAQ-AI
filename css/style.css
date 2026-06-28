@@ -32,7 +32,9 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 .top {
   flex-shrink: 0;
@@ -6796,6 +6798,11 @@
   -webkit-backdrop-filter: blur(12px);
   z-index: 50;
   box-sizing: border-box;
+  transition: margin var(--duration-base) var(--ease);
+}
+.global-chat-bar:focus-within {
+  padding: var(--sp-3) var(--sp-1) var(--sp-1) var(--sp-2);
+  margin-bottom: 12px;
 }
 @media (min-width: 769px) {
   .global-chat-bar {
@@ -6810,11 +6817,13 @@
   display: flex;
   align-items: center;
   gap: var(--sp-1_5);
-  height: 36px;
+  min-height: 36px;
+  height: auto;
 }
-.global-chat-inner input {
+.global-chat-inner textarea {
   flex: 1;
-  height: 100%;
+  min-height: 36px;
+  height: auto;
   border: none;
   outline: none;
   font-size: var(--fs-sm);
@@ -6822,14 +6831,51 @@
   color: var(--fg);
   background: transparent;
   min-width: 0;
+  resize: none;
+  line-height: 36px;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-align: center;
 }
 @media (min-width: 769px) {
-  .global-chat-inner input {
+  .global-chat-inner textarea {
     font-size: var(--fs-13);
   }
 }
-.global-chat-inner input::placeholder {
+.global-chat-inner textarea::placeholder {
   color: var(--muted);
+}
+.global-chat-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1_5);
+  flex-shrink: 0;
+}
+/* ═══ 聚焦态：两行布局 ═══ */
+.global-chat-bar:focus-within .global-chat-inner {
+  flex-wrap: wrap;
+  height: auto;
+  align-items: flex-start;
+  row-gap: var(--sp-0_5);
+}
+.global-chat-bar:focus-within .global-chat-inner textarea {
+  flex: 0 0 100%;
+  order: -1;
+  width: 100%;
+  min-height: 2.8em;
+  padding: var(--sp-1) 0 0;
+  line-height: 1.4;
+  text-align: left;
+}
+.global-chat-bar:focus-within .global-chat-inner #globalChatAttach {
+  order: 1;
+}
+.global-chat-bar:focus-within .global-chat-actions {
+  order: 1;
+  justify-content: flex-end;
+  flex: 1;
+  padding: 0 var(--sp-0_5) var(--sp-0_5);
 }
 .global-chat-inner .global-chat-btn {
   width: 28px;
@@ -6968,8 +7014,19 @@
   line-height: 1.4;
   color: #475569;
 }
+.demo-menu-label {
+  padding: 8px 14px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
 .demo-menu-divider {
-  display: none;
+  height: 1px;
+  background: #e2e8f0;
+  margin: 6px 8px;
+  flex-shrink: 0;
 }
 
 /* ─── 记忆面板 ─────────────────────────────────────────── */

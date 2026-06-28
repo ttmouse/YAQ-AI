@@ -185,13 +185,11 @@
     var box = document.getElementById('chatBox');
     if (!box) return;
     box.insertAdjacentHTML('beforeend', html);
-    // 滚动父级容器（.init-container 才是有 overflow-y 的元素）
-    var container = box.closest('.init-container') || box.parentElement;
-    if (container) {
-      requestAnimationFrame(function () {
-        container.scrollTop = container.scrollHeight;
-      });
-    }
+    // init-overlay 现在是滚动容器，统一滚到底部
+    requestAnimationFrame(function () {
+      var ov = document.getElementById('initOverlay');
+      if (ov) ov.scrollTop = ov.scrollHeight;
+    });
   }
   function agentMsg(html) {
     return '<div class="c-row agent"><div class="agent-text">' + html + '</div></div>';
@@ -276,7 +274,7 @@
       }
       output += chunk;
       el.innerHTML = output;
-      var ct = document.querySelector('.init-container');
+      var ct = document.getElementById('initOverlay');
       if (ct) ct.scrollTop = ct.scrollHeight;
       if (ci >= tok.v.length) {
         ci = 0;
@@ -326,6 +324,20 @@
 
   // ═══ 开场 ══════════════════════════════════════════════════════════
   function startConversation() {
+    // ═══ MutationObserver：初始化场景任何内容变化自动滚到底部 ═══
+    (function () {
+      var ct = document.querySelector('.center');
+      if (ct && !ct._scrollObserver) {
+        ct._scrollObserver = true;
+        var observer = new MutationObserver(function () {
+          requestAnimationFrame(function () {
+            ct.scrollTop = ct.scrollHeight;
+          });
+        });
+        observer.observe(ct, { childList: true, subtree: true, attributes: false });
+      }
+    })();
+
     var now = new Date();
     var h = now.getHours();
     var g = h < 9 ? '早上好' : h < 12 ? '上午好' : h < 14 ? '中午好' : h < 18 ? '下午好' : '晚上好';
@@ -361,7 +373,10 @@
             '<div class="ability-card"><div class="ac-icon blue">问</div><div class="ac-title">你可直接问</div><div class="ac-desc">支持文字或语音追问、查询、调整口径。</div></div>' +
             '</div>',
         );
-        showActions([{ label: '好的，继续', click: 'YAQ.doContinueAbility()' }]);
+        // 能力介绍完后，AI 主动提问，衔接下方的快捷输入
+        typeText('需要我来帮你配置关注的方向么？', function () {
+          showActions([{ label: '好的，开始配置', click: 'YAQ.doContinueAbility()' }]);
+        });
         refreshIcons('initOverlay');
       });
     }, 350);
@@ -439,26 +454,7 @@
     // 渲染到浮动卡片（输入框上方），不嵌入聊天流
     var floatCard = document.getElementById('initFloatCard');
     if (floatCard) floatCard.innerHTML = html;
-    // 聊天区域底部留出卡片空间，避免内容被遮挡
-    adjustChatPadding();
-    var inp = document.getElementById('initChatInput');
-    if (inp) inp.placeholder = '输入自定关注项，例如：帮我盯着消防通道堵塞';
     refreshIcons('initOverlay');
-  }
-
-  /** 根据浮动卡片高度调整聊天区域底部 padding */
-  function adjustChatPadding() {
-    var floatCard = document.getElementById('initFloatCard');
-    var content = document.querySelector('.init-content');
-    if (!content) return;
-    if (floatCard && floatCard.children.length > 0) {
-      // 卡片展开：底部 padding = 卡片高度 + 卡片与输入框间距(74px) + 额外安全边距
-      var cardH = floatCard.offsetHeight || 400;
-      content.style.paddingBottom = cardH + 90 + 'px';
-    } else {
-      // 卡片收起：恢复默认 padding
-      content.style.paddingBottom = '';
-    }
   }
 
   function confirmPref() {
@@ -468,7 +464,6 @@
     // 清除浮动卡片
     var floatCard = document.getElementById('initFloatCard');
     if (floatCard) floatCard.innerHTML = '';
-    adjustChatPadding();
     setTimeout(function () {
       typeResponse('正在生成管理方案…', buildCombinedResponse(), function () {
         setTimeout(function () {
@@ -539,8 +534,8 @@
         id +
         '\')" title="移除">✕</button>';
       list.appendChild(card);
-      var ct = document.querySelector('.init-container');
-      if (ct) ct.scrollTop = ct.scrollHeight;
+      var ov = document.getElementById('initOverlay');
+      if (ov) ov.scrollTop = ov.scrollHeight;
     }
     refreshIcons('initOverlay');
   }
@@ -893,48 +888,95 @@
       sceneAppend('<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b">日常监管已就绪，你可以直接输入问题。</div></div>');
       return;
     }
+  }
+  // ═══ 过程步骤渲染：支持分类标签 ═════════════════════════════
+  function processStepHTML(step, done) {
+    var tags = {
+      think: { label: '思考', color: '#7c3aed', bg: '#f5f3ff' },
+      tool: { label: '工具', color: '#2563eb', bg: '#eff6ff' },
+      query: { label: '查询', color: '#16a34a', bg: '#f0fdf4' },
+      skill: { label: '技能', color: '#d97706', bg: '#fffbeb' },
+      search: { label: '搜索', color: '#dc2626', bg: '#fef2f2' },
+      generate: { label: '生成', color: '#0891b2', bg: '#ecfeff' },
+    };
+    var t = tags[step.category] || tags.think;
+    var suffix = done
+      ? '<span style="margin-left:auto;font-weight:700;color:#16a34a">✓</span>'
+      : '<span class="thinking-dot" style="width:5px;height:5px;border-radius:50%;background:' + t.color + ';display:inline-block;animation:pulse 1s infinite;margin-left:auto"></span>';
+    return '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:' + (done ? '#16a34a' : '#64748b') + ';padding:5px 0">' +
+      '<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;color:' + t.color + ';background:' + t.bg + ';flex-shrink:0">' +
+      step.icon + ' ' + t.label + '</span> ' + step.text + suffix + '</div>';
+  }
 
-    // 第一步：显示思考/工具调用过程（追加到场景内容区，和日常工作台同样的布局）
-    var thinkSteps = [
-      { icon: '🧠', text: '正在分析当前安全态势…' },
-      { icon: '🔍', text: '正在查询隐患数据库…' },
-      { icon: '📋', text: '正在加载专项行动进度…' },
-      { icon: '👥', text: '正在汇总团队履职数据…' },
-      { icon: '⚡', text: '正在生成分析报告…' },
-    ];
-    var thinkHtml = '<div class="c-row agent" id="thinkingRow"><div class="c-bubble" style="background:#f8fafc;border-color:#e2e8f0;padding:12px 16px">';
-    for (var si = 0; si < thinkSteps.length; si++) {
-      thinkHtml += '<div class="thinking-step" style="font-size:13px;color:#94a3b8;padding:4px 0;display:flex;align-items:center;gap:6px;opacity:0" id="step' + si + '">' +
-        '<span class="thinking-dot" style="width:6px;height:6px;border-radius:50%;background:#2563eb;display:inline-block;animation:pulse 1s infinite"></span> ' +
-        thinkSteps[si].icon + ' ' + thinkSteps[si].text + '</div>';
+  // ═══ 追加日常工作台三大板块到对话流 ─────────────────────
+  function appendDailyOverview() {
+    if (typeof window.renderDashboard !== 'function') {
+      sceneAppend('<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b">日常监管已就绪，你可以直接输入问题。</div></div>');
+      return;
     }
-    thinkHtml += '</div></div>';
+
+    var thinkSteps = [
+      { icon: '🧠', text: '正在采集安全态势数据…', category: 'query' },
+      { icon: '🔧', text: '调用隐患分析技能解析风险分布…', category: 'skill' },
+      { icon: '⚡', text: '正在生成综合分析报告…', category: 'generate' },
+    ];
+    // 初始渲染第一个步骤
+    var thinkHtml = '<div class="c-row agent" id="thinkingRow"><div class="c-bubble" style="background:#f8fafc;border-color:#e2e8f0;padding:12px 16px">' +
+      '<div id="thinkingSteps">' + processStepHTML(thinkSteps[0]) + '</div></div></div>';
     sceneAppend(thinkHtml);
 
-    // 逐行显示思考步骤
+    // 解析仪表板为三大板块
+    var dashboardHTML = window.renderDashboard(true);
+    var temp = document.createElement('div');
+    temp.innerHTML = dashboardHTML;
+    var sections = [];
+    for (var ci = 0; ci < temp.children.length; ci++) {
+      sections.push(temp.children[ci].outerHTML);
+    }
+    var floorSize = Math.ceil(sections.length / thinkSteps.length);
+    var floors = [];
+    for (var bi = 0; bi < thinkSteps.length; bi++) {
+      var start = bi * floorSize;
+      floors.push(sections.slice(start, start + floorSize).join(''));
+    }
+
+    // 已经完成的步骤收集到这里
+    var doneSteps = [];
     var stepIdx = 0;
     function showNextStep() {
       if (stepIdx >= thinkSteps.length) {
-        // 移除思考行
         var row = document.getElementById('thinkingRow');
         if (row) row.remove();
-        // 第二步：展示最终结果
-        var html = window.renderDashboard(true);
-        sceneAppend(html);
-        // 底部快捷输入
         sceneAppend(QuickChip.render([
           { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
           { label: '督办超期企业', text: '督办超期未整改的企业' },
+          { label: '查看行动建议', text: '查看行动建议' },
         ], { variant: 'inline' }));
         refreshIcons();
         return;
       }
-      var el = document.getElementById('step' + stepIdx);
-      if (el) el.style.opacity = '1';
+      // 展现当前楼层卡片
+      if (stepIdx < floors.length) {
+        sceneAppend(floors[stepIdx]);
+      }
+      // 标记当前步骤完成
+      doneSteps.push(thinkSteps[stepIdx]);
       stepIdx++;
-      setTimeout(showNextStep, 500 + Math.random() * 300);
+      // 刷新步骤列表：已完成 + 进行中
+      var steps = document.getElementById('thinkingSteps');
+      if (steps) {
+        var inner = '';
+        for (var di = 0; di < doneSteps.length; di++) {
+          inner += processStepHTML(doneSteps[di], true);
+        }
+        if (stepIdx < thinkSteps.length) {
+          inner += processStepHTML(thinkSteps[stepIdx], false);
+        }
+        steps.innerHTML = inner;
+      }
+      setTimeout(showNextStep, stepIdx >= thinkSteps.length ? 800 : 900 + Math.random() * 400);
     }
-    setTimeout(showNextStep, 400);
+    setTimeout(showNextStep, 600);
   }
 
   // ═══ 首次诊断：简单的欢迎 + 快捷入口 ─────────────────────
@@ -960,9 +1002,9 @@
   }
 
   // ═══ 全局输入处理 ═════════════════════════════════════════════════
-  function processVoiceInsert(insertId) {
+  function processVoiceInsert(insertId, voiceText) {
+    if (voiceText) appendBelowCard(voiceMsg(voiceText));
     setTimeout(function () {
-      chatAppend('<div class="c-row agent"><div class="agent-text" style="color:#94a3b8">正在更新关注项⋯</div></div>');
       setTimeout(function () {
         if (selectedModes.indexOf(insertId) === -1) {
           selectedModes.push(insertId);
@@ -986,29 +1028,38 @@
                 '</div>';
               card.style.animation = 'fadeUp .35s ease-out both';
               grid.appendChild(card);
-              adjustChatPadding(); // 卡片增高后刷新底部留白
-              var ct = document.querySelector('.init-container');
-              if (ct) ct.scrollTop = ct.scrollHeight;
+              var ov = document.getElementById('initOverlay');
+              if (ov) ov.scrollTop = ov.scrollHeight;
             }
           }
         }
-        var statusEls = document.querySelectorAll('.c-row.agent .agent-text');
-        if (statusEls.length > 0) {
-          var last = statusEls[statusEls.length - 1];
-          if (last && last.textContent.indexOf('正在更新') === 0) {
-            last.style.color = '';
-            last.innerHTML = '更新关注项 <span style="color:#16a34a">✓</span>';
-          }
-        }
-        typeText('好的，已加上。', function () {
-          refreshIcons('initOverlay');
-        });
+        appendBelowCard(agentMsg('好的，已加上。'));
+        refreshIcons('initOverlay');
       }, 500);
     }, 600);
   }
 
+  /** 在浮动卡片（选择器）下方追加反馈文本 */
+  function appendBelowCard(html) {
+    var floatCard = document.getElementById('initFloatCard');
+    if (!floatCard) return;
+    var wrap = document.getElementById('cardFeedback');
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.id = 'cardFeedback';
+      wrap.style.cssText = 'margin-top:8px;display:flex;flex-direction:column;gap:4px';
+      floatCard.appendChild(wrap);
+    }
+    wrap.insertAdjacentHTML('beforeend', html);
+    // DOM 更新后滚动到 init-overlay 底部
+    requestAnimationFrame(function () {
+      var ov = document.getElementById('initOverlay');
+      if (ov) ov.scrollTop = ov.scrollHeight;
+    });
+  }
+
   function convChatSend() {
-    var input = document.getElementById('globalChatInput') || document.getElementById('initChatInput');
+    var input = document.getElementById('globalChatInput');
     if (!input || !input.value.trim()) return;
     var val = input.value.trim();
     input.value = '';
@@ -1075,25 +1126,23 @@
     }
   }
   function convChatVoice() {
-    var input = document.getElementById('globalChatInput') || document.getElementById('initChatInput');
+    var input = document.getElementById('globalChatInput');
     if (!input) return;
     // 检测当前页面上下文，决定模拟内容
     var prefGrid = document.getElementById('prefGrid');
     if (prefGrid) {
       var stepVoice = window._voiceStep || 0;
-      // 前两步：添加关注项
+      // 前两步：添加关注项 — 语音识别后自动添加到卡片列表
       if (stepVoice < 2) {
         var voiceTexts = ['我还想关注 团队履职是否异常', '帮我生成每月的安全月报'];
         var voiceIds = ['team_duty', 'monthly_report'];
         window._voiceStep = stepVoice + 1;
-        chatAppend(voiceMsg(voiceTexts[stepVoice]));
-        processVoiceInsert(voiceIds[stepVoice]);
+        processVoiceInsert(voiceIds[stepVoice], voiceTexts[stepVoice]);
         return;
       }
       // 第三步：修改月报时间
       if (stepVoice === 2) {
         window._voiceStep = 3;
-        chatAppend(voiceMsg('把月报的那个汇报时间改成每个月的28号'));
         setTimeout(function () {
           // 更新数据
           for (var i = 0; i < PREF_OPTIONS.length; i++) {
@@ -1106,9 +1155,8 @@
           var periodEl = document.querySelector('.attn-card[data-id="monthly_report"] .attn-period');
           if (periodEl) periodEl.textContent = '每月 28 日';
           // 回复
-          typeText('好的，已调整。月报改为每月 28 日生成。', function () {
-            refreshIcons('initOverlay');
-          });
+          appendBelowCard('<div class="c-row agent"><div class="agent-text">好的，已调整。月报改为每月 28 日生成。</div></div>');
+          refreshIcons('initOverlay');
         }, 600);
         return;
       }
@@ -1233,12 +1281,6 @@
         '<div class="intent-chip" onclick="YAQ.doIntent(\'' + intents[i] + '\')"><span>' + intents[i] + '</span></div>';
     }
     html += '</div></div>';
-    html += BottomInputBar.render({
-      placeholder: '直接问小安，例如：帮我看一下物流片区为什么隐患闭环率下降',
-      inputId: 'dashboardQuery',
-      sendCommand: 'doDashboardQuery',
-      variant: 'inline'
-    });
     return html;
   }
   function doIntent(label) {
@@ -1266,12 +1308,6 @@
       ov.style.display = 'none';
     }
     if (window.renderScene) window.renderScene('dashboard');
-  }
-  function doDashboardQuery() {
-    var input = document.getElementById('dashboardQuery');
-    if (!input || !input.value.trim()) return;
-    showToast('正在分析你的问题…（演示回复）');
-    input.value = '';
   }
   // showToast — 复用 YAQ.showToast，保留降级兜底
   var showToast = function (text) {
@@ -1319,6 +1355,26 @@
 
     // 1) 显示用户消息
     sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>');
+
+    // ═══ 关键词场景路由 ═══
+    if (/月报|月度报告/.test(text)) {
+      if (typeof window.YAQ.switchScene === 'function') {
+        window.YAQ.switchScene('monthly-report', true);
+        return;
+      }
+    }
+    if (/日报|隐患清单|隐患/.test(text)) {
+      if (typeof window.YAQ.switchScene === 'function') {
+        window.YAQ.switchScene('hazard-report', true);
+        return;
+      }
+    }
+    if (/履职|督导|统计/.test(text)) {
+      if (typeof window.YAQ.switchScene === 'function') {
+        window.YAQ.switchScene('responsibility', true);
+        return;
+      }
+    }
 
     // 2) 模拟 AI 思考 → 假回复
     simulateAIResponse(text);
@@ -1518,7 +1574,7 @@
     var input = document.getElementById('globalChatInput');
     var sendBtn = document.querySelector('.global-chat-btn');
     if (!input) return;
-    input.placeholder = opts.placeholder || '直接问小安...';
+    // placeholder 始终为 HTML 中设置的"发消息或按住说话"，不做动态变更
     input.setAttribute('data-cmd', opts.sendCommand || 'globalChatSend');
     if (sendBtn) sendBtn.setAttribute('data-cmd', opts.sendCommand || 'globalChatSend');
   }
@@ -1963,7 +2019,7 @@
     if (e.key === ' ' || e.key === 'Spacebar') {
       var overlay = document.getElementById('initOverlay');
       if (overlay && overlay.classList.contains('active')) {
-        var inp = document.getElementById('initChatInput');
+        var inp = document.getElementById('globalChatInput');
         if (inp && inp.value.trim()) {
           e.preventDefault();
           YAQ.convChatSend();
@@ -2017,7 +2073,6 @@
     // ─── 仪表盘操作 ───
     doDashboardRedirect: doDashboardRedirect,
     doNormalDashboard: doNormalDashboard,
-    doDashboardQuery: doDashboardQuery,
     doIntent: doIntent,
 
     // ─── UI 辅助 ───
