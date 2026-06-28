@@ -6877,12 +6877,12 @@
 .global-chat-inner .global-chat-btn:hover {
   background: var(--accent-hover);
 }
-.global-chat-inner .global-chat-mic {
+.global-chat-inner .global-chat-btn-icon {
   width: 28px;
   height: 28px;
   border-radius: var(--r-round);
-  border: 1px solid var(--border);
-  background: transparent;
+  border: none;
+  background: var(--hover-bg);
   color: var(--muted);
   display: grid;
   place-items: center;
@@ -6891,15 +6891,14 @@
   transition: all 0.15s;
 }
 @media (min-width: 769px) {
-  .global-chat-inner .global-chat-mic {
+  .global-chat-inner .global-chat-btn-icon {
     width: 32px;
     height: 32px;
   }
 }
-.global-chat-inner .global-chat-mic:hover {
-  border-color: #1769e0;
-  color: #1769e0;
-  background: #f8faff;
+.global-chat-inner .global-chat-btn-icon:hover {
+  background: var(--active-bg);
+  color: var(--fg);
 }
 
 /* ═════════════════════════════════════════════════════════════════════

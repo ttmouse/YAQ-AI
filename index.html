@@ -234,6 +234,9 @@
       <!-- global-chat-bar 全局底部输入条（固定在底部，各场景复用） -->
       <div class="global-chat-bar">
         <div class="global-chat-inner">
+          <button class="global-chat-btn-icon" id="globalChatAttach" data-cmd="convChatAttach" title="上传文件">
+            <i data-lucide="plus" width="16" height="16"></i>
+          </button>
           <input
             type="text"
             id="globalChatInput"
@@ -241,7 +244,7 @@
             data-cmd-key="Enter"
             data-cmd="globalChatSend"
           />
-          <button class="global-chat-mic" data-cmd="convChatVoice" title="语音输入">
+          <button class="global-chat-btn-icon" data-cmd="convChatVoice" title="语音输入">
             <i data-lucide="mic" width="16" height="16"></i>
           </button>
           <button class="global-chat-btn" data-cmd="globalChatSend" title="发送">

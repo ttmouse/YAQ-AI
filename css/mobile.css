@@ -360,7 +360,7 @@
     font-size: 11px;
   }
   .global-chat-inner .global-chat-btn,
-  .global-chat-inner .global-chat-mic {
+  .global-chat-inner .global-chat-btn-icon {
     width: 36px;
     height: 36px;
     min-width: 36px;
