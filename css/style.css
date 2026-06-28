@@ -6814,7 +6814,7 @@
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--border);
   border-radius: 23px;
-  padding: var(--sp-1_5) var(--sp-1) var(--sp-1_5) var(--sp-4);
+  padding: var(--sp-1_5) var(--sp-1) var(--sp-1_5) var(--sp-2);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
