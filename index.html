@@ -103,12 +103,8 @@
       <div class="init-quick-wrap" id="initQuickWrap"></div>
       <!-- 浮动卡片容器：渲染勾选面板（attn-card）、Agent开关等，位于聊天内容区与输入框之间 -->
       <div id="initFloatCard"></div>
-      <!-- init-chat-bar 由 BottomInputBar 组件规范生成（等价 BottomInputBar.render({variant:'init'})） -->
-      <div class="init-chat-bar">
-        <input type="text" class="init-chat-input" id="initChatInput" placeholder="直接对话，例如：帮我看好重大隐患" data-cmd-key="Enter" data-cmd="convChatSend" />
-        <button class="init-chat-btn" data-cmd="convChatVoice" title="语音输入"><i data-lucide="mic" width="16" height="16"></i></button>
-        <button class="init-chat-send" data-cmd="convChatSend" title="发送"><i data-lucide="arrow-up" width="16" height="16"></i></button>
-      </div>
+      <!-- init-chat-bar 由 BottomInputBar 组件动态渲染 -->
+      <div id="initChatBarMount"></div>
     </div>
 
     <!-- ═══ 杨站长工作台 v18 — 3 列布局 ════════════════════════════════ -->
@@ -516,6 +512,22 @@
 
     <script src="js/lucide.min.js"></script>
     <script src="js/components/bottom-input-bar.js"></script>
+    <script>
+      // 渲染初始化场景底部输入条
+      (function () {
+        var mount = document.getElementById('initChatBarMount');
+        if (mount && typeof BottomInputBar !== 'undefined') {
+          mount.outerHTML = BottomInputBar.render({
+            variant: 'init',
+            placeholder: '长按直接语音输入',
+            inputId: 'initChatInput',
+            sendCommand: 'convChatSend',
+            voiceCommand: 'convChatVoice',
+            leadingHtml: '<button class="init-chat-attach" data-cmd="convChatAttach" title="上传文件"><i data-lucide="plus" width="16" height="16"></i></button>'
+          });
+        }
+      })();
+    </script>
     <script>
       // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
       (function () {

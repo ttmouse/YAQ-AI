@@ -48,6 +48,7 @@
     showMic: true,           // 是否显示语音按钮（仅在 voiceCommand 或 onVoice 设置时有效）
     sendButtonText: '',      // 发送按钮上的文字（有文字时不显示图标）
     sendButtonIcon: true,    // 发送按钮是否显示图标
+    leadingHtml: '',         // 输入框左侧前置 HTML（例如上传按钮）
   };
 
   var _callbackCounter = 0;
@@ -183,6 +184,9 @@
     // 内层 wrapper（仅 pill 变体有 .global-chat-inner）
     if (cls.inner) html += '<div class="' + cls.inner + '">';
 
+    // 前置 HTML（输入框左侧，例如上传按钮）
+    if (opts.leadingHtml) html += opts.leadingHtml;
+
     // input
     var inputClass = cls.input ? ' class="' + cls.input + '"' : '';
     html += '<input' + inputClass + ' ' + _buildInputAttrs(opts) + ' />';
@@ -234,6 +238,11 @@
       inner.className = cls.inner;
       bar.appendChild(inner);
       container = inner;
+    }
+
+    // 前置 HTML（输入框左侧，例如上传按钮）
+    if (opts.leadingHtml) {
+      container.insertAdjacentHTML('beforeend', opts.leadingHtml);
     }
 
     // input
