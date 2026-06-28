@@ -94,7 +94,8 @@
   animation: fadeUp 0.35s ease-out both;
 }
 
-.init-quick-wrap {
+/* ─── 快捷操作芯片（QuickChip 组件统一样式） ────────────────── */
+.quick-chip-wrap {
   position: relative;
   display: flex;
   justify-content: center;
@@ -105,23 +106,23 @@
   pointer-events: none;
   background: #f5f7fb;
 }
-.init-quick-wrap:empty {
+.quick-chip-wrap:empty {
   display: none;
 }
-.init-quick-wrap .q-chip {
+.quick-chip-wrap .qc-chip {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid #e2eaf8;
+  border: 1px solid var(--line, #e2eaf8);
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   font-size: 13px;
   font-weight: 600;
-  color: #475569;
+  color: var(--muted, #475569);
   cursor: pointer;
   transition: all 0.12s;
   font-family: inherit;
@@ -129,23 +130,23 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 @media (min-width: 769px) {
-  .init-quick-wrap .q-chip {
+  .quick-chip-wrap .qc-chip {
     padding: 10px 20px;
     font-size: 14px;
   }
 }
-.init-quick-wrap .q-chip:hover {
+.quick-chip-wrap .qc-chip:hover {
   border-color: #94a3b8;
   color: #334155;
   background: rgba(255, 255, 255, 0.98);
 }
-.init-quick-wrap .q-chip.primary {
+.quick-chip-wrap .qc-chip.primary {
   background: #fff;
-  color: #475569;
+  color: var(--muted, #475569);
   border-color: #d1d5db;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
-.init-quick-wrap .q-chip.primary:hover {
+.quick-chip-wrap .qc-chip.primary:hover {
   border-color: #94a3b8;
   color: #334155;
 }

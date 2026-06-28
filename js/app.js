@@ -564,19 +564,69 @@
       }
       // Agent 内容渲染完成后，显示对应的快捷输入
       if (window.YAQ.showGlobalQuickChip) {
-        if (sceneId === 'dashboard') {
-          var chips = [{ label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' }];
-          if (window.innerWidth <= 768) {
-            chips.push({ label: '查看行动建议', text: '查看行动建议' });
-          }
-          window.YAQ.showGlobalQuickChip(chips);
-        } else if (sceneId === 'monthly-report') {
-          window.YAQ.showGlobalQuickChip([
-            { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
-          ]);
-        } else {
-          window.YAQ.showGlobalQuickChip([]);
+        var chips = [];
+        switch (sceneId) {
+          case 'dashboard':
+            chips = [{ label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' }];
+            if (window.innerWidth <= 768) {
+              chips.push({ label: '查看行动建议', text: '查看行动建议' });
+            }
+            break;
+          case 'hazard-report':
+            chips = [
+              { label: '查看超期隐患详情', text: '查看超期隐患详情' },
+              { label: '督办未整改企业', text: '督办未整改企业' },
+            ];
+            break;
+          case 'efficiency':
+            chips = [
+              { label: '分析履职短板', text: '分析履职短板' },
+              { label: '查看团队排名', text: '查看团队排名' },
+            ];
+            break;
+          case 'responsibility':
+            chips = [
+              { label: '查看主体责任清单', text: '查看主体责任清单' },
+              { label: '评估异常主体', text: '评估异常主体' },
+            ];
+            break;
+          case 'disposal':
+            chips = [
+              { label: '查看处置闭环', text: '查看处置闭环' },
+              { label: '优化处置流程', text: '优化处置流程' },
+            ];
+            break;
+          case 'followup':
+            chips = [
+              { label: '跟进超期事项', text: '跟进超期事项' },
+              { label: '查看进度', text: '查看进度' },
+            ];
+            break;
+          case 'pending-actions':
+            chips = [
+              { label: '批量确认', text: '批量确认待办事项' },
+              { label: '查看详情', text: '查看待办详情' },
+            ];
+            break;
+          case 'supervision-track':
+            chips = [
+              { label: '查看督办进展', text: '查看督办进展' },
+              { label: '催办超期任务', text: '催办超期任务' },
+            ];
+            break;
+          case 'special-inspection':
+            chips = [
+              { label: '查看检查结果', text: '查看检查结果' },
+              { label: '生成检查报告', text: '生成检查报告' },
+            ];
+            break;
+          case 'monthly-report':
+            chips = [
+              { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
+            ];
+            break;
         }
+        window.YAQ.showGlobalQuickChip(chips);
       }
 
       // ─── 恢复滚动位置（同场景刷新时）或滚动到顶部（新场景） ──
@@ -599,7 +649,6 @@
     html += '  <div class="init-container">';
     html += '    <div class="init-content" id="chatBox"></div>';
     html += '  </div>';
-    html += '  <div class="init-quick-wrap" id="initQuickWrap"></div>';
     html += '  <div id="initFloatCard"></div>';
     html += '</div>';
     return html;

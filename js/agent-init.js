@@ -308,26 +308,20 @@
     chatAppend('<div class="c-row agent"><div class="agent-text" id="' + id + '"></div></div>');
     doType(id, text, callback);
   }
-  // ─── 快捷操作芯片（输入框上方居中） ──────────────────────────
+  // ─── 快捷操作芯片（消息流内联） ──────────────────────────
   function showActions(chips) {
-    var wrap = document.getElementById('initQuickWrap');
-    if (!wrap) return;
-    if (!chips || chips.length === 0) {
-      wrap.innerHTML = '';
-      return;
-    }
-    var html = '';
-    for (var i = 0; i < chips.length; i++) {
-      var c = chips[i];
-      var cls = c.primary ? ' primary' : '';
-      html += '<button class="q-chip' + cls + '" onclick="' + c.click + '">' + c.label + '</button>';
-    }
-    wrap.innerHTML = html;
+    // 移除旧的芯片（如存在）
+    var oldWrap = document.getElementById('initQuickWrap');
+    if (oldWrap) oldWrap.innerHTML = '';
+    if (!chips || chips.length === 0) return;
+    // 用 inline 变体渲染到消息流中（和日常工作台同样的带箭头样式）
+    var html = QuickChip.render(chips, { variant: 'inline' });
+    sceneAppend(html);
     // 自动演示：按钮渲染后自动点击
     if (window._autoChain) {
       clearTimeout(window._chainTimer);
       window._chainTimer = setTimeout(function () {
-        var btns = document.querySelectorAll('.q-chip.primary');
+        var btns = document.querySelectorAll('.qc-chip.primary');
         if (btns.length > 0) btns[0].click();
       }, 2500);
     }
@@ -350,7 +344,7 @@
     );
     setTimeout(function () {
       typeText('我们先完成初始化设置，把日常监管安排起来。准备好了吗？', function () {
-        showActions([{ label: '准备好了', click: 'YAQ.doWelcomeNext()', primary: true }]);
+        showActions([{ label: '准备好了', click: 'YAQ.doWelcomeNext()' }]);
         refreshIcons('initOverlay');
       });
     }, 600);
@@ -370,7 +364,7 @@
             '<div class="ability-card"><div class="ac-icon blue">问</div><div class="ac-title">你可直接问</div><div class="ac-desc">支持文字或语音追问、查询、调整口径。</div></div>' +
             '</div>',
         );
-        showActions([{ label: '好的，继续', click: 'YAQ.doContinueAbility()', primary: true }]);
+        showActions([{ label: '好的，继续', click: 'YAQ.doContinueAbility()' }]);
         refreshIcons('initOverlay');
       });
     }, 350);
@@ -573,7 +567,7 @@
               fireConfetti();
             }, 200);
             setTimeout(function () {
-              showActions([{ label: '进入工作台', click: 'YAQ.doEnter()', primary: true }]);
+              showActions([{ label: '进入工作台', click: 'YAQ.doEnter()' }]);
               refreshIcons('initOverlay');
             }, 500);
           }, 500);
@@ -684,7 +678,7 @@
           }
           html += '</div>';
           chatAppend(html);
-          showActions([{ label: '继续设置提醒边界', click: 'YAQ.doContinue("boundary")', primary: true }]);
+          showActions([{ label: '继续设置提醒边界', click: 'YAQ.doContinue("boundary")' }]);
           refreshIcons('initOverlay');
         });
       }, 350);
@@ -720,7 +714,7 @@
           }
           ruleHtml += '</div>';
           chatAppend(ruleHtml);
-          showActions([{ label: '生成管理心跳计划', click: 'YAQ.doGenerate()', primary: true, large: true }]);
+          showActions([{ label: '生成管理心跳计划', click: 'YAQ.doGenerate()', large: true }]);
           refreshIcons('initOverlay');
         });
       }, 350);
@@ -866,7 +860,7 @@
       '<div class="done-item"><i data-lucide="check-circle" width="16" height="16"></i><span>下一次检查：今日 10:00</span></div>' +
       '</div></div>';
     chatAppend(html);
-    showActions([{ label: '进入工作台', click: 'YAQ.doEnter()', primary: true, large: true }]);
+    showActions([{ label: '进入工作台', click: 'YAQ.doEnter()', large: true }]);
     refreshIcons('initOverlay');
     window._initUserMode = userMode;
   }
@@ -1056,7 +1050,7 @@
       setTimeout(function () {
         typeResponse('正在按你的要求调整…', MODE_RESPONSES[mode] || MODE_RESPONSES.default, function () {
           showActions([
-            { label: '调整关注重点', click: 'YAQ.doContinue("attention")', primary: true },
+            { label: '调整关注重点', click: 'YAQ.doContinue("attention")' },
             { label: '直接生成方案', click: 'YAQ.doQuickFinish()' },
           ]);
           refreshIcons('initOverlay');
@@ -1489,18 +1483,10 @@
 
   function showGlobalQuickChip(chips) {
     if (!chips || chips.length === 0) return;
-    var html = '<div class="quick-chips-row" id="globalQuickChipsInline">';
-    for (var i = 0; i < chips.length; i++) {
-      var c = chips[i];
-      html +=
-        '<button class="gq-chip" onclick="YAQ.globalChatQuick(\'' +
-        c.text.replace(/'/g, "\\'") +
-        '\')">' +
-        c.label +
-        '<svg class="gq-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>' +
-        '</button>';
-    }
-    html += '</div>';
+    var chipsWithText = chips.map(function (c) {
+      return { label: c.label, text: c.text };
+    });
+    var html = QuickChip.render(chipsWithText, { variant: 'inline' });
     sceneAppend(html);
     // 滚动到底部，让芯片可见
     var container = document.getElementById('sceneContent');
@@ -1514,7 +1500,7 @@
     var input = document.getElementById('globalChatInput');
     if (input) input.value = '';
     // 隐藏已展示的快捷芯片（从消息流中移除）
-    var inlineChips = document.getElementById('globalQuickChipsInline');
+    var inlineChips = document.querySelector('.quick-chips-row');
     if (inlineChips) inlineChips.remove();
     if (input) input.blur();
 
@@ -1941,7 +1927,7 @@
           YAQ.convChatSend();
           return;
         }
-        var primary = document.querySelector('.q-chip.primary');
+        var primary = document.querySelector('.qc-chip.primary');
         if (primary) {
           e.preventDefault();
           primary.click();

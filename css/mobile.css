@@ -15,7 +15,7 @@
   [data-cmd],
   .pill,
   .chip,
-  .q-chip,
+  .qc-chip,
   .goal-chip,
   .tab,
   .nav-item,
@@ -370,7 +370,7 @@
     gap: 4px;
     margin-bottom: 8px;
   }
-  .global-chat-quick-wrap .gq-chip {
+  .quick-chip-wrap .qc-chip {
     height: 28px;
     padding: 0 10px;
     font-size: 12px;
@@ -379,7 +379,7 @@
   .quick-chips-row {
     gap: 6px;
   }
-  .quick-chips-row .gq-chip {
+  .quick-chips-row .qc-chip {
     min-height: 38px;
     padding: 0.35em 0.85em;
     font-size: 13px;
