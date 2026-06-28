@@ -6736,7 +6736,7 @@
   gap: 6px;
   flex-wrap: wrap;
   padding: 4px 0 2px;
-  margin-top: 2px;
+  margin-top: 12px;
 }
 .quick-chips-row .qc-chip {
   display: inline-flex;
