@@ -37,16 +37,26 @@
   --selected-bg: color-mix(in oklch, var(--accent) 6%, transparent);
   --selected-border: color-mix(in oklch, var(--accent) 25%, var(--border));
 
+  /* deprecated hex compat (migrate to oklch equivalents) */
+  --purple: oklch(45% 0.18 295);
+  --purple-bg: color-mix(in oklch, var(--purple) 10%, transparent);
+
   /* ── typography ── */
   --font-display: -apple-system, 'SF Pro Display', BlinkMacSystemFont, system-ui, sans-serif;
   --font-body: -apple-system, 'SF Pro Text', BlinkMacSystemFont, system-ui, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
 
   /* scale */
+  --fs-3xs: 9px;
+  --fs-2xs: 10px;
   --fs-xs: 11px;
+  --fs-xs2: 11.5px;
   --fs-sm: 12px;
+  --fs-sm2: 12.5px;
+  --fs-13: 13px;
   --fs-base: 13.5px;
   --fs-md: 14px;
+  --fs-md2: 15px;
   --fs-lg: 16px;
   --fs-xl: 20px;
   --fs-2xl: 26px;
@@ -63,10 +73,15 @@
   --lh-relaxed: 1.65;
 
   /* ── spacing ── */
+  --sp-0_5: 2px;
   --sp-1: 4px;
+  --sp-1_5: 6px;
   --sp-2: 8px;
+  --sp-2_5: 10px;
   --sp-3: 12px;
+  --sp-3_5: 14px;
   --sp-4: 16px;
+  --sp-4_5: 18px;
   --sp-5: 20px;
   --sp-6: 24px;
   --sp-8: 32px;
@@ -76,8 +91,12 @@
   --r-xs: 4px;
   --r-sm: 6px;
   --r-md: 8px;
+  --r-2md: 10px;
   --r-lg: 12px;
+  --r-2lg: 14px;
   --r-xl: 16px;
+  --r-2xl: 18px;
+  --r-round: 50%;
   --r-full: 999px;
 
   /* ── shadows ── */
@@ -99,4 +118,12 @@
   --detail-min: 380px;
   --assistant-w: 320px;
   --work-item-min: 280px;
+
+  /* ── scene ── */
+  --scene-max-w: 840px;
+  --scene-pad-x: 16px;
+  --scene-pad-x-lg: 24px;
+  --scene-pad-y: 22px;
+  --scene-pad-bottom: 24px;
+  --chat-bar-bottom: 12px;
 }
