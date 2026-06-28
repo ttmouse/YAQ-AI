@@ -4791,11 +4791,11 @@
 }
 .scene-content {
   text-align: left;
-  padding: var(--scene-pad-y) var(--scene-pad-x) var(--scene-pad-bottom);
+  padding: var(--scene-pad-y) 0 var(--scene-pad-bottom);
 }
 @media (min-width: 769px) {
   .scene-content {
-    padding: var(--scene-pad-y) var(--scene-pad-x-lg) var(--scene-pad-bottom);
+    padding: var(--scene-pad-y) 0 var(--scene-pad-bottom);
   }
 }
 .scene-content > * {
