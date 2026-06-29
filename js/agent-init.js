@@ -1095,6 +1095,11 @@
     if (!input || !input.value.trim()) return;
     var val = input.value.trim();
     input.value = '';
+
+    // 移除之前的快捷芯片
+    var oldChips = document.querySelector('.quick-chips-row');
+    if (oldChips) oldChips.remove();
+
     chatAppend(userMsg(val));
     var mode;
     // 检测"月报/报告"模式
@@ -1195,12 +1200,16 @@
         return;
       }
     }
-    // 默认语音弹窗
-    showSheet(
-      '已识别你的语音',
-      '"帮我盯好重大隐患，别让超期的漏掉。"',
-      '已切换为重大隐患优先模式。重大隐患 Agent 已提升为最高优先，每天 08:00 和 16:00 各巡检一次。',
-    );
+    // 默认语音：将文本填入输入框并发送
+    var input = document.getElementById('globalChatInput');
+    if (input) {
+      input.value = '帮我盯好重大隐患，别让超期的漏掉。';
+      var event = new Event('input', { bubbles: true });
+      input.dispatchEvent(event);
+      var cmd = input.getAttribute('data-cmd');
+      var fn = (window.YAQ && window.YAQ[cmd]) || window[cmd];
+      if (typeof fn === 'function') fn();
+    }
   }
 
   // ═══ 底部快捷回复 ══════════════════════════════════════════════════
@@ -1386,6 +1395,10 @@
     if (!input || !input.value.trim()) return;
     var text = input.value.trim();
     input.value = '';
+
+    // 移除之前的快捷芯片
+    var oldChips = document.querySelector('.quick-chips-row');
+    if (oldChips) oldChips.remove();
 
     // 1) 显示用户消息
     sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>');
@@ -1613,6 +1626,9 @@
 
   function showGlobalQuickChip(chips) {
     if (!chips || chips.length === 0) return;
+    // 移除旧的快捷芯片
+    var oldChips = document.querySelector('.quick-chips-row');
+    if (oldChips) oldChips.remove();
     var chipsWithText = chips.map(function (c) {
       return { label: c.label, text: c.text };
     });
@@ -2047,7 +2063,9 @@
   }
 
   // 全局空格触发：快捷输入可见时，空格点击主按钮
+  // 注意：必须跳过 IME 组合状态（中文输入法按空格选字时不应发送）
   document.addEventListener('keydown', function (e) {
+    if (e.isComposing || e.keyCode === 229) return;
     if (e.key === ' ' || e.key === 'Spacebar') {
       var overlay = document.getElementById('initOverlay');
       if (overlay && overlay.classList.contains('active')) {
