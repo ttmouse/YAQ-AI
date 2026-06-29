@@ -255,18 +255,29 @@
      * 渲染结构化回复（分段数组）
      * @param {Array} sections - 段落数组，每项为 HTML 字符串
      */
-    renderStructuredReply: function (sections, callback) {
+    renderStructuredReply: function (sections, callback, options) {
       if (!this.container || !sections || sections.length === 0) return;
       // 防止重复渲染（2秒锁）
       if (this._renderingContent) return;
       this._renderingContent = true;
 
+      var opts = options || {};
       var respId = 'resp_' + Date.now();
-      var html =
-        '<div class="c-row agent reply">' +
-        '<div class="c-bubble reply-bubble" id="' + respId + '">' +
-        '</div>' +
-        '</div>';
+      var html;
+      if (opts.noCard) {
+        // 无卡片模式：纯内容，无背景/边框/内边距
+        html =
+          '<div class="c-row agent reply">' +
+          '<div id="' + respId + '" style="flex:1;min-width:0;font-size:14px;line-height:1.7;color:#1e293b">' +
+          '</div>' +
+          '</div>';
+      } else {
+        html =
+          '<div class="c-row agent reply">' +
+          '<div class="c-bubble reply-bubble" id="' + respId + '">' +
+          '</div>' +
+          '</div>';
+      }
 
       this.container.insertAdjacentHTML('beforeend', html);
       this._scrollToBottom();
@@ -340,7 +351,7 @@
                   self.appendAgentMessage(result);
                   done();
                 } else if (Array.isArray(result)) {
-                  self.renderStructuredReply(result, done);
+                  self.renderStructuredReply(result, done, { noCard: skill.noCard });
                 }
               } catch (e) {
                 console.error('[UnifiedChat] 技能生成失败:', e);
@@ -356,7 +367,7 @@
         // 没有思考过程，直接展示结果
         if (skill.generate) {
           var sections = skill.generate(text, { messages: self.messages });
-          self.renderStructuredReply(sections);
+          self.renderStructuredReply(sections, null, { noCard: skill.noCard });
         }
       }
     },
@@ -979,6 +990,7 @@
     description: '从政府端和企业端两个维度分析超期未闭环原因',
     keywords: ['超期未闭环原因', '闭环未关闭', '超期未整改', '为什么没闭环', '超期原因'],
     priority: 25,
+    noCard: true,
     demoSteps: {
       thinkChain: [
         { text: '正在获取超期隐患数据…' },
