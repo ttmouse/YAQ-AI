@@ -407,16 +407,19 @@
           var C = window.CardPrimitives;
           if (C) {
             self.renderStructuredReply([
-              C.sectionHead('💡 我可以帮你做什么？'),
-              '<div style="font-size:13px;color:#64748b;line-height:1.7;padding:8px 0">' +
-                '你可以直接问我以下内容：' +
+              C.sectionHead('我可以帮你做什么？'),
+              '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
+                '当前支持以下场景，可直接输入或点击快捷按钮：' +
                 '</div>',
-              C.statCardRow([
-                { label: '隐患分析', value: '试试说', delta: '"查看隐患"', desc: '查看重大隐患和整改情况' },
-                { label: '履职效能', value: '试试说', delta: '"履职分析"', desc: '查看团队履职评分' },
-                { label: '月报生成', value: '试试说', delta: '"月报"', desc: '生成月度报告草稿' },
-              ]),
-            ]);
+              '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
+                '· 隐患分析 — 输入"查看隐患"<br>' +
+                '· 履职效能 — 输入"履职分析"<br>' +
+                '· 月报生成 — 输入"月报"<br>' +
+                '· 超期原因分析 — 输入"超期原因"<br>' +
+                '· 任务异常分析 — 输入"任务异常"<br>' +
+                '· 待确认行动 — 输入"行动建议"' +
+                '</div>',
+            ], null, { noCard: true });
           }
         }
       );
