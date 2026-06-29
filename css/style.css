@@ -386,7 +386,7 @@
   min-width: 0;
 }
 .ai-briefing-head {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 500;
   color: var(--text);
   line-height: 1.6;
@@ -6935,8 +6935,8 @@
 }
 @media (min-width: 769px) {
   .global-chat-inner .global-chat-btn {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 }
 .global-chat-inner .global-chat-btn:hover {
@@ -6957,8 +6957,8 @@
 }
 @media (min-width: 769px) {
   .global-chat-inner .global-chat-btn-icon {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 }
 .global-chat-inner .global-chat-btn-icon:hover {
