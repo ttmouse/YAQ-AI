@@ -1924,29 +1924,51 @@
       // 卡片1 + 分析
       window.CardPrimitives.entityCard({
         name: '2026年第二季度良渚片重大风险检查任务',
-        rawDesc: '责任人：范嘉杰（企业安全组）| 区域：良渚片<br>覆盖 141 家，完成率 42%，时间进度已达 91%',
+        progress: {
+          timePct: 91,
+          compPct: 42,
+          color: '#dc2626',
+          stats: [
+            '覆盖 <strong>141</strong> 家',
+            '隐患 <strong>3</strong> 个 | 未闭环 <strong>0</strong>',
+          ],
+        },
+        time: '06-01 → 06-30',
         badge: '严重滞后 49pp',
         badgeColor: '#dc2626',
         badgeBg: '#fef2f2',
       }) +
+      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：严重滞后，按当前速度无法按期完成</strong></div>',
+      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
+        '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。' +
+        '</div>',
+      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>数据</strong></div>',
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
-        '<strong>研判：严重滞后，按当前速度无法按期完成</strong><br>' +
-        '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。<br><br>' +
-        '<strong>数据</strong><br>' +
         '完成率 42% vs 时间进度 91%，差距 49 个百分点。按当前日均检查量推算，至少还需 28 个工作日，远超剩余时间窗口。' +
         '</div>',
       // 卡片2 + 分析
       window.CardPrimitives.entityCard({
         name: '片区隐患排查复查',
-        rawDesc: '责任人：张毅（消防安全组）| 区域：全片区<br>覆盖 24 家，完成率 55%，含 1 项重大隐患',
+        progress: {
+          timePct: 75,
+          compPct: 55,
+          color: '#d97706',
+          stats: [
+            '覆盖 <strong>24</strong> 家',
+            '隐患 <strong>2</strong> 个 | 未闭环 <strong>1</strong>',
+          ],
+        },
+        time: '06-10 → 06-30',
         badge: '进度偏低',
         badgeColor: '#d97706',
         badgeBg: '#fff7ed',
       }) +
+      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong></div>',
+      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
+        '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。' +
+        '</div>',
+      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>数据</strong></div>',
       '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
-        '<strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong><br>' +
-        '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。<br><br>' +
-        '<strong>数据</strong><br>' +
         '重大隐患复查为最优先事项，需在 2 个工作日内完成。其余 23 家按风险等级推进，预计可在月底前达成 90%+ 完成率。' +
         '</div>',
     ];

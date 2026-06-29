@@ -1109,7 +1109,16 @@
         // 卡片1
         C.entityCard({
           name: '2026年第二季度良渚片重大风险检查任务',
-          rawDesc: '责任人：范嘉杰（企业安全组）| 区域：良渚片<br>覆盖 141 家，完成率 42%，时间进度已达 91%',
+          progress: {
+            timePct: 91,
+            compPct: 42,
+            color: '#dc2626',
+            stats: [
+              '覆盖 <strong>141</strong> 家',
+              '隐患 <strong>3</strong> 个 | 未闭环 <strong>0</strong>',
+            ],
+          },
+          time: '06-01 → 06-30',
           badge: '严重滞后 49pp',
           badgeColor: '#dc2626',
           badgeBg: '#fef2f2',
@@ -1125,7 +1134,16 @@
         // 卡片2
         C.entityCard({
           name: '片区隐患排查复查',
-          rawDesc: '责任人：张毅（消防安全组）| 区域：全片区<br>覆盖 24 家，完成率 55%，含 1 项重大隐患',
+          progress: {
+            timePct: 75,
+            compPct: 55,
+            color: '#d97706',
+            stats: [
+              '覆盖 <strong>24</strong> 家',
+              '隐患 <strong>2</strong> 个 | 未闭环 <strong>1</strong>',
+            ],
+          },
+          time: '06-10 → 06-30',
           badge: '进度偏低',
           badgeColor: '#d97706',
           badgeBg: '#fff7ed',

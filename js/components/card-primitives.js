@@ -182,7 +182,34 @@
     if (opts.onclick) html += ' onclick="' + opts.onclick + '"';
     if (opts.title) html += ' title="' + esc(opts.title) + '"';
     html += '>';
-    html += '<div class="hc-main has-ai" style="padding:12px 12px 8px">';
+    html += '<div class="hc-main has-ai" style="padding:12px 12px 8px;background:#fff">';
+
+    // ── 任务卡：双环进度指示器 ──
+    if (opts.progress) {
+      var p = opts.progress;
+      var timeOff = 119 - (119 * (p.timePct || 0) / 100);
+      var compOff = 75 - (75 * (p.compPct || 0) / 100);
+      var color = p.color || '#98a2b3';
+      html += '<div style="display:flex;align-items:center;gap:8px;margin:0 0 4px">';
+      html += '<svg width="50" height="50" viewBox="0 0 54 54" style="flex-shrink:0">';
+      html += '<circle cx="27" cy="27" r="19" fill="none" stroke="#e5e7eb" stroke-width="5"/>';
+      html += '<circle cx="27" cy="27" r="19" fill="none" stroke="' + color + '" stroke-width="5"' +
+        ' stroke-dasharray="119" stroke-dashoffset="' + timeOff.toFixed(1) + '" stroke-linecap="round"' +
+        ' transform="rotate(-90 27 27)"/>';
+      html += '<circle cx="27" cy="27" r="12" fill="none" stroke="#e5e7eb" stroke-width="5"/>';
+      html += '<circle cx="27" cy="27" r="12" fill="none" stroke="' + color + '" stroke-width="5"' +
+        ' stroke-dasharray="75" stroke-dashoffset="' + compOff.toFixed(1) + '" stroke-linecap="round"' +
+        ' transform="rotate(-90 27 27)"/>';
+      html += '</svg>';
+      html += '<div>';
+      if (p.stats) {
+        for (var s = 0; s < p.stats.length; s++) {
+          html += '<div style="font-size:11px;color:#64748b;line-height:1.6">' + p.stats[s] + '</div>';
+        }
+      }
+      html += '</div></div>';
+    }
+
     html += '<div class="hc-head"><span class="hc-name">' + esc(opts.name) + '</span></div>';
     if (opts.desc) html += '<div class="hc-desc">' + opts.desc + '</div>';
     if (opts.rawDesc) {
