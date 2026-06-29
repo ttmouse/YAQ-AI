@@ -329,18 +329,30 @@
 
   // ═══ 开场 ══════════════════════════════════════════════════════════
   function startConversation() {
-    // ═══ MutationObserver：初始化场景任何内容变化自动滚到底部 ═══
+    // ═══ MutationObserver + 用户滚动检测 ═══
+    // 自动滚动仅在用户未手动上滚时触发；用户上滚后停止自动滚动，
+    // 滚回底部时恢复。点击快捷输入后用户消息置顶，后续不再自动滚动。
     (function () {
       var ct = document.querySelector('.center');
-      if (ct && !ct._scrollObserver) {
-        ct._scrollObserver = true;
-        var observer = new MutationObserver(function () {
-          requestAnimationFrame(function () {
-            ct.scrollTop = ct.scrollHeight;
-          });
+      if (!ct || ct._scrollObserverInit) return;
+      ct._scrollObserverInit = true;
+
+      ct._autoScrollEnabled = true;
+
+      // 用户滚动检测：上滚时禁用自动滚动（永不自动恢复）
+      ct.addEventListener('scroll', function () {
+        var threshold = 60;
+        var atBottom = ct.scrollTop + ct.clientHeight >= ct.scrollHeight - threshold;
+        if (!atBottom) ct._autoScrollEnabled = false;
+      }, { passive: true });
+
+      var observer = new MutationObserver(function () {
+        if (!ct._autoScrollEnabled) return;
+        requestAnimationFrame(function () {
+          ct.scrollTop = ct.scrollHeight;
         });
-        observer.observe(ct, { childList: true, subtree: true, attributes: false });
-      }
+      });
+      observer.observe(ct, { childList: true, subtree: true, attributes: false });
     })();
 
     var now = new Date();
@@ -1658,7 +1670,7 @@
     if (inlineChips) inlineChips.remove();
 
     // 显示用户消息
-    sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>');
+    sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>', true);
 
     var input = document.getElementById('globalChatInput');
     if (input) input.value = '';
@@ -1707,11 +1719,14 @@
 
   // ─── 安全的滚动到底部辅助函数 ──────────────────────────
   // 使用 RAF + setTimeout 双保险，确保内容渲染后可靠滚动
+  // 仅在用户未手动上滚时生效
   function scrollSceneToBottom() {
     var container = document.getElementById('sceneContent');
     if (!container) return;
     var sc = container.closest('.center');
     if (!sc) return;
+    // 用户手动上滚后不再自动滚动
+    if (!sc._autoScrollEnabled) return;
 
     function doScroll() {
       sc.scrollTop = sc.scrollHeight;
@@ -1723,27 +1738,70 @@
     setTimeout(doScroll, 50);
   }
 
+  // ─── 将指定元素滚动到容器顶部（用于用户消息置顶） ──
+  function scrollElementToTop(el) {
+    if (!el) return;
+    var sc = el.closest('.center');
+    if (!sc) return;
+    var top = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+    // 留出顶部间距（给场景标题等留空间）
+    requestAnimationFrame(function () {
+      sc.scrollTop = Math.max(0, top - 16);
+    });
+  }
+
   // ─── sceneContent 容器追加（带滚动） ─────────────────────
-  function sceneAppend(html) {
+  function sceneAppend(html, isUserMsg) {
     var container = document.getElementById('sceneContent');
     if (!container) return;
-    container.insertAdjacentHTML('beforeend', html);
-    scrollSceneToBottom();
+
+    if (isUserMsg) {
+      // 先移除旧的空白占位（防止多次点击积累多个）
+      var oldSpacer = container.querySelector('.scroll-spacer');
+      if (oldSpacer) oldSpacer.remove();
+      // 用户消息：追加到末尾
+      container.insertAdjacentHTML('beforeend', html);
+      // 在底部加空白占位，确保页面可滚动
+      container.insertAdjacentHTML('beforeend', '<div class="scroll-spacer" style="height:80vh;pointer-events:none"></div>');
+      // 滚动到视口顶部，然后禁用自动滚动
+      var sc = container.closest('.center');
+      if (sc) sc._autoScrollEnabled = false;
+      var userRow = container.querySelector('.c-row.user:last-of-type');
+      if (userRow) scrollElementToTop(userRow);
+    } else {
+      // AI 内容：如果有 spacer，插在它前面；否则追加到末尾
+      var spacer = container.querySelector('.scroll-spacer');
+      if (spacer) {
+        spacer.insertAdjacentHTML('beforebegin', html);
+      } else {
+        container.insertAdjacentHTML('beforeend', html);
+      }
+      scrollSceneToBottom();
+    }
   }
 
   // ─── sceneContent 思考 → 逐段展示回复 ──────────────────
-  function sceneTypeResponse(thinkText, sections, callback) {
+  function sceneTypeResponse(thinkText, sections, callback, noCard) {
     sceneAppend(thinkingDots(thinkText));
     setTimeout(
       function () {
         var row = document.getElementById('thinkingRow');
         if (row) row.remove();
         var respId = 'sceneResp' + Date.now();
-        sceneAppend(
-          '<div class="c-row agent"><div class="c-bubble" id="' +
-            respId +
-            '" style="flex:1;min-width:0;background:#fff;border:1px solid #e2eaf8;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.04)"></div></div>',
-        );
+        if (noCard) {
+          // 无卡片模式：直接追加内容容器
+          sceneAppend(
+            '<div class="c-row agent"><div class="c-bubble" id="' +
+              respId +
+              '" style="flex:1;min-width:0;font-size:14px;line-height:1.7;color:#1e293b"></div></div>',
+          );
+        } else {
+          sceneAppend(
+            '<div class="c-row agent"><div class="c-bubble" id="' +
+              respId +
+              '" style="flex:1;min-width:0;background:#fff;border:1px solid #e2eaf8;border-radius:16px;padding:14px 16px;font-size:14px;line-height:1.7;color:#1e293b;box-shadow:0 1px 4px rgba(0,0,0,.04)"></div></div>',
+          );
+        }
         var el = document.getElementById(respId);
         if (!el) {
           if (callback) callback();
@@ -1884,7 +1942,7 @@
         respBubble.insertAdjacentHTML('beforeend', btnHtml);
         refreshIcons();
       }
-    });
+    }, true);
   }
 
   // ─── 生成超期未闭环推进行动 ──────────────────────────────
