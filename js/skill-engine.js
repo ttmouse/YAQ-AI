@@ -1015,7 +1015,7 @@
           '当前共有 2 项重大隐患超期未整改。以下从政府端（监督跟进）和企业端（主体责任）两个维度逐项研判责任归属。' +
           '</div>',
         // 卡片1 + 分析
-        '<div class="hazard-card danger" style="flex:0 0 240px;min-width:220px;margin-bottom:12px">' +
+        '<div class="hazard-card danger" style="width:100%;max-width:320px;margin-bottom:12px">' +
           '<div class="hc-main has-ai" style="padding:12px 12px 8px">' +
           '<div class="hc-head"><span class="hc-name">北苑商业综合体</span></div>' +
           '<div class="hc-desc">消防通道堵塞</div>' +
@@ -1036,7 +1036,7 @@
           '政府端已多次提醒催办，手段基本到位但力度偏软；企业端反复堵塞、不配合整改，是超期的主要原因。建议：政府端升级为现场核查 + 企业约谈，如仍不配合则联合执法。' +
           '</div>',
         // 卡片2 + 分析
-        '<div class="hazard-card danger" style="flex:0 0 240px;min-width:220px;margin-bottom:12px">' +
+        '<div class="hazard-card danger" style="width:100%;max-width:320px;margin-bottom:12px">' +
           '<div class="hc-main has-ai" style="padding:12px 12px 8px">' +
           '<div class="hc-head"><span class="hc-name">云栖高层住宅</span></div>' +
           '<div class="hc-desc">自动消防设施失效</div>' +
