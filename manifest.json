@@ -1,6 +1,6 @@
 {
   "name": "站长每日监管闭环工作台",
-  "short_name": "应擎工作台",
+  "short_name": "小安工作台",
   "description": "基于目标驱动的 AI 安全监管工作台 — 事找人、数据找人",
   "start_url": "./?source=pwa",
   "scope": "./",
@@ -8,11 +8,27 @@
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#f8f9fc",
   "theme_color": "#6366f1",
-  "orientation": "any",
+  "orientation": "portrait-primary",
   "categories": ["business", "productivity", "utilities"],
   "lang": "zh-CN",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "站长每日监管闭环工作台"
+    },
+    {
+      "src": "pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "小安工作台 — 移动端"
+    }
+  ],
   "icons": [
     {
       "src": "pwa-icon-192.png",
@@ -57,7 +73,79 @@
       "purpose": "any"
     }
   ],
-  "screenshots": [],
+
+  "shortcuts": [
+    {
+      "name": "工作台",
+      "short_name": "工作台",
+      "description": "返回工作台首页",
+      "url": "./?source=pwa&scene=dashboard",
+      "icons": [
+        {
+          "src": "pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "重大隐患整改",
+      "short_name": "隐患整改",
+      "description": "查看重大隐患整改进度",
+      "url": "./?source=pwa&scene=hazard-report",
+      "icons": [
+        {
+          "src": "pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "履职效能",
+      "short_name": "履职效能",
+      "description": "查看履职效能评分与分析",
+      "url": "./?source=pwa&scene=efficiency",
+      "icons": [
+        {
+          "src": "pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "持续跟踪",
+      "short_name": "跟踪事项",
+      "description": "查看正在持续跟踪的事项",
+      "url": "./?source=pwa&scene=followup",
+      "icons": [
+        {
+          "src": "pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    },
+    {
+      "name": "智能专项检查",
+      "short_name": "专项检查",
+      "description": "发起智能专项检查",
+      "url": "./?source=pwa&scene=special-inspection",
+      "icons": [
+        {
+          "src": "pwa-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any maskable"
+        }
+      ]
+    }
+  ],
   "launch_handler": {
     "client_mode": "focus-existing"
   },

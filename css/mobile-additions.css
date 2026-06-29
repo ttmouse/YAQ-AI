@@ -1,0 +1,421 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 离线重试按钮 ═══════════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.offline-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  min-height: 30px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background 0.15s;
+}
+.offline-retry-btn:active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ Toast 滑入动画 ═════════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes toastSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 骨架屏 (Skeleton Screens) — 提升感知性能 ═══════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes skeletonShimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: calc(400px + 100%) 0; }
+}
+
+.skeleton {
+  background: var(--skeleton-bg, var(--fg-soft));
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 40%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.25) 60%,
+    transparent 100%
+  );
+  background-size: 400px 100%;
+  background-repeat: no-repeat;
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
+  border-radius: var(--r-md, 8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton-scene {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4, 16px);
+  padding: var(--scene-pad-y, 22px) var(--scene-pad-x, 16px);
+  animation: skeletonSceneFadeIn 0.3s ease both;
+}
+
+@keyframes skeletonSceneFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.skeleton-h1 { height: 24px; width: 45%; margin-bottom: 4px; border-radius: var(--r-sm, 6px); }
+.skeleton-h2 { height: 18px; width: 35%; border-radius: var(--r-sm, 6px); }
+.skeleton-p { height: 12px; width: 100%; }
+.skeleton-p.short { width: 65%; }
+.skeleton-card { height: 80px; border-radius: var(--r-lg, 12px); }
+.skeleton-card.tall { height: 120px; }
+.skeleton-row { display: flex; gap: var(--sp-3, 12px); align-items: center; }
+.skeleton-row .skeleton-avatar { width: 36px; height: 36px; border-radius: var(--r-round, 50%); flex-shrink: 0; }
+.skeleton-row .skeleton-line { flex: 1; height: 12px; }
+.skeleton-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3, 12px); }
+.skeleton-grid .skeleton-card { height: 72px; }
+.skeleton-badge { width: 60px; height: 20px; border-radius: var(--r-full, 999px); }
+.skeleton-table { display: flex; flex-direction: column; gap: 8px; }
+.skeleton-table-row { display: flex; gap: 8px; }
+.skeleton-table-row .skeleton-cell { flex: 1; height: 12px; }
+.skeleton-table-row .skeleton-cell:first-child { flex: 0 0 80px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 内容入场动画 — iOS 风格错峰入场 ══════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes sceneContentEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes listItemEnter {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (max-width: 768px) {
+  .scene-content > * {
+    animation: sceneContentEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .scene-content .work-item,
+  .scene-content .hazard-item,
+  .scene-content .metric-card,
+  .scene-content .block-card {
+    animation: listItemEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .scene-content .work-item:nth-child(2),
+  .scene-content .hazard-item:nth-child(2),
+  .scene-content .metric-card:nth-child(2) { animation-delay: 0.03s; }
+  .scene-content .work-item:nth-child(3),
+  .scene-content .hazard-item:nth-child(3),
+  .scene-content .metric-card:nth-child(3) { animation-delay: 0.06s; }
+  .scene-content .work-item:nth-child(4),
+  .scene-content .hazard-item:nth-child(4),
+  .scene-content .metric-card:nth-child(4) { animation-delay: 0.09s; }
+  .scene-content .work-item:nth-child(5),
+  .scene-content .hazard-item:nth-child(5),
+  .scene-content .metric-card:nth-child(5) { animation-delay: 0.12s; }
+  .scene-content .work-item:nth-child(6),
+  .scene-content .hazard-item:nth-child(6),
+  .scene-content .metric-card:nth-child(6) { animation-delay: 0.15s; }
+  .scene-content .work-item:nth-child(n+7),
+  .scene-content .hazard-item:nth-child(n+7),
+  .scene-content .metric-card:nth-child(n+7) { animation-delay: 0.18s; }
+  .scene-content.entered > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 触控反馈: 按键下沉缩放（物理按压感） ═════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (hover: none) and (pointer: coarse) {
+  /* 按键下沉缩放（物理按压感） */
+  .btn:active,
+  .pwa-install-btn:active,
+  .pwa-ios-guide-btn:active,
+  .drawer-btn.primary:active,
+  .mfoot-btn.primary:active,
+  .hmfoot-action:active,
+  .launcher-close-btn:active,
+  .tab-item:active,
+  .ep-tab:active,
+  .nav-item:active,
+  .goal-chip:active,
+  .drawer-btn:active,
+  .mfoot-btn:active,
+  .pam-btn:active,
+  .modal-close:active,
+  .hmodal-close:active,
+  .pa-modal-close:active,
+  .tmodal-close:active,
+  .ep-close:active,
+  .drawer-close:active,
+  .action-modal-close:active,
+  .memory-panel-close:active,
+  .drill-close:active,
+  .global-chat-btn:active,
+  .global-chat-btn-icon:active,
+  .topbar-search:active,
+  .mobile-plus-btn:active,
+  .hamburger-btn:active {
+    transform: scale(0.94);
+    transition: transform 0.06s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* 列表项/卡片轻微下沉 */
+  .rule-card:active,
+  .feed-item:active,
+  .intent-chip:active,
+  .attn-card:active,
+  .si-btn:active,
+  .si-mode-tab:active {
+    transform: scale(0.97);
+    transition: transform 0.08s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 无障碍焦点 (WCAG 2.4.7) ═════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm, 6px);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  *:focus { outline: none; }
+  *:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 减少透明效果 (WCAG 2.3.3 补充) ═══════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+/* iOS「减少透明效果」设置开启时，移除所有 backdrop-filter 模糊 */
+@media (prefers-reduced-transparency: reduce) {
+  * {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .si-modal-overlay,
+  .modal-overlay,
+  .action-modal-overlay,
+  .pa-modal-overlay,
+  .drill-overlay,
+  .memory-panel-overlay,
+  .launcher-overlay,
+  .pwa-ios-guide {
+    background: rgba(0, 0, 0, 0.65) !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 增强对比度 (WCAG 2.1) ════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+@media (prefers-contrast: more) {
+  :root {
+    --border: oklch(65% 0.01 250) !important;
+  }
+
+  .brand-logo {
+    filter: contrast(1.3);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 下拉刷新指示器 ═══════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.ptr-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 0;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--muted);
+  transition: height 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ptr-indicator.visible { height: 44px; }
+.ptr-indicator .ptr-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ptrSpin 0.6s linear infinite;
+}
+.ptr-indicator .ptr-icon { transition: transform 0.2s ease; }
+.ptr-indicator .ptr-icon.flipped { transform: rotate(180deg); }
+
+@keyframes ptrSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 离线指示器动画 ═══════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.offline-indicator.visible {
+  animation: offlineSlideDown 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes offlineSlideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 长按上下文提示 ═══════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes contextPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.long-press-hint {
+  position: absolute;
+  z-index: 50;
+  pointer-events: none;
+  animation: contextPulse 0.8s ease-in-out infinite;
+  color: var(--accent, #6366f1);
+  font-size: 12px;
+  white-space: nowrap;
+  background: var(--surface, #fff);
+  padding: 4px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 场景过渡动画 — 渐进式增强 ══════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes sceneFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sceneSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scene-content.transitioning {
+  animation: sceneFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.scene-content.transitioning > * {
+  animation: sceneSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* stagger 延迟 — 2 个及以上子元素逐个入场 */
+.scene-content.transitioning > *:nth-child(1) { animation-delay: 0.02s; }
+.scene-content.transitioning > *:nth-child(2) { animation-delay: 0.06s; }
+.scene-content.transitioning > *:nth-child(3) { animation-delay: 0.10s; }
+.scene-content.transitioning > *:nth-child(4) { animation-delay: 0.14s; }
+.scene-content.transitioning > *:nth-child(5) { animation-delay: 0.18s; }
+.scene-content.transitioning > *:nth-child(6) { animation-delay: 0.22s; }
+
+/* 场景切换滤镜 */
+.scene-content.fade-out {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 底部 Sheet 弹性拖拽反馈 ════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.panel-dragging {
+  transition: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+.panel-dragging * {
+  pointer-events: none !important;
+}
+
+.panel-snap-back {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.3s ease !important;
+}
+
+.panel-dismiss {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.2s ease !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 滚动位置指示器（顶部阴影） ══════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.scrollable-top-shadow {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.06), transparent);
+  position: sticky;
+  top: 0;
+  height: 4px;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.scrollable-top-shadow.visible {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 弹窗入场动画增强 ═════════════════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.modal-overlay,
+.drawer-overlay,
+.action-modal-overlay,
+.pa-modal-overlay,
+.drill-overlay,
+.memory-panel-overlay {
+  transition: opacity 0.25s ease;
+}
+
+@keyframes slideUpSnap {
+  from { transform: translateY(120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .action-modal-panel.open {
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+  .pa-modal-panel[style*='display: flex'] {
+    animation: slideUpSnap 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .modal-panel[style*='display: flex'] {
+    animation: slideUpSnap 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .drill-float.open {
+    animation: slideUpSnap 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}

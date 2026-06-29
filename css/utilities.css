@@ -227,21 +227,6 @@
   border-radius: var(--r-md);
 }
 
-/* 深色模式下 skeleton 高光更柔和 */
-@media (prefers-color-scheme: dark) {
-  .skeleton {
-    background: var(--fg-muted);
-  }
-  .skeleton::after {
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      color-mix(in oklch, var(--fg) 12%, transparent) 50%,
-      transparent 100%
-    );
-  }
-}
-
 /* 关闭动画偏好时隐藏 skeleton 动画 */
 @media (prefers-reduced-motion: reduce) {
   .skeleton::after {

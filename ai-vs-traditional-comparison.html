@@ -678,6 +678,35 @@
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
         }
+        /* 表格横向滚动 */
+        .sub-table {
+          min-width: 420px;
+        }
+        .sub-table th,
+        .sub-table td {
+          font-size: 10.5px;
+          padding: 5px 4px;
+        }
+        /* 对比卡片在手机上全宽 */
+        .dt-crow {
+          flex-direction: column;
+          gap: 8px;
+        }
+        .dt-cside {
+          width: 100%;
+        }
+        /* 底部间距 */
+        .page {
+          padding-bottom: 80px;
+        }
+        /* 触控目标 ≥44px */
+        .back-link {
+          padding: 8px 12px;
+          min-height: 36px;
+        }
+        .dt-extra-pill {
+          min-height: 36px;
+        }
       }
     </style>
   </head>
@@ -810,7 +839,7 @@
         </div>
       </div>
       <div class="footer">
-        <p>应擎 · 安全监管工作台 — 站长工作流程对照分析</p>
+        <p>小安 · 安全监管工作台 — 站长工作流程对照分析</p>
         <p style="margin-top: 3px">基于杨站长访谈调研记录 · AI 智能体能力设计参考</p>
       </div>
     </div>

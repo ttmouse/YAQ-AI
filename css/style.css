@@ -7386,7 +7386,7 @@
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  background: #1e1e2e;
+  background: var(--sw-toast-bg, #1e1e2e);
   color: #fff;
   border-radius: 14px;
   padding: 10px 14px;

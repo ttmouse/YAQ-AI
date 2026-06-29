@@ -48,9 +48,34 @@
 .hazard-list-wrap,
 .followup-list,
 .supervision-list,
-.monthly-report-content {
+.monthly-report-content,
+.ep-body,
+.drill-body,
+.drill-list,
+.si-modal,
+.memory-panel-body,
+.launcher-body {
   content-visibility: auto;
   contain-intrinsic-size: 120px;
+}
+
+/* ─── 移动端滚动条 — 极简风格 ─────────────────────────── */
+/* iOS 风格薄滚动条，不占用布局空间 */
+@media (hover: none) and (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.5);
+  }
 }
 
 /* ─── 防止 UI 框架文字被意外选中 ─────────────────────────── */
@@ -805,6 +830,16 @@
   .launcher-body {
     overscroll-behavior: contain;
   }
+
+  /* splash → app 淡化过渡：首次渲染时内容淡入，消除白屏突兀感 */
+  .app {
+    animation: pwaFadeIn 0.3s ease both;
+  }
+}
+
+@keyframes pwaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
@@ -840,6 +875,15 @@
   /* 启动台面板顶部间距 */
   .launcher-panel {
     padding-top: calc(env(safe-area-inset-top, 20px) + 20px) !important;
+  }
+
+  /* ─── 顶栏沉浸延伸（PWA standalone） ──────────────── */
+  /* 顶栏背景延伸至状态栏区域，与刘海/灵动岛视觉融合 */
+  .top {
+    padding-top: calc(env(safe-area-inset-top, 20px) + 4px) !important;
+    background: var(--surface, #ffffff);
+    border-bottom: none;
+    box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.08);
   }
 
   /* 全屏弹窗底部避开 Home Indicator */
@@ -1031,7 +1075,17 @@ html.pwa-standalone .global-chat-bar:focus-within {
   .aib-btn,
   .goal-input-btn,
   .hmfoot-action,
-  .hmfoot-copy {
+  .hmfoot-copy,
+  .si-btn,
+  .pwd-btn,
+  .pam-btn,
+  .pam-btn-muted,
+  .drawer-btn,
+  .mfoot-btn,
+  #swUpdateBtn,
+  .global-chat-btn,
+  .global-chat-btn-icon,
+  .offline-retry-btn {
     min-width: 44px;
     min-height: 44px;
     display: inline-flex;
@@ -1660,168 +1714,32 @@ html.pwa-standalone .launcher-body {
   opacity: 0.8;
 }
 
-/* ═══ 深色模式完整适配 ════════════════════════════════════════════ */
-@media (prefers-color-scheme: dark) {
-  .pwa-ios-guide {
-    background: rgba(0, 0, 0, 0.75);
-  }
-
-  /* 顶栏 & 搜索按钮深色适配 */
-  .meta-mobile .topbar-search,
-  .mobile-plus-btn {
-    color: var(--muted, #a0a0b0);
-  }
-
-  /* 移动端底栏输入框 */
-  .global-chat-inner textarea {
-    color: var(--fg, #e4e4e7);
-  }
-  .global-chat-inner textarea::placeholder {
-    color: var(--muted, #6b6b80);
-  }
-
-  /* 底部 sheet 弹窗 */
-  .action-modal-panel,
-  .pa-modal-panel,
-  .modal-panel,
-  .drill-float {
-    background: var(--surface, #1c1c1e);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Sheet 拖拽手柄 */
-  .action-modal-panel::before,
-  .pa-modal-panel::before,
-  .modal-panel::before,
-  .drill-float::before {
-    background: var(--border, #3a3a3c);
-  }
-
-  /* 待确认督办弹窗 */
-  .pa-modal-head {
-    border-bottom-color: var(--border, #3a3a3c);
-  }
-  .pa-modal-foot {
-    border-top-color: var(--border, #3a3a3c);
-  }
-
-  /* Drawer 面板 */
-  .drawer-panel {
-    background: var(--surface, #1c1c1e);
-  }
-
-  /* 搜索面板背景 */
-  .launcher-panel {
-    background: rgba(0, 0, 0, 0.92);
-  }
-  .sg-group-head {
-    background: rgba(0, 0, 0, 0.88);
-  }
-
-  /* 搜索输入框 */
-  .launcher-search {
-    background: rgba(255, 255, 255, 0.1);
-    color: #f0f0f0;
-  }
-  .launcher-search::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  /* 启动台关闭按钮 */
-  .launcher-close-btn {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.6);
-  }
-  .launcher-close-btn:active {
-    background: rgba(255, 255, 255, 0.18);
-  }
-
-  /* 搜索结果项 */
-  .sri-item:active {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  .launcher-item:active {
-    background: rgba(255, 255, 255, 0.1);
-  }
-  .launcher-item .li-icon {
-    background: rgba(255, 255, 255, 0.08);
-  }
-  .launcher-grid .launcher-item .li-icon {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  /* 全屏弹窗内容区边距 */
-  .modal-head {
-    border-bottom-color: var(--border, #3a3a3c);
-  }
-  .modal-foot {
-    border-top-color: var(--border, #3a3a3c);
-  }
-
-  /* 记忆面板 */
-  .memory-panel {
-    background: var(--surface, #1c1c1e);
-  }
-  .memory-panel-head {
-    border-bottom-color: var(--border, #3a3a3c);
-  }
-
-  /* 演示菜单 */
-  .demo-menu {
-    background: var(--surface, #252526);
-    border-color: var(--border, #3a3a3c);
-  }
-
-  /* 隐患详情弹窗 */
-  .hmodal-ai {
-    border-top-color: var(--border, #3a3a3c);
-  }
-
-  /* 任务详情弹窗 */
-  .tmodal-divider {
-    background: var(--border, #3a3a3c);
-  }
-
-  /* 指标配置弹窗已选区域 */
-  #selectedArea {
-    border-top-color: var(--border, #3a3a3c);
-  }
-
-  /* 企业详情面板 */
-  .ep-panel {
-    background: var(--surface, #1c1c1e);
-  }
-
-  /* 月报侧边栏 */
-  #mrSidebar {
-    background: var(--surface, #1c1c1e);
-    border-left-color: var(--border, #3a3a3c);
-  }
-
-  /* 触控 active 态背景 */
-  .hamburger-btn:active {
-    background: var(--fg-muted, rgba(255,255,255,0.1));
-  }
-
-  /* PWA 安装横幅 */
-  .pwa-install-banner {
-    background: var(--surface, #252526);
-    border-top: 1px solid var(--border, #3a3a3c);
-  }
-
-  /* iOS 安装引导 */
-  .pwa-ios-guide-content {
-    background: var(--surface, #1c1c1e);
-    color: var(--fg, #e4e4e7);
-  }
-  .pwa-ios-guide-steps {
-    color: var(--muted, #a0a0b0);
-  }
-
-  /* 更新提示 */
+/* ═══ 更新提示条 — 移动端适配 ══════════════════════════════ */
+@media (max-width: 768px) {
   .sw-update-toast {
-    background: var(--surface, #252526);
-    border: 1px solid var(--border, #3a3a3c);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 16px !important;
+    right: 16px !important;
+    transform: none !important;
+    width: auto !important;
+    border-radius: 14px !important;
+    font-size: 12px;
+    box-shadow: var(--shadow-xl) !important;
+  }
+  .sw-update-toast.visible {
+    transform: translateY(0) !important;
+  }
+  #swUpdateBtn {
+    min-width: 44px;
+    min-height: 36px;
+    border-radius: 10px !important;
+  }
+  #swUpdateClose {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
+

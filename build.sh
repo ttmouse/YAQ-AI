@@ -29,13 +29,15 @@ npm run build:js
 
 echo "🎨 压缩并合并 CSS..."
 # 合并非响应式 CSS → app.css（跨文件去重）
-cat css/style.css css/agent-init.css css/tokens.css css/base.css css/layout.css css/blocks.css css/detail.css css/modal.css css/work-items.css css/assistant.css css/utilities.css > /tmp/app-merged.css 2>/dev/null
+cat css/style.css css/agent-init.css css/tokens.css css/base.css css/layout.css css/blocks.css css/detail.css css/modal.css css/work-items.css css/assistant.css css/inspection.css css/utilities.css > /tmp/app-merged.css 2>/dev/null
 npx cleancss -o dist/css/app.css /tmp/app-merged.css 2>/dev/null
 rm -f /tmp/app-merged.css
-echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（11 个源文件合并+去重压缩）"
+echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（12 个源文件合并+去重压缩）"
 
 # 单独压缩 mobile.css（响应式单独加载）
 npx cleancss -o dist/css/mobile.css css/mobile.css 2>/dev/null
+npx cleancss -o dist/css/mobile-additions.css css/mobile-additions.css 2>/dev/null
+echo "   $(wc -c < dist/css/mobile-additions.css | tr -d ' ')B — mobile-additions.css"
 echo "   $(wc -c < dist/css/mobile.css | tr -d ' ')B — mobile.css"
 
 # 4. 复制 HTML 和资源文件
@@ -48,10 +50,10 @@ for html in dist/*.html; do
   # 删除所有 <link rel="stylesheet" href="css/..."> 行
   if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' '/<link rel="stylesheet" href="css\/.*">/d' "$html"
-    sed -i '' 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n</head>|' "$html"
+    sed -i '' 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n  <link rel="stylesheet" href="css/mobile-additions.css">\n</head>|' "$html"
   else
     sed -i '/<link rel="stylesheet" href="css\/.*">/d' "$html"
-    sed -i 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n</head>|' "$html"
+    sed -i 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n  <link rel="stylesheet" href="css/mobile-additions.css">\n</head>|' "$html"
   fi
 done
 echo "   $(ls dist/*.html | wc -l | tr -d ' ') 个 HTML 文件已更新"

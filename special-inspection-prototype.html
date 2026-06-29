@@ -673,6 +673,31 @@
           width: 100vw;
         }
 
+        /* 顶栏移动端精简 */
+        .top .brand img {
+          display: none;
+        }
+        .top .tab-strip {
+          gap: 4px;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        .top .tab-strip::-webkit-scrollbar { display: none; }
+        .top .tab-strip span {
+          font-size: 12px;
+          padding: 4px 10px;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        .top .meta .pill {
+          font-size: 11px;
+          padding: 3px 8px;
+        }
+        .top .meta .pill:first-child {
+          display: none;
+        }
+
         /* 工作区内边距压缩 */
         .workspace {
           padding: 12px 8px 80px;
@@ -702,6 +727,7 @@
           flex: 1 1 auto;
           font-size: 12px;
           padding: 8px 12px;
+          min-height: 44px;
         }
 
         /* 任务卡片 */
@@ -710,6 +736,56 @@
         }
         .task-item .task-body .task-name {
           font-size: 14px;
+        }
+
+        /* 底部聊天栏触控优化 */
+        #chatInner {
+          padding: 6px 8px;
+          gap: 6px;
+        }
+        #chatInner input {
+          font-size: 14px;
+          height: 40px;
+        }
+        #chatInner .chat-btn {
+          width: 44px;
+          height: 44px;
+          min-width: 44px;
+        }
+
+        /* 任务元信息在手机上纵向堆叠 */
+        .task-item .task-meta {
+          flex-wrap: wrap;
+          gap: 4px;
+        }
+        .task-item .task-meta span {
+          font-size: 11px;
+        }
+
+        /* 确认卡片按钮堆叠 */
+        .confirm-card .confirm-actions {
+          flex-direction: column;
+        }
+        .confirm-card .confirm-actions .btn {
+          width: 100%;
+        }
+
+        /* 弹窗全屏 */
+        .modal-panel {
+          width: 100% !important;
+          max-width: 100% !important;
+          height: 100% !important;
+          max-height: 100% !important;
+          border-radius: 0 !important;
+          top: 0 !important;
+          left: 0 !important;
+          transform: none !important;
+        }
+        .modal-overlay.active {
+          align-items: stretch;
+        }
+        .modal-panel .modal-foot {
+          padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         }
       }
     </style>
@@ -1484,7 +1560,7 @@
       addMsg(
         'ai',
         `
-      <div style="font-weight:600;margin-bottom:4px">👋 你好，我是应擎 AI 安全助手</div>
+      <div style="font-weight:600;margin-bottom:4px">👋 你好，我是小安 AI 安全助手</div>
       <div style="font-size:12.5px;line-height:1.7">
         <p>我可以帮你：</p>
         <p>📄 上传专项检查文档 → 自动解析生成检查任务</p>

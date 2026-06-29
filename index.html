@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta
       http-equiv="Content-Security-Policy"
@@ -35,25 +35,38 @@
 
     <!-- ═══ PWA — iOS 添加到主屏幕 + Android TWA ══════════════════ -->
     <link rel="manifest" href="manifest.json" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="supported-color-schemes" content="light dark" />
+
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="小安工作台" />
-    <meta name="theme-color" content="#f8f9fc" />
-    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e2e" />
+    <meta name="color-scheme" content="light dark" />
     <!-- iOS 所有尺寸图标 -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <!-- iOS 启动屏（通过在根目录放 splash/ 图片实现） -->
-    <link
-      rel="apple-touch-startup-image"
-      href="apple-touch-icon.png"
-      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
-    />
+    <!-- iOS 启动屏（splash/ 目录有9种设备尺寸的启动图片） -->
+    <link rel="apple-touch-startup-image" href="splash/splash-640x1136.png"
+          media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-750x1334.png"
+          media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-828x1792.png"
+          media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-1125x2436.png"
+          media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-1170x2532.png"
+          media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-1242x2208.png"
+          media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-1242x2688.png"
+          media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-1284x2778.png"
+          media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="splash/splash-1290x2796.png"
+          media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
     <meta name="mobile-web-app-capable" content="yes" />
     <!-- 禁止自动识别电话/地址（管理后台不需要） -->
     <meta name="format-detection" content="telephone=no,address=no,email=no" />
@@ -71,10 +84,11 @@
     <link rel="stylesheet" href="css/work-items.css" />
     <link rel="stylesheet" href="css/assistant.css" />
     <link rel="stylesheet" href="css/mobile.css" />
+    <link rel="stylesheet" href="css/mobile-additions.css" />
     <link rel="stylesheet" href="css/utilities.css" />
     <link rel="stylesheet" href="css/inspection.css" />
   </head>
-  <body>
+  <body style="background:#f8f9fc">
     <!-- ═══ 密码保护浮层 ═══════════════════════════════════════════ -->
     <div class="pwd-overlay" id="pwdOverlay">
       <div class="pwd-modal">
@@ -88,6 +102,9 @@
             id="pwdInput"
             placeholder="输入密码"
             autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            inputmode="text"
             onkeydown="if (event.key === 'Enter') window.YAQ.pwdSubmit();"
           />
         </div>
@@ -110,6 +127,7 @@
               class="brand-logo"
               id="brandLogo"
               title="点击刷新"
+              loading="lazy"
             />
             <button class="hamburger-btn" id="hamburgerBtn" aria-label="菜单" title="切换场景">
               <i data-lucide="menu" width="18" height="18"></i>
@@ -148,7 +166,7 @@
             <div class="topbar-search" data-cmd="openLauncher" title="搜索">
               <i data-lucide="search" width="20" height="20"></i>
             </div>
-            <button class="mobile-plus-btn" id="mobilePlusBtn" title="更多">
+            <button class="mobile-plus-btn" id="mobilePlusBtn" data-haptic="light" title="更多">
               <i data-lucide="plus" width="22" height="22"></i>
             </button>
           </div>
@@ -181,7 +199,7 @@
         <!-- ═══ 中栏：内容区 ════════════════════════════════════════ -->
         <div class="center">
           <div class="result" id="workspace">
-            <div class="scene-content" id="sceneContent">
+            <div class="scene-content" id="sceneContent" aria-live="polite" aria-atomic="false">
               <!-- 由 JS 动态渲染 -->
             </div>
           </div>
@@ -228,12 +246,12 @@
       </div>
       <!-- ─── 记忆面板 ────────────────────────────────── -->
       <div class="memory-panel-overlay" id="memoryPanelOverlay" onclick="YAQ.closeMemoryPanel()"></div>
-      <div class="memory-panel" id="memoryPanel">
+      <div class="memory-panel" id="memoryPanel" role="dialog" aria-modal="true" aria-label="记忆" tabindex="-1">
         <div class="memory-panel-head">
           <div class="memory-panel-title">
             <i data-lucide="brain" width="18" height="18" style="color: #6366f1"></i> 记忆
           </div>
-          <button class="memory-panel-close" onclick="YAQ.closeMemoryPanel()">
+          <button class="memory-panel-close" onclick="YAQ.closeMemoryPanel()" aria-label="关闭记忆面板">
             <i data-lucide="x" width="16" height="16"></i>
           </button>
         </div>
@@ -250,15 +268,19 @@
           <textarea
             id="globalChatInput"
             placeholder="发消息或按住说话"
+            inputmode="text"
+            autocomplete="off"
+            autocorrect="on"
+            autocapitalize="sentences"
             data-cmd-key="Enter"
             data-cmd="globalChatSend"
             rows="1"
           ></textarea>
           <div class="global-chat-actions">
-            <button class="global-chat-btn-icon" data-cmd="convChatVoice" title="语音输入">
+            <button class="global-chat-btn-icon" data-cmd="convChatVoice" data-haptic="light" title="语音输入">
               <i data-lucide="mic" width="16" height="16"></i>
             </button>
-            <button class="global-chat-btn" data-cmd="globalChatSend" title="发送">
+            <button class="global-chat-btn" data-cmd="globalChatSend" data-haptic="medium" title="发送">
               <i data-lucide="arrow-up" width="16" height="16"></i>
             </button>
           </div>
@@ -270,7 +292,7 @@
     <div class="drawer-overlay" id="drawerOverlay"></div>
 
     <!-- ─── Drawer Panel ─────────────────────────────────────────────── -->
-    <div class="drawer-panel" id="drawerPanel">
+    <div class="drawer-panel" id="drawerPanel" role="dialog" aria-modal="true" aria-label="操作面板" tabindex="-1">
       <div class="drawer-header">
         <h3 id="drawerTitle"></h3>
         <button class="drawer-close" id="drawerClose" aria-label="关闭">
@@ -287,8 +309,8 @@
     </div>
 
     <!-- ─── 居中大浮层：行动项确认弹窗 ────────────────────────── -->
-    <div class="action-modal-overlay" id="actionModalOverlay" onclick="closeActionModal()"></div>
-    <div class="action-modal-panel" id="actionModal">
+    <div class="action-modal-overlay" id="actionModalOverlay" onclick="closeActionModal()" tabindex="-1"></div>
+    <div class="action-modal-panel" id="actionModal" role="dialog" aria-modal="true" aria-labelledby="actionModalTitle" tabindex="-1">
       <div class="action-modal-header">
         <h3 id="actionModalTitle"></h3>
         <button class="action-modal-close" onclick="closeActionModal()" aria-label="关闭">
@@ -302,8 +324,8 @@
     </div>
 
     <!-- ─── 指标配置弹窗 ─────────────────────────────────────────── -->
-    <div class="modal-overlay" id="metricModalOverlay" data-cmd="closeMetricConfig"></div>
-    <div class="modal-panel" id="metricModal">
+    <div class="modal-overlay" id="metricModalOverlay" data-cmd="closeMetricConfig" tabindex="-1"></div>
+    <div class="modal-panel" id="metricModal" role="dialog" aria-modal="true" aria-label="配置显示指标" tabindex="-1">
       <div class="modal-head">
         <button class="modal-close" data-cmd="closeMetricConfig">
           <i data-lucide="x" width="16" height="16"></i>
@@ -315,7 +337,12 @@
             <input
               id="metricSearchInput"
               class="modal-search-input"
+              type="search"
               placeholder="搜索指标名称"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              inputmode="search"
               data-cmd-input="onMetricSearch"
             />
           </div>
@@ -356,8 +383,8 @@
     </div>
 
     <!-- ─── 隐患详情弹窗 ─────────────────────────────────────────── -->
-    <div class="modal-overlay" id="hazardModalOverlay" data-cmd="closeHazardModal"></div>
-    <div class="hmodal-panel" id="hazardModal">
+    <div class="modal-overlay" id="hazardModalOverlay" data-cmd="closeHazardModal" tabindex="-1"></div>
+    <div class="hmodal-panel" id="hazardModal" role="dialog" aria-modal="true" aria-label="隐患详情" tabindex="-1">
       <div class="hmodal-head">
         <div class="hmodal-title">
           <span class="hmodal-dot" id="hazardModalDot" style="background: var(--red)"></span>
@@ -395,15 +422,15 @@
             <i data-lucide="pin" width="14" height="14"></i><span>跟踪</span>
           </button>
         </div>
-        <button class="hmfoot-copy" data-cmd="copyHazardInfo">
+        <button class="hmfoot-copy" data-cmd="copyHazardInfo" data-share="hazard">
           <i data-lucide="copy" width="14" height="14"></i> 复制隐患信息
         </button>
       </div>
     </div>
 
     <!-- ─── 任务详情弹窗 ─────────────────────────────────────────── -->
-    <div class="modal-overlay" id="taskModalOverlay" data-cmd="closeTaskModal"></div>
-    <div class="tmodal-panel" id="taskModal">
+    <div class="modal-overlay" id="taskModalOverlay" data-cmd="closeTaskModal" tabindex="-1"></div>
+    <div class="tmodal-panel" id="taskModal" role="dialog" aria-modal="true" aria-label="任务详情" tabindex="-1">
       <div class="tmodal-head">
         <div class="tmodal-title" id="taskModalTitle">
           <i data-lucide="target" width="16" height="16" style="color: var(--accent)"></i>
@@ -421,8 +448,8 @@
     </div>
 
     <!-- ─── 待确认督办弹窗 ─────────────────────────────────────────── -->
-    <div class="modal-overlay" id="paModalOverlay" data-cmd="closePAModal"></div>
-    <div class="pa-modal-panel" id="paModal">
+    <div class="modal-overlay" id="paModalOverlay" data-cmd="closePAModal" tabindex="-1"></div>
+    <div class="pa-modal-panel" id="paModal" role="dialog" aria-modal="true" aria-label="待确认督办" tabindex="-1">
       <div class="pa-modal-head">
         <div class="pa-modal-title">
           <i data-lucide="clipboard-check" width="18" height="18" style="color: var(--accent)"></i>
@@ -454,7 +481,7 @@
 
     <!-- ─── 指标钻取浮层 ──────────────────────────────────────────── -->
     <div class="modal-overlay" id="drillOverlay" data-cmd="closeDrillFloat"></div>
-    <div class="drill-float" id="drillFloat">
+    <div class="drill-float" id="drillFloat" role="dialog" aria-modal="true" aria-label="指标钻取" tabindex="-1">
       <div class="drill-head">
         <h3 class="drill-title" id="drillTitle"></h3>
         <button class="drill-close" data-cmd="closeDrillFloat"><i data-lucide="x" width="16" height="16"></i></button>
@@ -474,9 +501,12 @@
             <input
               class="launcher-search"
               id="launcherSearch"
-              type="text"
+              type="search"
               placeholder="搜索人员、企业、任务、功能…"
               autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              inputmode="search"
               data-cmd-input="onLauncherSearch"
               data-cmd-key="Enter"
               data-cmd="launcherSearchFirst"
@@ -574,7 +604,7 @@
           <div class="pwa-install-title">安装「小安工作台」</div>
           <div class="pwa-install-desc">添加到主屏幕，快速访问</div>
         </div>
-        <button class="pwa-install-btn" id="pwaInstallBtn">安装</button>
+        <button class="pwa-install-btn" id="pwaInstallBtn" data-haptic="medium">安装</button>
         <button class="pwa-install-close" id="pwaInstallClose" aria-label="关闭">
           <svg
             width="16"
@@ -608,7 +638,7 @@
     </div>
 
     <!-- ═══ 断网指示器 ════════════════════════════════════════════ -->
-    <div id="offlineIndicator" class="offline-indicator" aria-hidden="true">
+    <div id="offlineIndicator" class="offline-indicator" aria-hidden="true" role="alert" aria-live="assertive">
       <svg
         width="14"
         height="14"
@@ -628,6 +658,7 @@
         <line x1="12" y1="20" x2="12.01" y2="20" />
       </svg>
       <span>网络已断开 · 已缓存内容仍可查阅</span>
+      <button id="offlineRetryBtn" class="offline-retry-btn" style="display:none">重试</button>
     </div>
 
     <!-- ═══ SW 更新提示 ═══════════════════════════════════════════ -->
@@ -806,25 +837,87 @@
         });
       })();
 
-      /* ═══ VisualViewport 键盘适配（Android PWA + iOS Safari） ═══ */
-      /* 当键盘弹出时，fixed 定位元素在部分浏览器中可能被遮挡。
-         通过 --keyboard-inset CSS 变量动态补偿底部间距。
-         iOS PWA standalone 模式下 viewport 不会 resize，此逻辑不适用。 */
+      /* ═══ VisualViewport 键盘适配（Android + iOS PWA） ═══ */
+      /* 修复：使用 visualViewport.height 而非 window.innerHeight 作为基准值，
+        避免 Safari 工具栏展开/收起导致的误触发。PWA standalone 模式下增加
+        orientation change 重新校准。 */
       (function () {
         if (!('visualViewport' in window)) return;
-        var initialHeight = window.innerHeight;
-        var isIOS = !!window.navigator.standalone;
-        // iOS standalone 模式：键盘覆盖模式，不需要补偿 bottom
-        if (isIOS) return;
+        var isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        var isIOS = !!window.navigator.standalone || /iPad|iPhone|iPod/.test(navigator.userAgent);
+        var initialHeight = 0;
+        var lastDiff = 0;
+        var rafPending = false;
 
-        window.visualViewport.addEventListener('resize', function () {
-          var diff = initialHeight - window.visualViewport.height;
-          if (diff > 100) {
+        function calibrateBaseline() {
+          // standalone 模式用 screen.height 规避工具栏变化干扰
+          if (isStandalone && window.screen && window.screen.height) {
+            initialHeight = Math.max(window.screen.height, window.visualViewport.height);
+          } else {
+            initialHeight = window.visualViewport.height;
+          }
+        }
+        calibrateBaseline();
+
+        function updateKeyboardInset(diff) {
+          if (diff > 80) {
             document.documentElement.style.setProperty('--keyboard-inset', diff + 'px');
+            var chatBar = document.querySelector('.global-chat-bar, .init-chat-bar');
+            if (chatBar) {
+              chatBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            lastDiff = diff;
           } else {
             document.documentElement.style.removeProperty('--keyboard-inset');
+            lastDiff = 0;
+          }
+        }
+
+        window.visualViewport.addEventListener('resize', function () {
+          if (rafPending) return;
+          rafPending = true;
+          requestAnimationFrame(function () {
+            rafPending = false;
+            var viewportHeight = window.visualViewport.height;
+            var diff = initialHeight - viewportHeight;
+            updateKeyboardInset(diff);
+          });
+        });
+
+        // orientation change 重新校准（standalone 模式 screen.height 不变，但旋转后 safe-area 变化）
+        window.addEventListener('orientationchange', function () {
+          setTimeout(calibrateBaseline, 500);
+        });
+
+        // 输入框聚焦时也确保可见
+        document.addEventListener('focusin', function (e) {
+          if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') return;
+          if (lastDiff > 80) {
+            var chatBar = e.target.closest('.global-chat-bar, .init-chat-bar');
+            if (chatBar) {
+              setTimeout(function () { chatBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 200);
+            }
           }
         });
+
+        // iOS 特殊处理：监听键盘弹起/收起事件
+        if (isIOS) {
+          document.addEventListener('focusin', function (e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') return;
+            setTimeout(function () {
+              var viewportHeight = window.visualViewport.height;
+              var diff = initialHeight - viewportHeight;
+              if (diff > 80) {
+                document.documentElement.style.setProperty('--keyboard-inset', diff + 'px');
+              }
+            }, 350);
+          });
+          document.addEventListener('focusout', function () {
+            setTimeout(function () {
+              document.documentElement.style.removeProperty('--keyboard-inset');
+            }, 100);
+          });
+        }
       })();
 
       /* ═══ 移动端键盘弹出时输入框自动滚入可视区 ═════════════════ */
@@ -870,21 +963,82 @@
         }
       })();
 
+      /* ═══ 场景切换滚动位置保持 ═══════════════════════════════════ */
+      /* 用户在各场景之间切换时，保存和恢复滚动位置，避免每次切换
+         都回到顶部。使用 localStorage 持久化，刷新后依然保留。 */
+      (function () {
+        if (!window.YAQ) window.YAQ = {};
+        var STORAGE_KEY = 'yaq-scroll-positions';
+        var saveTimer = null;
+        var centerEl = document.querySelector('.center');
+
+        function getSceneId() {
+          // 从 URL 或 scene-content 属性推断当前场景 ID
+          var match = location.search.match(/scene=([^&]+)/);
+          if (match) return match[1];
+          var scene = document.getElementById('sceneContent');
+          return scene ? (scene.dataset.scene || 'default') : 'default';
+        }
+
+        function savePosition() {
+          if (!centerEl) return;
+          var scene = getSceneId();
+          try {
+            var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            data[scene] = centerEl.scrollTop;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          } catch (e) {}
+        }
+
+        function restorePosition() {
+          if (!centerEl) return;
+          var scene = getSceneId();
+          try {
+            var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            var pos = data[scene];
+            if (typeof pos === 'number' && pos > 0) {
+              // 等 DOM 渲染完成后恢复
+              requestAnimationFrame(function () {
+                centerEl.scrollTop = pos;
+              });
+            }
+          } catch (e) {}
+        }
+
+        // 节流保存：scroll 事件每 300ms 保存一次
+        if (centerEl) {
+          centerEl.addEventListener('scroll', function () {
+            if (saveTimer) clearTimeout(saveTimer);
+            saveTimer = setTimeout(savePosition, 300);
+          }, { passive: true });
+        }
+
+        // 暴露恢复方法给场景切换逻辑
+        window.YAQ.restoreScrollPosition = restorePosition;
+        // 页面加载时恢复（延迟以确保 DOM 渲染完成）
+        if (document.readyState === 'complete') {
+          setTimeout(restorePosition, 100);
+        } else {
+          window.addEventListener('load', function () {
+            setTimeout(restorePosition, 200);
+          });
+        }
+      })();
+
       /* ═══ 移动端：底部 Sheet 滑动手势关闭（swipe-to-dismiss）══════════ */
-      /* Material Design 底部弹窗标准交互模式 */
+      /* Material Design 底部弹窗标准交互模式 + iOS 弹性拖拽感 */
       (function () {
         if (!('ontouchstart' in window)) return;
         var SHEET_SELECTORS = [
           '.action-modal-panel', '.pa-modal-panel', '.modal-panel',
           '.drill-float', '.conv-sheet', '.memory-panel'
         ];
-        var threshold = 80; // 下滑 px 阈值触发关闭
+        var threshold = 100; // 下滑 px 阈值触发关闭（略高于之前，减少误触）
         var startY = 0;
         var currentY = 0;
         var isDragging = false;
         var activeSheet = null;
-        var initialTransform = 0;
-        var maxDrag = 200; // 最大拖动距离
+        var maxDrag = 250; // 最大拖动距离
 
         function findSheet(el) {
           while (el) {
@@ -897,82 +1051,91 @@
         }
 
         function isSheetOpen(sheet) {
-          // 判断底栏是否已打开
           return sheet.classList.contains('open') ||
                  (sheet.style.display && sheet.style.display !== 'none' &&
                   sheet.style.display !== '');
         }
 
         function getCloseTrigger(sheet) {
-          // 找遮罩层或关闭按钮
           var overlay = sheet.closest('[class*="overlay"]');
-          if (overlay) return overlay;
-          return sheet;
+          return overlay || sheet;
+        }
+
+        function rubberBand(delta, max) {
+          // 弹性阻尼：拖拽越远，阻力越大（曲线接近 iOS 弹簧效果）
+          var ratio = delta / max;
+          return max * (1 - Math.exp(-ratio * 1.8));
         }
 
         function dragStart(e) {
-          // 只处理顶部40px内的触摸（避免干扰内容滚动）
           var touch = e.touches[0];
           var sheet = findSheet(e.target);
           if (!sheet) return;
-          // 在 sheet 顶部区域或拖拽手柄区域开始拖动
+          // 只允许从顶部50px区域开始拖拽
           var rect = sheet.getBoundingClientRect();
           var relY = touch.clientY - rect.top;
-          var dragHandle = sheet.querySelector('::before') || sheet.firstElementChild;
-          if (relY > 50) return; // 只允许从顶部50px区域开始拖
+          if (relY > 50) return;
           if (!isSheetOpen(sheet)) return;
 
           startY = touch.clientY;
           currentY = startY;
           isDragging = true;
           activeSheet = sheet;
-          initialTransform = 0;
-          sheet.style.transition = 'none';
+          sheet.classList.add('panel-dragging');
+          sheet.classList.remove('panel-snap-back', 'panel-dismiss');
         }
 
         function dragMove(e) {
           if (!isDragging || !activeSheet) return;
           var touch = e.touches[0];
           currentY = touch.clientY;
-          var delta = currentY - startY;
-          if (delta < 0) delta = 0; // 不允许上拉
-          delta = Math.min(delta, maxDrag);
+          var rawDelta = currentY - startY;
+          if (rawDelta < 0) rawDelta = 0; // 不允许上拉
+          // 应用弹性阻尼
+          var delta = rubberBand(rawDelta, maxDrag);
           activeSheet.style.transform = 'translateY(' + delta + 'px)';
-          // 同时调节遮罩透明度
+          // 同步调节遮罩透明度
           var overlay = activeSheet.closest('[class*="overlay"]');
           if (overlay) {
             overlay.style.transition = 'none';
-            overlay.style.opacity = Math.max(0, 1 - delta / maxDrag);
+            overlay.style.opacity = Math.max(0, 1 - rawDelta / maxDrag);
           }
         }
 
         function dragEnd() {
           if (!isDragging || !activeSheet) return;
           var delta = currentY - startY;
-          activeSheet.style.transition = '';
+          if (delta < 0) delta = 0;
+          activeSheet.classList.remove('panel-dragging');
+
           var overlay = activeSheet.closest('[class*="overlay"]');
           if (overlay) overlay.style.transition = '';
 
           if (delta > threshold) {
             // 超过阈值 → 关闭
-            activeSheet.style.transform = 'translateY(100%)';
+            activeSheet.classList.add('panel-dismiss');
+            activeSheet.style.transform = 'translateY(120%)';
             if (overlay) overlay.style.opacity = '0';
             setTimeout(function () {
               if (!activeSheet) return;
               activeSheet.style.transform = '';
+              activeSheet.classList.remove('panel-dismiss');
               if (overlay) {
                 overlay.style.opacity = '';
-                // 触发关闭：隐藏 overlay
                 var closeTrigger = getCloseTrigger(activeSheet);
                 closeTrigger.classList.remove('open');
                 if (closeTrigger.style.display) closeTrigger.style.display = 'none';
               }
               activeSheet = null;
-            }, 200);
+            }, 250);
           } else {
-            // 未超过阈值 → 弹回
+            // 未超过阈值 → 弹性弹回
+            activeSheet.classList.add('panel-snap-back');
             activeSheet.style.transform = '';
             if (overlay) overlay.style.opacity = '';
+            setTimeout(function () {
+              if (activeSheet) activeSheet.classList.remove('panel-snap-back');
+            }, 400);
           }
           isDragging = false;
           activeSheet = null;
@@ -1050,7 +1213,7 @@
       /* ═══ iOS PWA 安装引导（非独立模式的 iOS Safari）══════════════ */
       (function () {
         // 仅 iOS Safari 非 standalone 模式显示
-        var isIOS = !!window.navigator.standalone !== undefined && !window.navigator.standalone;
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.navigator.standalone;
         var isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
         if (isStandalone) return;
 
@@ -1090,12 +1253,27 @@
       /* ═══ 断网检测指示器 ════════════════════════════════════════════ */
       (function () {
         var indicator = document.getElementById('offlineIndicator');
+        var retryBtn = document.getElementById('offlineRetryBtn');
         if (!indicator) return;
 
         function update() {
           var offline = !navigator.onLine;
           indicator.classList.toggle('visible', offline);
           indicator.setAttribute('aria-hidden', String(!offline));
+          if (retryBtn) retryBtn.style.display = offline ? 'inline-flex' : 'none';
+        }
+
+        if (retryBtn) {
+          retryBtn.addEventListener('click', function () {
+            retryBtn.style.display = 'none';
+            retryBtn.textContent = '重试中...';
+            fetch(window.location.href, { method: 'HEAD', cache: 'no-cache' })
+              .then(function () { window.location.reload(); })
+              .catch(function () {
+                retryBtn.textContent = '重试';
+                retryBtn.style.display = 'inline-flex';
+              });
+          });
         }
 
         window.addEventListener('online', update);
@@ -1238,6 +1416,242 @@
           if (!document.hidden) checkUpdate();
         });
       })();
+    </script>
+
+    <!-- ═══ 移动端 UX 增强工具函数 ═══════════════════════════════════ -->
+    <script>
+      /* ═══ 触觉反馈 (Haptic Feedback) ══════════════════════════════ */
+      window.haptic = (function () {
+        if (!navigator.vibrate) return { light: function(){}, medium: function(){}, heavy: function(){} };
+        return {
+          light: function () { try { navigator.vibrate(6); } catch(e) {} },
+          medium: function () { try { navigator.vibrate(12); } catch(e) {} },
+          heavy: function () { try { navigator.vibrate(20); } catch(e) {} },
+        };
+      })();
+      document.addEventListener('click', function (e) {
+        var target = e.target.closest('[data-haptic]');
+        if (!target) return;
+        var level = target.getAttribute('data-haptic');
+        if (window.haptic && window.haptic[level]) window.haptic[level]();
+      });
+
+      /* ═══ Web Share API ════════════════════════════════════════════ */
+      window.webShare = function (data) {
+        if (!data) return;
+        if (navigator.share) {
+          navigator.share(data).catch(function () {});
+        } else if (navigator.clipboard && data.text) {
+          navigator.clipboard.writeText(data.text).catch(function () {});
+        }
+      };
+      /* data-share 属性：点击时尝试原生分享，降级到复制 */
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-share]');
+        if (!btn) return;
+        var type = btn.getAttribute('data-share');
+        if (type === 'hazard') {
+          var nameEl = document.getElementById('hazardModalName');
+          var bodyEl = document.getElementById('hazardModalBody');
+          var title = nameEl ? nameEl.textContent : '隐患信息';
+          var body = bodyEl ? bodyEl.textContent.slice(0, 200) : '';
+          window.webShare({
+            title: title,
+            text: title + '\n' + body + '\n\n—— 来自「小安工作台」',
+            url: window.location.href,
+          });
+        }
+      });
+
+      /* ═══ 骨架屏工具 ══════════════════════════════════════════════ */
+      window.showSkeleton = function (sceneType) {
+        var container = document.getElementById('sceneContent');
+        if (!container) return;
+        var sk = document.getElementById('skeletonContainer');
+        if (!sk) {
+          sk = document.createElement('div');
+          sk.id = 'skeletonContainer';
+          sk.className = 'skeleton-scene';
+          container.prepend(sk);
+        }
+        var html = '';
+        if (sceneType === 'dashboard' || sceneType === 'init') {
+          html =
+            '<div class="skeleton skeleton-h1"></div>' +
+            '<div class="skeleton skeleton-p"></div>' +
+            '<div class="skeleton skeleton-p short"></div>' +
+            '<div class="skeleton-grid"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div>' +
+            '<div class="skeleton skeleton-h2"></div>' +
+            '<div class="skeleton skeleton-card tall"></div>';
+        } else if (sceneType === 'hazard' || sceneType === 'followup') {
+          html =
+            '<div class="skeleton skeleton-h1"></div>' +
+            '<div class="skeleton skeleton-badge" style="margin-bottom:12px"></div>' +
+            '<div class="skeleton-table">' +
+              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '</div>';
+        } else {
+          html =
+            '<div class="skeleton skeleton-h1"></div>' +
+            '<div class="skeleton skeleton-p"></div>' +
+            '<div class="skeleton skeleton-p short"></div>' +
+            '<div class="skeleton skeleton-card"></div>' +
+            '<div class="skeleton skeleton-card"></div>';
+        }
+        sk.innerHTML = html;
+        sk.style.display = 'flex';
+      };
+
+      window.hideSkeleton = function () {
+        var sk = document.getElementById('skeletonContainer');
+        if (sk) sk.style.display = 'none';
+        var sc = document.getElementById('sceneContent');
+        if (sc) sc.classList.add('entered');
+      };
+
+      /* ═══ 下拉刷新 (Pull-to-Refresh) ══════════════════════════════ */
+      window.PullToRefresh = (function () {
+        var INST_KEY = '_ptr_instance';
+        if (window[INST_KEY]) return window[INST_KEY];
+
+        function PTR(opts) {
+          this.opts = opts || {};
+          this.onRefresh = opts.onRefresh || function () {};
+          this.container = opts.container || document.querySelector('.center');
+          this.indicator = null;
+          this._startY = 0;
+          this._pulling = false;
+          this._threshold = 60;
+          this._maxPull = 100;
+          this._refreshState = 'idle';
+          this._init();
+        }
+
+        PTR.prototype._init = function () {
+          var self = this;
+          var el = document.createElement('div');
+          el.className = 'ptr-indicator';
+          el.innerHTML = '<span class="ptr-icon">↓</span><span class="ptr-label">下拉刷新</span>';
+          el.id = 'ptrIndicator';
+          var container = this.container;
+          if (container) container.insertBefore(el, container.firstChild);
+          this.indicator = el;
+
+          if (!('ontouchstart' in window)) return;
+          if (window.innerWidth > 768) return;
+
+          container.addEventListener('touchstart', function (e) {
+            if (self._refreshState === 'refreshing') return;
+            if (container.scrollTop > 5) return;
+            self._startY = e.touches[0].clientY;
+            self._pulling = true;
+          }, { passive: true });
+
+          container.addEventListener('touchmove', function (e) {
+            if (!self._pulling || self._refreshState === 'refreshing') return;
+            var delta = e.touches[0].clientY - self._startY;
+            if (delta < 0) { self._pulling = false; return; }
+            var pull = Math.min(delta * 0.4, self._maxPull);
+            var label = el.querySelector('.ptr-label');
+            var icon = el.querySelector('.ptr-icon');
+            if (pull >= self._threshold) {
+              self._refreshState = 'ready';
+              if (label) label.textContent = '释放刷新';
+              if (icon) icon.classList.add('flipped');
+            } else {
+              self._refreshState = 'pulling';
+              if (label) label.textContent = '下拉刷新';
+              if (icon) icon.classList.remove('flipped');
+            }
+            el.style.height = Math.max(0, pull) + 'px';
+          }, { passive: true });
+
+          container.addEventListener('touchend', function () {
+            if (!self._pulling) return;
+            self._pulling = false;
+            if (self._refreshState === 'ready') {
+              self._refreshState = 'refreshing';
+              var label = el.querySelector('.ptr-label');
+              var icon = el.querySelector('.ptr-icon');
+              if (label) label.textContent = '刷新中...';
+              if (icon) { icon.className = 'ptr-spinner'; }
+              el.style.height = '44px';
+              el.classList.add('visible');
+              self.onRefresh(function () {
+                self._refreshState = 'idle';
+                el.style.height = '0';
+                el.classList.remove('visible');
+                if (label) label.textContent = '下拉刷新';
+                if (icon) { icon.className = 'ptr-icon'; icon.classList.remove('flipped'); }
+              });
+            } else {
+              el.style.height = '0';
+              self._refreshState = 'idle';
+            }
+          }, { passive: true });
+        };
+
+        window[INST_KEY] = PTR;
+        return PTR;
+      })();
+    </script>
+
+    <!-- ═══ 无障碍：模态框焦点陷阱 + Escape 关闭 ════════════════ -->
+    <script>
+    (function () {
+      var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
+      var FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+      function getCloseTrigger(el) {
+        var overlay = el.closest('[class*="overlay"]');
+        if (overlay) return overlay;
+        var closeAttr = el.getAttribute('data-cmd');
+        if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
+        var child = el.querySelector('[data-cmd*="close"]');
+        if (child) return child;
+        return el;
+      }
+
+      function closeModal(modal) {
+        var trigger = getCloseTrigger(modal);
+        trigger.classList.remove('open');
+        if (trigger.style.display) trigger.style.display = 'none';
+        modal.style.display = '';
+        modal.classList.remove('open');
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          var openModal = document.querySelector(MODAL_SELECTOR + '.open, ' + MODAL_SELECTOR + '[style*="display: block"], ' + MODAL_SELECTOR + '[style*="display: flex"]');
+          if (openModal) { e.preventDefault(); closeModal(openModal); }
+        }
+        if (e.key === 'Tab') {
+          var modal = document.querySelector(MODAL_SELECTOR + '.open, ' + MODAL_SELECTOR + '[style*="display: block"], ' + MODAL_SELECTOR + '[style*="display: flex"]');
+          if (!modal) return;
+          var focusable = modal.querySelectorAll(FOCUSABLE);
+          if (focusable.length === 0) return;
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+          else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+        }
+      });
+
+      var observer = new MutationObserver(function () {
+        document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
+          var isVisible = modal.classList.contains('open') ||
+            (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
+          if (isVisible && !modal.dataset.focused) {
+            modal.dataset.focused = '1';
+            var first = modal.querySelector(FOCUSABLE);
+            if (first) setTimeout(function () { first.focus(); }, 100);
+          }
+          if (!isVisible) { delete modal.dataset.focused; }
+        });
+      });
+      observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+    })();
     </script>
   </body>
 </html>

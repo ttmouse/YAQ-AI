@@ -1,7 +1,7 @@
 /* ═══ Service Worker — PWA 离线缓存（Network-First 策略）═══════════ */
 /* 管理后台数据动态变化，使用 Network-First 确保数据新鲜，
    离线时回退到缓存保障基本可用。 */
-var CACHE_NAME = 'yaq-ai-v6';
+var CACHE_NAME = 'yaq-ai-v7';
 var STATIC_ASSETS = [
   './',
   './index.html',
@@ -22,6 +22,7 @@ var STATIC_ASSETS = [
   './css/work-items.css',
   './css/assistant.css',
   './css/mobile.css',
+  './css/mobile-additions.css',
   './css/utilities.css',
   './css/agent-init.css',
   './css/inspection.css',
@@ -29,7 +30,9 @@ var STATIC_ASSETS = [
   './js/track-store.js',
   './js/rules.js',
   './js/agent-init.js',
-  './js/data/mock-data.js'
+  './js/data/mock-data.js',
+  './pwa-icon-192.png',
+  './pwa-icon-512.png'
 ];
 
 /* ─── 安装：预缓存静态资源 ────────────────────────────────────── */
@@ -121,7 +124,10 @@ self.addEventListener('fetch', function (e) {
         if (e.request.headers.get('accept') && e.request.headers.get('accept').includes('text/html')) {
           return caches.match('./index.html');
         }
-        return new Response('离线模式', { status: 503 });
+        return new Response(
+          '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><title>离线模式 — 小安工作台</title><style>body{margin:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8f9fc;color:#1e1e2e;text-align:center;padding:24px}.offline-icon{width:64px;height:64px;border-radius:50%;background:#e8e8ee;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:28px;color:#8e8ea0}h1{font-size:18px;font-weight:650;margin:0 0 8px}p{font-size:14px;color:#8e8ea0;margin:0 0 24px;line-height:1.5;max-width:280px}.retry-btn{padding:12px 32px;border:none;border-radius:10px;background:#6366f1;color:#fff;font-size:15px;font-weight:600;cursor:pointer;min-height:44px}.retry-btn:active{opacity:.8}</style></head><body><div class="offline-icon">📡</div><h1>网络已断开</h1><p>请检查网络连接后重试<br>已缓存的内容仍可正常查阅</p><button class="retry-btn" onclick="location.reload()">重新连接</button></body></html>',
+          { status: 503, headers: { 'Content-Type': 'text/html;charset=utf-8' } }
+        );
       });
     })
   );
