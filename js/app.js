@@ -632,6 +632,9 @@
     var savedScrollTop = centerEl ? centerEl.scrollTop : 0;
     var savedSceneId = state.activeScene;
 
+    // ─── 渲染期间禁用自动滚动，防止 MutationObserver 干扰 ──
+    if (centerEl) centerEl._autoScrollEnabled = false;
+
     // ─── Loading 状态 ────────────────────────────────────────────
     container.innerHTML = renderLoading('加载中…', sceneId);
 
