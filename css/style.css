@@ -149,8 +149,8 @@
   scrollbar-gutter: stable;
 }
 .center {
-  mask-image: linear-gradient(to bottom, transparent 0px, black 56px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 56px);
+  mask-image: linear-gradient(to bottom, transparent 0px, black 32px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 32px);
 }
 
 /* ─── 左栏：侧边导航 ─────────────────────────────────────────── */
