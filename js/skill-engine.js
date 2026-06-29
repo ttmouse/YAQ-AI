@@ -1006,6 +1006,7 @@
       ],
     },
     generate: function (text, context) {
+      var C = window.CardPrimitives;
       return [
         // 标题
         '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">超期未闭环原因分析</div>',
@@ -1088,6 +1089,7 @@
       ],
     },
     generate: function (text, context) {
+      var C = window.CardPrimitives;
       return [
         // 标题
         '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">任务异常分析</div>',
