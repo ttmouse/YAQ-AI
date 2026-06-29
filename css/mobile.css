@@ -993,6 +993,12 @@
 }
 
 /* ─── 移动端 PWA 独立模式：隐藏首页 Agent 配置入口 ──────────── */
+@media (max-width: 768px) {
+  .agent-config-btn {
+    display: none !important;
+  }
+}
+
 @media (display-mode: standalone) and (max-width: 768px) {
   .agent-config-btn {
     display: none !important;
