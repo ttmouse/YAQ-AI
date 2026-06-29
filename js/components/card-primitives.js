@@ -184,7 +184,10 @@
     html += '>';
     html += '<div class="hc-main has-ai" style="padding:12px 12px 8px">';
     html += '<div class="hc-head"><span class="hc-name">' + esc(opts.name) + '</span></div>';
-    if (opts.desc) html += '<div class="hc-desc">' + esc(opts.desc) + '</div>';
+    if (opts.desc) html += '<div class="hc-desc">' + opts.desc + '</div>';
+    if (opts.rawDesc) {
+      html += '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">' + opts.rawDesc + '</div>';
+    }
     if (opts.meta && opts.meta.length) {
       html += '<div class="hc-meta">';
       for (var i = 0; i < opts.meta.length; i++) {

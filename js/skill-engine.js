@@ -1096,13 +1096,13 @@
           '当前有 2 项任务存在异常，需重点关注。' +
           '</div>',
         // 卡片1 + 分析
-        '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px;width:240px;min-width:220px">' +
-          '<div style="font-weight:700;font-size:14px;color:#1e293b;margin-bottom:4px">2026年第二季度良渚片重大风险检查任务</div>' +
-          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">' +
-          '责任人：范嘉杰（企业安全组）| 区域：良渚片</div>' +
-          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">覆盖 141 家，完成率 42%，时间进度已达 91%</div>' +
-          '<div style="font-size:11px;font-weight:600;color:#dc2626;background:#fef2f2;display:inline-block;padding:1px 8px;border-radius:4px">严重滞后 49pp</div>' +
-          '</div>' +
+        C.entityCard({
+          name: '2026年第二季度良渚片重大风险检查任务',
+          rawDesc: '责任人：范嘉杰（企业安全组）| 区域：良渚片<br>覆盖 141 家，完成率 42%，时间进度已达 91%',
+          badge: '严重滞后 49pp',
+          badgeColor: '#dc2626',
+          badgeBg: '#fef2f2',
+        }) +
         '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
           '<strong>研判：严重滞后，按当前速度无法按期完成</strong><br>' +
           '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。<br><br>' +
@@ -1110,13 +1110,14 @@
           '完成率 42% vs 时间进度 91%，差距 49 个百分点。按当前日均检查量推算，至少还需 28 个工作日，远超剩余时间窗口。' +
           '</div>',
         // 卡片2 + 分析
-        '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px;width:240px;min-width:220px">' +
-          '<div style="font-weight:700;font-size:14px;color:#1e293b;margin-bottom:4px">片区隐患排查复查</div>' +
-          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">' +
-          '责任人：张毅（消防安全组）| 区域：全片区</div>' +
-          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">覆盖 24 家，完成率 55%，含 1 项重大隐患</div>' +
-          '<div style="font-size:11px;font-weight:600;color:#d97706;background:#fff7ed;display:inline-block;padding:1px 8px;border-radius:4px">进度偏低</div>' +
-          '</div>' +
+        // 卡片2 + 分析
+        C.entityCard({
+          name: '片区隐患排查复查',
+          rawDesc: '责任人：张毅（消防安全组）| 区域：全片区<br>覆盖 24 家，完成率 55%，含 1 项重大隐患',
+          badge: '进度偏低',
+          badgeColor: '#d97706',
+          badgeBg: '#fff7ed',
+        }) +
         '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
           '<strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong><br>' +
           '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。<br><br>' +
