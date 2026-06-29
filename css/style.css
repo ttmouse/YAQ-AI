@@ -380,8 +380,8 @@
   min-width: 0;
 }
 .ai-briefing-head {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 500;
   color: var(--text);
   line-height: 1.6;
   display: flex;
