@@ -2740,9 +2740,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   cursor: pointer;
   color: #64748b;
   background: rgba(255, 255, 255, 0.65);
@@ -7295,9 +7295,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   cursor: pointer;
   color: #64748b;
   background: rgba(255, 255, 255, 0.65);
