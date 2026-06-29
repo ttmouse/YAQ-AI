@@ -19,6 +19,9 @@ deploy.sh
 # Build output
 dist/
 
+# Git worktrees (local checkouts, not deployable)
+worktrees/
+
 # Node dependencies
 node_modules/
 .workbuddy/

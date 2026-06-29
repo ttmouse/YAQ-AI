@@ -1,829 +1,1080 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YAQ-AI 功能清单 · 移动端首期范围定义</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    /* ===== DESIGN TOKENS ===== */
-    :root {
-      --c-bg: #f0f2f5;
-      --c-surface: #ffffff;
-      --c-border: #e2e6ed;
-      --c-border-light: #f0f2f5;
-      --c-text: #1a1d23;
-      --c-text-secondary: #6b7280;
-      --c-text-muted: #9ca3af;
-      --c-primary: #2563eb;
-      --c-primary-light: #dbeafe;
-      --c-green: #16a34a;
-      --c-green-light: #dcfce7;
-      --c-green-bg: #f0fdf4;
-      --c-amber: #d97706;
-      --c-amber-light: #fef3c7;
-      --c-amber-bg: #fffbeb;
-      --c-red: #dc2626;
-      --c-red-light: #fee2e2;
-      --c-red-bg: #fef2f2;
-      --c-purple: #7c3aed;
-      --c-purple-light: #ede9fe;
-      --c-purple-bg: #f5f3ff;
-      --radius: 10px;
-      --radius-sm: 6px;
-      --radius-lg: 14px;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
-      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.10);
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
-      --transition: 0.18s ease;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--font);
-      background: var(--c-bg);
-      color: var(--c-text);
-      line-height: 1.5;
-      padding: 20px 16px 40px;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-    }
-
-    /* ===== HEADER ===== */
-    .header {
-      max-width: 1400px;
-      margin: 0 auto 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .header-info { flex: 1; min-width: 260px; }
-    .header-info h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .header-info h1 .badge {
-      font-size: 12px;
-      font-weight: 600;
-      background: var(--c-primary-light);
-      color: var(--c-primary);
-      padding: 2px 10px;
-      border-radius: 999px;
-    }
-    .header-info p { color: var(--c-text-secondary); margin-top: 3px; font-size: 14px; }
-    .header-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-    .header-actions button, .header-actions .file-btn {
-      padding: 7px 14px;
-      border: 1px solid var(--c-border);
-      border-radius: var(--radius-sm);
-      background: var(--c-surface);
-      font-size: 13px;
-      font-family: var(--font);
-      font-weight: 500;
-      cursor: pointer;
-      transition: all var(--transition);
-      color: var(--c-text-secondary);
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .header-actions button:hover { border-color: var(--c-primary); color: var(--c-primary); background: #fafbfc; }
-    .header-actions .save-indicator { font-size: 13px; color: var(--c-text-muted); }
-
-    /* ===== STATS BAR ===== */
-    .stats {
-      max-width: 1400px;
-      margin: 0 auto 16px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 8px;
-    }
-    .stat-card {
-      background: var(--c-surface);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-    .stat-card .num { font-size: 24px; font-weight: 700; line-height: 1.2; }
-    .stat-card .label { font-size: 11px; color: var(--c-text-secondary); margin-top: 2px; }
-    .stat-card.p1 .num { color: var(--c-green); }
-    .stat-card.p2 .num { color: var(--c-amber); }
-    .stat-card.out .num { color: var(--c-red); }
-    .stat-card.arch .num { color: var(--c-purple); }
-
-    /* ===== SEARCH BAR ===== */
-    .toolbar {
-      max-width: 1400px;
-      margin: 0 auto 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-    .search-wrap { flex: 1; min-width: 200px; position: relative; }
-    .search-wrap input {
-      width: 100%;
-      padding: 9px 14px 9px 36px;
-      border: 1px solid var(--c-border);
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-family: var(--font);
-      background: var(--c-surface);
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .search-wrap input:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
-    .search-wrap .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--c-text-muted); font-size: 14px; }
-    .toolbar .hint { font-size: 12px; color: var(--c-text-muted); white-space: nowrap; }
-
-    /* ===== KANBAN BOARD ===== */
-    .board {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      min-height: 60vh;
-    }
-    @media (max-width: 900px) {
-      .board { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 560px) {
-      .board { grid-template-columns: 1fr; }
-    }
-
-    /* ===== COLUMN (SWIMLANE) ===== */
-    .column {
-      background: var(--c-surface);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      min-height: 300px;
-      transition: background var(--transition), box-shadow var(--transition);
-      position: relative;
-    }
-    .column.drag-over {
-      background: #f8faff;
-      box-shadow: var(--shadow-md), 0 0 0 2px var(--c-primary);
-    }
-    .column-header {
-      padding: 14px 16px 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 2px solid var(--c-border-light);
-      flex-shrink: 0;
-    }
-    .column-header .dot {
-      width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
-    }
-    .column-header .dot.p1 { background: var(--c-green); }
-    .column-header .dot.p2 { background: var(--c-amber); }
-    .column-header .dot.out { background: var(--c-red); }
-    .column-header .dot.arch { background: var(--c-purple); }
-    .column-header .col-title { font-size: 15px; font-weight: 600; }
-    .column-header .col-count {
-      font-size: 12px;
-      color: var(--c-text-muted);
-      background: var(--c-bg);
-      padding: 1px 9px;
-      border-radius: 999px;
-      margin-left: auto;
-      font-weight: 600;
-    }
-    .column-body {
-      flex: 1;
-      padding: 10px 12px 12px;
-      overflow-y: auto;
-      min-height: 120px;
-      transition: background var(--transition);
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    }
-    .column.drag-over .column-body { background: rgba(37, 99, 235, 0.04); }
-    .column-empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100px;
-      color: var(--c-text-muted);
-      font-size: 13px;
-      border: 2px dashed var(--c-border);
-      border-radius: var(--radius);
-      margin: 4px 0;
-      transition: all var(--transition);
-    }
-    .column.drag-over .column-empty { border-color: var(--c-primary); color: var(--c-primary); }
-
-    /* ===== FEATURE CARD ===== */
-    .card {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: var(--radius);
-      padding: 12px 14px;
-      margin-bottom: 8px;
-      cursor: grab;
-      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-      position: relative;
-      user-select: none;
-    }
-    .card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
-    }
-    .card:active, .card.dragging {
-      cursor: grabbing;
-      opacity: 0.5;
-      transform: scale(0.97);
-      box-shadow: var(--shadow-lg);
-    }
-    .card .cat-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 8px;
-      border-radius: 999px;
-      background: var(--c-bg);
-      color: var(--c-text-secondary);
-      margin-bottom: 5px;
-    }
-    .card .card-name {
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-    .card .card-desc {
-      font-size: 12px;
-      color: var(--c-text-muted);
-      margin-top: 3px;
-      line-height: 1.5;
-    }
-    .card .card-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-    .card .sub-badge {
-      font-size: 10px;
-      color: var(--c-text-muted);
-      background: var(--c-bg);
-      padding: 2px 7px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
-    .card .sub-badge i { font-size: 9px; }
-    .card .subs-area {
-      margin-top: 8px;
-      border-top: 1px dashed var(--c-border);
-      padding-top: 6px;
-      display: none;
-    }
-    .card .subs-area.open { display: block; }
-    .card .sub-toggle {
-      font-size: 11px;
-      color: var(--c-primary);
-      cursor: pointer;
-      user-select: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
-    .card .sub-toggle:hover { text-decoration: underline; }
-    .card .sub-item {
-      font-size: 12px;
-      padding: 3px 0 3px 12px;
-      border-left: 2px solid var(--c-border);
-      margin: 2px 0 2px 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .card .sub-item .sub-dot {
-      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-    }
-    .card .sub-item .sub-dot.p1 { background: var(--c-green); }
-    .card .sub-item .sub-dot.p2 { background: var(--c-amber); }
-    .card .sub-item .sub-dot.out { background: var(--c-red); }
-    .card .sub-item .sub-dot.arch { background: var(--c-purple); }
-
-    /* Card scope accent border */
-    .card.card-p1 { border-left: 3px solid var(--c-green); }
-    .card.card-p2 { border-left: 3px solid var(--c-amber); }
-    .card.card-out { border-left: 3px solid var(--c-red); }
-    .card.card-arch { border-left: 3px solid var(--c-purple); }
-
-    .card.hidden { display: none; }
-
-    /* ===== SUMMARY ===== */
-    .summary {
-      max-width: 1400px;
-      margin: 20px auto 0;
-      background: var(--c-surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 20px 24px;
-    }
-    .summary h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-    }
-    .summary-card {
-      border: 1px solid var(--c-border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-    }
-    .summary-card .num { font-size: 20px; font-weight: 700; }
-    .summary-card .label { font-size: 12px; color: var(--c-text-secondary); margin-top: 2px; }
-    .summary-card p { font-size: 12px; color: var(--c-text-muted); margin-top: 4px; line-height: 1.5; }
-    .summary-card.in .num { color: var(--c-green); }
-    .summary-card.out .num { color: var(--c-red); }
-    .summary-card.p2 .num { color: var(--c-amber); }
-    .summary-card.maybe .num { color: var(--c-purple); }
-
-    /* ===== DRAG GHOST ===== */
-    .dragging-ghost {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      background: var(--c-surface);
-      border: 2px solid var(--c-primary);
-      border-radius: var(--radius);
-      padding: 12px 16px;
-      box-shadow: var(--shadow-lg);
-      max-width: 280px;
-      opacity: 0.92;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    /* ===== TOAST ===== */
-    .toast-container {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 99999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-    .toast {
-      background: #1a1d23;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      font-weight: 500;
-      box-shadow: var(--shadow-lg);
-      animation: toastIn 0.25s ease, toastOut 0.3s ease 1.5s forwards;
-    }
-    @keyframes toastIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateY(8px); } }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 600px) {
-      body { padding: 12px 8px; }
-      .header-info h1 { font-size: 20px; }
-      .stat-card .num { font-size: 18px; }
-      .card { padding: 10px 12px; }
-      .column-header { padding: 12px 12px 8px; }
-      .column-body { padding: 8px 10px 10px; }
-    }
-
-    /* ===== PRINT ===== */
-    @media print {
-      body { background: #fff; padding: 0; }
-      .board { display: block; }
-      .column { break-inside: avoid; page-break-inside: avoid; margin-bottom: 16px; }
-      .card { cursor: default; }
-      .card:hover { transform: none; box-shadow: none; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- ===== HEADER ===== -->
-  <header class="header">
-    <div class="header-info">
-      <h1>
-        🧩 YAQ-AI 功能清单
-        <span class="badge">v1.0</span>
-      </h1>
-      <p>安全监管智能工作台 · 首期移动端范围定义 · 基于 Demo 界面拆解 · 拖拽卡片到对应泳道</p>
-    </div>
-    <div class="header-actions">
-      <button onclick="exportJSON()" title="导出 JSON"><i class="fa-solid fa-download"></i> 导出</button>
-      <label class="file-btn" title="导入 JSON">
-        <i class="fa-solid fa-upload"></i> 导入
-        <input type="file" accept=".json" onchange="importJSON(event)" style="display:none" />
-      </label>
-      <button onclick="resetToDefault()" title="恢复默认"><i class="fa-solid fa-rotate-left"></i> 重置</button>
-      <span class="save-indicator" id="saveIndicator">💾 已保存</span>
-    </div>
-  </header>
-
-  <!-- ===== STATS ===== -->
-  <div class="stats" id="statsBar"></div>
-
-  <!-- ===== TOOLBAR ===== -->
-  <div class="toolbar">
-    <div class="search-wrap">
-      <i class="fa-solid fa-search icon"></i>
-      <input type="text" id="searchInput" placeholder="搜索功能名称或描述…" oninput="onSearch(this.value)" />
-    </div>
-    <span class="hint"><i class="fa-regular fa-hand-pointer"></i> 拖拽卡片到对应泳道调整范围</span>
-  </div>
-
-  <!-- ===== KANBAN BOARD ===== -->
-  <div class="board" id="board"></div>
-
-  <!-- ===== SUMMARY ===== -->
-  <div class="summary" id="summarySection"></div>
-
-  <!-- ===== TOAST CONTAINER ===== -->
-  <div class="toast-container" id="toastContainer"></div>
-
-  <script>
-    // ============================================================
-    // DATA
-    // ============================================================
-    const DEFAULT_DATA = [
-      {
-        name: '🏠 工作台 (Dashboard)',
-        tag: 'phase1',
-        tagLabel: '首期',
-        scope: 'phase1',
-        features: [
-          { name: '待办任务入口', desc: '待办数量和列表入口', scope: 'phase1' },
-          { name: '整改任务入口', desc: '已超期/即将超期展示', scope: 'phase1' },
-          { name: '监督看板', desc: '统计卡片区域', scope: 'phase1' },
-          { name: 'AI 全局助手', desc: 'FAB 悬浮按钮', scope: 'phase1' },
-          { name: '底部导航 (Tab Bar)', desc: '首页/隐患/跟踪/待确认/更多', scope: 'out', subs: [
-            { name: '首页 Tab（Dashboard）', scope: 'phase1' },
-            { name: '隐患 Tab（隐患列表）', scope: 'phase1' },
-            { name: '跟踪 Tab（持续跟踪）', scope: 'phase1' },
-            { name: '待确认 Tab', scope: 'phase1' },
-            { name: '更多 Tab（侧滑设置/关于）', scope: 'phase1' },
-          ]},
-          { name: '下拉刷新 (Pull-to-Refresh)', scope: 'out' },
-        ],
-      },
-      {
-        name: '🚨 隐患整改 (Hazard Rectification)',
-        tag: 'phase1',
-        tagLabel: '首期',
-        scope: 'phase1',
-        features: [
-          { name: '隐患列表', desc: '隐患列表展示', scope: 'phase1', subs: [
-            { name: 'Tab 切换 — 待办/已办/全部', scope: 'phase1' },
-            { name: '搜索 — 关键字搜索隐患', scope: 'phase1' },
-            { name: '分类筛选 — 隐患类型/严重程度筛选', scope: 'phase1' },
-            { name: '隐患列表分页加载', scope: 'phase1' },
-          ]},
-          { name: '隐患详情页', desc: '隐患详情展示', scope: 'phase1', subs: [
-            { name: '基本信息 — 隐患描述/类型/位置/日期', scope: 'phase1' },
-            { name: '严重程度标识 — 红/橙/黄 色阶+图标', scope: 'phase1' },
-            { name: '整改状态 — 待整改/整改中/已完成/已超期', scope: 'phase1' },
-            { name: '企业信息面板 — 企业名称/统一社会信用代码/地址', scope: 'phase1' },
-            { name: '隐患时间线 — 发现→整改→复查 流转', scope: 'phase1' },
-            { name: '责令整改文书卡片', scope: 'phase1' },
-          ]},
-          { name: '隐患整改操作', desc: '整改提交流程', scope: 'phase1', subs: [
-            { name: '整改表单填写入口', scope: 'phase1' },
-            { name: '复查表单填写入口', scope: 'phase1' },
-            { name: '图片上传入口', scope: 'phase1' },
-          ]},
-        ],
-      },
-      {
-        name: '🗂️ 持续跟踪 (Continuous Tracking)',
-        tag: 'phase1',
-        tagLabel: '首期',
-        scope: 'phase1',
-        features: [
-          { name: '跟踪列表', desc: '持续跟踪列表', scope: 'phase1', subs: [
-            { name: 'Tab 切换 — 跟踪中/已完成', scope: 'phase1' },
-            { name: '搜索', scope: 'phase1' },
-            { name: '分类筛选', scope: 'phase1' },
-          ]},
-          { name: '跟踪详情页', desc: '跟踪详情展示', scope: 'phase1', subs: [
-            { name: '整改进度 — 可视化进度条', scope: 'phase1' },
-            { name: '隐患高亮信息', scope: 'phase1' },
-            { name: '企业信息面板', scope: 'phase1' },
-            { name: '整改进展时间线', scope: 'phase1' },
-            { name: '到期日/超期标识', scope: 'phase1' },
-            { name: '整改进展更新入口', scope: 'phase1' },
-          ]},
-        ],
-      },
-      {
-        name: '📋 待确认 (Pending Confirmation)',
-        tag: 'phase1',
-        tagLabel: '首期',
-        scope: 'phase1',
-        features: [
-          { name: '待确认列表', desc: '待确认隐患列表', scope: 'phase1' },
-          { name: '确认操作', desc: '单个确认', scope: 'phase1' },
-          { name: '批量确认', desc: '批量选择 + 批量确认', scope: 'phase1' },
-          { name: '待确认/已完成 Tab', desc: 'Tab 切换', scope: 'phase1' },
-        ],
-      },
-      {
-        name: '🔧 平台级基础功能 (Platform Foundation)',
-        tag: 'arch',
-        tagLabel: '架构',
-        scope: 'arch',
-        features: [
-          { name: 'PWA Manifest', desc: 'manifest.json — 应用名称/图标/主题色/display 配置', scope: 'arch' },
-          { name: 'Service Worker', desc: '离线缓存策略、资源预缓存、App Shell 架构', scope: 'arch' },
-          { name: '安全区域适配 (Safe Area)', desc: '刘海屏/挖孔屏 safe-area-inset-* 适配', scope: 'arch' },
-          { name: 'MobX 状态管理', desc: '全局状态管理', scope: 'arch' },
-          { name: '生成式 AI 辅助功能 (LLM SDK)', desc: 'LLM SDK 集成', scope: 'arch' },
-          { name: 'Skeleton 组件', desc: '列表/详情 骨架屏通用组件', scope: 'arch' },
-          { name: 'API 服务层', desc: 'Axios + 请求/响应拦截器', scope: 'arch' },
-          { name: '错误边界 (Error Boundary)', desc: '全局错误捕获、友好的错误提示', scope: 'phase2' },
-          { name: 'Web Share API', desc: '原生分享 → 剪贴板兜底', scope: 'phase2' },
-        ],
-      },
-      {
-        name: '📊 更多功能 (More Features)',
-        tag: 'mixed',
-        tagLabel: '混合',
-        scope: 'phase2',
-        features: [
-          { name: '履职效能 (Performance)', desc: '履职效能统计、个人积分', scope: 'out', subs: [
-            { name: '履职效能统计、个人积分', scope: 'out' },
-            { name: '个人积分详情', scope: 'out' },
-          ]},
-          { name: '督办跟踪 (Supervision Tracking)', desc: '督办列表 + 详情+ 反馈', scope: 'out', subs: [
-            { name: '督办列表', scope: 'out' },
-            { name: '督办详情', scope: 'out' },
-            { name: '督办反馈', scope: 'out' },
-          ]},
-          { name: '主体责任 (Main Responsibility)', desc: '主体责任清单 + 履职记录', scope: 'out' },
-          { name: '智能专项检查 (AI Inspection)', desc: '检查任务列表 + 检查表单', scope: 'out' },
-          { name: '月报 (Monthly Report)', desc: '月报生成 + PDF 导出', scope: 'out' },
-          { name: '隐患指标下钻', desc: '从统计卡片下钻到隐患明细', scope: 'phase2' },
-          { name: '企业记忆面板 (Memory Panel)', desc: 'AI 记忆面板 — 企业与 AI 的历史对话记录、关注点', scope: 'phase2' },
-          { name: 'AI 搜索启动器 (Search Launcher)', desc: '全局搜索启动 + 搜索历史', scope: 'phase2' },
-          { name: '分级处置 (Graded Handling)', desc: '隐患分级处置流程', scope: 'phase2' },
-          { name: '隐患回头看 (Review)', desc: '已闭环隐患复查巡检', scope: 'phase2' },
-          { name: '初始化引导 (Onboarding)', desc: '清除状态、重新展示引导', scope: 'out' },
-        ],
-      },
-      {
-        name: '⚙️ 规则引擎 (Rules Engine)',
-        tag: 'out',
-        tagLabel: '暂不',
-        scope: 'out',
-        features: [
-          { name: '6 大规则维度', desc: '指标阈值/时间超期/对比类/趋势类/行为模式/复合规则', scope: 'out' },
-          { name: '12 条默认规则', desc: '4 指标 + 2 超期 + 2 对比 + 2 趋势 + 2 行为 + 1 复合', scope: 'out' },
-          { name: '规则 CRUD', desc: '添加/删除/编辑/启停切换', scope: 'out' },
-          { name: '自然语言创建规则', desc: 'NL → 结构化规则解析 + AI 预览', scope: 'out' },
-        ],
-      },
-      {
-        name: '🧩 全局功能 / 通用组件',
-        tag: 'mixed',
-        tagLabel: '混合',
-        scope: 'phase1',
-        features: [
-          { name: 'Drawer 抽屉面板', desc: '侧滑面板 — 简报生成/一键督办/会议议题/现场核查/提醒/Agent配置', scope: 'phase1', subs: [
-            { name: '简报生成 Drawer', scope: 'phase1' },
-            { name: '一键督办 Drawer (督办包创建)', scope: 'phase1' },
-            { name: '会议议题 Drawer', scope: 'phase2' },
-            { name: '现场核查 Drawer', scope: 'phase2' },
-          ]},
-          { name: 'Action Modal 动作弹窗', desc: '确认/提示/批量操作确认弹窗', scope: 'phase1' },
-          { name: 'Toast 通知系统', desc: '成功/错误/警告/信息 — 四色 Toast 浮层', scope: 'phase1' },
-          { name: '企业档案面板 (Enterprise Panel)', desc: '右侧固定面板 — Tab 切换 + 企业信息 + 隐患时间线', scope: 'phase2' },
-          { name: '任务详情弹窗', desc: '左右分栏 — 进度/隐患/任务信息', scope: 'phase2' },
-          { name: '通知铃铛 (Notification Bell)', desc: '右上角铃铛图标 + 未读角标 (Badge) + 点击弹出通知', scope: 'phase1', subs: [
-            { name: '未读角标数值展示', scope: 'phase1' },
-            { name: '点击弹出通知列表/Toast', scope: 'phase1' },
-          ]},
-          { name: '密码保护 Gate', desc: 'Demo 访问密码验证', scope: 'phase1' },
-          { name: '数据导出/分享', desc: 'Web Share API (原生分享 → 剪贴板兜底)', scope: 'phase2' },
-          { name: '通用 Loading / 空状态', desc: '场景加载骨架屏 + 无数据占位', scope: 'phase1' },
-          { name: '错误边界 / 异常捕获', desc: '全局错误捕获、友好的错误提示', scope: 'phase2' },
-        ],
-      },
-    ];
-
-    // ============================================================
-    // PERSISTENCE
-    // ============================================================
-    let DATA;
-    const STORAGE_KEY = 'yaq_feature_tree_data';
-
-    function loadData() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try { DATA = JSON.parse(saved); return; } catch(e) {}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YAQ-AI 功能清单 · 移动端首期范围定义</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      /* ===== DESIGN TOKENS ===== */
+      :root {
+        --c-bg: #f0f2f5;
+        --c-surface: #ffffff;
+        --c-border: #e2e6ed;
+        --c-border-light: #f0f2f5;
+        --c-text: #1a1d23;
+        --c-text-secondary: #6b7280;
+        --c-text-muted: #9ca3af;
+        --c-primary: #2563eb;
+        --c-primary-light: #dbeafe;
+        --c-green: #16a34a;
+        --c-green-light: #dcfce7;
+        --c-green-bg: #f0fdf4;
+        --c-amber: #d97706;
+        --c-amber-light: #fef3c7;
+        --c-amber-bg: #fffbeb;
+        --c-red: #dc2626;
+        --c-red-light: #fee2e2;
+        --c-red-bg: #fef2f2;
+        --c-purple: #7c3aed;
+        --c-purple-light: #ede9fe;
+        --c-purple-bg: #f5f3ff;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --radius-lg: 14px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+        --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+        --transition: 0.18s ease;
       }
-      DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
-    }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--c-bg);
+        color: var(--c-text);
+        line-height: 1.5;
+        padding: 20px 16px 40px;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
 
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
-      document.getElementById('saveIndicator').textContent = '💾 已保存';
-      render();
-    }
+      /* ===== HEADER ===== */
+      .header {
+        max-width: 1400px;
+        margin: 0 auto 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 14px;
+      }
+      .header-info {
+        flex: 1;
+        min-width: 260px;
+      }
+      .header-info h1 {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .header-info h1 .badge {
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--c-primary-light);
+        color: var(--c-primary);
+        padding: 2px 10px;
+        border-radius: 999px;
+      }
+      .header-info p {
+        color: var(--c-text-secondary);
+        margin-top: 3px;
+        font-size: 14px;
+      }
+      .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .header-actions button,
+      .header-actions .file-btn {
+        padding: 7px 14px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        background: var(--c-surface);
+        font-size: 13px;
+        font-family: var(--font);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition);
+        color: var(--c-text-secondary);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .header-actions button:hover {
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+        background: #fafbfc;
+      }
+      .header-actions .save-indicator {
+        font-size: 13px;
+        color: var(--c-text-muted);
+      }
 
-    function markDirty() {
-      document.getElementById('saveIndicator').textContent = '💾 未保存…';
-    }
+      /* ===== STATS BAR ===== */
+      .stats {
+        max-width: 1400px;
+        margin: 0 auto 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 8px;
+      }
+      .stat-card {
+        background: var(--c-surface);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .stat-card .num {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .stat-card .label {
+        font-size: 11px;
+        color: var(--c-text-secondary);
+        margin-top: 2px;
+      }
+      .stat-card.p1 .num {
+        color: var(--c-green);
+      }
+      .stat-card.p2 .num {
+        color: var(--c-amber);
+      }
+      .stat-card.out .num {
+        color: var(--c-red);
+      }
+      .stat-card.arch .num {
+        color: var(--c-purple);
+      }
 
-    window.resetToDefault = function() {
-      if (confirm('确定恢复默认状态？所有自定义修改将丢失。')) {
+      /* ===== SEARCH BAR ===== */
+      .toolbar {
+        max-width: 1400px;
+        margin: 0 auto 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+      .search-wrap {
+        flex: 1;
+        min-width: 200px;
+        position: relative;
+      }
+      .search-wrap input {
+        width: 100%;
+        padding: 9px 14px 9px 36px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius);
+        font-size: 14px;
+        font-family: var(--font);
+        background: var(--c-surface);
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .search-wrap input:focus {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+      .search-wrap .icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--c-text-muted);
+        font-size: 14px;
+      }
+      .toolbar .hint {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        white-space: nowrap;
+      }
+
+      /* ===== KANBAN BOARD ===== */
+      .board {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        min-height: 60vh;
+      }
+      @media (max-width: 900px) {
+        .board {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 560px) {
+        .board {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ===== COLUMN (SWIMLANE) ===== */
+      .column {
+        background: var(--c-surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        min-height: 300px;
+        transition:
+          background var(--transition),
+          box-shadow var(--transition);
+        position: relative;
+      }
+      .column.drag-over {
+        background: #f8faff;
+        box-shadow:
+          var(--shadow-md),
+          0 0 0 2px var(--c-primary);
+      }
+      .column-header {
+        padding: 14px 16px 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 2px solid var(--c-border-light);
+        flex-shrink: 0;
+      }
+      .column-header .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .column-header .dot.p1 {
+        background: var(--c-green);
+      }
+      .column-header .dot.p2 {
+        background: var(--c-amber);
+      }
+      .column-header .dot.out {
+        background: var(--c-red);
+      }
+      .column-header .dot.arch {
+        background: var(--c-purple);
+      }
+      .column-header .col-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .column-header .col-count {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        background: var(--c-bg);
+        padding: 1px 9px;
+        border-radius: 999px;
+        margin-left: auto;
+        font-weight: 600;
+      }
+      .column-body {
+        flex: 1;
+        padding: 10px 12px 12px;
+        overflow-y: auto;
+        min-height: 120px;
+        transition: background var(--transition);
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      }
+      .column.drag-over .column-body {
+        background: rgba(37, 99, 235, 0.04);
+      }
+      .column-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100px;
+        color: var(--c-text-muted);
+        font-size: 13px;
+        border: 2px dashed var(--c-border);
+        border-radius: var(--radius);
+        margin: 4px 0;
+        transition: all var(--transition);
+      }
+      .column.drag-over .column-empty {
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+      }
+
+      /* ===== FEATURE CARD ===== */
+      .card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        cursor: grab;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s,
+          opacity 0.15s;
+        position: relative;
+        user-select: none;
+      }
+      .card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+      }
+      .card:active,
+      .card.dragging {
+        cursor: grabbing;
+        opacity: 0.5;
+        transform: scale(0.97);
+        box-shadow: var(--shadow-lg);
+      }
+      .card .cat-badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 1px 8px;
+        border-radius: 999px;
+        background: var(--c-bg);
+        color: var(--c-text-secondary);
+        margin-bottom: 5px;
+      }
+      .card .card-name {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+      .card .card-desc {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin-top: 3px;
+        line-height: 1.5;
+      }
+      .card .card-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+      .card .sub-badge {
+        font-size: 10px;
+        color: var(--c-text-muted);
+        background: var(--c-bg);
+        padding: 2px 7px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .card .sub-badge i {
+        font-size: 9px;
+      }
+      .card .subs-area {
+        margin-top: 8px;
+        border-top: 1px dashed var(--c-border);
+        padding-top: 6px;
+        display: none;
+      }
+      .card .subs-area.open {
+        display: block;
+      }
+      .card .sub-toggle {
+        font-size: 11px;
+        color: var(--c-primary);
+        cursor: pointer;
+        user-select: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .card .sub-toggle:hover {
+        text-decoration: underline;
+      }
+      .card .sub-item {
+        font-size: 12px;
+        padding: 3px 0 3px 12px;
+        border-left: 2px solid var(--c-border);
+        margin: 2px 0 2px 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .card .sub-item .sub-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .card .sub-item .sub-dot.p1 {
+        background: var(--c-green);
+      }
+      .card .sub-item .sub-dot.p2 {
+        background: var(--c-amber);
+      }
+      .card .sub-item .sub-dot.out {
+        background: var(--c-red);
+      }
+      .card .sub-item .sub-dot.arch {
+        background: var(--c-purple);
+      }
+
+      /* Card scope accent border */
+      .card.card-p1 {
+        border-left: 3px solid var(--c-green);
+      }
+      .card.card-p2 {
+        border-left: 3px solid var(--c-amber);
+      }
+      .card.card-out {
+        border-left: 3px solid var(--c-red);
+      }
+      .card.card-arch {
+        border-left: 3px solid var(--c-purple);
+      }
+
+      .card.hidden {
+        display: none;
+      }
+
+      /* ===== SUMMARY ===== */
+      .summary {
+        max-width: 1400px;
+        margin: 20px auto 0;
+        background: var(--c-surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px 24px;
+      }
+      .summary h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+      }
+      .summary-card {
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        padding: 12px 14px;
+      }
+      .summary-card .num {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .summary-card .label {
+        font-size: 12px;
+        color: var(--c-text-secondary);
+        margin-top: 2px;
+      }
+      .summary-card p {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin-top: 4px;
+        line-height: 1.5;
+      }
+      .summary-card.in .num {
+        color: var(--c-green);
+      }
+      .summary-card.out .num {
+        color: var(--c-red);
+      }
+      .summary-card.p2 .num {
+        color: var(--c-amber);
+      }
+      .summary-card.maybe .num {
+        color: var(--c-purple);
+      }
+
+      /* ===== DRAG GHOST ===== */
+      .dragging-ghost {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        background: var(--c-surface);
+        border: 2px solid var(--c-primary);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        box-shadow: var(--shadow-lg);
+        max-width: 280px;
+        opacity: 0.92;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      /* ===== TOAST ===== */
+      .toast-container {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .toast {
+        background: #1a1d23;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: var(--radius);
+        font-size: 13px;
+        font-weight: 500;
+        box-shadow: var(--shadow-lg);
+        animation:
+          toastIn 0.25s ease,
+          toastOut 0.3s ease 1.5s forwards;
+      }
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes toastOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 600px) {
+        body {
+          padding: 12px 8px;
+        }
+        .header-info h1 {
+          font-size: 20px;
+        }
+        .stat-card .num {
+          font-size: 18px;
+        }
+        .card {
+          padding: 10px 12px;
+        }
+        .column-header {
+          padding: 12px 12px 8px;
+        }
+        .column-body {
+          padding: 8px 10px 10px;
+        }
+      }
+
+      /* ===== PRINT ===== */
+      @media print {
+        body {
+          background: #fff;
+          padding: 0;
+        }
+        .board {
+          display: block;
+        }
+        .column {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          margin-bottom: 16px;
+        }
+        .card {
+          cursor: default;
+        }
+        .card:hover {
+          transform: none;
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-info">
+        <h1>
+          🧩 YAQ-AI 功能清单
+          <span class="badge">v1.0</span>
+        </h1>
+        <p>安全监管智能工作台 · 首期移动端范围定义 · 基于 Demo 界面拆解 · 拖拽卡片到对应泳道</p>
+      </div>
+      <div class="header-actions">
+        <button onclick="exportJSON()" title="导出 JSON"><i class="fa-solid fa-download"></i> 导出</button>
+        <label class="file-btn" title="导入 JSON">
+          <i class="fa-solid fa-upload"></i> 导入
+          <input type="file" accept=".json" onchange="importJSON(event)" style="display: none" />
+        </label>
+        <button onclick="resetToDefault()" title="恢复默认"><i class="fa-solid fa-rotate-left"></i> 重置</button>
+        <span class="save-indicator" id="saveIndicator">💾 已保存</span>
+      </div>
+    </header>
+
+    <!-- ===== STATS ===== -->
+    <div class="stats" id="statsBar"></div>
+
+    <!-- ===== TOOLBAR ===== -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-search icon"></i>
+        <input type="text" id="searchInput" placeholder="搜索功能名称或描述…" oninput="onSearch(this.value)" />
+      </div>
+      <span class="hint"><i class="fa-regular fa-hand-pointer"></i> 拖拽卡片到对应泳道调整范围</span>
+    </div>
+
+    <!-- ===== KANBAN BOARD ===== -->
+    <div class="board" id="board"></div>
+
+    <!-- ===== SUMMARY ===== -->
+    <div class="summary" id="summarySection"></div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+      // ============================================================
+      // DATA
+      // ============================================================
+      const DEFAULT_DATA = [
+        {
+          name: '🏠 工作台 (Dashboard)',
+          tag: 'phase1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            { name: '待办任务入口', desc: '待办数量和列表入口', scope: 'phase1' },
+            { name: '整改任务入口', desc: '已超期/即将超期展示', scope: 'phase1' },
+            { name: '监督看板', desc: '统计卡片区域', scope: 'phase1' },
+            { name: 'AI 全局助手', desc: 'FAB 悬浮按钮', scope: 'phase1' },
+            {
+              name: '底部导航 (Tab Bar)',
+              desc: '首页/隐患/跟踪/待确认/更多',
+              scope: 'out',
+              subs: [
+                { name: '首页 Tab（Dashboard）', scope: 'phase1' },
+                { name: '隐患 Tab（隐患列表）', scope: 'phase1' },
+                { name: '跟踪 Tab（持续跟踪）', scope: 'phase1' },
+                { name: '待确认 Tab', scope: 'phase1' },
+                { name: '更多 Tab（侧滑设置/关于）', scope: 'phase1' },
+              ],
+            },
+            { name: '下拉刷新 (Pull-to-Refresh)', scope: 'out' },
+          ],
+        },
+        {
+          name: '🚨 隐患整改 (Hazard Rectification)',
+          tag: 'phase1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            {
+              name: '隐患列表',
+              desc: '隐患列表展示',
+              scope: 'phase1',
+              subs: [
+                { name: 'Tab 切换 — 待办/已办/全部', scope: 'phase1' },
+                { name: '搜索 — 关键字搜索隐患', scope: 'phase1' },
+                { name: '分类筛选 — 隐患类型/严重程度筛选', scope: 'phase1' },
+                { name: '隐患列表分页加载', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '隐患详情页',
+              desc: '隐患详情展示',
+              scope: 'phase1',
+              subs: [
+                { name: '基本信息 — 隐患描述/类型/位置/日期', scope: 'phase1' },
+                { name: '严重程度标识 — 红/橙/黄 色阶+图标', scope: 'phase1' },
+                { name: '整改状态 — 待整改/整改中/已完成/已超期', scope: 'phase1' },
+                { name: '企业信息面板 — 企业名称/统一社会信用代码/地址', scope: 'phase1' },
+                { name: '隐患时间线 — 发现→整改→复查 流转', scope: 'phase1' },
+                { name: '责令整改文书卡片', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '隐患整改操作',
+              desc: '整改提交流程',
+              scope: 'phase1',
+              subs: [
+                { name: '整改表单填写入口', scope: 'phase1' },
+                { name: '复查表单填写入口', scope: 'phase1' },
+                { name: '图片上传入口', scope: 'phase1' },
+              ],
+            },
+          ],
+        },
+        {
+          name: '🗂️ 持续跟踪 (Continuous Tracking)',
+          tag: 'phase1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            {
+              name: '跟踪列表',
+              desc: '持续跟踪列表',
+              scope: 'phase1',
+              subs: [
+                { name: 'Tab 切换 — 跟踪中/已完成', scope: 'phase1' },
+                { name: '搜索', scope: 'phase1' },
+                { name: '分类筛选', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '跟踪详情页',
+              desc: '跟踪详情展示',
+              scope: 'phase1',
+              subs: [
+                { name: '整改进度 — 可视化进度条', scope: 'phase1' },
+                { name: '隐患高亮信息', scope: 'phase1' },
+                { name: '企业信息面板', scope: 'phase1' },
+                { name: '整改进展时间线', scope: 'phase1' },
+                { name: '到期日/超期标识', scope: 'phase1' },
+                { name: '整改进展更新入口', scope: 'phase1' },
+              ],
+            },
+          ],
+        },
+        {
+          name: '📋 待确认 (Pending Confirmation)',
+          tag: 'phase1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            { name: '待确认列表', desc: '待确认隐患列表', scope: 'phase1' },
+            { name: '确认操作', desc: '单个确认', scope: 'phase1' },
+            { name: '批量确认', desc: '批量选择 + 批量确认', scope: 'phase1' },
+            { name: '待确认/已完成 Tab', desc: 'Tab 切换', scope: 'phase1' },
+          ],
+        },
+        {
+          name: '🔧 平台级基础功能 (Platform Foundation)',
+          tag: 'arch',
+          tagLabel: '架构',
+          scope: 'arch',
+          features: [
+            { name: 'PWA Manifest', desc: 'manifest.json — 应用名称/图标/主题色/display 配置', scope: 'arch' },
+            { name: 'Service Worker', desc: '离线缓存策略、资源预缓存、App Shell 架构', scope: 'arch' },
+            { name: '安全区域适配 (Safe Area)', desc: '刘海屏/挖孔屏 safe-area-inset-* 适配', scope: 'arch' },
+            { name: 'MobX 状态管理', desc: '全局状态管理', scope: 'arch' },
+            { name: '生成式 AI 辅助功能 (LLM SDK)', desc: 'LLM SDK 集成', scope: 'arch' },
+            { name: 'Skeleton 组件', desc: '列表/详情 骨架屏通用组件', scope: 'arch' },
+            { name: 'API 服务层', desc: 'Axios + 请求/响应拦截器', scope: 'arch' },
+            { name: '错误边界 (Error Boundary)', desc: '全局错误捕获、友好的错误提示', scope: 'phase2' },
+            { name: 'Web Share API', desc: '原生分享 → 剪贴板兜底', scope: 'phase2' },
+          ],
+        },
+        {
+          name: '📊 更多功能 (More Features)',
+          tag: 'mixed',
+          tagLabel: '混合',
+          scope: 'phase2',
+          features: [
+            {
+              name: '履职效能 (Performance)',
+              desc: '履职效能统计、个人积分',
+              scope: 'out',
+              subs: [
+                { name: '履职效能统计、个人积分', scope: 'out' },
+                { name: '个人积分详情', scope: 'out' },
+              ],
+            },
+            {
+              name: '督办跟踪 (Supervision Tracking)',
+              desc: '督办列表 + 详情+ 反馈',
+              scope: 'out',
+              subs: [
+                { name: '督办列表', scope: 'out' },
+                { name: '督办详情', scope: 'out' },
+                { name: '督办反馈', scope: 'out' },
+              ],
+            },
+            { name: '主体责任 (Main Responsibility)', desc: '主体责任清单 + 履职记录', scope: 'out' },
+            { name: '智能专项检查 (AI Inspection)', desc: '检查任务列表 + 检查表单', scope: 'out' },
+            { name: '月报 (Monthly Report)', desc: '月报生成 + PDF 导出', scope: 'out' },
+            { name: '隐患指标下钻', desc: '从统计卡片下钻到隐患明细', scope: 'phase2' },
+            {
+              name: '企业记忆面板 (Memory Panel)',
+              desc: 'AI 记忆面板 — 企业与 AI 的历史对话记录、关注点',
+              scope: 'phase2',
+            },
+            { name: 'AI 搜索启动器 (Search Launcher)', desc: '全局搜索启动 + 搜索历史', scope: 'phase2' },
+            { name: '分级处置 (Graded Handling)', desc: '隐患分级处置流程', scope: 'phase2' },
+            { name: '隐患回头看 (Review)', desc: '已闭环隐患复查巡检', scope: 'phase2' },
+            { name: '初始化引导 (Onboarding)', desc: '清除状态、重新展示引导', scope: 'out' },
+          ],
+        },
+        {
+          name: '⚙️ 规则引擎 (Rules Engine)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            { name: '6 大规则维度', desc: '指标阈值/时间超期/对比类/趋势类/行为模式/复合规则', scope: 'out' },
+            { name: '12 条默认规则', desc: '4 指标 + 2 超期 + 2 对比 + 2 趋势 + 2 行为 + 1 复合', scope: 'out' },
+            { name: '规则 CRUD', desc: '添加/删除/编辑/启停切换', scope: 'out' },
+            { name: '自然语言创建规则', desc: 'NL → 结构化规则解析 + AI 预览', scope: 'out' },
+          ],
+        },
+        {
+          name: '🧩 全局功能 / 通用组件',
+          tag: 'mixed',
+          tagLabel: '混合',
+          scope: 'phase1',
+          features: [
+            {
+              name: 'Drawer 抽屉面板',
+              desc: '侧滑面板 — 简报生成/一键督办/会议议题/现场核查/提醒/Agent配置',
+              scope: 'phase1',
+              subs: [
+                { name: '简报生成 Drawer', scope: 'phase1' },
+                { name: '一键督办 Drawer (督办包创建)', scope: 'phase1' },
+                { name: '会议议题 Drawer', scope: 'phase2' },
+                { name: '现场核查 Drawer', scope: 'phase2' },
+              ],
+            },
+            { name: 'Action Modal 动作弹窗', desc: '确认/提示/批量操作确认弹窗', scope: 'phase1' },
+            { name: 'Toast 通知系统', desc: '成功/错误/警告/信息 — 四色 Toast 浮层', scope: 'phase1' },
+            {
+              name: '企业档案面板 (Enterprise Panel)',
+              desc: '右侧固定面板 — Tab 切换 + 企业信息 + 隐患时间线',
+              scope: 'phase2',
+            },
+            { name: '任务详情弹窗', desc: '左右分栏 — 进度/隐患/任务信息', scope: 'phase2' },
+            {
+              name: '通知铃铛 (Notification Bell)',
+              desc: '右上角铃铛图标 + 未读角标 (Badge) + 点击弹出通知',
+              scope: 'phase1',
+              subs: [
+                { name: '未读角标数值展示', scope: 'phase1' },
+                { name: '点击弹出通知列表/Toast', scope: 'phase1' },
+              ],
+            },
+            { name: '密码保护 Gate', desc: 'Demo 访问密码验证', scope: 'phase1' },
+            { name: '数据导出/分享', desc: 'Web Share API (原生分享 → 剪贴板兜底)', scope: 'phase2' },
+            { name: '通用 Loading / 空状态', desc: '场景加载骨架屏 + 无数据占位', scope: 'phase1' },
+            { name: '错误边界 / 异常捕获', desc: '全局错误捕获、友好的错误提示', scope: 'phase2' },
+          ],
+        },
+      ];
+
+      // ============================================================
+      // PERSISTENCE
+      // ============================================================
+      let DATA;
+      const STORAGE_KEY = 'yaq_feature_tree_data';
+
+      function loadData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            DATA = JSON.parse(saved);
+            return;
+          } catch (e) {}
+        }
         DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
-        saveData();
-        showToast('已恢复默认状态');
       }
-    };
 
-    // ============================================================
-    // EXPORT / IMPORT
-    // ============================================================
-    window.exportJSON = function() {
-      const blob = new Blob([JSON.stringify(DATA, null, 2)], {type: 'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'yaq-feature-tree.json';
-      a.click();
-      URL.revokeObjectURL(a.href);
-      showToast('已导出 JSON');
-    };
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+        document.getElementById('saveIndicator').textContent = '💾 已保存';
+        render();
+      }
 
-    window.importJSON = function(ev) {
-      const file = ev.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const imported = JSON.parse(e.target.result);
-          if (Array.isArray(imported) && imported.length > 0 && imported[0].features) {
-            DATA = imported;
-            saveData();
-            showToast('已导入 ' + file.name);
-          } else {
-            alert('JSON 格式不正确，请导入有效的功能清单数据');
-          }
-        } catch(err) {
-          alert('JSON 解析失败：' + err.message);
+      function markDirty() {
+        document.getElementById('saveIndicator').textContent = '💾 未保存…';
+      }
+
+      window.resetToDefault = function () {
+        if (confirm('确定恢复默认状态？所有自定义修改将丢失。')) {
+          DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+          saveData();
+          showToast('已恢复默认状态');
         }
       };
-      reader.readAsText(file);
-      ev.target.value = '';
-    };
 
-    // ============================================================
-    // TOAST
-    // ============================================================
-    function showToast(msg) {
-      const container = document.getElementById('toastContainer');
-      const el = document.createElement('div');
-      el.className = 'toast';
-      el.textContent = msg;
-      container.appendChild(el);
-      setTimeout(() => { if (el.parentNode) el.remove(); }, 2000);
-    }
+      // ============================================================
+      // EXPORT / IMPORT
+      // ============================================================
+      window.exportJSON = function () {
+        const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'yaq-feature-tree.json';
+        a.click();
+        URL.revokeObjectURL(a.href);
+        showToast('已导出 JSON');
+      };
 
-    // ============================================================
-    // HELPERS
-    // ============================================================
-    function scopeLabel(s) {
-      const map = { phase1: '首期实现', phase2: '后续迭代', out: '暂不实现', arch: '架构基础' };
-      return map[s] || s;
-    }
+      window.importJSON = function (ev) {
+        const file = ev.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const imported = JSON.parse(e.target.result);
+            if (Array.isArray(imported) && imported.length > 0 && imported[0].features) {
+              DATA = imported;
+              saveData();
+              showToast('已导入 ' + file.name);
+            } else {
+              alert('JSON 格式不正确，请导入有效的功能清单数据');
+            }
+          } catch (err) {
+            alert('JSON 解析失败：' + err.message);
+          }
+        };
+        reader.readAsText(file);
+        ev.target.value = '';
+      };
 
-    function scopeShort(s) {
-      const map = { phase1: '首期', phase2: '后续', out: '暂不', arch: '架构' };
-      return map[s] || s;
-    }
-
-    const SCOPE_ORDER = ['phase1', 'phase2', 'out', 'arch'];
-    const SCOPE_INFO = {
-      phase1: { label: '✅ 首期实现', short: '首期', dot: 'p1', css: 'card-p1', columnClass: 'col-p1' },
-      phase2: { label: '⏳ 后续迭代', short: '后续', dot: 'p2', css: 'card-p2', columnClass: 'col-p2' },
-      out:    { label: '❌ 暂不实现', short: '暂不', dot: 'out', css: 'card-out', columnClass: 'col-out' },
-      arch:   { label: '🔧 架构基础', short: '架构', dot: 'arch', css: 'card-arch', columnClass: 'col-arch' },
-    };
-
-    // ============================================================
-    // DRAG & DROP
-    // ============================================================
-    let dragData = null;
-
-    function handleDragStart(e, catIdx, featIdx) {
-      dragData = { catIdx, featIdx };
-      e.dataTransfer.effectAllowed = 'move';
-      // Store the feature name for the drag ghost
-      const feature = DATA[catIdx].features[featIdx];
-      e.dataTransfer.setData('text/plain', feature.name);
-      // Add dragging class after a tick so the browser captures the screenshot before we dim it
-      requestAnimationFrame(() => {
-        e.target.classList.add('dragging');
-      });
-    }
-
-    function handleDragEnd(e) {
-      e.target.classList.remove('dragging');
-      dragData = null;
-      document.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
-    }
-
-    function handleDragOver(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-    }
-
-    function handleDragEnter(e, targetScope) {
-      e.preventDefault();
-      const col = e.currentTarget;
-      col.classList.add('drag-over');
-    }
-
-    function handleDragLeave(e) {
-      const col = e.currentTarget;
-      // Only remove if we're actually leaving the column (not entering a child)
-      if (!col.contains(e.relatedTarget)) {
-        col.classList.remove('drag-over');
+      // ============================================================
+      // TOAST
+      // ============================================================
+      function showToast(msg) {
+        const container = document.getElementById('toastContainer');
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        container.appendChild(el);
+        setTimeout(() => {
+          if (el.parentNode) el.remove();
+        }, 2000);
       }
-    }
 
-    function handleDrop(e, targetScope) {
-      e.preventDefault();
-      e.currentTarget.classList.remove('drag-over');
+      // ============================================================
+      // HELPERS
+      // ============================================================
+      function scopeLabel(s) {
+        const map = { phase1: '首期实现', phase2: '后续迭代', out: '暂不实现', arch: '架构基础' };
+        return map[s] || s;
+      }
 
-      if (!dragData) return;
+      function scopeShort(s) {
+        const map = { phase1: '首期', phase2: '后续', out: '暂不', arch: '架构' };
+        return map[s] || s;
+      }
 
-      const { catIdx, featIdx } = dragData;
-      const feature = DATA[catIdx].features[featIdx];
-      const oldScope = feature.scope;
+      const SCOPE_ORDER = ['phase1', 'phase2', 'out', 'arch'];
+      const SCOPE_INFO = {
+        phase1: { label: '✅ 首期实现', short: '首期', dot: 'p1', css: 'card-p1', columnClass: 'col-p1' },
+        phase2: { label: '⏳ 后续迭代', short: '后续', dot: 'p2', css: 'card-p2', columnClass: 'col-p2' },
+        out: { label: '❌ 暂不实现', short: '暂不', dot: 'out', css: 'card-out', columnClass: 'col-out' },
+        arch: { label: '🔧 架构基础', short: '架构', dot: 'arch', css: 'card-arch', columnClass: 'col-arch' },
+      };
 
-      if (oldScope === targetScope) return; // dropped in same column
+      // ============================================================
+      // DRAG & DROP
+      // ============================================================
+      let dragData = null;
 
-      feature.scope = targetScope;
+      function handleDragStart(e, catIdx, featIdx) {
+        dragData = { catIdx, featIdx };
+        e.dataTransfer.effectAllowed = 'move';
+        // Store the feature name for the drag ghost
+        const feature = DATA[catIdx].features[featIdx];
+        e.dataTransfer.setData('text/plain', feature.name);
+        // Add dragging class after a tick so the browser captures the screenshot before we dim it
+        requestAnimationFrame(() => {
+          e.target.classList.add('dragging');
+        });
+      }
 
-      // Update sub-items scope to match (keep subs with individual scope as-is but default to parent)
-      // We keep subs' individual scopes - they stay as they were
+      function handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+        dragData = null;
+        document.querySelectorAll('.column').forEach(col => col.classList.remove('drag-over'));
+      }
 
-      markDirty();
-      saveData();
-      showToast(`「${feature.name}」→ ${scopeLabel(targetScope)}`);
-    }
+      function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      }
 
-    // ============================================================
-    // RENDER
-    // ============================================================
-    function render() {
-      const board = document.getElementById('board');
-      board.innerHTML = '';
+      function handleDragEnter(e, targetScope) {
+        e.preventDefault();
+        const col = e.currentTarget;
+        col.classList.add('drag-over');
+      }
 
-      // Compute stats
-      let totalP1 = 0, totalP2 = 0, totalOut = 0, totalArch = 0, totalAll = 0;
-      const catMap = {}; // cache category name by feature key
+      function handleDragLeave(e) {
+        const col = e.currentTarget;
+        // Only remove if we're actually leaving the column (not entering a child)
+        if (!col.contains(e.relatedTarget)) {
+          col.classList.remove('drag-over');
+        }
+      }
 
-      DATA.forEach((cat, ci) => {
-        cat.features.forEach((f, fi) => {
-          totalAll++;
-          if (f.scope === 'phase1') totalP1++;
-          else if (f.scope === 'phase2') totalP2++;
-          else if (f.scope === 'out') totalOut++;
-          else if (f.scope === 'arch') totalArch++;
-          if (f.subs) f.subs.forEach(s => {
+      function handleDrop(e, targetScope) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+
+        if (!dragData) return;
+
+        const { catIdx, featIdx } = dragData;
+        const feature = DATA[catIdx].features[featIdx];
+        const oldScope = feature.scope;
+
+        if (oldScope === targetScope) return; // dropped in same column
+
+        feature.scope = targetScope;
+
+        // Update sub-items scope to match (keep subs with individual scope as-is but default to parent)
+        // We keep subs' individual scopes - they stay as they were
+
+        markDirty();
+        saveData();
+        showToast(`「${feature.name}」→ ${scopeLabel(targetScope)}`);
+      }
+
+      // ============================================================
+      // RENDER
+      // ============================================================
+      function render() {
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+
+        // Compute stats
+        let totalP1 = 0,
+          totalP2 = 0,
+          totalOut = 0,
+          totalArch = 0,
+          totalAll = 0;
+        const catMap = {}; // cache category name by feature key
+
+        DATA.forEach((cat, ci) => {
+          cat.features.forEach((f, fi) => {
             totalAll++;
-            if (s.scope === 'phase1') totalP1++;
-            else if (s.scope === 'phase2') totalP2++;
-            else if (s.scope === 'out') totalOut++;
-            else if (s.scope === 'arch') totalArch++;
+            if (f.scope === 'phase1') totalP1++;
+            else if (f.scope === 'phase2') totalP2++;
+            else if (f.scope === 'out') totalOut++;
+            else if (f.scope === 'arch') totalArch++;
+            if (f.subs)
+              f.subs.forEach(s => {
+                totalAll++;
+                if (s.scope === 'phase1') totalP1++;
+                else if (s.scope === 'phase2') totalP2++;
+                else if (s.scope === 'out') totalOut++;
+                else if (s.scope === 'arch') totalArch++;
+              });
           });
         });
-      });
 
-      // Stats bar
-      document.getElementById('statsBar').innerHTML = `
+        // Stats bar
+        document.getElementById('statsBar').innerHTML = `
         <div class="stat-card p1"><div class="num">${totalP1}</div><div class="label">✅ 首期实现</div></div>
         <div class="stat-card p2"><div class="num">${totalP2}</div><div class="label">⏳ 后续迭代</div></div>
         <div class="stat-card out"><div class="num">${totalOut}</div><div class="label">❌ 暂不实现</div></div>
@@ -831,28 +1082,28 @@
         <div class="stat-card"><div class="num">${totalAll}</div><div class="label">📦 功能项总计</div></div>
       `;
 
-      // Build columns
-      SCOPE_ORDER.forEach(scopeKey => {
-        const info = SCOPE_INFO[scopeKey];
-        const col = document.createElement('div');
-        col.className = `column ${info.columnClass}`;
-        col.setAttribute('data-scope', scopeKey);
+        // Build columns
+        SCOPE_ORDER.forEach(scopeKey => {
+          const info = SCOPE_INFO[scopeKey];
+          const col = document.createElement('div');
+          col.className = `column ${info.columnClass}`;
+          col.setAttribute('data-scope', scopeKey);
 
-        // Collect cards for this scope
-        let cardsHtml = '';
-        let cardCount = 0;
+          // Collect cards for this scope
+          let cardsHtml = '';
+          let cardCount = 0;
 
-        DATA.forEach((cat, ci) => {
-          cat.features.forEach((f, fi) => {
-            if (f.scope !== scopeKey) return;
-            cardCount++;
-            cardsHtml += renderCard(f, ci, fi, cat.name);
+          DATA.forEach((cat, ci) => {
+            cat.features.forEach((f, fi) => {
+              if (f.scope !== scopeKey) return;
+              cardCount++;
+              cardsHtml += renderCard(f, ci, fi, cat.name);
+            });
           });
-        });
 
-        const isEmpty = cardCount === 0;
+          const isEmpty = cardCount === 0;
 
-        col.innerHTML = `
+          col.innerHTML = `
           <div class="column-header">
             <span class="dot ${info.dot}"></span>
             <span class="col-title">${info.label}</span>
@@ -868,11 +1119,11 @@
           </div>
         `;
 
-        board.appendChild(col);
-      });
+          board.appendChild(col);
+        });
 
-      // Summary
-      document.getElementById('summarySection').innerHTML = `
+        // Summary
+        document.getElementById('summarySection').innerHTML = `
         <h3>📌 首期移动端范围边界总结</h3>
         <div class="summary-grid">
           <div class="summary-card in">
@@ -898,37 +1149,37 @@
         </div>
       `;
 
-      // Re-apply search filter if there's a search query
-      const q = document.getElementById('searchInput').value.trim();
-      if (q) applySearch(q);
-    }
+        // Re-apply search filter if there's a search query
+        const q = document.getElementById('searchInput').value.trim();
+        if (q) applySearch(q);
+      }
 
-    function renderCard(f, catIdx, featIdx, catName) {
-      const info = SCOPE_INFO[f.scope] || SCOPE_INFO.phase1;
-      const hasSubs = f.subs && f.subs.length > 0;
+      function renderCard(f, catIdx, featIdx, catName) {
+        const info = SCOPE_INFO[f.scope] || SCOPE_INFO.phase1;
+        const hasSubs = f.subs && f.subs.length > 0;
 
-      let subsHtml = '';
-      if (hasSubs) {
-        let subItemsHtml = '';
-        f.subs.forEach(s => {
-          const sInfo = SCOPE_INFO[s.scope] || SCOPE_INFO.phase1;
-          subItemsHtml += `
+        let subsHtml = '';
+        if (hasSubs) {
+          let subItemsHtml = '';
+          f.subs.forEach(s => {
+            const sInfo = SCOPE_INFO[s.scope] || SCOPE_INFO.phase1;
+            subItemsHtml += `
             <div class="sub-item">
               <span class="sub-dot ${sInfo.dot}"></span>
               <span>${s.name}</span>
               <span style="font-size:10px;color:var(--c-text-muted);margin-left:auto">${scopeShort(s.scope)}</span>
             </div>
           `;
-        });
-        subsHtml = `
+          });
+          subsHtml = `
           <div class="sub-toggle" onclick="toggleSubs(this)">
             <i class="fa-regular fa-square-caret-down"></i> 展开 ${f.subs.length} 个子项
           </div>
           <div class="subs-area">${subItemsHtml}</div>
         `;
-      }
+        }
 
-      return `
+        return `
         <div class="card ${info.css}"
              draggable="true"
              data-cat-idx="${catIdx}"
@@ -944,59 +1195,59 @@
           ${subsHtml}
         </div>
       `;
-    }
-
-    // ============================================================
-    // INTERACTIONS
-    // ============================================================
-    window.toggleSubs = function(el) {
-      const area = el.nextElementSibling;
-      if (area && area.classList.contains('subs-area')) {
-        area.classList.toggle('open');
-        el.innerHTML = area.classList.contains('open')
-          ? '<i class="fa-regular fa-square-caret-up"></i> 收起子项'
-          : '<i class="fa-regular fa-square-caret-down"></i> 展开子项';
       }
-    };
 
-    // Search
-    let searchTimer = null;
+      // ============================================================
+      // INTERACTIONS
+      // ============================================================
+      window.toggleSubs = function (el) {
+        const area = el.nextElementSibling;
+        if (area && area.classList.contains('subs-area')) {
+          area.classList.toggle('open');
+          el.innerHTML = area.classList.contains('open')
+            ? '<i class="fa-regular fa-square-caret-up"></i> 收起子项'
+            : '<i class="fa-regular fa-square-caret-down"></i> 展开子项';
+        }
+      };
 
-    window.onSearch = function(val) {
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => applySearch(val.trim()), 150);
-    };
+      // Search
+      let searchTimer = null;
 
-    function applySearch(q) {
-      const cards = document.querySelectorAll('.card');
-      const columns = document.querySelectorAll('.column');
-      let anyVisible = false;
+      window.onSearch = function (val) {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => applySearch(val.trim()), 150);
+      };
 
-      cards.forEach(card => {
-        const name = card.querySelector('.card-name')?.textContent?.toLowerCase() || '';
-        const desc = card.querySelector('.card-desc')?.textContent?.toLowerCase() || '';
-        const cat = card.querySelector('.cat-badge')?.textContent?.toLowerCase() || '';
-        const match = !q || name.includes(q) || desc.includes(q) || cat.includes(q);
-        card.classList.toggle('hidden', !match);
-        if (match) anyVisible = true;
-      });
+      function applySearch(q) {
+        const cards = document.querySelectorAll('.card');
+        const columns = document.querySelectorAll('.column');
+        let anyVisible = false;
 
-      // Hide empty columns
-      columns.forEach(col => {
-        const body = col.querySelector('.column-body');
-        const visibleCards = body ? body.querySelectorAll('.card:not(.hidden)').length : 0;
-        col.style.display = visibleCards === 0 ? 'none' : '';
-      });
-    }
+        cards.forEach(card => {
+          const name = card.querySelector('.card-name')?.textContent?.toLowerCase() || '';
+          const desc = card.querySelector('.card-desc')?.textContent?.toLowerCase() || '';
+          const cat = card.querySelector('.cat-badge')?.textContent?.toLowerCase() || '';
+          const match = !q || name.includes(q) || desc.includes(q) || cat.includes(q);
+          card.classList.toggle('hidden', !match);
+          if (match) anyVisible = true;
+        });
 
-    // Also handle the empty-state text in columns after search
-    // (the column-empty div is static, so we hide it when cards exist)
+        // Hide empty columns
+        columns.forEach(col => {
+          const body = col.querySelector('.column-body');
+          const visibleCards = body ? body.querySelectorAll('.card:not(.hidden)').length : 0;
+          col.style.display = visibleCards === 0 ? 'none' : '';
+        });
+      }
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    loadData();
-    render();
-  </script>
-</body>
+      // Also handle the empty-state text in columns after search
+      // (the column-empty div is static, so we hide it when cards exist)
+
+      // ============================================================
+      // INIT
+      // ============================================================
+      loadData();
+      render();
+    </script>
+  </body>
 </html>

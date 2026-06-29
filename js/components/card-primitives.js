@@ -187,18 +187,28 @@
     // ── 任务卡：双环进度指示器 ──
     if (opts.progress) {
       var p = opts.progress;
-      var timeOff = 119 - (119 * (p.timePct || 0) / 100);
-      var compOff = 75 - (75 * (p.compPct || 0) / 100);
+      var timeOff = 119 - (119 * (p.timePct || 0)) / 100;
+      var compOff = 75 - (75 * (p.compPct || 0)) / 100;
       var color = p.color || '#98a2b3';
       html += '<div style="display:flex;align-items:center;gap:8px;margin:0 0 4px">';
       html += '<svg width="50" height="50" viewBox="0 0 54 54" style="flex-shrink:0">';
       html += '<circle cx="27" cy="27" r="19" fill="none" stroke="#e5e7eb" stroke-width="5"/>';
-      html += '<circle cx="27" cy="27" r="19" fill="none" stroke="' + color + '" stroke-width="5"' +
-        ' stroke-dasharray="119" stroke-dashoffset="' + timeOff.toFixed(1) + '" stroke-linecap="round"' +
+      html +=
+        '<circle cx="27" cy="27" r="19" fill="none" stroke="' +
+        color +
+        '" stroke-width="5"' +
+        ' stroke-dasharray="119" stroke-dashoffset="' +
+        timeOff.toFixed(1) +
+        '" stroke-linecap="round"' +
         ' transform="rotate(-90 27 27)"/>';
       html += '<circle cx="27" cy="27" r="12" fill="none" stroke="#e5e7eb" stroke-width="5"/>';
-      html += '<circle cx="27" cy="27" r="12" fill="none" stroke="' + color + '" stroke-width="5"' +
-        ' stroke-dasharray="75" stroke-dashoffset="' + compOff.toFixed(1) + '" stroke-linecap="round"' +
+      html +=
+        '<circle cx="27" cy="27" r="12" fill="none" stroke="' +
+        color +
+        '" stroke-width="5"' +
+        ' stroke-dasharray="75" stroke-dashoffset="' +
+        compOff.toFixed(1) +
+        '" stroke-linecap="round"' +
         ' transform="rotate(-90 27 27)"/>';
       html += '</svg>';
       html += '<div>';
@@ -218,21 +228,34 @@
     if (opts.meta && opts.meta.length) {
       html += '<div class="hc-meta">';
       for (var i = 0; i < opts.meta.length; i++) {
-        html += '<span' + (opts.meta[i].style ? ' style="' + opts.meta[i].style + '"' : '') + '>' + opts.meta[i].text + '</span>';
+        html +=
+          '<span' +
+          (opts.meta[i].style ? ' style="' + opts.meta[i].style + '"' : '') +
+          '>' +
+          opts.meta[i].text +
+          '</span>';
       }
       html += '</div>';
     }
     if (opts.badge) {
-      html += '<div style="font-size:11px;font-weight:600;color:' + (opts.badgeColor || '#dc2626') +
-        ';background:' + (opts.badgeBg || '#fef2f2') +
-        ';display:inline-block;padding:1px 8px;border-radius:4px">' + esc(opts.badge) + '</div>';
+      html +=
+        '<div style="font-size:11px;font-weight:600;color:' +
+        (opts.badgeColor || '#dc2626') +
+        ';background:' +
+        (opts.badgeBg || '#fef2f2') +
+        ';display:inline-block;padding:1px 8px;border-radius:4px">' +
+        esc(opts.badge) +
+        '</div>';
     }
     if (opts.time) html += '<div class="hc-time">' + esc(opts.time) + '</div>';
     html += '</div>';
     if (opts.footer) {
-      html += '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
+      html +=
+        '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
         '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#7c3aed;flex-shrink:0"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>' +
-        '<span>' + esc(opts.footer) + '</span>' +
+        '<span>' +
+        esc(opts.footer) +
+        '</span>' +
         '</div>';
     }
     html += '</div>';

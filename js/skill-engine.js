@@ -61,10 +61,7 @@
      */
     appendUserMessage: function (text) {
       if (!this.container) return;
-      var html =
-        '<div class="c-row user">' +
-        '<div class="c-bubble user">' + escapeHtml(text) + '</div>' +
-        '</div>';
+      var html = '<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>';
       this.container.insertAdjacentHTML('beforeend', html);
       this._scrollToBottom();
 
@@ -76,10 +73,7 @@
      */
     appendAgentMessage: function (html) {
       if (!this.container) return;
-      var wrapped =
-        '<div class="c-row agent">' +
-        '<div class="c-bubble">' + html + '</div>' +
-        '</div>';
+      var wrapped = '<div class="c-row agent">' + '<div class="c-bubble">' + html + '</div>' + '</div>';
       this.container.insertAdjacentHTML('beforeend', wrapped);
       this._scrollToBottom();
     },
@@ -112,12 +106,20 @@
 
       // ── 创建过程容器 ──
       var processHtml =
-        '<div class="c-row agent process" id="' + processId + '">' +
+        '<div class="c-row agent process" id="' +
+        processId +
+        '">' +
         '<div class="c-bubble process-bubble">' +
-        '  <div class="process-chain" id="' + processId + '_chain"></div>' +
-        '  <div class="process-detail" id="' + processId + '_detail" style="display:none">' +
+        '  <div class="process-chain" id="' +
+        processId +
+        '_chain"></div>' +
+        '  <div class="process-detail" id="' +
+        processId +
+        '_detail" style="display:none">' +
         '    <span class="ps-dot"></span>' +
-        '    <span class="ps-label" id="' + processId + '_dlabel"></span>' +
+        '    <span class="ps-label" id="' +
+        processId +
+        '_dlabel"></span>' +
         '  </div>' +
         '</div>' +
         '</div>';
@@ -143,9 +145,16 @@
       var detailDone = false;
 
       // ── 单行展示当前步骤，内容替换不换行 ──
-      var stepsHtml = '<div class="process-steps-row" id="' + processId + '_steps">' +
+      var stepsHtml =
+        '<div class="process-steps-row" id="' +
+        processId +
+        '_steps">' +
         '<span class="ps-dot active"></span>' +
-        '<span class="ps-label" id="' + processId + '_label">' + escapeHtml(thinkChain[0].text) + '</span>' +
+        '<span class="ps-label" id="' +
+        processId +
+        '_label">' +
+        escapeHtml(thinkChain[0].text) +
+        '</span>' +
         '</div>';
       chainContainer.innerHTML = stepsHtml;
 
@@ -159,7 +168,10 @@
           // 标记完成
           var dot = chainContainer.querySelector('.ps-dot');
           var label = document.getElementById(processId + '_label');
-          if (dot) { dot.classList.remove('active'); dot.classList.add('done'); }
+          if (dot) {
+            dot.classList.remove('active');
+            dot.classList.add('done');
+          }
           if (label) label.textContent = thinkChain[totalSteps - 1].text;
           // 开始展示后台步骤
           if (detailSteps.length > 0 && detailContainer) {
@@ -224,18 +236,28 @@
             var summary = thinkChain[thinkChain.length - 1] || { text: '完成' };
 
             // 构建展开后的 HTML（单行，显示所有已完成步骤）
-            var chainHtml = '<div class="process-steps-row">' +
+            var chainHtml =
+              '<div class="process-steps-row">' +
               '<span class="ps-dot done"></span>' +
-              '<span class="ps-label">' + escapeHtml(summary.text) + '</span>' +
+              '<span class="ps-label">' +
+              escapeHtml(summary.text) +
+              '</span>' +
               '</div>';
-            var detailHtml = detailSteps.length > 0
-              ? '<span class="ps-dot done"></span><span class="ps-label">' + escapeHtml(detailSteps[detailSteps.length - 1]) + '</span>'
-              : '';
+            var detailHtml =
+              detailSteps.length > 0
+                ? '<span class="ps-dot done"></span><span class="ps-label">' +
+                  escapeHtml(detailSteps[detailSteps.length - 1]) +
+                  '</span>'
+                : '';
 
             var collapsedHtml =
               '<div class="process-collapsed">' +
-              '<span class="process-collapsed-text">' + escapeHtml(summary.text) + '</span>' +
-              '<span class="process-collapsed-time">' + ((Date.now() - startTime) / 1000).toFixed(1) + 's</span>' +
+              '<span class="process-collapsed-text">' +
+              escapeHtml(summary.text) +
+              '</span>' +
+              '<span class="process-collapsed-time">' +
+              ((Date.now() - startTime) / 1000).toFixed(1) +
+              's</span>' +
               '</div>';
             chainContainer.innerHTML = collapsedHtml;
             if (detailContainer) detailContainer.style.display = 'none';
@@ -267,13 +289,17 @@
         // 无卡片模式：纯内容，无背景/边框/内边距
         html =
           '<div class="c-row agent reply">' +
-          '<div id="' + respId + '" style="flex:1;min-width:0;font-size:14px;line-height:1.7;color:#1e293b">' +
+          '<div id="' +
+          respId +
+          '" style="flex:1;min-width:0;font-size:14px;line-height:1.7;color:#1e293b">' +
           '</div>' +
           '</div>';
       } else {
         html =
           '<div class="c-row agent reply">' +
-          '<div class="c-bubble reply-bubble" id="' + respId + '">' +
+          '<div class="c-bubble reply-bubble" id="' +
+          respId +
+          '">' +
           '</div>' +
           '</div>';
       }
@@ -282,14 +308,19 @@
       this._scrollToBottom();
 
       var el = document.getElementById(respId);
-      if (!el) { this._renderingContent = false; return; }
+      if (!el) {
+        this._renderingContent = false;
+        return;
+      }
 
       // 逐段追加（带延时，模拟生成效果）
       var idx = 0;
       var self = this;
       var delay = opts.stream ? 120 : 300;
       // 2秒后自动释放渲染锁（防止意外卡死）
-      var renderLockTimer = setTimeout(function () { self._renderingContent = false; }, 8000);
+      var renderLockTimer = setTimeout(function () {
+        self._renderingContent = false;
+      }, 8000);
 
       function appendNext() {
         if (idx >= sections.length) {
@@ -339,9 +370,7 @@
                 var done = function () {
                   self._setSendButtonState('send');
                   if (skill.quickChips) {
-                    var chips = typeof skill.quickChips === 'function'
-                      ? skill.quickChips({})
-                      : skill.quickChips;
+                    var chips = typeof skill.quickChips === 'function' ? skill.quickChips({}) : skill.quickChips;
                     self._appendQuickChips(chips);
                   }
                 };
@@ -359,7 +388,7 @@
             } else {
               self._setSendButtonState('send');
             }
-          }
+          },
         );
       } else {
         // 没有思考过程，直接展示结果
@@ -395,33 +424,33 @@
       // 显示简单的思考过程
       this.showProcessSteps(
         {
-          thinkChain: [
-            { text: '正在分析你的问题…' },
-            { text: '正在匹配相关技能' },
-            { text: '已就绪' },
-          ],
+          thinkChain: [{ text: '正在分析你的问题…' }, { text: '正在匹配相关技能' }, { text: '已就绪' }],
           detailSteps: ['正在解析问题上下文…', '正在检索可用技能…'],
         },
         { stepInterval: 400, detailInterval: 300, displayMode: 'collapse' },
         function () {
           var C = window.CardPrimitives;
           if (C) {
-            self.renderStructuredReply([
-              C.sectionHead('我可以帮你做什么？'),
-              '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
-                '当前支持以下场景，可直接输入或点击快捷按钮：' +
-                '</div>',
-              '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
-                '· 隐患分析 — 输入"查看隐患"<br>' +
-                '· 履职效能 — 输入"履职分析"<br>' +
-                '· 月报生成 — 输入"月报"<br>' +
-                '· 超期原因分析 — 输入"超期原因"<br>' +
-                '· 任务异常分析 — 输入"任务异常"<br>' +
-                '· 待确认行动 — 输入"行动建议"' +
-                '</div>',
-            ], null, { noCard: true });
+            self.renderStructuredReply(
+              [
+                C.sectionHead('我可以帮你做什么？'),
+                '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
+                  '当前支持以下场景，可直接输入或点击快捷按钮：' +
+                  '</div>',
+                '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
+                  '· 隐患分析 — 输入"查看隐患"<br>' +
+                  '· 履职效能 — 输入"履职分析"<br>' +
+                  '· 月报生成 — 输入"月报"<br>' +
+                  '· 超期原因分析 — 输入"超期原因"<br>' +
+                  '· 任务异常分析 — 输入"任务异常"<br>' +
+                  '· 待确认行动 — 输入"行动建议"' +
+                  '</div>',
+              ],
+              null,
+              { noCard: true },
+            );
           }
-        }
+        },
       );
     },
 
@@ -600,7 +629,7 @@
         if (resultEl) resultEl.style.overflowY = 'visible';
 
         var curH = sc.scrollHeight;
-        self.container.style.minHeight = (curH + sc.clientHeight) + 'px';
+        self.container.style.minHeight = curH + sc.clientHeight + 'px';
 
         var start = sc.scrollTop;
         var offset = userRow.getBoundingClientRect().top - sc.getBoundingClientRect().top;
@@ -739,7 +768,15 @@
         return (b.priority || 10) - (a.priority || 10);
       });
 
-      console.log('[SkillRouter] 已注册技能: ' + config.name + ' (id=' + config.id + ', 关键词=' + config.keywords.join(',') + ')');
+      console.log(
+        '[SkillRouter] 已注册技能: ' +
+          config.name +
+          ' (id=' +
+          config.id +
+          ', 关键词=' +
+          config.keywords.join(',') +
+          ')',
+      );
 
       // 如果有 sceneId，注册到 scene 映射
       if (config.sceneId) {
@@ -803,12 +840,7 @@
         { text: '正在比对整改进度' },
         { text: '分析完成' },
       ],
-      detailSteps: [
-        '正在接入今日隐患数据库…',
-        '正在提取重大隐患记录…',
-        '正在比对超期未整改项…',
-        '正在计算整改完成率…',
-      ],
+      detailSteps: ['正在接入今日隐患数据库…', '正在提取重大隐患记录…', '正在比对超期未整改项…', '正在计算整改完成率…'],
     },
     generate: function (text, context) {
       var C = window.CardPrimitives;
@@ -855,12 +887,7 @@
         { text: '正在比对历史履职趋势' },
         { text: '分析完成' },
       ],
-      detailSteps: [
-        '正在加载团队履职记录…',
-        '正在计算综合评分和排名…',
-        '正在识别异常履职行为…',
-        '分析完成',
-      ],
+      detailSteps: ['正在加载团队履职记录…', '正在计算综合评分和排名…', '正在识别异常履职行为…', '分析完成'],
     },
     generate: function (text, context) {
       var C = window.CardPrimitives;
@@ -952,17 +979,8 @@
     priority: 15,
     sceneId: 'pending-actions',
     demoSteps: {
-      thinkChain: [
-        { text: '正在获取待办事项列表…' },
-        { text: '正在筛选超期和紧急项' },
-        { text: '正在汇总行动建议' },
-      ],
-      detailSteps: [
-        '正在接入待办任务系统…',
-        '正在识别超期未处理事项…',
-        '正在按紧急程度排序…',
-        '分析完成',
-      ],
+      thinkChain: [{ text: '正在获取待办事项列表…' }, { text: '正在筛选超期和紧急项' }, { text: '正在汇总行动建议' }],
+      detailSteps: ['正在接入待办任务系统…', '正在识别超期未处理事项…', '正在按紧急程度排序…', '分析完成'],
     },
     generate: function (text, context) {
       var C = window.CardPrimitives;
@@ -1033,10 +1051,7 @@
         C.entityCard({
           name: '北苑商业综合体',
           desc: '消防通道堵塞',
-          meta: [
-            { text: '来源 日常巡查' },
-            { text: '逾期 3天', style: 'color:#dc2626;font-weight:600' },
-          ],
+          meta: [{ text: '来源 日常巡查' }, { text: '逾期 3天', style: 'color:#dc2626;font-weight:600' }],
           time: '06-10 → 06-22',
           footer: '企业主体责任问题为主',
           onclick: "openHazardDetail('北苑商业综合体')",
@@ -1059,10 +1074,7 @@
         C.entityCard({
           name: '云栖高层住宅',
           desc: '自动消防设施失效',
-          meta: [
-            { text: '来源 日常巡查' },
-            { text: '逾期 1天', style: 'color:#dc2626;font-weight:600' },
-          ],
+          meta: [{ text: '来源 日常巡查' }, { text: '逾期 1天', style: 'color:#dc2626;font-weight:600' }],
           time: '06-20 → 06-22',
           footer: '政府跟进盲区 + 企业执行不力并存',
           onclick: "openHazardDetail('云栖高层住宅')",
@@ -1128,10 +1140,7 @@
             timePct: 91,
             compPct: 42,
             color: '#dc2626',
-            stats: [
-              '覆盖 <strong>141</strong> 家',
-              '隐患 <strong>3</strong> 个 | 未闭环 <strong>0</strong>',
-            ],
+            stats: ['覆盖 <strong>141</strong> 家', '隐患 <strong>3</strong> 个 | 未闭环 <strong>0</strong>'],
           },
           time: '06-01 → 06-30',
           badge: '严重滞后 49pp',
@@ -1155,10 +1164,7 @@
             timePct: 75,
             compPct: 55,
             color: '#d97706',
-            stats: [
-              '覆盖 <strong>24</strong> 家',
-              '隐患 <strong>2</strong> 个 | 未闭环 <strong>1</strong>',
-            ],
+            stats: ['覆盖 <strong>24</strong> 家', '隐患 <strong>2</strong> 个 | 未闭环 <strong>1</strong>'],
           },
           time: '06-10 → 06-30',
           badge: '进度偏低',
@@ -1190,8 +1196,12 @@
   window.YAQ.UnifiedChat = UnifiedChat;
   window.YAQ.SkillRouter = SkillRouter;
   // 公开方法
-  window.YAQ.restoreOriginalSend = function () { UnifiedChat.restoreOriginalSend(); };
-  window.YAQ.toggleProcess = function (el) { UnifiedChat._toggleProcess(el); };
+  window.YAQ.restoreOriginalSend = function () {
+    UnifiedChat.restoreOriginalSend();
+  };
+  window.YAQ.toggleProcess = function (el) {
+    UnifiedChat._toggleProcess(el);
+  };
   // 兼容简写
   window.UnifiedChat = UnifiedChat;
   window.SkillRouter = SkillRouter;

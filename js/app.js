@@ -721,7 +721,10 @@
       }
       // Agent 内容渲染完成后，显示对应的快捷输入
       // 如果 UnifiedChat 已接管输入，由它负责显示芯片，跳过旧逻辑
-      if (window.YAQ.showGlobalQuickChip && !(window.YAQ && window.YAQ.UnifiedChat && window.YAQ.UnifiedChat.initialized)) {
+      if (
+        window.YAQ.showGlobalQuickChip &&
+        !(window.YAQ && window.YAQ.UnifiedChat && window.YAQ.UnifiedChat.initialized)
+      ) {
         var chips = [];
         switch (sceneId) {
           case 'dashboard':

@@ -760,7 +760,7 @@
 
     <!-- ═══ 确保统一对话引擎的命令不被覆盖 ════════════════════ -->
     <script>
-      (function() {
+      (function () {
         if (window.YAQ && window.YAQ.unifiedChatQuick) {
           window.YAQ.globalChatQuick = window.YAQ.unifiedChatQuick;
           window.globalChatQuick = window.YAQ.unifiedChatQuick;
@@ -1654,196 +1654,196 @@
       })();
     </script>
     <script>
-        /* ═══ 触觉反馈 (Haptic Feedback) ══════════════════════════════ */
-        window.haptic = (function () {
-          if (!navigator.vibrate) return { light: function () {}, medium: function () {}, heavy: function () {} };
-          return {
-            light: function () {
-              try {
-                navigator.vibrate(6);
-              } catch (e) {}
-            },
-            medium: function () {
-              try {
-                navigator.vibrate(12);
-              } catch (e) {}
-            },
-            heavy: function () {
-              try {
-                navigator.vibrate(20);
-              } catch (e) {}
-            },
-          };
-        })();
-        document.addEventListener('click', function (e) {
-          var target = e.target.closest('[data-haptic]');
-          if (!target) return;
-          var level = target.getAttribute('data-haptic');
-          if (window.haptic && window.haptic[level]) window.haptic[level]();
-        });
-
-        /* ═══ Web Share API ════════════════════════════════════════════ */
-        window.webShare = function (data) {
-          if (!data) return;
-          if (navigator.share) {
-            navigator.share(data).catch(function () {});
-          } else if (navigator.clipboard && data.text) {
-            navigator.clipboard.writeText(data.text).catch(function () {});
-          }
+      /* ═══ 触觉反馈 (Haptic Feedback) ══════════════════════════════ */
+      window.haptic = (function () {
+        if (!navigator.vibrate) return { light: function () {}, medium: function () {}, heavy: function () {} };
+        return {
+          light: function () {
+            try {
+              navigator.vibrate(6);
+            } catch (e) {}
+          },
+          medium: function () {
+            try {
+              navigator.vibrate(12);
+            } catch (e) {}
+          },
+          heavy: function () {
+            try {
+              navigator.vibrate(20);
+            } catch (e) {}
+          },
         };
-        /* data-share 属性：点击时尝试原生分享，降级到复制 */
-        document.addEventListener('click', function (e) {
-          var btn = e.target.closest('[data-share]');
-          if (!btn) return;
-          var type = btn.getAttribute('data-share');
-          if (type === 'hazard') {
-            var nameEl = document.getElementById('hazardModalName');
-            var bodyEl = document.getElementById('hazardModalBody');
-            var title = nameEl ? nameEl.textContent : '隐患信息';
-            var body = bodyEl ? bodyEl.textContent.slice(0, 200) : '';
-            window.webShare({
-              title: title,
-              text: title + '\n' + body + '\n\n—— 来自「小安工作台」',
-              url: window.location.href,
-            });
-          }
-        });
+      })();
+      document.addEventListener('click', function (e) {
+        var target = e.target.closest('[data-haptic]');
+        if (!target) return;
+        var level = target.getAttribute('data-haptic');
+        if (window.haptic && window.haptic[level]) window.haptic[level]();
+      });
 
-        /* ═══ 骨架屏工具 ══════════════════════════════════════════════ */
-        window.showSkeleton = function (sceneType) {
-          var container = document.getElementById('sceneContent');
-          if (!container) return;
-          var sk = document.getElementById('skeletonContainer');
-          if (!sk) {
-            sk = document.createElement('div');
-            sk.id = 'skeletonContainer';
-            sk.className = 'skeleton-scene';
-            container.prepend(sk);
-          }
-          var html = '';
-          if (sceneType === 'dashboard' || sceneType === 'init') {
-            html =
-              '<div class="skeleton skeleton-h1"></div>' +
-              '<div class="skeleton skeleton-p"></div>' +
-              '<div class="skeleton skeleton-p short"></div>' +
-              '<div class="skeleton-grid"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div>' +
-              '<div class="skeleton skeleton-h2"></div>' +
-              '<div class="skeleton skeleton-card tall"></div>';
-          } else if (sceneType === 'hazard' || sceneType === 'followup') {
-            html =
-              '<div class="skeleton skeleton-h1"></div>' +
-              '<div class="skeleton skeleton-badge" style="margin-bottom:12px"></div>' +
-              '<div class="skeleton-table">' +
-              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-              '</div>';
-          } else {
-            html =
-              '<div class="skeleton skeleton-h1"></div>' +
-              '<div class="skeleton skeleton-p"></div>' +
-              '<div class="skeleton skeleton-p short"></div>' +
-              '<div class="skeleton skeleton-card"></div>' +
-              '<div class="skeleton skeleton-card"></div>';
-          }
-          sk.innerHTML = html;
-          sk.style.display = 'flex';
-        };
+      /* ═══ Web Share API ════════════════════════════════════════════ */
+      window.webShare = function (data) {
+        if (!data) return;
+        if (navigator.share) {
+          navigator.share(data).catch(function () {});
+        } else if (navigator.clipboard && data.text) {
+          navigator.clipboard.writeText(data.text).catch(function () {});
+        }
+      };
+      /* data-share 属性：点击时尝试原生分享，降级到复制 */
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-share]');
+        if (!btn) return;
+        var type = btn.getAttribute('data-share');
+        if (type === 'hazard') {
+          var nameEl = document.getElementById('hazardModalName');
+          var bodyEl = document.getElementById('hazardModalBody');
+          var title = nameEl ? nameEl.textContent : '隐患信息';
+          var body = bodyEl ? bodyEl.textContent.slice(0, 200) : '';
+          window.webShare({
+            title: title,
+            text: title + '\n' + body + '\n\n—— 来自「小安工作台」',
+            url: window.location.href,
+          });
+        }
+      });
 
-        window.hideSkeleton = function () {
-          var sk = document.getElementById('skeletonContainer');
-          if (sk) sk.style.display = 'none';
-          var sc = document.getElementById('sceneContent');
-          if (sc) sc.classList.add('entered');
-        };
+      /* ═══ 骨架屏工具 ══════════════════════════════════════════════ */
+      window.showSkeleton = function (sceneType) {
+        var container = document.getElementById('sceneContent');
+        if (!container) return;
+        var sk = document.getElementById('skeletonContainer');
+        if (!sk) {
+          sk = document.createElement('div');
+          sk.id = 'skeletonContainer';
+          sk.className = 'skeleton-scene';
+          container.prepend(sk);
+        }
+        var html = '';
+        if (sceneType === 'dashboard' || sceneType === 'init') {
+          html =
+            '<div class="skeleton skeleton-h1"></div>' +
+            '<div class="skeleton skeleton-p"></div>' +
+            '<div class="skeleton skeleton-p short"></div>' +
+            '<div class="skeleton-grid"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div>' +
+            '<div class="skeleton skeleton-h2"></div>' +
+            '<div class="skeleton skeleton-card tall"></div>';
+        } else if (sceneType === 'hazard' || sceneType === 'followup') {
+          html =
+            '<div class="skeleton skeleton-h1"></div>' +
+            '<div class="skeleton skeleton-badge" style="margin-bottom:12px"></div>' +
+            '<div class="skeleton-table">' +
+            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '</div>';
+        } else {
+          html =
+            '<div class="skeleton skeleton-h1"></div>' +
+            '<div class="skeleton skeleton-p"></div>' +
+            '<div class="skeleton skeleton-p short"></div>' +
+            '<div class="skeleton skeleton-card"></div>' +
+            '<div class="skeleton skeleton-card"></div>';
+        }
+        sk.innerHTML = html;
+        sk.style.display = 'flex';
+      };
+
+      window.hideSkeleton = function () {
+        var sk = document.getElementById('skeletonContainer');
+        if (sk) sk.style.display = 'none';
+        var sc = document.getElementById('sceneContent');
+        if (sc) sc.classList.add('entered');
+      };
     </script>
     <script>
-        (function () {
-          var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
-          var FOCUSABLE =
-            'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+      (function () {
+        var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
+        var FOCUSABLE =
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-          function getCloseTrigger(el) {
-            var overlay = el.closest('[class*="overlay"]');
-            if (overlay) return overlay;
-            var closeAttr = el.getAttribute('data-cmd');
-            if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
-            var child = el.querySelector('[data-cmd*="close"]');
-            if (child) return child;
-            return el;
-          }
+        function getCloseTrigger(el) {
+          var overlay = el.closest('[class*="overlay"]');
+          if (overlay) return overlay;
+          var closeAttr = el.getAttribute('data-cmd');
+          if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
+          var child = el.querySelector('[data-cmd*="close"]');
+          if (child) return child;
+          return el;
+        }
 
-          function closeModal(modal) {
-            var trigger = getCloseTrigger(modal);
-            trigger.classList.remove('open');
-            if (trigger.style.display) trigger.style.display = 'none';
-            modal.style.display = '';
-            modal.classList.remove('open');
-          }
+        function closeModal(modal) {
+          var trigger = getCloseTrigger(modal);
+          trigger.classList.remove('open');
+          if (trigger.style.display) trigger.style.display = 'none';
+          modal.style.display = '';
+          modal.classList.remove('open');
+        }
 
-          document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-              var openModal = document.querySelector(
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            var openModal = document.querySelector(
+              MODAL_SELECTOR +
+                '.open, ' +
                 MODAL_SELECTOR +
-                  '.open, ' +
-                  MODAL_SELECTOR +
-                  '[style*="display: block"], ' +
-                  MODAL_SELECTOR +
-                  '[style*="display: flex"]',
-              );
-              if (openModal) {
+                '[style*="display: block"], ' +
+                MODAL_SELECTOR +
+                '[style*="display: flex"]',
+            );
+            if (openModal) {
+              e.preventDefault();
+              closeModal(openModal);
+            }
+          }
+          if (e.key === 'Tab') {
+            var modal = document.querySelector(
+              MODAL_SELECTOR +
+                '.open, ' +
+                MODAL_SELECTOR +
+                '[style*="display: block"], ' +
+                MODAL_SELECTOR +
+                '[style*="display: flex"]',
+            );
+            if (!modal) return;
+            var focusable = modal.querySelectorAll(FOCUSABLE);
+            if (focusable.length === 0) return;
+            var first = focusable[0],
+              last = focusable[focusable.length - 1];
+            if (e.shiftKey) {
+              if (document.activeElement === first) {
                 e.preventDefault();
-                closeModal(openModal);
+                last.focus();
+              }
+            } else {
+              if (document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
               }
             }
-            if (e.key === 'Tab') {
-              var modal = document.querySelector(
-                MODAL_SELECTOR +
-                  '.open, ' +
-                  MODAL_SELECTOR +
-                  '[style*="display: block"], ' +
-                  MODAL_SELECTOR +
-                  '[style*="display: flex"]',
-              );
-              if (!modal) return;
-              var focusable = modal.querySelectorAll(FOCUSABLE);
-              if (focusable.length === 0) return;
-              var first = focusable[0],
-                last = focusable[focusable.length - 1];
-              if (e.shiftKey) {
-                if (document.activeElement === first) {
-                  e.preventDefault();
-                  last.focus();
-                }
-              } else {
-                if (document.activeElement === last) {
-                  e.preventDefault();
-                  first.focus();
-                }
-              }
-            }
-          });
+          }
+        });
 
-          var observer = new MutationObserver(function () {
-            document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
-              var isVisible =
-                modal.classList.contains('open') ||
-                (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
-              if (isVisible && !modal.dataset.focused) {
-                modal.dataset.focused = '1';
-                var first = modal.querySelector(FOCUSABLE);
-                if (first)
-                  setTimeout(function () {
-                    first.focus();
-                  }, 100);
-              }
-              if (!isVisible) {
-                delete modal.dataset.focused;
-              }
-            });
+        var observer = new MutationObserver(function () {
+          document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
+            var isVisible =
+              modal.classList.contains('open') ||
+              (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
+            if (isVisible && !modal.dataset.focused) {
+              modal.dataset.focused = '1';
+              var first = modal.querySelector(FOCUSABLE);
+              if (first)
+                setTimeout(function () {
+                  first.focus();
+                }, 100);
+            }
+            if (!isVisible) {
+              delete modal.dataset.focused;
+            }
           });
-          observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
-        })();
+        });
+        observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+      })();
     </script>
   </body>
 </html>

@@ -18,7 +18,7 @@
       try {
         var v = localStorage.getItem(key);
         return v !== null ? v : fallback;
-      } catch (e) {
+      } catch (_e) {
         return fallback !== undefined ? fallback : null;
       }
     },
@@ -26,7 +26,7 @@
       try {
         localStorage.setItem(key, val);
         return true;
-      } catch (e) {
+      } catch (_e) {
         console.warn('[YAQ] localStorage 写入失败:', key);
         return false;
       }
@@ -34,7 +34,7 @@
     remove: function (key) {
       try {
         localStorage.removeItem(key);
-      } catch (e) {}
+      } catch (_e) {}
     },
   };
 
@@ -218,17 +218,7 @@
       '<span></span><span></span><span></span></span></div></div>'
     );
   }
-  function showThinking(text, callback) {
-    chatAppend(thinkingDots(text));
-    setTimeout(
-      function () {
-        var row = document.getElementById('thinkingRow');
-        if (row) row.remove();
-        if (callback) callback();
-      },
-      700 + Math.random() * 400,
-    );
-  }
+  // 保留函数签名以兼容全局引用，由 readable global 'showThinking' 覆盖
   // ─── 打字引擎 ──────────────────────────────────────────────
   var _typeId = 0;
   function doType(id, html, callback) {
@@ -340,11 +330,15 @@
       ct._autoScrollEnabled = true;
 
       // 用户滚动检测：上滚时禁用自动滚动（永不自动恢复）
-      ct.addEventListener('scroll', function () {
-        var threshold = 60;
-        var atBottom = ct.scrollTop + ct.clientHeight >= ct.scrollHeight - threshold;
-        if (!atBottom) ct._autoScrollEnabled = false;
-      }, { passive: true });
+      ct.addEventListener(
+        'scroll',
+        function () {
+          var threshold = 60;
+          var atBottom = ct.scrollTop + ct.clientHeight >= ct.scrollHeight - threshold;
+          if (!atBottom) ct._autoScrollEnabled = false;
+        },
+        { passive: true },
+      );
 
       var observer = new MutationObserver(function () {
         if (!ct._autoScrollEnabled) return;
@@ -645,7 +639,7 @@
     }
     if (items.length === 0) return '已记录，后续可随时调整。';
     var html = '已确认 ' + items.length + ' 个关注方向，将按以下节奏自动巡检：<br><br>';
-    for (var i = 0; i < items.length; i++) {
+    for (i = 0; i < items.length; i++) {
       html +=
         '• <strong>' +
         items[i].label +
@@ -778,63 +772,6 @@
   }
 
   // ═══ 完成 ══════════════════════════════════════════════════════════
-  var FEEDS = {
-    default: [
-      [
-        '08:30',
-        '已完成今日安全态势初始化检查',
-        '暂无重大新增风险，重大隐患闭环检查将在 10:00 自动运行。',
-        '每日态势 Agent',
-      ],
-      [
-        '09:00',
-        '已创建今日重大隐患闭环检查任务',
-        '系统将检查重大隐患整改进展、逾期情况和临时管控措施。',
-        '重大隐患 Agent',
-      ],
-    ],
-    major_hazard: [
-      [
-        '08:30',
-        '【优先】已完成重大隐患专项检查',
-        '重点检查 5 个未闭环重大隐患，其中 2 个已超期。',
-        '重大隐患 Agent（优先级提升）',
-      ],
-      [
-        '09:00',
-        '已创建重大隐患整改跟踪任务',
-        '今日重点跟踪：北苑商业综合体（超期 3 天）、云栖高层住宅（超期 1 天）。',
-        '小安',
-      ],
-    ],
-    special_task: [
-      [
-        '08:30',
-        '【优先】已加载专项行动进度数据',
-        '2 个专项行动存在滞后，物流片区完成率 63%。',
-        '专项行动 Agent（优先级提升）',
-      ],
-      [
-        '09:00',
-        '已创建专项滞后跟踪任务',
-        '重点跟踪：高层小区消防专项（完成率 42%）、危化品专项整治（完成率 71%）。',
-        '小安',
-      ],
-    ],
-    low_interrupt: [
-      ['08:30', '低打扰模式已启用', '普通完成只进入运行记录。今日巡检已在后台运行。', '小安'],
-      ['09:00', '今日首轮巡检已完成', '未发现需你确认的重大风险。如有异常我会主动提醒。', '每日态势 Agent'],
-    ],
-    meeting_material: [
-      [
-        '08:30',
-        '【增强】会前材料整理能力已就绪',
-        '会议议题整理、重大隐患摘要、发言提纲草稿均已就绪。',
-        '会前准备 Agent（优先级提升）',
-      ],
-      ['09:00', '已生成今日议题简报草稿', '包含 2 项需会议决策的事项。', '小安'],
-    ],
-  };
   function showDone() {
     var modeTitle = {
       default: '已生成默认管理心跳计划',
@@ -1670,7 +1607,10 @@
     if (inlineChips) inlineChips.remove();
 
     // 显示用户消息
-    sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>', true);
+    sceneAppend(
+      '<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>',
+      true,
+    );
 
     var input = document.getElementById('globalChatInput');
     if (input) input.value = '';
@@ -1762,7 +1702,10 @@
       // 用户消息：追加到末尾
       container.insertAdjacentHTML('beforeend', html);
       // 在底部加空白占位，确保页面可滚动
-      container.insertAdjacentHTML('beforeend', '<div class="scroll-spacer" style="height:80vh;pointer-events:none"></div>');
+      container.insertAdjacentHTML(
+        'beforeend',
+        '<div class="scroll-spacer" style="height:80vh;pointer-events:none"></div>',
+      );
       // 滚动到视口顶部，然后禁用自动滚动
       var sc = container.closest('.center');
       if (sc) sc._autoScrollEnabled = false;
@@ -1843,17 +1786,14 @@
       window.CardPrimitives.entityCard({
         name: '北苑商业综合体',
         desc: '消防通道堵塞',
-        meta: [
-          { text: '来源 日常巡查' },
-          { text: '逾期 3天', style: 'color:#dc2626;font-weight:600' },
-        ],
+        meta: [{ text: '来源 日常巡查' }, { text: '逾期 3天', style: 'color:#dc2626;font-weight:600' }],
         time: '06-10 → 06-22',
         footer: '企业主体责任问题为主',
         onclick: "openHazardDetail('北苑商业综合体')",
         title: '点击查看详情',
         variant: 'danger',
       }) +
-      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
         '<strong>初步研判：企业主体责任问题为主</strong><br>' +
         '政府端已多次提醒催办，手段基本到位但力度偏软；企业端反复堵塞、不配合整改，是超期的主要原因。建议：政府端升级为现场核查 + 企业约谈，如仍不配合则联合执法。<br><br>' +
         '<strong>政府端 — 监督跟进</strong><br>' +
@@ -1865,17 +1805,14 @@
       window.CardPrimitives.entityCard({
         name: '云栖高层住宅',
         desc: '自动消防设施失效',
-        meta: [
-          { text: '来源 日常巡查' },
-          { text: '逾期 1天', style: 'color:#dc2626;font-weight:600' },
-        ],
+        meta: [{ text: '来源 日常巡查' }, { text: '逾期 1天', style: 'color:#dc2626;font-weight:600' }],
         time: '06-20 → 06-22',
         footer: '政府跟进盲区 + 企业执行不力并存',
         onclick: "openHazardDetail('云栖高层住宅')",
         title: '点击查看详情',
         variant: 'danger',
       }) +
-      '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
         '<strong>初步研判：政府跟进盲区 + 企业执行不力并存</strong><br>' +
         '超期时间较短（1 天），但政府端对整改证据要求不明确、缺少专业检测手段是重要因素；企业端推进缓慢也需要问责。建议：政府端明确整改验收标准，要求企业提交阶段性修复计划并引入第三方检测。<br><br>' +
         '<strong>政府端 — 监督跟进</strong><br>' +
@@ -1885,22 +1822,27 @@
         '</div>',
     ];
     // 用思考→逐段打字的方式展现
-    sceneTypeResponse('正在分析超期未闭环原因…', sections, function () {
-      showGlobalQuickChip([{ label: '对任务的异常进行分析', text: '分析一下任务的异常情况' }]);
-      // 在分析内容底部追加"生成推进行动"按钮
-      var respBubble = document.querySelector('.c-row.agent:last-child .c-bubble');
-      if (respBubble) {
-        var btnHtml =
-          '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;text-align:center">' +
-          '<button onclick="generateOverdueActions()" style="background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
-          '<i data-lucide="clipboard-check" width="16" height="16" style="vertical-align:middle;margin-right:6px"></i> 生成推进行动' +
-          '</button>' +
-          '<div style="font-size:11px;color:#94a3b8;margin-top:6px">基于以上分析自动生成待确认行动，可前往审核确认</div>' +
-          '</div>';
-        respBubble.insertAdjacentHTML('beforeend', btnHtml);
-        refreshIcons();
-      }
-    }, true);
+    sceneTypeResponse(
+      '正在分析超期未闭环原因…',
+      sections,
+      function () {
+        showGlobalQuickChip([{ label: '对任务的异常进行分析', text: '分析一下任务的异常情况' }]);
+        // 在分析内容底部追加"生成推进行动"按钮
+        var respBubble = document.querySelector('.c-row.agent:last-child .c-bubble');
+        if (respBubble) {
+          var btnHtml =
+            '<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;text-align:center">' +
+            '<button onclick="generateOverdueActions()" style="background:#2563eb;color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s" onmouseover="this.style.background=\'#1d4ed8\'" onmouseout="this.style.background=\'#2563eb\'">' +
+            '<i data-lucide="clipboard-check" width="16" height="16" style="vertical-align:middle;margin-right:6px"></i> 生成推进行动' +
+            '</button>' +
+            '<div style="font-size:11px;color:#94a3b8;margin-top:6px">基于以上分析自动生成待确认行动，可前往审核确认</div>' +
+            '</div>';
+          respBubble.insertAdjacentHTML('beforeend', btnHtml);
+          refreshIcons();
+        }
+      },
+      true,
+    );
   }
 
   // ─── 生成超期未闭环推进行动 ──────────────────────────────
@@ -1928,10 +1870,7 @@
           timePct: 91,
           compPct: 42,
           color: '#dc2626',
-          stats: [
-            '覆盖 <strong>141</strong> 家',
-            '隐患 <strong>3</strong> 个 | 未闭环 <strong>0</strong>',
-          ],
+          stats: ['覆盖 <strong>141</strong> 家', '隐患 <strong>3</strong> 个 | 未闭环 <strong>0</strong>'],
         },
         time: '06-01 → 06-30',
         badge: '严重滞后 49pp',
@@ -1940,7 +1879,7 @@
         onclick: "openTaskDetail('2026年第二季度良渚片重大风险检查任务')",
         title: '点击查看详情',
       }) +
-      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：严重滞后，按当前速度无法按期完成</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：严重滞后，按当前速度无法按期完成</strong></div>',
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
         '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。' +
         '</div>',
@@ -1955,10 +1894,7 @@
           timePct: 75,
           compPct: 55,
           color: '#d97706',
-          stats: [
-            '覆盖 <strong>24</strong> 家',
-            '隐患 <strong>2</strong> 个 | 未闭环 <strong>1</strong>',
-          ],
+          stats: ['覆盖 <strong>24</strong> 家', '隐患 <strong>2</strong> 个 | 未闭环 <strong>1</strong>'],
         },
         time: '06-10 → 06-30',
         badge: '进度偏低',
@@ -1967,7 +1903,7 @@
         onclick: "openTaskDetail('片区隐患排查复查')",
         title: '点击查看详情',
       }) +
-      '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong></div>',
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
         '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。' +
         '</div>',
@@ -1976,13 +1912,18 @@
         '重大隐患复查为最优先事项，需在 2 个工作日内完成。其余 23 家按风险等级推进，预计可在月底前达成 90%+ 完成率。' +
         '</div>',
     ];
-    sceneTypeResponse('正在分析任务异常情况…', sections, function () {
-      showGlobalQuickChip([
-        { label: '最近的督办任务进展怎样', text: '最近的督办任务进展怎样' },
-        { label: '生成巡查报告', text: '帮我生成今天的巡查报告' },
-        { label: '我可以有哪些行动？', text: '我可以有哪些行动' },
-      ]);
-    }, true);
+    sceneTypeResponse(
+      '正在分析任务异常情况…',
+      sections,
+      function () {
+        showGlobalQuickChip([
+          { label: '最近的督办任务进展怎样', text: '最近的督办任务进展怎样' },
+          { label: '生成巡查报告', text: '帮我生成今天的巡查报告' },
+          { label: '我可以有哪些行动？', text: '我可以有哪些行动' },
+        ]);
+      },
+      true,
+    );
   }
 
   // ═══ 月报按业务组 + 多片区重构展示 ═════════════════════════
