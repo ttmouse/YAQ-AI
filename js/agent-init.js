@@ -1937,6 +1937,8 @@
         badge: '严重滞后 49pp',
         badgeColor: '#dc2626',
         badgeBg: '#fef2f2',
+        onclick: "openTaskDetail('2026年第二季度良渚片重大风险检查任务')",
+        title: '点击查看详情',
       }) +
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：严重滞后，按当前速度无法按期完成</strong></div>',
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
@@ -1962,6 +1964,8 @@
         badge: '进度偏低',
         badgeColor: '#d97706',
         badgeBg: '#fff7ed',
+        onclick: "openTaskDetail('片区隐患排查复查')",
+        title: '点击查看详情',
       }) +
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong></div>',
       '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
