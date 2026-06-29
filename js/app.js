@@ -782,13 +782,16 @@
         window.YAQ.showGlobalQuickChip(chips);
       }
 
-      // ─── 恢复滚动位置（同场景刷新时）或滚动到顶部（新场景） ──
+      // ─── 新场景不强制滚动，禁用自动滚动 ──
       requestAnimationFrame(function () {
         if (centerEl) {
-          if (sceneId === savedSceneId && savedScrollTop > 0) {
-            centerEl.scrollTop = savedScrollTop;
-          } else {
+          if (sceneId !== savedSceneId) {
+            // 新场景：默认置顶，禁用自动跟滚
+            centerEl._autoScrollEnabled = false;
             centerEl.scrollTop = 0;
+          } else if (savedScrollTop > 0) {
+            // 同场景刷新：恢复滚动位置
+            centerEl.scrollTop = savedScrollTop;
           }
         }
       });
@@ -832,9 +835,9 @@
         '<div class="ai-briefing">' +
         '<div class="ai-briefing-body">' +
         '<div class="ai-briefing-head">' +
-        '<span><b>' +
+        '<span>' +
         greeting +
-        '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+        '，站长。<br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
         '</div>' +
         '</div>';
     }
