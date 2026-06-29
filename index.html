@@ -1079,6 +1079,8 @@
 
         function restorePosition() {
           if (!centerEl) return;
+          // 渲染期间已禁用自动滚动，跳过位置恢复
+          if (centerEl._autoScrollEnabled === false) return;
           var scene = getSceneId();
           try {
             var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
