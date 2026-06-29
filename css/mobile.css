@@ -938,9 +938,11 @@
   /* 顶栏背景延伸至状态栏区域，与刘海/灵动岛视觉融合 */
   .top {
     padding-top: calc(env(safe-area-inset-top, 20px) + 4px) !important;
-    background: var(--surface, #ffffff);
+    background: transparent;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: none;
-    box-shadow: 0 0.5px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: none;
   }
 
   /* 全屏弹窗底部避开 Home Indicator */
