@@ -843,7 +843,7 @@
         '<div class="ai-briefing-head">' +
         '<span>' +
         greeting +
-        '，站长。<br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+        '，<strong>杨站长</strong>。<br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
         '</div>' +
         '</div>';
     }
