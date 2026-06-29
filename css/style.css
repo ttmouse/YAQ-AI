@@ -43,7 +43,9 @@
   z-index: 100;
   min-height: 46px;
   border-radius: 0;
-  background: var(--surface);
+  background: linear-gradient(to bottom, var(--surface) 60%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--fg);
   padding-left: 10px;
   padding-right: 10px;
@@ -53,7 +55,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 0 var(--border);
+  box-shadow: none;
   gap: 6px;
 }
 
