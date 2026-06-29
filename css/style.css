@@ -2715,6 +2715,7 @@
   border-radius: 50%;
   cursor: pointer;
   color: #64748b;
+  background: rgba(255,255,255,0.65);
   transition: background 0.15s;
 }
 @media (min-width: 769px) {
@@ -2744,7 +2745,7 @@
   border-radius: 8px;
   cursor: pointer;
   color: #64748b;
-  background: none;
+  background: rgba(255,255,255,0.65);
   border: none;
   transition: background 0.15s;
 }
@@ -7299,6 +7300,7 @@
   border-radius: 8px;
   cursor: pointer;
   color: #64748b;
+  background: rgba(255,255,255,0.65);
   transition: background 0.15s;
 }
 .notif-bell:hover {
