@@ -125,5 +125,109 @@
   --scene-pad-x-lg: 24px;
   --scene-pad-y: 22px;
   --scene-pad-bottom: 24px;
-  --chat-bar-bottom: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Dark Mode — 包容性设计原则
+   暗色模式降低强光环境下的视觉疲劳，
+   同时提升 OLED 屏幕的能效和沉浸感。
+   ═══════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* surfaces */
+    --bg: oklch(16% 0.008 250);
+    --surface: oklch(21% 0.01 250);
+    --fg: oklch(92% 0.006 250);
+    --muted: oklch(58% 0.014 250);
+    --border: oklch(28% 0.012 250);
+    --border-light: oklch(24% 0.008 250);
+
+    /* accent — 亮度提高保持对比度 */
+    --accent: oklch(64% 0.18 260);
+    --accent-hover: oklch(68% 0.19 260);
+    --accent-soft: color-mix(in oklch, var(--accent) 15%, transparent);
+
+    /* semantic — 暗色背景提高纯度维持辨识度 */
+    --red: oklch(62% 0.22 28);
+    --red-soft: color-mix(in oklch, var(--red) 18%, transparent);
+    --orange: oklch(70% 0.19 65);
+    --orange-soft: color-mix(in oklch, var(--orange) 18%, transparent);
+    --yellow: oklch(78% 0.16 90);
+    --yellow-soft: color-mix(in oklch, var(--yellow) 18%, transparent);
+    --green: oklch(66% 0.16 148);
+    --green-soft: color-mix(in oklch, var(--green) 18%, transparent);
+    --blue: oklch(64% 0.16 245);
+    --blue-soft: color-mix(in oklch, var(--blue) 18%, transparent);
+
+    /* surfaces */
+    --fg-soft: color-mix(in oklch, var(--fg) 8%, transparent);
+    --fg-muted: color-mix(in oklch, var(--fg) 15%, transparent);
+    --hover-bg: oklch(26% 0.012 250);
+    --active-bg: oklch(30% 0.014 250);
+    --selected-bg: color-mix(in oklch, var(--accent) 12%, transparent);
+    --selected-border: color-mix(in oklch, var(--accent) 30%, var(--border));
+
+    /* shadows — 暗色模式阴影改用发光效果 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.35);
+    --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--border);
+  }
+
+  /* 暗色背景的高亮骨架屏 */
+  .skeleton {
+    --skeleton-bg: oklch(26% 0.012 250);
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.06) 60%,
+      transparent 100%
+    );
+  }
+}
+
+/* 手动暗色模式切换（data-theme 属性） */
+[data-theme='dark'] {
+  --bg: oklch(16% 0.008 250);
+  --surface: oklch(21% 0.01 250);
+  --fg: oklch(92% 0.006 250);
+  --muted: oklch(58% 0.014 250);
+  --border: oklch(28% 0.012 250);
+  --border-light: oklch(24% 0.008 250);
+  --accent: oklch(64% 0.18 260);
+  --accent-hover: oklch(68% 0.19 260);
+  --accent-soft: color-mix(in oklch, var(--accent) 15%, transparent);
+  --red: oklch(62% 0.22 28);
+  --red-soft: color-mix(in oklch, var(--red) 18%, transparent);
+  --orange: oklch(70% 0.19 65);
+  --orange-soft: color-mix(in oklch, var(--orange) 18%, transparent);
+  --yellow: oklch(78% 0.16 90);
+  --yellow-soft: color-mix(in oklch, var(--yellow) 18%, transparent);
+  --green: oklch(66% 0.16 148);
+  --green-soft: color-mix(in oklch, var(--green) 18%, transparent);
+  --blue: oklch(64% 0.16 245);
+  --blue-soft: color-mix(in oklch, var(--blue) 18%, transparent);
+  --fg-soft: color-mix(in oklch, var(--fg) 8%, transparent);
+  --fg-muted: color-mix(in oklch, var(--fg) 15%, transparent);
+  --hover-bg: oklch(26% 0.012 250);
+  --active-bg: oklch(30% 0.014 250);
+  --selected-bg: color-mix(in oklch, var(--accent) 12%, transparent);
+  --selected-border: color-mix(in oklch, var(--accent) 30%, var(--border));
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--border);
+}
+
+/* 暗色模式增强对比度 */
+@media (prefers-color-scheme: dark) and (prefers-contrast: more) {
+  :root {
+    --border: oklch(40% 0.015 250) !important;
+    --muted: oklch(65% 0.015 250) !important;
+  }
 }

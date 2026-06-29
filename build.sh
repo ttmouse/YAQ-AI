@@ -47,12 +47,12 @@ npm run build:html
 # 更新所有 dist/*.html 的 CSS 引用（12 个文件 → 2 个）
 echo "🔗 更新 HTML CSS 引用..."
 for html in dist/*.html; do
-  # 删除所有 <link rel="stylesheet" href="css/..."> 行
+  # 删除所有 <link rel="stylesheet" href="css/..."> 或 ... /> 行
   if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i '' '/<link rel="stylesheet" href="css\/.*">/d' "$html"
+    sed -i '' '\|<link rel="stylesheet" href="css/|d' "$html"
     sed -i '' 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n  <link rel="stylesheet" href="css/mobile-additions.css">\n</head>|' "$html"
   else
-    sed -i '/<link rel="stylesheet" href="css\/.*">/d' "$html"
+    sed -i '\|<link rel="stylesheet" href="css/|d' "$html"
     sed -i 's|</head>|  <link rel="stylesheet" href="css/app.css">\n  <link rel="stylesheet" href="css/mobile.css">\n  <link rel="stylesheet" href="css/mobile-additions.css">\n</head>|' "$html"
   fi
 done
