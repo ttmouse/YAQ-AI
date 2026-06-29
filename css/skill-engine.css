@@ -117,41 +117,17 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
-  user-select: none;
-}
-.process-collapsed:hover .process-collapsed-text {
-  color: #6366f1;
-}
-.process-collapsed-icon {
-  font-size: 14px;
 }
 .process-collapsed-text {
   font-size: 13px;
   color: #64748b;
   font-weight: 500;
-  transition: color 0.15s;
 }
 .process-collapsed-time {
   font-size: 11px;
   color: #94a3b8;
   font-weight: 400;
   white-space: nowrap;
-}
-.process-collapsed-toggle {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-left: auto;
-  font-weight: 500;
-}
-
-/* 展开状态 */
-.c-row.process.expanded .process-bubble {
-  background: #f8fafc !important;
-  cursor: default;
-}
-.c-row.process.expanded .process-collapsed-toggle {
-  color: #6366f1;
 }
 .c-row.process.expanded .process-chain {
   flex-direction: column;

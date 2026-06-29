@@ -171,6 +171,45 @@
   };
 
   /* ═══════════════════════════════════════════════════════════════════════
+     9. EntityCard — 实体卡片（隐患/任务复用）
+     参数: { name, desc, meta:[{text, style}], badge, badgeColor, badgeBg,
+            footer, onclick, variant('danger'|'warning'|'') }
+     ═══════════════════════════════════════════════════════════════════════ */
+  P.entityCard = function (opts) {
+    var variant = opts.variant || '';
+    var html = '<div class="hazard-card' + (variant ? ' ' + variant : '') + '"';
+    html += ' style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0;cursor:pointer"';
+    if (opts.onclick) html += ' onclick="' + opts.onclick + '"';
+    if (opts.title) html += ' title="' + esc(opts.title) + '"';
+    html += '>';
+    html += '<div class="hc-main has-ai" style="padding:12px 12px 8px">';
+    html += '<div class="hc-head"><span class="hc-name">' + esc(opts.name) + '</span></div>';
+    if (opts.desc) html += '<div class="hc-desc">' + esc(opts.desc) + '</div>';
+    if (opts.meta && opts.meta.length) {
+      html += '<div class="hc-meta">';
+      for (var i = 0; i < opts.meta.length; i++) {
+        html += '<span' + (opts.meta[i].style ? ' style="' + opts.meta[i].style + '"' : '') + '>' + opts.meta[i].text + '</span>';
+      }
+      html += '</div>';
+    }
+    if (opts.badge) {
+      html += '<div style="font-size:11px;font-weight:600;color:' + (opts.badgeColor || '#dc2626') +
+        ';background:' + (opts.badgeBg || '#fef2f2') +
+        ';display:inline-block;padding:1px 8px;border-radius:4px">' + esc(opts.badge) + '</div>';
+    }
+    if (opts.time) html += '<div class="hc-time">' + esc(opts.time) + '</div>';
+    html += '</div>';
+    if (opts.footer) {
+      html += '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#7c3aed;flex-shrink:0"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>' +
+        '<span>' + esc(opts.footer) + '</span>' +
+        '</div>';
+    }
+    html += '</div>';
+    return html;
+  };
+
+  /* ═══════════════════════════════════════════════════════════════════════
      HTML 转义
      ═══════════════════════════════════════════════════════════════════════ */
   function esc(s) {

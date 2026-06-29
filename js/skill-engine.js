@@ -103,8 +103,8 @@
 
       var self = this; // ★ 顶层捕获 UnifiedChat 引用
       var opts = options || {};
-      var stepInterval = opts.stepInterval || 500;
-      var detailInterval = opts.detailInterval || 350;
+      var stepInterval = opts.stepInterval || 1000;
+      var detailInterval = opts.detailInterval || 800;
       var displayMode = opts.displayMode || 'collapse'; // 'collapse' 或 'replace'
 
       var processId = 'process_' + Date.now();
@@ -233,12 +233,9 @@
               : '';
 
             var collapsedHtml =
-              '<div class="process-collapsed" onclick="YAQ.toggleProcess(this)" data-target="' + processId + '"' +
-              ' data-chain-html="' + encodeURIComponent(chainHtml) + '"' +
-              ' data-detail-html="' + encodeURIComponent(detailHtml) + '">' +
+              '<div class="process-collapsed">' +
               '<span class="process-collapsed-text">' + escapeHtml(summary.text) + '</span>' +
               '<span class="process-collapsed-time">' + ((Date.now() - startTime) / 1000).toFixed(1) + 's</span>' +
-              '<span class="process-collapsed-toggle">查看详情</span>' +
               '</div>';
             chainContainer.innerHTML = collapsedHtml;
             if (detailContainer) detailContainer.style.display = 'none';
@@ -1017,18 +1014,19 @@
           '当前共有 2 项重大隐患超期未整改。以下从政府端（监督跟进）和企业端（主体责任）两个维度逐项研判责任归属。' +
           '</div>',
         // 卡片1 + 分析
-        '<div class="hazard-card danger" style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0;cursor:pointer" onclick="openHazardDetail(\'北苑商业综合体\')" title="点击查看详情">' +
-          '<div class="hc-main has-ai" style="padding:12px 12px 8px">' +
-          '<div class="hc-head"><span class="hc-name">北苑商业综合体</span></div>' +
-          '<div class="hc-desc">消防通道堵塞</div>' +
-          '<div class="hc-meta"><span>来源 日常巡查</span><span style="color:#dc2626;font-weight:600">逾期 3天</span></div>' +
-          '<div class="hc-time">06-10 → 06-22</div>' +
-          '</div>' +
-          '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
-          '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#7c3aed;flex-shrink:0"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>' +
-          '<span>企业主体责任问题为主</span>' +
-          '</div>' +
-          '</div>' +
+        C.entityCard({
+          name: '北苑商业综合体',
+          desc: '消防通道堵塞',
+          meta: [
+            { text: '来源 日常巡查' },
+            { text: '逾期 3天', style: 'color:#dc2626;font-weight:600' },
+          ],
+          time: '06-10 → 06-22',
+          footer: '企业主体责任问题为主',
+          onclick: "openHazardDetail('北苑商业综合体')",
+          title: '点击查看详情',
+          variant: 'danger',
+        }) +
         '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
           '<strong>初步研判：企业主体责任问题为主</strong><br>' +
           '政府端已多次提醒催办，手段基本到位但力度偏软；企业端反复堵塞、不配合整改，是超期的主要原因。建议：政府端升级为现场核查 + 企业约谈，如仍不配合则联合执法。<br><br>' +
@@ -1038,18 +1036,19 @@
           '反复堵塞：同一问题月内反复 3 次，说明企业未建立长效管理机制，主体责任落实不到位。整改配合度低：超期 3 天仍未提交整改方案，临时管控措施也未确认，企业配合意愿弱。该主体属于屡教不改型，常规督促已失效，需升级为企业约谈或联合执法。' +
           '</div>',
         // 卡片2 + 分析
-        '<div class="hazard-card danger" style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0;cursor:pointer" onclick="openHazardDetail(\'云栖高层住宅\')" title="点击查看详情">' +
-          '<div class="hc-main has-ai" style="padding:12px 12px 8px">' +
-          '<div class="hc-head"><span class="hc-name">云栖高层住宅</span></div>' +
-          '<div class="hc-desc">自动消防设施失效</div>' +
-          '<div class="hc-meta"><span>来源 日常巡查</span><span style="color:#dc2626;font-weight:600">逾期 1天</span></div>' +
-          '<div class="hc-time">06-20 → 06-22</div>' +
-          '</div>' +
-          '<div style="font-size:12px;color:#475569;padding:8px 12px 10px;display:flex;align-items:center;gap:4px;line-height:1.4;border-radius:0 0 12px 12px">' +
-          '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#7c3aed;flex-shrink:0"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>' +
-          '<span>政府跟进盲区 + 企业执行不力并存</span>' +
-          '</div>' +
-          '</div>' +
+        C.entityCard({
+          name: '云栖高层住宅',
+          desc: '自动消防设施失效',
+          meta: [
+            { text: '来源 日常巡查' },
+            { text: '逾期 1天', style: 'color:#dc2626;font-weight:600' },
+          ],
+          time: '06-20 → 06-22',
+          footer: '政府跟进盲区 + 企业执行不力并存',
+          onclick: "openHazardDetail('云栖高层住宅')",
+          title: '点击查看详情',
+          variant: 'danger',
+        }) +
         '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
           '<strong>初步研判：政府跟进盲区 + 企业执行不力并存</strong><br>' +
           '超期时间较短（1 天），但政府端对整改证据要求不明确、缺少专业检测手段是重要因素；企业端推进缓慢也需要问责。建议：政府端明确整改验收标准，要求企业提交阶段性修复计划并引入第三方检测。<br><br>' +
