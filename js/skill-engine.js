@@ -713,7 +713,7 @@
     id: 'hazard-analysis',
     name: '隐患分析',
     description: '查看重大隐患、超期情况、整改跟踪',
-    keywords: ['隐患', '风险', '安全', '闭环', '超期', '整改'],
+    keywords: ['隐患', '风险', '安全', '整改', '异常情况', '任务异常'],
     priority: 20,
     sceneId: 'hazard-report',
     demoSteps: {
@@ -814,7 +814,7 @@
     id: 'monthly-report',
     name: '月报生成',
     description: '生成月度报告草稿',
-    keywords: ['月报', '月度报告', '月报告', '月度'],
+    keywords: ['月报', '月度报告', '月报告', '月度', '业务组', '片区展示'],
     priority: 22,
     sceneId: 'monthly-report',
     demoSteps: {
@@ -868,7 +868,7 @@
     id: 'pending-actions',
     name: '行动建议',
     description: '查看待确认行动项、待办事项',
-    keywords: ['行动', '建议', '待确认', '待办', '行动项'],
+    keywords: ['行动', '建议', '待确认', '待办', '行动项', '批量确认', '超期项', '未处理'],
     priority: 15,
     sceneId: 'pending-actions',
     demoSteps: {
@@ -921,7 +921,7 @@
     id: 'overdue-analysis',
     name: '超期原因分析',
     description: '从政府端和企业端两个维度分析超期未闭环原因',
-    keywords: ['超期未闭环原因', '闭环未关闭', '超期未整改', '为什么没闭环'],
+    keywords: ['超期未闭环原因', '闭环未关闭', '超期未整改', '为什么没闭环', '超期原因'],
     priority: 25,
     demoSteps: {
       thinkChain: [
