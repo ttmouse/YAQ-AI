@@ -271,6 +271,7 @@
 }
 .c-row.user {
   justify-content: flex-end;
+  margin-top: 30px;
 }
 .c-row.thinking .c-bubble {
   color: #64748b;
