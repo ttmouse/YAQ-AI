@@ -1840,7 +1840,7 @@
         '当前共有 2 项重大隐患超期未整改。以下从政府端（监督跟进）和企业端（主体责任）两个维度逐项研判责任归属。' +
         '</div>',
       // 卡片1 + 分析
-      '<div class="hazard-card danger" style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0">' +
+      '<div class="hazard-card danger" style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0;cursor:pointer" onclick="openHazardDetail(\'北苑商业综合体\')" title="点击查看详情">' +
         '<div class="hc-main has-ai" style="padding:12px 12px 8px">' +
         '<div class="hc-head"><span class="hc-name">北苑商业综合体</span></div>' +
         '<div class="hc-desc">消防通道堵塞</div>' +
@@ -1861,7 +1861,7 @@
         '反复堵塞：同一问题月内反复 3 次，说明企业未建立长效管理机制，主体责任落实不到位。整改配合度低：超期 3 天仍未提交整改方案，临时管控措施也未确认，企业配合意愿弱。该主体属于屡教不改型，常规督促已失效，需升级为企业约谈或联合执法。' +
         '</div>',
       // 卡片2 + 分析
-      '<div class="hazard-card danger" style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0">' +
+      '<div class="hazard-card danger" style="width:240px;min-width:220px;margin-bottom:12px;border-color:#e2e8f0;cursor:pointer" onclick="openHazardDetail(\'云栖高层住宅\')" title="点击查看详情">' +
         '<div class="hc-main has-ai" style="padding:12px 12px 8px">' +
         '<div class="hc-head"><span class="hc-name">云栖高层住宅</span></div>' +
         '<div class="hc-desc">自动消防设施失效</div>' +
