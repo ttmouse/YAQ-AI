@@ -782,7 +782,7 @@
     id: 'hazard-analysis',
     name: '隐患分析',
     description: '查看重大隐患、超期情况、整改跟踪',
-    keywords: ['隐患', '风险', '安全', '整改', '异常情况', '任务异常'],
+    keywords: ['隐患', '风险', '安全', '整改'],
     priority: 20,
     sceneId: 'hazard-report',
     demoSteps: {
@@ -1063,6 +1063,72 @@
     quickChips: [
       { label: '生成推进行动', text: '生成推进行动' },
       { label: '分析任务异常', text: '分析一下任务的异常情况' },
+    ],
+  });
+
+  // ── 任务异常分析技能 ──
+  SkillRouter.register({
+    id: 'task-anomaly',
+    name: '任务异常分析',
+    description: '分析任务进度异常、识别滞后风险',
+    keywords: ['任务异常', '异常情况', '任务进度', '任务滞后'],
+    priority: 24,
+    noCard: true,
+    demoSteps: {
+      thinkChain: [
+        { text: '正在获取任务执行数据…' },
+        { text: '正在比对任务进度与时间线' },
+        { text: '正在识别异常滞后项' },
+        { text: '正在生成异常分析报告' },
+      ],
+      detailSteps: [
+        '正在加载任务清单和进度数据…',
+        '正在逐项比对完成率与时间进度…',
+        '正在评估滞后风险和影响…',
+        '正在生成应对建议…',
+      ],
+    },
+    generate: function (text, context) {
+      return [
+        // 标题
+        '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:14px">任务异常分析</div>',
+        // 概述
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
+          '当前有 2 项任务存在异常，需重点关注。' +
+          '</div>',
+        // 卡片1 + 分析
+        '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px;width:240px;min-width:220px">' +
+          '<div style="font-weight:700;font-size:14px;color:#1e293b;margin-bottom:4px">2026年第二季度良渚片重大风险检查任务</div>' +
+          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">' +
+          '责任人：范嘉杰（企业安全组）| 区域：良渚片</div>' +
+          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">覆盖 141 家，完成率 42%，时间进度已达 91%</div>' +
+          '<div style="font-size:11px;font-weight:600;color:#dc2626;background:#fef2f2;display:inline-block;padding:1px 8px;border-radius:4px">严重滞后 49pp</div>' +
+          '</div>' +
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
+          '<strong>研判：严重滞后，按当前速度无法按期完成</strong><br>' +
+          '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。<br><br>' +
+          '<strong>数据</strong><br>' +
+          '完成率 42% vs 时间进度 91%，差距 49 个百分点。按当前日均检查量推算，至少还需 28 个工作日，远超剩余时间窗口。' +
+          '</div>',
+        // 卡片2 + 分析
+        '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px;margin-bottom:12px;width:240px;min-width:220px">' +
+          '<div style="font-weight:700;font-size:14px;color:#1e293b;margin-bottom:4px">片区隐患排查复查</div>' +
+          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">' +
+          '责任人：张毅（消防安全组）| 区域：全片区</div>' +
+          '<div style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:6px">覆盖 24 家，完成率 55%，含 1 项重大隐患</div>' +
+          '<div style="font-size:11px;font-weight:600;color:#d97706;background:#fff7ed;display:inline-block;padding:1px 8px;border-radius:4px">进度偏低</div>' +
+          '</div>' +
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
+          '<strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong><br>' +
+          '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。<br><br>' +
+          '<strong>数据</strong><br>' +
+          '重大隐患复查为最优先事项，需在 2 个工作日内完成。其余 23 家按风险等级推进，预计可在月底前达成 90%+ 完成率。' +
+          '</div>',
+      ];
+    },
+    quickChips: [
+      { label: '最近的督办任务进展怎样', text: '最近的督办任务进展怎样' },
+      { label: '生成巡查报告', text: '帮我生成今天的巡查报告' },
     ],
   });
 
