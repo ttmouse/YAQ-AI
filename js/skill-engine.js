@@ -1011,7 +1011,7 @@
         // 标题
         '<div style="font-size:15px;font-weight:700;color:#1e293b;margin-bottom:10px">超期未闭环原因分析</div>',
         // 概述
-        '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
+        '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:16px">' +
           '当前共有 <strong style="color:#dc2626">2 项</strong>重大隐患超期未整改。以下从 <strong>政府端（监督跟进）</strong>和 <strong>企业端（主体责任）</strong>两个维度逐项研判责任归属。' +
           '</div>',
         // 第1项
