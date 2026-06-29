@@ -287,10 +287,10 @@
   }
 
   .meta-mobile .topbar-search {
-    min-width: 44px;
-    min-height: 44px;
-    width: 44px;
-    height: 44px;
+    min-width: 36px;
+    min-height: 36px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -306,10 +306,10 @@
   }
 
   .mobile-plus-btn {
-    min-width: 44px;
-    min-height: 44px;
-    width: 44px;
-    height: 44px;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
