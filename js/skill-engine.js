@@ -287,15 +287,14 @@
       // 逐段追加（带延时，模拟生成效果）
       var idx = 0;
       var self = this;
+      var delay = opts.stream ? 120 : 300;
       // 2秒后自动释放渲染锁（防止意外卡死）
-      var renderLockTimer = setTimeout(function () { self._renderingContent = false; }, 2000);
+      var renderLockTimer = setTimeout(function () { self._renderingContent = false; }, 8000);
 
       function appendNext() {
         if (idx >= sections.length) {
-          // 刷新图标
           if (window.refreshIcons) window.refreshIcons(el);
           self._scrollToBottom();
-          // 内容完全渲染完成后，清除锁
           clearTimeout(renderLockTimer);
           self._renderingContent = false;
           if (callback) callback();
@@ -304,7 +303,7 @@
         el.insertAdjacentHTML('beforeend', sections[idx]);
         self._scrollToBottom();
         idx++;
-        setTimeout(appendNext, 200 + Math.random() * 150);
+        setTimeout(appendNext, delay);
       }
 
       appendNext();
@@ -350,7 +349,7 @@
                   self.appendAgentMessage(result);
                   done();
                 } else if (Array.isArray(result)) {
-                  self.renderStructuredReply(result, done, { noCard: skill.noCard });
+                  self.renderStructuredReply(result, done, { noCard: skill.noCard, stream: skill.stream });
                 }
               } catch (e) {
                 console.error('[UnifiedChat] 技能生成失败:', e);
@@ -366,7 +365,7 @@
         // 没有思考过程，直接展示结果
         if (skill.generate) {
           var sections = skill.generate(text, { messages: self.messages });
-          self.renderStructuredReply(sections, null, { noCard: skill.noCard });
+          self.renderStructuredReply(sections, null, { noCard: skill.noCard, stream: skill.stream });
         }
       }
     },
@@ -990,6 +989,7 @@
     keywords: ['超期未闭环原因', '闭环未关闭', '超期未整改', '为什么没闭环', '超期原因'],
     priority: 25,
     noCard: true,
+    stream: true,
     demoSteps: {
       thinkChain: [
         { text: '正在获取超期隐患数据…' },
@@ -1014,7 +1014,7 @@
         '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
           '当前共有 2 项重大隐患超期未整改。以下从政府端（监督跟进）和企业端（主体责任）两个维度逐项研判责任归属。' +
           '</div>',
-        // 卡片1 + 分析
+        // 卡片1
         C.entityCard({
           name: '北苑商业综合体',
           desc: '消防通道堵塞',
@@ -1027,16 +1027,20 @@
           onclick: "openHazardDetail('北苑商业综合体')",
           title: '点击查看详情',
           variant: 'danger',
-        }) +
+        }),
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>初步研判：企业主体责任问题为主</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
+          '政府端已多次提醒催办，手段基本到位但力度偏软；企业端反复堵塞、不配合整改，是超期的主要原因。建议：政府端升级为现场核查 + 企业约谈，如仍不配合则联合执法。' +
+          '</div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>政府端 — 监督跟进</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:6px">' +
+          '已反复提醒：该主体消防通道堵塞本月已发现 3 次，王志安已多次电话督促。已发督办，超期 3 天系统已自动发起督办流程。存在问题：目前仅停留在电话督促层面，未升级实质性措施（如现场核查、临时管控、停业整顿），跟进力度偏软。' +
+          '</div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>企业端 — 主体责任</strong></div>',
         '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
-          '<strong>初步研判：企业主体责任问题为主</strong><br>' +
-          '政府端已多次提醒催办，手段基本到位但力度偏软；企业端反复堵塞、不配合整改，是超期的主要原因。建议：政府端升级为现场核查 + 企业约谈，如仍不配合则联合执法。<br><br>' +
-          '<strong>政府端 — 监督跟进</strong><br>' +
-          '已反复提醒：该主体消防通道堵塞本月已发现 3 次，王志安已多次电话督促。已发督办，超期 3 天系统已自动发起督办流程。存在问题：目前仅停留在电话督促层面，未升级实质性措施（如现场核查、临时管控、停业整顿），跟进力度偏软。<br><br>' +
-          '<strong>企业端 — 主体责任</strong><br>' +
           '反复堵塞：同一问题月内反复 3 次，说明企业未建立长效管理机制，主体责任落实不到位。整改配合度低：超期 3 天仍未提交整改方案，临时管控措施也未确认，企业配合意愿弱。该主体属于屡教不改型，常规督促已失效，需升级为企业约谈或联合执法。' +
           '</div>',
-        // 卡片2 + 分析
+        // 卡片2
         C.entityCard({
           name: '云栖高层住宅',
           desc: '自动消防设施失效',
@@ -1049,13 +1053,17 @@
           onclick: "openHazardDetail('云栖高层住宅')",
           title: '点击查看详情',
           variant: 'danger',
-        }) +
+        }),
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>初步研判：政府跟进盲区 + 企业执行不力并存</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
+          '超期时间较短（1 天），但政府端对整改证据要求不明确、缺少专业检测手段是重要因素；企业端推进缓慢也需要问责。建议：政府端明确整改验收标准，要求企业提交阶段性修复计划并引入第三方检测。' +
+          '</div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>政府端 — 监督跟进</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:6px">' +
+          '已发整改通知：超期 1 天，李明已跟进并下发整改要求。跟进存在盲区：目前仅收到企业口头反馈，未见书面整改方案或修复进度证明，整改证据链未闭环，政府端未对证据完整性提出明确要求。缺少专业支撑：高层消防设施修复涉及专业工程验收，政府端未引入第三方检测机构介入评估。' +
+          '</div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>企业端 — 主体责任</strong></div>',
         '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
-          '<strong>初步研判：政府跟进盲区 + 企业执行不力并存</strong><br>' +
-          '超期时间较短（1 天），但政府端对整改证据要求不明确、缺少专业检测手段是重要因素；企业端推进缓慢也需要问责。建议：政府端明确整改验收标准，要求企业提交阶段性修复计划并引入第三方检测。<br><br>' +
-          '<strong>政府端 — 监督跟进</strong><br>' +
-          '已发整改通知：超期 1 天，李明已跟进并下发整改要求。跟进存在盲区：目前仅收到企业口头反馈，未见书面整改方案或修复进度证明，整改证据链未闭环，政府端未对证据完整性提出明确要求。缺少专业支撑：高层消防设施修复涉及专业工程验收，政府端未引入第三方检测机构介入评估。<br><br>' +
-          '<strong>企业端 — 主体责任</strong><br>' +
           '整改推进慢：超期 1 天但未见实质性修复进展，企业未主动报告困难和进度。修复能力存疑：18-25 层消防设施全面失效，修复工程量大，企业是否已联系专业消防工程公司未可知。企业配合度一般：有整改意愿但行动迟缓，缺乏紧迫感。' +
           '</div>',
       ];
@@ -1074,6 +1082,7 @@
     keywords: ['任务异常', '异常情况', '任务进度', '任务滞后'],
     priority: 24,
     noCard: true,
+    stream: true,
     demoSteps: {
       thinkChain: [
         { text: '正在获取任务执行数据…' },
@@ -1097,33 +1106,36 @@
         '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
           '当前有 2 项任务存在异常，需重点关注。' +
           '</div>',
-        // 卡片1 + 分析
+        // 卡片1
         C.entityCard({
           name: '2026年第二季度良渚片重大风险检查任务',
           rawDesc: '责任人：范嘉杰（企业安全组）| 区域：良渚片<br>覆盖 141 家，完成率 42%，时间进度已达 91%',
           badge: '严重滞后 49pp',
           badgeColor: '#dc2626',
           badgeBg: '#fef2f2',
-        }) +
+        }),
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：严重滞后，按当前速度无法按期完成</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
+          '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。' +
+          '</div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>数据</strong></div>',
         '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:16px">' +
-          '<strong>研判：严重滞后，按当前速度无法按期完成</strong><br>' +
-          '二季度即将结束，剩余 141 家中的 82 家尚未检查，完成率远低于时间进度。建议立即调整资源配置、增加检查频次，或申请延期并制定追赶计划。<br><br>' +
-          '<strong>数据</strong><br>' +
           '完成率 42% vs 时间进度 91%，差距 49 个百分点。按当前日均检查量推算，至少还需 28 个工作日，远超剩余时间窗口。' +
           '</div>',
-        // 卡片2 + 分析
-        // 卡片2 + 分析
+        // 卡片2
         C.entityCard({
           name: '片区隐患排查复查',
           rawDesc: '责任人：张毅（消防安全组）| 区域：全片区<br>覆盖 24 家，完成率 55%，含 1 项重大隐患',
           badge: '进度偏低',
           badgeColor: '#d97706',
           badgeBg: '#fff7ed',
-        }) +
+        }),
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong></div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px">' +
+          '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。' +
+          '</div>',
+        '<div style="font-size:14px;color:#1e293b;line-height:1.8;margin-bottom:4px"><strong>数据</strong></div>',
         '<div style="font-size:14px;color:#1e293b;line-height:1.8">' +
-          '<strong>研判：进度偏慢但风险可控，优先处理重大隐患</strong><br>' +
-          '完成率 55%，距月底尚有时间但需加快节奏。含 1 项重大隐患待复查，建议优先完成重大隐患复查，其余任务按风险等级排序推进。<br><br>' +
-          '<strong>数据</strong><br>' +
           '重大隐患复查为最优先事项，需在 2 个工作日内完成。其余 23 家按风险等级推进，预计可在月底前达成 90%+ 完成率。' +
           '</div>',
       ];
