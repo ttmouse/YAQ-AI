@@ -843,7 +843,7 @@
         '<div class="ai-briefing-head">' +
         '<span>' +
         greeting +
-        '。<span class="ai-briefing-desc">截止9:30 , 小安有以下重要信息汇报</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+        '<span class="ai-briefing-desc">截止9:30 , 小安有以下重要信息汇报</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
         '</div>' +
         '</div>';
     }
