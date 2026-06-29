@@ -510,6 +510,9 @@
         self._autoScrollPaused = true;
         var sc = self.container && self.container.closest('.center');
         if (sc) sc._autoScrollEnabled = false;
+        // 移除快捷芯片
+        var chipsRow = document.querySelector('.quick-chips-row, .qc-chip-wrap');
+        if (chipsRow) chipsRow.remove();
         var text = input.value.trim();
         self.handleUserInput(text);
         self._scrollUserToTop();
