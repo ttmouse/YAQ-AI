@@ -36,8 +36,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="小安工作台" />
-    <meta name="theme-color" content="#6366f1" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e2e" />
+    <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
+
     <meta name="color-scheme" content="light dark" />
     <!-- iOS 所有尺寸图标 -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -111,8 +112,19 @@
     <link rel="stylesheet" href="css/mobile-additions.css" />
     <link rel="stylesheet" href="css/utilities.css" />
     <link rel="stylesheet" href="css/inspection.css" />
+    <!-- ═══ 关键路径内联样式 — 防止加载过程中的背景闪白 ═══════ -->
+    <style>
+      html {
+        background: #f8f9fc;
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          background: #23232e;
+        }
+      }
+    </style>
   </head>
-  <body style="background: #f8f9fc">
+  <body>
     <!-- ═══ 密码保护浮层 ═══════════════════════════════════════════ -->
     <div class="pwd-overlay" id="pwdOverlay">
       <div class="pwd-modal">
@@ -310,6 +322,32 @@
           </div>
         </div>
       </div>
+
+      <!-- ═══ 移动端底部导航栏（PWA 独立模式）═══════════════════════ -->
+      <!-- 设计原则：减法优先 — 底部 tab ≤ 5 个；接近性 — 图标+标签；
+           包容性 — ≥44px 触控目标 -->
+      <nav class="mb-bottom-nav" id="mbBottomNav" role="tablist" aria-label="主要导航" style="display: none !important">
+        <button class="mb-nav-item active" data-scene="dashboard" role="tab" aria-selected="true" data-haptic="light">
+          <i data-lucide="layout-dashboard" width="20" height="20"></i>
+          <span>工作台</span>
+        </button>
+        <button class="mb-nav-item" data-scene="hazard-report" role="tab" aria-selected="false" data-haptic="light">
+          <i data-lucide="alert-triangle" width="20" height="20"></i>
+          <span>隐患整改</span>
+        </button>
+        <button class="mb-nav-item" data-scene="followup" role="tab" aria-selected="false" data-haptic="light">
+          <i data-lucide="activity" width="20" height="20"></i>
+          <span>持续跟踪</span>
+        </button>
+        <button class="mb-nav-item" data-scene="pending-actions" role="tab" aria-selected="false" data-haptic="light">
+          <i data-lucide="clipboard-list" width="20" height="20"></i>
+          <span>待确认</span>
+        </button>
+        <button class="mb-nav-item" data-cmd="openLauncher" role="tab" aria-selected="false" data-haptic="light">
+          <i data-lucide="grid-3x3" width="20" height="20"></i>
+          <span>更多</span>
+        </button>
+      </nav>
     </div>
 
     <!-- ─── Drawer Overlay ───────────────────────────────────────────── -->
@@ -1296,35 +1334,99 @@
         }
       })();
 
-      /* ═══ 断网检测指示器 ════════════════════════════════════════════ */
+      /* ═══ 断网检测指示器 — 增强版 ═══════════════════════════════ */
+      /* 设计原则：容错即信任 — 网络恢复后自动重连，减少用户操作负担 */
       (function () {
         var indicator = document.getElementById('offlineIndicator');
         var retryBtn = document.getElementById('offlineRetryBtn');
+        var indicatorText = indicator ? indicator.querySelector('span') : null;
         if (!indicator) return;
+
+        var retryTimer = null;
+        var retryCount = 0;
+        var maxRetries = 3;
+
+        function updateDisplay(offline, statusText) {
+          indicator.classList.toggle('visible', offline);
+          indicator.setAttribute('aria-hidden', String(!offline));
+          if (retryBtn) {
+            retryBtn.style.display = offline ? 'inline-flex' : 'none';
+            retryBtn.textContent = offline ? '重试' : '';
+            retryBtn.disabled = false;
+          }
+          if (indicatorText && statusText) {
+            indicatorText.textContent = statusText;
+          }
+        }
+
+        function tryReconnect() {
+          if (!retryBtn) return;
+          retryBtn.disabled = true;
+          retryBtn.textContent = '重连中...';
+          if (indicatorText) indicatorText.textContent = '正在尝试恢复连接...';
+
+          fetch(window.location.href, { method: 'HEAD', cache: 'no-cache' })
+            .then(function () {
+              // 连接恢复
+              updateDisplay(false);
+              retryCount = 0;
+              if (retryTimer) {
+                clearInterval(retryTimer);
+                retryTimer = null;
+              }
+              window.location.reload();
+            })
+            .catch(function () {
+              retryCount++;
+              if (retryCount >= maxRetries) {
+                retryBtn.disabled = false;
+                retryBtn.textContent = '重试';
+                if (indicatorText) indicatorText.textContent = '网络已断开 · 连接超时，点击重试';
+              } else {
+                retryBtn.textContent = '重试(' + retryCount + '/' + maxRetries + ')';
+                // 自动再次重试
+                setTimeout(tryReconnect, 3000);
+              }
+            });
+        }
 
         function update() {
           var offline = !navigator.onLine;
-          indicator.classList.toggle('visible', offline);
-          indicator.setAttribute('aria-hidden', String(!offline));
-          if (retryBtn) retryBtn.style.display = offline ? 'inline-flex' : 'none';
+          if (offline) {
+            updateDisplay(true, '网络已断开 · 已缓存内容仍可查阅');
+            // 自动尝试重连（最多 maxRetries 次）
+            if (!retryTimer) {
+              retryCount = 0;
+              retryTimer = setTimeout(tryReconnect, 5000);
+            }
+          } else {
+            updateDisplay(false);
+            retryCount = 0;
+            if (retryTimer) {
+              clearInterval(retryTimer);
+              retryTimer = null;
+            }
+          }
         }
 
         if (retryBtn) {
           retryBtn.addEventListener('click', function () {
-            retryBtn.style.display = 'none';
-            retryBtn.textContent = '重试中...';
-            fetch(window.location.href, { method: 'HEAD', cache: 'no-cache' })
-              .then(function () {
-                window.location.reload();
-              })
-              .catch(function () {
-                retryBtn.textContent = '重试';
-                retryBtn.style.display = 'inline-flex';
-              });
+            retryCount = 0;
+            tryReconnect();
           });
         }
 
-        window.addEventListener('online', update);
+        window.addEventListener('online', function () {
+          updateDisplay(false);
+          retryCount = 0;
+          if (retryTimer) {
+            clearInterval(retryTimer);
+            retryTimer = null;
+          }
+          // 在线后自动刷新获取最新数据
+          window.location.reload();
+        });
+
         window.addEventListener('offline', update);
         update();
       })();
@@ -1468,304 +1570,262 @@
 
     <!-- ═══ 移动端 UX 增强工具函数 ═══════════════════════════════════ -->
     <script>
-      /* ═══ 触觉反馈 (Haptic Feedback) ══════════════════════════════ */
-      window.haptic = (function () {
-        if (!navigator.vibrate) return { light: function () {}, medium: function () {}, heavy: function () {} };
-        return {
-          light: function () {
-            try {
-              navigator.vibrate(6);
-            } catch (e) {}
-          },
-          medium: function () {
-            try {
-              navigator.vibrate(12);
-            } catch (e) {}
-          },
-          heavy: function () {
-            try {
-              navigator.vibrate(20);
-            } catch (e) {}
-          },
-        };
-      })();
-      document.addEventListener('click', function (e) {
-        var target = e.target.closest('[data-haptic]');
-        if (!target) return;
-        var level = target.getAttribute('data-haptic');
-        if (window.haptic && window.haptic[level]) window.haptic[level]();
-      });
-
-      /* ═══ Web Share API ════════════════════════════════════════════ */
-      window.webShare = function (data) {
-        if (!data) return;
-        if (navigator.share) {
-          navigator.share(data).catch(function () {});
-        } else if (navigator.clipboard && data.text) {
-          navigator.clipboard.writeText(data.text).catch(function () {});
-        }
-      };
-      /* data-share 属性：点击时尝试原生分享，降级到复制 */
-      document.addEventListener('click', function (e) {
-        var btn = e.target.closest('[data-share]');
-        if (!btn) return;
-        var type = btn.getAttribute('data-share');
-        if (type === 'hazard') {
-          var nameEl = document.getElementById('hazardModalName');
-          var bodyEl = document.getElementById('hazardModalBody');
-          var title = nameEl ? nameEl.textContent : '隐患信息';
-          var body = bodyEl ? bodyEl.textContent.slice(0, 200) : '';
-          window.webShare({
-            title: title,
-            text: title + '\n' + body + '\n\n—— 来自「小安工作台」',
-            url: window.location.href,
-          });
-        }
-      });
-
-      /* ═══ 骨架屏工具 ══════════════════════════════════════════════ */
-      window.showSkeleton = function (sceneType) {
-        var container = document.getElementById('sceneContent');
-        if (!container) return;
-        var sk = document.getElementById('skeletonContainer');
-        if (!sk) {
-          sk = document.createElement('div');
-          sk.id = 'skeletonContainer';
-          sk.className = 'skeleton-scene';
-          container.prepend(sk);
-        }
-        var html = '';
-        if (sceneType === 'dashboard' || sceneType === 'init') {
-          html =
-            '<div class="skeleton skeleton-h1"></div>' +
-            '<div class="skeleton skeleton-p"></div>' +
-            '<div class="skeleton skeleton-p short"></div>' +
-            '<div class="skeleton-grid"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div>' +
-            '<div class="skeleton skeleton-h2"></div>' +
-            '<div class="skeleton skeleton-card tall"></div>';
-        } else if (sceneType === 'hazard' || sceneType === 'followup') {
-          html =
-            '<div class="skeleton skeleton-h1"></div>' +
-            '<div class="skeleton skeleton-badge" style="margin-bottom:12px"></div>' +
-            '<div class="skeleton-table">' +
-            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-            '</div>';
-        } else {
-          html =
-            '<div class="skeleton skeleton-h1"></div>' +
-            '<div class="skeleton skeleton-p"></div>' +
-            '<div class="skeleton skeleton-p short"></div>' +
-            '<div class="skeleton skeleton-card"></div>' +
-            '<div class="skeleton skeleton-card"></div>';
-        }
-        sk.innerHTML = html;
-        sk.style.display = 'flex';
-      };
-
-      window.hideSkeleton = function () {
-        var sk = document.getElementById('skeletonContainer');
-        if (sk) sk.style.display = 'none';
-        var sc = document.getElementById('sceneContent');
-        if (sc) sc.classList.add('entered');
-      };
-
-      /* ═══ 下拉刷新 (Pull-to-Refresh) ══════════════════════════════ */
-      window.PullToRefresh = (function () {
-        var INST_KEY = '_ptr_instance';
-        if (window[INST_KEY]) return window[INST_KEY];
-
-        function PTR(opts) {
-          this.opts = opts || {};
-          this.onRefresh = opts.onRefresh || function () {};
-          this.container = opts.container || document.querySelector('.center');
-          this.indicator = null;
-          this._startY = 0;
-          this._pulling = false;
-          this._threshold = 60;
-          this._maxPull = 100;
-          this._refreshState = 'idle';
-          this._init();
+      /* ═══ 增强 Toast 系统 — 类型化 + 队列 ════════════════════════ */
+      /* 设计原则：交互必有响应 — 每个操作都有清晰的结果反馈 */
+      (function () {
+        // 创建屏幕阅读器 live region（页面加载时创建一次）
+        var liveRegion = document.getElementById('a11yLiveRegion');
+        if (!liveRegion) {
+          liveRegion = document.createElement('div');
+          liveRegion.id = 'a11yLiveRegion';
+          liveRegion.className = 'sr-live-region';
+          liveRegion.setAttribute('aria-live', 'polite');
+          liveRegion.setAttribute('aria-atomic', 'true');
+          document.body.appendChild(liveRegion);
         }
 
-        PTR.prototype._init = function () {
-          var self = this;
-          var el = document.createElement('div');
-          el.className = 'ptr-indicator';
-          el.innerHTML = '<span class="ptr-icon">↓</span><span class="ptr-label">下拉刷新</span>';
-          el.id = 'ptrIndicator';
-          var container = this.container;
-          if (container) container.insertBefore(el, container.firstChild);
-          this.indicator = el;
+        // 增强 Toast 函数
+        window.showTypedToast = function (message, type, duration) {
+          type = type || 'info';
+          duration = duration || (type === 'error' ? 4000 : 2500);
 
-          if (!('ontouchstart' in window)) return;
-          if (window.innerWidth > 768) return;
+          var toast = document.getElementById('toast');
+          if (!toast) return;
 
-          container.addEventListener(
-            'touchstart',
-            function (e) {
-              if (self._refreshState === 'refreshing') return;
-              if (container.scrollTop > 5) return;
-              self._startY = e.touches[0].clientY;
-              self._pulling = true;
-            },
-            { passive: true },
-          );
+          // 清除之前的定时器
+          if (toast._hideTimer) {
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = null;
+          }
 
-          container.addEventListener(
-            'touchmove',
-            function (e) {
-              if (!self._pulling || self._refreshState === 'refreshing') return;
-              var delta = e.touches[0].clientY - self._startY;
-              if (delta < 0) {
-                self._pulling = false;
-                return;
-              }
-              var pull = Math.min(delta * 0.4, self._maxPull);
-              var label = el.querySelector('.ptr-label');
-              var icon = el.querySelector('.ptr-icon');
-              if (pull >= self._threshold) {
-                self._refreshState = 'ready';
-                if (label) label.textContent = '释放刷新';
-                if (icon) icon.classList.add('flipped');
-              } else {
-                self._refreshState = 'pulling';
-                if (label) label.textContent = '下拉刷新';
-                if (icon) icon.classList.remove('flipped');
-              }
-              el.style.height = Math.max(0, pull) + 'px';
-            },
-            { passive: true },
-          );
+          // 设置类型
+          toast.className = 'toast ' + type;
+          toast.textContent = message;
+          toast.classList.add('visible');
+          toast.setAttribute('aria-hidden', 'false');
+          toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
 
-          container.addEventListener(
-            'touchend',
-            function () {
-              if (!self._pulling) return;
-              self._pulling = false;
-              if (self._refreshState === 'ready') {
-                self._refreshState = 'refreshing';
-                var label = el.querySelector('.ptr-label');
-                var icon = el.querySelector('.ptr-icon');
-                if (label) label.textContent = '刷新中...';
-                if (icon) {
-                  icon.className = 'ptr-spinner';
-                }
-                el.style.height = '44px';
-                el.classList.add('visible');
-                self.onRefresh(function () {
-                  self._refreshState = 'idle';
-                  el.style.height = '0';
-                  el.classList.remove('visible');
-                  if (label) label.textContent = '下拉刷新';
-                  if (icon) {
-                    icon.className = 'ptr-icon';
-                    icon.classList.remove('flipped');
-                  }
-                });
-              } else {
-                el.style.height = '0';
-                self._refreshState = 'idle';
-              }
-            },
-            { passive: true },
-          );
+          // 屏幕阅读器播报
+          if (liveRegion) {
+            liveRegion.textContent = message;
+          }
+
+          toast._hideTimer = setTimeout(function () {
+            toast.classList.remove('visible');
+            toast.classList.remove('success', 'error', 'warning', 'info');
+            toast.setAttribute('aria-hidden', 'true');
+            toast.removeAttribute('role');
+            toast._hideTimer = null;
+          }, duration);
         };
 
-        window[INST_KEY] = PTR;
-        return PTR;
+        // 快捷方法
+        window.showToast = window.showTypedToast;
+        window.showSuccess = function (msg) {
+          window.showTypedToast(msg, 'success', 2000);
+        };
+        window.showError = function (msg) {
+          window.showTypedToast(msg, 'error', 4000);
+        };
+        window.showWarning = function (msg) {
+          window.showTypedToast(msg, 'warning', 3000);
+        };
+        window.showInfo = function (msg) {
+          window.showTypedToast(msg, 'info', 2500);
+        };
       })();
     </script>
-
-    <!-- ═══ 无障碍：模态框焦点陷阱 + Escape 关闭 ════════════════ -->
     <script>
-      (function () {
-        var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
-        var FOCUSABLE =
-          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        /* ═══ 触觉反馈 (Haptic Feedback) ══════════════════════════════ */
+        window.haptic = (function () {
+          if (!navigator.vibrate) return { light: function () {}, medium: function () {}, heavy: function () {} };
+          return {
+            light: function () {
+              try {
+                navigator.vibrate(6);
+              } catch (e) {}
+            },
+            medium: function () {
+              try {
+                navigator.vibrate(12);
+              } catch (e) {}
+            },
+            heavy: function () {
+              try {
+                navigator.vibrate(20);
+              } catch (e) {}
+            },
+          };
+        })();
+        document.addEventListener('click', function (e) {
+          var target = e.target.closest('[data-haptic]');
+          if (!target) return;
+          var level = target.getAttribute('data-haptic');
+          if (window.haptic && window.haptic[level]) window.haptic[level]();
+        });
 
-        function getCloseTrigger(el) {
-          var overlay = el.closest('[class*="overlay"]');
-          if (overlay) return overlay;
-          var closeAttr = el.getAttribute('data-cmd');
-          if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
-          var child = el.querySelector('[data-cmd*="close"]');
-          if (child) return child;
-          return el;
-        }
-
-        function closeModal(modal) {
-          var trigger = getCloseTrigger(modal);
-          trigger.classList.remove('open');
-          if (trigger.style.display) trigger.style.display = 'none';
-          modal.style.display = '';
-          modal.classList.remove('open');
-        }
-
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape') {
-            var openModal = document.querySelector(
-              MODAL_SELECTOR +
-                '.open, ' +
-                MODAL_SELECTOR +
-                '[style*="display: block"], ' +
-                MODAL_SELECTOR +
-                '[style*="display: flex"]',
-            );
-            if (openModal) {
-              e.preventDefault();
-              closeModal(openModal);
-            }
+        /* ═══ Web Share API ════════════════════════════════════════════ */
+        window.webShare = function (data) {
+          if (!data) return;
+          if (navigator.share) {
+            navigator.share(data).catch(function () {});
+          } else if (navigator.clipboard && data.text) {
+            navigator.clipboard.writeText(data.text).catch(function () {});
           }
-          if (e.key === 'Tab') {
-            var modal = document.querySelector(
-              MODAL_SELECTOR +
-                '.open, ' +
-                MODAL_SELECTOR +
-                '[style*="display: block"], ' +
-                MODAL_SELECTOR +
-                '[style*="display: flex"]',
-            );
-            if (!modal) return;
-            var focusable = modal.querySelectorAll(FOCUSABLE);
-            if (focusable.length === 0) return;
-            var first = focusable[0],
-              last = focusable[focusable.length - 1];
-            if (e.shiftKey) {
-              if (document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-              }
-            } else {
-              if (document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-              }
-            }
+        };
+        /* data-share 属性：点击时尝试原生分享，降级到复制 */
+        document.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-share]');
+          if (!btn) return;
+          var type = btn.getAttribute('data-share');
+          if (type === 'hazard') {
+            var nameEl = document.getElementById('hazardModalName');
+            var bodyEl = document.getElementById('hazardModalBody');
+            var title = nameEl ? nameEl.textContent : '隐患信息';
+            var body = bodyEl ? bodyEl.textContent.slice(0, 200) : '';
+            window.webShare({
+              title: title,
+              text: title + '\n' + body + '\n\n—— 来自「小安工作台」',
+              url: window.location.href,
+            });
           }
         });
 
-        var observer = new MutationObserver(function () {
-          document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
-            var isVisible =
-              modal.classList.contains('open') ||
-              (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
-            if (isVisible && !modal.dataset.focused) {
-              modal.dataset.focused = '1';
-              var first = modal.querySelector(FOCUSABLE);
-              if (first)
-                setTimeout(function () {
-                  first.focus();
-                }, 100);
+        /* ═══ 骨架屏工具 ══════════════════════════════════════════════ */
+        window.showSkeleton = function (sceneType) {
+          var container = document.getElementById('sceneContent');
+          if (!container) return;
+          var sk = document.getElementById('skeletonContainer');
+          if (!sk) {
+            sk = document.createElement('div');
+            sk.id = 'skeletonContainer';
+            sk.className = 'skeleton-scene';
+            container.prepend(sk);
+          }
+          var html = '';
+          if (sceneType === 'dashboard' || sceneType === 'init') {
+            html =
+              '<div class="skeleton skeleton-h1"></div>' +
+              '<div class="skeleton skeleton-p"></div>' +
+              '<div class="skeleton skeleton-p short"></div>' +
+              '<div class="skeleton-grid"><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div></div>' +
+              '<div class="skeleton skeleton-h2"></div>' +
+              '<div class="skeleton skeleton-card tall"></div>';
+          } else if (sceneType === 'hazard' || sceneType === 'followup') {
+            html =
+              '<div class="skeleton skeleton-h1"></div>' +
+              '<div class="skeleton skeleton-badge" style="margin-bottom:12px"></div>' +
+              '<div class="skeleton-table">' +
+              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+              '</div>';
+          } else {
+            html =
+              '<div class="skeleton skeleton-h1"></div>' +
+              '<div class="skeleton skeleton-p"></div>' +
+              '<div class="skeleton skeleton-p short"></div>' +
+              '<div class="skeleton skeleton-card"></div>' +
+              '<div class="skeleton skeleton-card"></div>';
+          }
+          sk.innerHTML = html;
+          sk.style.display = 'flex';
+        };
+
+        window.hideSkeleton = function () {
+          var sk = document.getElementById('skeletonContainer');
+          if (sk) sk.style.display = 'none';
+          var sc = document.getElementById('sceneContent');
+          if (sc) sc.classList.add('entered');
+        };
+
+      <script>
+        (function () {
+          var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
+          var FOCUSABLE =
+            'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+          function getCloseTrigger(el) {
+            var overlay = el.closest('[class*="overlay"]');
+            if (overlay) return overlay;
+            var closeAttr = el.getAttribute('data-cmd');
+            if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
+            var child = el.querySelector('[data-cmd*="close"]');
+            if (child) return child;
+            return el;
+          }
+
+          function closeModal(modal) {
+            var trigger = getCloseTrigger(modal);
+            trigger.classList.remove('open');
+            if (trigger.style.display) trigger.style.display = 'none';
+            modal.style.display = '';
+            modal.classList.remove('open');
+          }
+
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+              var openModal = document.querySelector(
+                MODAL_SELECTOR +
+                  '.open, ' +
+                  MODAL_SELECTOR +
+                  '[style*="display: block"], ' +
+                  MODAL_SELECTOR +
+                  '[style*="display: flex"]',
+              );
+              if (openModal) {
+                e.preventDefault();
+                closeModal(openModal);
+              }
             }
-            if (!isVisible) {
-              delete modal.dataset.focused;
+            if (e.key === 'Tab') {
+              var modal = document.querySelector(
+                MODAL_SELECTOR +
+                  '.open, ' +
+                  MODAL_SELECTOR +
+                  '[style*="display: block"], ' +
+                  MODAL_SELECTOR +
+                  '[style*="display: flex"]',
+              );
+              if (!modal) return;
+              var focusable = modal.querySelectorAll(FOCUSABLE);
+              if (focusable.length === 0) return;
+              var first = focusable[0],
+                last = focusable[focusable.length - 1];
+              if (e.shiftKey) {
+                if (document.activeElement === first) {
+                  e.preventDefault();
+                  last.focus();
+                }
+              } else {
+                if (document.activeElement === last) {
+                  e.preventDefault();
+                  first.focus();
+                }
+              }
             }
           });
-        });
-        observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
-      })();
+
+          var observer = new MutationObserver(function () {
+            document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
+              var isVisible =
+                modal.classList.contains('open') ||
+                (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
+              if (isVisible && !modal.dataset.focused) {
+                modal.dataset.focused = '1';
+                var first = modal.querySelector(FOCUSABLE);
+                if (first)
+                  setTimeout(function () {
+                    first.focus();
+                  }, 100);
+              }
+              if (!isVisible) {
+                delete modal.dataset.focused;
+              }
+            });
+          });
+          observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+        })();
     </script>
   </body>
 </html>

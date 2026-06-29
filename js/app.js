@@ -566,12 +566,22 @@
         );
     }
   }
-  function renderEmpty(msg, desc) {
+  function renderEmpty(msg, desc, action) {
+    var actionHtml = '';
+    if (action && action.label) {
+      actionHtml =
+        '<div class="state-action"><button class="state-action-btn" onclick="' +
+        (action.onclick || '') +
+        '">' +
+        escapeHtml(action.label) +
+        '</button></div>';
+    }
     return (
       '<div class="state-empty"><div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6a4 4 0 0 0 4 4h10a4 4 0 0 0 4-4V7"/><path d="M21 3H3v4h18V3Z"/></svg></div><div class="state-title">' +
       (msg || '暂无数据') +
       '</div>' +
       (desc ? '<div class="state-desc">' + desc + '</div>' : '') +
+      actionHtml +
       '</div>'
     );
   }
@@ -6036,6 +6046,18 @@
       });
     });
 
+    // 移动端底部导航点击 — 场景
+    document.querySelectorAll('.mb-nav-item[data-scene]').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var scene = this.getAttribute('data-scene');
+        if (['review', 'meeting'].indexOf(scene) > -1) {
+          showToast('后续能力，敬请期待');
+          return;
+        }
+        switchScene(scene);
+      });
+    });
+
     // 左栏侧边导航点击 — 系统页面（规则管理等）
     document.querySelectorAll('.nav-item[data-page]').forEach(function (item) {
       item.addEventListener('click', function () {
@@ -8128,6 +8150,73 @@
     strip.innerHTML = html;
   }
 
+  // ════════════════════════════════════════════════════════════════
+  // 撤销 Toast — 容错即信任
+  // 用于"加入跟踪"等可逆操作，给用户撤销的机会
+  // ════════════════════════════════════════════════════════════════
+
+  function showUndoToast(msg, undoCallback, duration) {
+    var el = $dom.toast;
+    if (!el) return;
+    duration = duration || 4000;
+    el.innerHTML =
+      '<span>' +
+      msg +
+      '</span>' +
+      '<button class="toast-undo-btn" id="toastUndoBtn" data-haptic="medium">撤销</button>';
+    el.className = 'toast undo-show';
+    el.classList.add('show');
+
+    if (el._toastTimer) clearTimeout(el._toastTimer);
+    if (el._undoTimer) clearTimeout(el._undoTimer);
+
+    // 撤销按钮
+    var undoBtn = document.getElementById('toastUndoBtn');
+    if (undoBtn) {
+      undoBtn.onclick = function () {
+        if (undoCallback) undoCallback();
+        el.classList.remove('show');
+        if (el._toastTimer) clearTimeout(el._toastTimer);
+      };
+    }
+
+    el._toastTimer = setTimeout(function () {
+      el.classList.remove('show');
+      el._toastTimer = null;
+    }, duration);
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // 按钮加载状态 — 交互必有响应（防重复提交）
+  // ════════════════════════════════════════════════════════════════
+
+  function setButtonLoading(btn, loading) {
+    if (!btn) return;
+    if (loading) {
+      btn._origHtml = btn.innerHTML;
+      btn._origDisabled = btn.disabled;
+      btn.disabled = true;
+      btn.classList.add('btn-loading');
+      btn.innerHTML = '<span class="btn-spinner"></span>' + (btn._origLabel || '处理中…');
+    } else {
+      btn.disabled = btn._origDisabled || false;
+      btn.classList.remove('btn-loading');
+      if (btn._origHtml) btn.innerHTML = btn._origHtml;
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // 更新底部导航 active 状态（供外部场景切换后同步）
+  // ════════════════════════════════════════════════════════════════
+
+  function updateBottomNav(sceneId) {
+    document.querySelectorAll('.mb-nav-item[data-scene]').forEach(function (n) {
+      var isActive = n.getAttribute('data-scene') === sceneId;
+      n.classList.toggle('active', isActive);
+      n.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+  }
+
   // 初始化默认 tab — 只保留工作台和月报
   var defaultTabs = [
     { id: 'dashboard', label: '工作台' },
@@ -8163,6 +8252,9 @@
 
     // ─── UI 工具 ───
     showToast: showToast,
+    showUndoToast: showUndoToast,
+    setButtonLoading: setButtonLoading,
+    updateBottomNav: updateBottomNav,
     escapeHtml: escapeHtml,
     toggleDemoMenu: window.toggleDemoMenu,
 

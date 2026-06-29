@@ -230,6 +230,194 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   ═══ 图片加载占位 — 渐进式增强 ══════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 设计原则：感知性能 — 图片加载前显示占位背景，避免布局抖动 */
+.img-placeholder {
+  position: relative;
+  background: var(--fg-soft, oklch(from var(--fg) l c h / 0.05));
+  overflow: hidden;
+}
+
+.img-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: imgShimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-color-scheme: dark) {
+  .img-placeholder::before {
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%);
+  }
+}
+
+@keyframes imgShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.img-placeholder img {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.img-placeholder img.loaded {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 操作反馈 — 按钮加载/成功/失败动画 ═══════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 按钮加载状态 */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.btn-loading .btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btnSpin 0.6s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* 操作成功反馈 — 对号弹出 */
+@keyframes checkPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.btn-success .btn-check-icon {
+  display: inline-block;
+  animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 触控反馈: CSS Ripple + 下沉缩放（物理按压感） ═══════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 设计原则：交互必有响应 — 每一次触摸都应获得即时视觉反馈。
+   Material Design Ripple 的精简 CSS 实现。使用伪元素 + scale
+   动画模拟涟漪扩散，避免 JS 计算开销。 */
+
+/* 为高频交互元素注入 ripple 能力 */
+.ripple-btn,
+.drawer-btn,
+.mfoot-btn,
+.pam-btn,
+.hmfoot-action,
+.launcher-close-btn,
+.tab-item,
+.global-chat-btn,
+.pwa-install-btn,
+.state-action-btn {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ripple-btn::after,
+.drawer-btn::after,
+.mfoot-btn::after,
+.pam-btn::after,
+.hmfoot-action::after,
+.launcher-close-btn::after,
+.tab-item::after,
+.global-chat-btn::after,
+.pwa-install-btn::after,
+.state-action-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--rx, 50%) var(--ry, 50%),
+    var(--ripple-color, rgba(255, 255, 255, 0.25)) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.ripple-btn:active::after,
+.drawer-btn:active::after,
+.mfoot-btn:active::after,
+.pam-btn:active::after,
+.hmfoot-action:active::after,
+.launcher-close-btn:active::after,
+.tab-item:active::after,
+.global-chat-btn:active::after,
+.pwa-install-btn:active::after,
+.state-action-btn:active::after {
+  opacity: 1;
+  transition: opacity 0s;
+}
+
+/* 暗色按钮使用更亮的高光，亮色按钮使用暗色 ripple */
+.mfoot-btn.primary:active::after,
+.drawer-btn.primary:active::after,
+.pwa-install-btn:active::after,
+.state-action-btn:active::after {
+  --ripple-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 二级按钮 / 幽灵按钮使用暗色 ripple */
+.drawer-btn:not(.primary):active::after,
+.mfoot-btn:not(.primary):active::after,
+.pam-btn:active::after,
+.tab-item:active::after {
+  --ripple-color: color-mix(in oklch, var(--fg) 10%, transparent);
+}
+
+/* 更深的触控反馈 — 用于列表项和卡片 */
+.card-ripple {
+  position: relative;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.card-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--active-bg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.card-ripple:active::after {
+  opacity: 1;
+  transition: opacity 0s;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    ═══ 触控反馈: 按键下沉缩放（物理按压感） ═════════════════════
    ═══════════════════════════════════════════════════════════════════ */
 
@@ -280,29 +468,69 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ═══ 无障碍焦点 (WCAG 2.4.7) ═════════════════════════════════
+   ═══ 键盘弹出适配增强 ═══════════════════════════════════════
    ═══════════════════════════════════════════════════════════════════ */
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: var(--r-sm, 6px);
+/* 设计原则：无障碍包容 — 键盘弹出时确保输入框始终可见 */
+
+/* iOS 键盘工具栏（"上一个/下一个/完成"）弹出时，底部留出额外空间 */
+@media (hover: none) and (pointer: coarse) {
+  .global-chat-bar.keyboard-active,
+  .init-chat-bar.keyboard-active {
+    margin-bottom: calc(52px + env(safe-area-inset-bottom, 0px) + var(--keyboard-inset, 0px)) !important;
+    transition: margin-bottom 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 
-@media (hover: none) and (pointer: coarse) {
-  *:focus {
-    outline: none;
-  }
-  *:focus-visible {
-    outline: 3px solid var(--accent);
-    outline-offset: 3px;
+/* Android 导航栏（三键/手势）在键盘弹出时不遮挡输入条 */
+@supports (padding-bottom: env(safe-area-inset-bottom, 0px)) {
+  .global-chat-bar,
+  .init-chat-bar {
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0px));
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ═══ 减少透明效果 (WCAG 2.3.3 补充) ═══════════════════════
+   ═══ 无障碍 (A11Y) 增强 — 包容性设计 ═══════════════════════
    ═══════════════════════════════════════════════════════════════════ */
-/* iOS「减少透明效果」设置开启时，移除所有 backdrop-filter 模糊 */
+
+/* 设计原则：无障碍包容 — 屏幕阅读器 + 视觉辅助 */
+
+/* 屏幕阅读器专用 — 动态内容更新提示 */
+.sr-live-region {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 大字体模式适配 — 跟随系统字号 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Sheet 弹窗直接显现 */
+  .action-modal-panel,
+  .pa-modal-panel,
+  .modal-panel,
+  .drill-float {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 减少透明效果 (prefers-reduced-transparency) */
 @media (prefers-reduced-transparency: reduce) {
   * {
     -webkit-backdrop-filter: none !important;
@@ -318,59 +546,118 @@
   .pwa-ios-guide {
     background: rgba(0, 0, 0, 0.65) !important;
   }
+  .mb-bottom-nav {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--surface) !important;
+  }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   ═══ 增强对比度 (WCAG 2.1) ════════════════════════════════
-   ═══════════════════════════════════════════════════════════════════ */
+/* 增强对比度 (prefers-contrast: more) */
 @media (prefers-contrast: more) {
-  :root {
-    --border: oklch(65% 0.01 250) !important;
+  .toast {
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
   }
+  .mb-nav-item span {
+    font-weight: 600 !important;
+  }
+  .text-muted,
+  .mobile-org,
+  .mb-nav-item:not(.active) {
+    color: oklch(45% 0.015 250) !important;
+  }
+  @media (prefers-color-scheme: dark) {
+    .text-muted,
+    .mobile-org,
+    .mb-nav-item:not(.active) {
+      color: oklch(70% 0.015 250) !important;
+    }
+  }
+}
 
-  .brand-logo {
-    filter: contrast(1.3);
+/* 移动端关闭按钮 aria-label 只读时隐藏视觉文本 */
+button[aria-label] .btn-text {
+  /* 有 aria-label 时按钮文本用于屏幕阅读器补充，视觉上可隐藏 */
+}
+
+/* 触控设备上隐藏冗余的 hover 提示（不适用于触摸交互） */
+@media (hover: none) and (pointer: coarse) {
+  [title] {
+    /* title 在触控设备上首次点击会显示 tooltip 干扰交互 */
+    -webkit-touch-callout: none;
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ═══ 下拉刷新指示器 ═══════════════════════════════════════════
+   ═══ 空状态增强 — 人性化错误恢复 ═══════════════════════════
    ═══════════════════════════════════════════════════════════════════ */
 
-.ptr-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 0;
-  overflow: hidden;
-  font-size: 12px;
+.state-error .retry-hint {
+  font-size: var(--fs-xs, 11px);
   color: var(--muted);
-  transition: height 0.15s ease;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.ptr-indicator.visible {
-  height: 44px;
-}
-.ptr-indicator .ptr-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: ptrSpin 0.6s linear infinite;
-}
-.ptr-indicator .ptr-icon {
-  transition: transform 0.2s ease;
-}
-.ptr-indicator .ptr-icon.flipped {
-  transform: rotate(180deg);
+  margin-top: 8px;
+  text-align: center;
+  max-width: 280px;
+  line-height: 1.5;
 }
 
-@keyframes ptrSpin {
+.state-error .retry-hint button {
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 弹性过渡统一 — 所有弹窗底部抽屉动画 ═════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 为底部 Sheet 弹窗统一使用 spring 动画 */
+.action-modal-panel.open {
+  transition: transform var(--duration-slow, 0.4s) var(--spring-snappy) !important;
+}
+
+@media (max-width: 768px) {
+  .pa-modal-panel[style*='display: flex'] {
+    animation: slideUpSnap var(--duration-slow, 0.35s) var(--spring-snappy) both;
+  }
+  .modal-panel[style*='display: flex'] {
+    animation: slideUpSnap var(--duration-slow, 0.35s) var(--spring-snappy) both;
+  }
+  .drill-float.open {
+    animation: slideUpSnap var(--duration-slow, 0.35s) var(--spring-snappy) both;
+  }
+}
+
+@keyframes slideUpSnap {
+  from {
+    transform: translateY(120%);
+    opacity: 0;
+  }
   to {
-    transform: rotate(360deg);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm, 6px);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  *:focus {
+    outline: none;
+  }
+  *:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
   }
 }
 
@@ -424,8 +711,208 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   ═══ 场景过渡动画 — 渐进式增强 ══════════════════════════════
+   ═══ 撤销 Toast — 容错即信任 ═══════════════════════════════════
    ═══════════════════════════════════════════════════════════════════ */
+
+.toast.undo-show {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px 10px 18px;
+  bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+}
+.toast-undo-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 34px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
+}
+.toast-undo-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .toast.undo-show {
+    left: 12px;
+    right: 12px;
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+    font-size: 12px;
+    padding: 8px 12px 8px 16px;
+  }
+  .toast-undo-btn {
+    padding: 5px 12px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ Toast 类型化系统 — Success / Error / Warning ═══════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 设计原则：交互必有响应 — 每个操作都应有清晰的结果反馈。
+   使用语义色区分不同类型，icon + 文字组合确保可辨识性。 */
+
+.toast {
+  --toast-icon: none;
+}
+
+.toast.success {
+  --toast-color: var(--green);
+  --toast-bg: color-mix(in oklch, var(--green) 12%, var(--surface));
+  border-left: 3px solid var(--green);
+}
+
+.toast.error {
+  --toast-color: var(--red);
+  --toast-bg: color-mix(in oklch, var(--red) 12%, var(--surface));
+  border-left: 3px solid var(--red);
+}
+
+.toast.warning {
+  --toast-color: var(--orange);
+  --toast-bg: color-mix(in oklch, var(--orange) 12%, var(--surface));
+  border-left: 3px solid var(--orange);
+}
+
+.toast.info {
+  --toast-color: var(--accent);
+  --toast-bg: color-mix(in oklch, var(--accent) 8%, var(--surface));
+  border-left: 3px solid var(--accent);
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .toast.success {
+    --toast-bg: color-mix(in oklch, var(--green) 18%, var(--surface));
+  }
+  .toast.error {
+    --toast-bg: color-mix(in oklch, var(--red) 18%, var(--surface));
+  }
+  .toast.warning {
+    --toast-bg: color-mix(in oklch, var(--orange) 18%, var(--surface));
+  }
+  .toast.info {
+    --toast-bg: color-mix(in oklch, var(--accent) 15%, var(--surface));
+  }
+}
+
+/* Toast 队列: 多个 toast 堆叠 */
+.toast-queue {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast-queue .toast {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* 移动端 Toast 队列适配 */
+@media (max-width: 768px) {
+  .toast-queue {
+    left: 12px;
+    right: 12px;
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (display-mode: standalone) and (max-width: 768px) {
+  .toast-queue {
+    bottom: calc(120px + env(safe-area-inset-bottom, 34px));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 按钮加载状态 — 交互必有响应 ═══════════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+}
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btnSpin 0.6s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+@keyframes btnSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* PWA standalone 模式下托盘的微调 */
+@media (display-mode: standalone) {
+  .toast.undo-show {
+    bottom: calc(160px + env(safe-area-inset-bottom, 34px));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 统一动画设计语言 — Spring Motion ═════════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 设计原则：一致性 — 所有动效使用统一的缓动曲线，创造连贯感知。
+   Spring(0.22, 1, 0.36, 1) 是 iOS 标准弹簧曲线：
+   - 快速启动 (0.22)：响应即时
+   - 自然减速 (0.36, 1)：无突兀停止
+   替代散落在各处的各种 cubic-bezier，统一品牌动效语言。 */
+
+:root {
+  --spring-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-smooth: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --spring-gentle: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --duration-instant: 80ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-enter: 400ms;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  /* touch 设备微交互使用更快的 duration 保持响应感 */
+  .toast {
+    transition:
+      transform var(--duration-normal) var(--spring-snappy),
+      opacity var(--duration-normal) var(--spring-snappy);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ═══ 场景过渡动画 — 基于统一 Spring 曲线 ═════════════════════
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 设计原则：一致性 — 所有过渡使用统一缓动，创造连贯导航感知 */
 
 @keyframes sceneFadeIn {
   from {
@@ -439,7 +926,7 @@
 @keyframes sceneSlideUp {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -448,31 +935,34 @@
 }
 
 .scene-content.transitioning {
-  animation: sceneFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: sceneFadeIn var(--duration-normal, 0.25s) var(--spring-snappy) both;
 }
 
 .scene-content.transitioning > * {
-  animation: sceneSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: sceneSlideUp var(--duration-slow, 0.35s) var(--spring-snappy) both;
 }
 
-/* stagger 延迟 — 2 个及以上子元素逐个入场 */
+/* stagger 延迟 — 细粒度错峰入场 */
 .scene-content.transitioning > *:nth-child(1) {
   animation-delay: 0.02s;
 }
 .scene-content.transitioning > *:nth-child(2) {
-  animation-delay: 0.06s;
+  animation-delay: 0.05s;
 }
 .scene-content.transitioning > *:nth-child(3) {
-  animation-delay: 0.1s;
+  animation-delay: 0.08s;
 }
 .scene-content.transitioning > *:nth-child(4) {
-  animation-delay: 0.14s;
+  animation-delay: 0.11s;
 }
 .scene-content.transitioning > *:nth-child(5) {
-  animation-delay: 0.18s;
+  animation-delay: 0.14s;
 }
 .scene-content.transitioning > *:nth-child(6) {
-  animation-delay: 0.22s;
+  animation-delay: 0.17s;
+}
+.scene-content.transitioning > *:nth-child(n + 7) {
+  animation-delay: 0.2s;
 }
 
 /* 场景切换滤镜 */
@@ -497,14 +987,14 @@
 
 .panel-snap-back {
   transition:
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.3s ease !important;
+    transform var(--duration-slow, 0.4s) var(--spring-snappy),
+    opacity var(--duration-normal, 0.3s) ease !important;
 }
 
 .panel-dismiss {
   transition:
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.2s ease !important;
+    transform var(--duration-normal, 0.25s) var(--spring-snappy),
+    opacity var(--duration-fast, 0.2s) ease !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
