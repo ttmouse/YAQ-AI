@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YAQ-AI 功能清单 · 移动端首期范围定义</title>
+    <style>
+      /* === Design Tokens === */
+      :root {
+        --c-bg: #f5f7fa;
+        --c-surface: #ffffff;
+        --c-border: #e2e6ed;
+        --c-text: #1a1d23;
+        --c-text-secondary: #6b7280;
+        --c-text-muted: #9ca3af;
+        --c-primary: #2563eb;
+        --c-primary-light: #dbeafe;
+        --c-green: #16a34a;
+        --c-green-light: #dcfce7;
+        --c-amber: #d97706;
+        --c-amber-light: #fef3c7;
+        --c-red: #dc2626;
+        --c-red-light: #fee2e2;
+        --c-purple: #7c3aed;
+        --c-purple-light: #ede9fe;
+        --c-sky: #0284c7;
+        --c-sky-light: #e0f2fe;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+        --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--c-bg);
+        color: var(--c-text);
+        line-height: 1.6;
+        padding: 24px 16px;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* === Header === */
+      .header {
+        max-width: 1100px;
+        margin: 0 auto 24px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .header-info {
+        flex: 1;
+        min-width: 260px;
+      }
+      .header-info h1 {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .header-info h1 .badge {
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--c-primary-light);
+        color: var(--c-primary);
+        padding: 2px 10px;
+        border-radius: 999px;
+      }
+      .header-info p {
+        color: var(--c-text-secondary);
+        margin-top: 4px;
+        font-size: 15px;
+      }
+      .header-legend {
+        background: var(--c-surface);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        font-size: 13px;
+      }
+      .header-legend .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+      .dot.phase1 {
+        background: var(--c-green);
+      }
+      .dot.phase2 {
+        background: var(--c-amber);
+      }
+      .dot.out {
+        background: var(--c-red);
+      }
+      .dot.arch {
+        background: var(--c-purple);
+      }
+
+      /* === Stats Bar === */
+      .stats {
+        max-width: 1100px;
+        margin: 0 auto 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+      }
+      .stat-card {
+        background: var(--c-surface);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .stat-card .num {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .stat-card .label {
+        font-size: 12px;
+        color: var(--c-text-secondary);
+        margin-top: 2px;
+      }
+      .stat-card.p1 .num {
+        color: var(--c-green);
+      }
+      .stat-card.p2 .num {
+        color: var(--c-amber);
+      }
+      .stat-card.out .num {
+        color: var(--c-red);
+      }
+
+      /* === Tree Container === */
+      .tree {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: var(--c-surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      /* === Category Header === */
+      .category {
+        border-bottom: 1px solid var(--c-border);
+      }
+      .category:last-child {
+        border-bottom: none;
+      }
+      .category-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.12s;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .category-header:hover {
+        background: #fafbfc;
+      }
+      .category-header .arrow {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+        color: var(--c-text-muted);
+        font-size: 12px;
+      }
+      .category-header.open .arrow {
+        transform: rotate(90deg);
+      }
+      .category-header .tag {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+        margin-left: auto;
+        white-space: nowrap;
+      }
+      .tag.p1 {
+        background: var(--c-green-light);
+        color: var(--c-green);
+      }
+      .tag.p2 {
+        background: var(--c-amber-light);
+        color: var(--c-amber);
+      }
+      .tag.out {
+        background: var(--c-red-light);
+        color: var(--c-red);
+      }
+      .tag.arch {
+        background: var(--c-purple-light);
+        color: var(--c-purple);
+      }
+      .tag.mixed {
+        background: #f3f4f6;
+        color: var(--c-text-secondary);
+      }
+
+      /* === Feature Items (collapsible body) === */
+      .category-body {
+        display: none;
+      }
+      .category.open .category-body {
+        display: block;
+      }
+
+      /* === Feature Item === */
+      .feature {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+        padding: 10px 20px 10px 52px;
+        border-top: 1px solid #f0f2f5;
+        align-items: start;
+      }
+      .feature:first-child {
+        border-top: none;
+      }
+      .feature .name {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.5;
+      }
+      .feature .desc {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin-top: 1px;
+        line-height: 1.5;
+      }
+      .feature .scope {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+        white-space: nowrap;
+        text-align: center;
+      }
+      .scope.phase1 {
+        background: var(--c-green-light);
+        color: var(--c-green);
+      }
+      .scope.phase2 {
+        background: var(--c-amber-light);
+        color: var(--c-amber);
+      }
+      .scope.out {
+        background: var(--c-red-light);
+        color: var(--c-red);
+      }
+      .scope.arch {
+        background: var(--c-purple-light);
+        color: var(--c-purple);
+      }
+      .feature .sub-count {
+        font-size: 11px;
+        color: var(--c-text-muted);
+        white-space: nowrap;
+      }
+
+      /* === Sub-items list === */
+      .sub-items {
+        grid-column: 1 / -1;
+        display: none;
+        margin-top: 4px;
+      }
+      .sub-items.open {
+        display: block;
+      }
+      .sub-toggle {
+        font-size: 12px;
+        color: var(--c-primary);
+        cursor: pointer;
+        user-select: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .sub-toggle:hover {
+        text-decoration: underline;
+      }
+      .sub-item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 6px;
+        padding: 6px 0 6px 16px;
+        border-left: 2px solid var(--c-border);
+        margin: 4px 0 4px 12px;
+        align-items: start;
+      }
+      .sub-item .name {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .sub-item .desc {
+        font-size: 11px;
+        color: var(--c-text-muted);
+      }
+      .sub-item .scope {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 1px 6px;
+        border-radius: 999px;
+        white-space: nowrap;
+        text-align: center;
+      }
+
+      /* === Summary Footer === */
+      .summary {
+        max-width: 1100px;
+        margin: 20px auto 0;
+        background: var(--c-surface);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px 24px;
+      }
+      .summary h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+      }
+      .summary-card {
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-sm);
+        padding: 12px 14px;
+      }
+      .summary-card .num {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .summary-card .label {
+        font-size: 12px;
+        color: var(--c-text-secondary);
+        margin-top: 2px;
+      }
+      .summary-card p {
+        font-size: 12px;
+        color: var(--c-text-muted);
+        margin-top: 4px;
+        line-height: 1.5;
+      }
+      .summary-card.in .num {
+        color: var(--c-green);
+      }
+      .summary-card.out .num {
+        color: var(--c-red);
+      }
+      .summary-card.p2 .num {
+        color: var(--c-amber);
+      }
+      .summary-card.maybe .num {
+        color: var(--c-purple);
+      }
+
+      /* === Search === */
+      .search-bar {
+        max-width: 1100px;
+        margin: 0 auto 16px;
+      }
+      .search-bar input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius);
+        font-size: 14px;
+        font-family: var(--font);
+        background: var(--c-surface);
+        outline: none;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .search-bar input:focus {
+        border-color: var(--c-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+
+      /* === View Toggle === */
+      .view-toggle {
+        max-width: 1100px;
+        margin: 0 auto 16px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .view-toggle button {
+        padding: 6px 14px;
+        border: 1px solid var(--c-border);
+        border-radius: 999px;
+        background: var(--c-surface);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.12s;
+        font-family: var(--font);
+        color: var(--c-text-secondary);
+      }
+      .view-toggle button:hover {
+        border-color: var(--c-primary);
+        color: var(--c-primary);
+      }
+      .view-toggle button.active {
+        background: var(--c-primary);
+        color: #fff;
+        border-color: var(--c-primary);
+      }
+
+      /* === Responsive === */
+      @media (max-width: 600px) {
+        body {
+          padding: 12px 8px;
+        }
+        .header-info h1 {
+          font-size: 22px;
+        }
+        .feature {
+          padding: 10px 14px 10px 36px;
+          grid-template-columns: 1fr auto;
+        }
+        .feature .sub-count {
+          display: none;
+        }
+        .category-header {
+          padding: 14px 14px;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .stat-card .num {
+          font-size: 20px;
+        }
+      }
+
+      /* Print */
+      @media print {
+        body {
+          background: #fff;
+          padding: 0;
+        }
+        .tree {
+          box-shadow: none;
+        }
+        .category-header {
+          cursor: default;
+        }
+        .category-body {
+          display: block !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-info">
+        <h1>
+          YAQ-AI 功能清单
+          <span class="badge">v1.0</span>
+        </h1>
+        <p>安全监管智能工作台 · 首期移动端范围定义 · 基于 Demo 界面拆解</p>
+      </div>
+      <div class="header-legend">
+        <span><span class="dot phase1"></span>首期实现 (Phase 1)</span>
+        <span><span class="dot phase2"></span>后续迭代 (Phase 2+)</span>
+        <span><span class="dot out"></span>暂不实现 (Out of Scope)</span>
+        <span><span class="dot arch"></span>架构/基础设施</span>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="搜索功能名称…" oninput="filterFeatures(this.value)" />
+    </div>
+
+    <div class="view-toggle" id="viewToggle">
+      <button class="active" data-filter="all" onclick="setFilter('all', this)">全部</button>
+      <button data-filter="phase1" onclick="setFilter('phase1', this)">✅ 首期</button>
+      <button data-filter="phase2" onclick="setFilter('phase2', this)">⏳ 后续</button>
+      <button data-filter="out" onclick="setFilter('out', this)">❌ 暂不</button>
+    </div>
+
+    <div class="stats" id="statsBar"></div>
+
+    <div class="tree" id="treeRoot"></div>
+
+    <div class="summary" id="summarySection"></div>
+
+    <script>
+      // ===== DATA =====
+      const DATA = [
+        {
+          name: '📱 移动端架构与 Shell',
+          tag: 'arch',
+          tagLabel: '架构',
+          scope: 'arch',
+          desc: 'PWA 外壳、安全区域适配、离线支撑等基础能力',
+          features: [
+            {
+              name: 'PWA Manifest 配置',
+              desc: 'manifest.json — standalone 模式、竖屏锁定、图标集、启动页',
+              scope: 'arch',
+            },
+            {
+              name: 'Service Worker 注册',
+              desc: '离线资源缓存、网络优先策略、版本更新通知',
+              scope: 'arch',
+            },
+            {
+              name: '安全区域适配',
+              desc: 'env(safe-area-inset-*) — 刘海屏/动态岛/底部 Home Bar 适配',
+              scope: 'arch',
+              subs: [
+                { name: '顶部安全区 — 状态栏偏移', scope: 'arch' },
+                { name: '底部安全区 — 底部导航栏上移', scope: 'arch' },
+                { name: '全屏模态框安全区适配', scope: 'arch' },
+              ],
+            },
+            {
+              name: 'iOS 主屏幕支持',
+              desc: 'apple-mobile-web-app-capable、启动图多设备适配',
+              scope: 'arch',
+            },
+            {
+              name: '触觉反馈 (Haptic Feedback)',
+              desc: 'navigator.vibrate() — 轻/中/重三级振感',
+              scope: 'phase2',
+              subs: [
+                { name: '轻触反馈 (6ms)', scope: 'phase2' },
+                { name: '确认反馈 (12ms)', scope: 'phase2' },
+                { name: '警告反馈 (20ms)', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '下拉刷新 (Pull-to-Refresh)',
+              desc: '触摸下拉手势 + 刷新指示器 + 阈值检测 + 防抖',
+              scope: 'phase1',
+            },
+            {
+              name: '离线状态检测',
+              desc: 'network/online 事件监听、离线横幅提示、重试按钮',
+              scope: 'phase1',
+            },
+            {
+              name: 'PWA 安装引导',
+              desc: 'Android Chrome 安装横幅 + iOS Safari 引导浮层',
+              scope: 'phase2',
+            },
+            {
+              name: '字体与可访问性',
+              desc: '动态字体缩放适配、VoiceOver/TalkBack 标签',
+              scope: 'phase2',
+            },
+            {
+              name: '启动屏/Loading 状态',
+              desc: '骨架屏 (Skeleton Screen) 组件，按场景类型加载占位',
+              scope: 'phase1',
+            },
+          ],
+        },
+        {
+          name: '🧭 导航系统',
+          tag: 'mixed',
+          tagLabel: '混合',
+          scope: 'phase1',
+          features: [
+            {
+              name: '底部导航栏 (Bottom Nav)',
+              desc: '5 Tab — 工作台 / 隐患整改 / 持续跟踪 / 待确认 / 更多',
+              scope: 'phase1',
+              subs: [
+                { name: 'Tab 切换动画 (页面过渡淡入)', scope: 'phase1' },
+                { name: 'Active Tab 高亮指示', scope: 'phase1' },
+                { name: 'Badge 角标 (待办数量)', scope: 'phase2' },
+                { name: '更多 Tab → 弹出菜单', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '场景切换引擎',
+              desc: 'switchScene(sceneId) — 路由分发、场景渲染、状态重置',
+              scope: 'phase1',
+            },
+            {
+              name: '更多菜单 (Demo Menu)',
+              desc: '右上角入口 → 初始化引导/对比模式/记忆面板/文件/报告',
+              scope: 'phase2',
+            },
+            {
+              name: '全局搜索启动器 (Launcher)',
+              desc: 'Spotlight 式搜索 — 搜索人员/企业/任务/功能入口',
+              scope: 'phase2',
+              subs: [
+                { name: '搜索输入 + 建议 chips', scope: 'phase2' },
+                { name: '搜索结果分类展示', scope: 'phase2' },
+                { name: '快捷键 (Cmd+K)', scope: 'phase2' },
+              ],
+            },
+          ],
+        },
+        {
+          name: '🤖 AI 助手 (全局)',
+          tag: 'mixed',
+          tagLabel: '混合',
+          scope: 'phase1',
+          features: [
+            {
+              name: '底部输入栏 (Global Chat Bar)',
+              desc: '持久化输入框 + 麦克风按钮 + 发送按钮',
+              scope: 'phase1',
+              subs: [
+                { name: '占位文本按场景动态切换', scope: 'phase1' },
+                { name: '输入框聚焦时底部导航隐藏', scope: 'phase2' },
+                { name: '语音输入按钮 (mock)', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '快捷指令 Chips',
+              desc: '场景上下文相关的快捷操作 chip，点击快速发送',
+              scope: 'phase1',
+            },
+            {
+              name: 'AI 消息对话流',
+              desc: '气泡消息、头像、打字动画、富文本卡片渲染',
+              scope: 'phase1',
+              subs: [
+                { name: '文本气泡 (左/右排列)', scope: 'phase1' },
+                { name: '打字中动画 (thinking dots)', scope: 'phase1' },
+                { name: 'AI 回复卡片 — 统计卡片', scope: 'phase1' },
+                { name: 'AI 回复卡片 — 数据表格', scope: 'phase2' },
+                { name: 'AI 回复卡片 — 状态徽章 + 操作按钮', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '深入对话浮层 (Drill Float)',
+              desc: '点开 AI 分析后的深入追问 — 独立对话浮层',
+              scope: 'phase2',
+              subs: [
+                { name: '独立输入栏 (drill-ai-bar)', scope: 'phase2' },
+                { name: '对话历史保留', scope: 'phase2' },
+                { name: '筛选标签 (drillFilter)', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '记忆面板 (Memory Panel)',
+              desc: 'AI 记忆 — 按分类展示 CRUD 卡片 (沟通风格/习惯/偏好)',
+              scope: 'phase2',
+            },
+            {
+              name: 'AI Agent 配置',
+              desc: '7 关注项 + 8 子 Agent + 5 管理模式配置',
+              scope: 'phase2',
+            },
+          ],
+        },
+        {
+          name: '🏠 工作台 (Dashboard)',
+          tag: 'p1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            {
+              name: 'AI 问候卡片',
+              desc: '时间感知问候 (早上好/下午好/晚上好) + Agent 配置入口',
+              scope: 'phase1',
+            },
+            {
+              name: '总体安全态势指标',
+              desc: '可配置的指标行 — 展示核心监管数据',
+              scope: 'phase1',
+              subs: [
+                { name: '指标配置按钮 (sliders-horizontal)', scope: 'phase1' },
+                { name: '指标分类展示 (9 个分类组)', scope: 'phase1' },
+                { name: '指标配置弹窗 — 搜索/筛选/拖拽排序', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '指标体系 (37+ 指标)',
+              desc: '9 大分类 × 37+ 个细项指标',
+              scope: 'phase1',
+              subs: [
+                { name: '监管概况 (6项): 主体/覆盖/风险等级调整', scope: 'phase1' },
+                { name: '监管执法 (7项): 检查次数/办结率', scope: 'phase1' },
+                { name: '隐患闭环 (5项): 新增/累计/整改率', scope: 'phase1' },
+                { name: '重大隐患 (6项): 新增/累计/整改率', scope: 'phase1' },
+                { name: '风险分类 (4项): 重大/较大/一般/低风险', scope: 'phase1' },
+                { name: '区域风险: 风险上升片区', scope: 'phase2' },
+                { name: '今日聚焦 (3项): 到期整改/重点主体异常/检查完成率', scope: 'phase1' },
+                { name: '主体责任 (4项): 风险上升/自查异常/差异/隐患反复', scope: 'phase2' },
+                { name: '履职效能 (2项): 一线/专家履职异常', scope: 'phase2' },
+              ],
+            },
+            {
+              name: '重大隐患未闭环看板',
+              desc: 'Top 3 未闭环重大隐患卡片 + AI 分析摘要 + 逾期徽章',
+              scope: 'phase1',
+            },
+            {
+              name: '核心任务进展',
+              desc: 'Top 3 任务 — 双环进度图 + 覆盖/隐患/未闭环统计',
+              scope: 'phase1',
+            },
+            {
+              name: '推进行动项',
+              desc: 'AI 生成行动项摘要 + 查看详情按钮',
+              scope: 'phase1',
+            },
+            {
+              name: '指标下钻 (Drilldown)',
+              desc: '点击指标 → 下钻弹窗展示详细分析 + AI 解读',
+              scope: 'phase2',
+            },
+          ],
+        },
+        {
+          name: '⚠️ 隐患整改 (Hazard Report)',
+          tag: 'p1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            {
+              name: '统计卡片行',
+              desc: '4 张状态卡 — 超期未整改 / 即将到期 / 整改推进中 / 反复出现',
+              scope: 'phase1',
+            },
+            {
+              name: '隐患列表',
+              desc: '隐患清单 — 对象/隐患/区域/状态变化/责任/操作',
+              scope: 'phase1',
+              subs: [
+                { name: '状态变更指示器 (昨日→今日)', scope: 'phase1' },
+                { name: '责任人信息展示', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '隐患行操作按钮',
+              desc: '每行 4 个操作: 督办 / 现场核查 / 会议议题 / 持续跟踪',
+              scope: 'phase1',
+              subs: [
+                { name: '督办 — 打开督办抽屉', scope: 'phase1' },
+                { name: '现场核查 — 打开核查抽屉', scope: 'phase2' },
+                { name: '会议议题 — 打开议题抽屉', scope: 'phase2' },
+                { name: '持续跟踪 — 添加到跟踪列表', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '重大隐患回头看',
+              desc: '临时管控 / 整改方案 / 时间表 / 责任人审核',
+              scope: 'phase2',
+            },
+            {
+              name: '隐患详情弹窗',
+              desc: '点击隐患 → 详情弹窗 — 描述/下钻信息/关联隐患',
+              scope: 'phase1',
+            },
+          ],
+        },
+        {
+          name: '🔄 持续跟踪 (Follow-up)',
+          tag: 'mixed',
+          tagLabel: '混合',
+          scope: 'phase1',
+          features: [
+            {
+              name: '跟踪统计概览',
+              desc: '跟踪中 / 推进中 / 已闭环 数量统计',
+              scope: 'phase1',
+            },
+            {
+              name: '跟踪项列表',
+              desc: '每项: 标题/状态徽章/进度条/跟踪天数/责任/截止日期/最近动态',
+              scope: 'phase1',
+            },
+            {
+              name: '跟踪项操作',
+              desc: '更新进展 / 标记闭环 / 确认闭环 / 归档',
+              scope: 'phase1',
+              subs: [
+                { name: '更新进展 — 填写进展说明', scope: 'phase1' },
+                { name: '标记闭环 — 确认关闭', scope: 'phase1' },
+                { name: '需介入警告标识', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '跟踪数据持久化',
+              desc: 'localStorage 持久化，CRUD 操作',
+              scope: 'phase1',
+            },
+          ],
+        },
+        {
+          name: '📋 待确认 (Pending Actions)',
+          tag: 'p1',
+          tagLabel: '首期',
+          scope: 'phase1',
+          features: [
+            {
+              name: '流程指引条',
+              desc: '异常识别 → 问题聚合 → 生成待确认 → 确认发起 → 跟踪闭环',
+              scope: 'phase1',
+            },
+            {
+              name: 'AI 简报头',
+              desc: 'Agent 发现的异常摘要描述',
+              scope: 'phase1',
+            },
+            {
+              name: '待确认卡片列表',
+              desc: '每张卡片: 复选框/类型徽章/合并来源/链式标识/草稿项(角色+任务+截止日期)',
+              scope: 'phase1',
+              subs: [
+                { name: '类型徽章: 督办/说明/跟踪/专项/观察/会议', scope: 'phase1' },
+                { name: '合并来源展示', scope: 'phase1' },
+                { name: '草稿项展示 (角色/任务/截止日期)', scope: 'phase1' },
+                { name: '单项操作按钮', scope: 'phase1' },
+              ],
+            },
+            {
+              name: '批量操作栏',
+              desc: '全选 / 批量确认发起 / 批量改为跟进 / 批量要求说明 / 批量忽略 / 取消选择',
+              scope: 'phase1',
+            },
+            {
+              name: '已确认督办包',
+              desc: '已确认发起的督办项汇总',
+              scope: 'phase2',
+            },
+            {
+              name: '其他处理记录',
+              desc: '被忽略/搁置的动作记录',
+              scope: 'phase2',
+            },
+          ],
+        },
+        {
+          name: '📊 分级处置 (Disposal)',
+          tag: 'p2',
+          tagLabel: '后续',
+          scope: 'phase2',
+          features: [
+            {
+              name: 'AI 处置建议卡片',
+              desc: '来源隐患 → 建议级别/动作/依据 → 生成文本 → 复制/跟踪/督办',
+              scope: 'phase2',
+            },
+            {
+              name: '分级处置闭环图',
+              desc: '双列: 内部管理(街道/村社) + 外部管理(经营主体), L1-L5 分级',
+              scope: 'phase2',
+            },
+            {
+              name: '系统性改进 — 复盘与优化',
+              desc: '事后复盘分析区块',
+              scope: 'phase2',
+            },
+            {
+              name: '规则引擎触发提示',
+              desc: '显示当前命中的规则告警',
+              scope: 'phase2',
+            },
+          ],
+        },
+        {
+          name: '📌 督办跟踪 (Supervision Track)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '督办概览统计',
+              desc: '督办总数/推进中/已完成/需升级/逾期/处理项总计',
+              scope: 'out',
+            },
+            {
+              name: '已确认督办包列表',
+              desc: '确认发起的督办项详细清单',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '📈 履职效能 (Efficiency)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '团队效能卡片',
+              desc: '每团队: 图标/自定义指标/状态徽章',
+              scope: 'out',
+            },
+            {
+              name: '效能异常提示',
+              desc: '异常告警 + 核查原因入口',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '🏢 主体责任 (Responsibility)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '主体责任矩阵卡片',
+              desc: '4 矩阵: 较主动/疑似敷衍/能力不足/触达失败',
+              scope: 'out',
+            },
+            {
+              name: '企业责任摘要',
+              desc: '隐患自查上报率/培训完成率/演练完成率',
+              scope: 'out',
+            },
+            {
+              name: '自查与政府检查差异表',
+              desc: '差异排序 + 企业链接',
+              scope: 'out',
+            },
+            {
+              name: '主体责任列表',
+              desc: '主体/自查/政府检查/培训/演练/风险提示/建议动作',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '🔍 智能专项检查 (Special Inspection)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '创建模式切换',
+              desc: '基于发文创建 / 基于目标创建 (Tab 切换)',
+              scope: 'out',
+            },
+            {
+              name: 'AI 解析演示',
+              desc: '逐步思考进度动画',
+              scope: 'out',
+            },
+            {
+              name: 'Step 1 — 确认企业清单',
+              desc: '待检查企业列表 + 风险徽章 + 确认按钮',
+              scope: 'out',
+            },
+            {
+              name: 'Step 2 — 确认检查要点',
+              desc: '检查项确认列表',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '📄 月报 (Monthly Report)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '报告头部',
+              desc: '标题/机构/日期/报告周期',
+              scope: 'out',
+            },
+            {
+              name: '4 张汇总卡片',
+              desc: '监管主体/采集率/企业整改完成率/隐患整改完成率',
+              scope: 'out',
+            },
+            {
+              name: '可折叠区块',
+              desc: '总体情况/信息采集/监管执行/隐患检查/五维安全/村社动态/火灾事故',
+              scope: 'out',
+            },
+            {
+              name: '模块可见性切换',
+              desc: '每节显示/隐藏切换',
+              scope: 'out',
+            },
+            {
+              name: 'AI 添加模块',
+              desc: '动态添加同比趋势分析等模块',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '🚀 初始化引导 (Agent Init)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '全屏对话式引导',
+              desc: '逐句打字引擎 + 思考动画',
+              scope: 'out',
+            },
+            {
+              name: 'Agent 调度配置',
+              desc: '7 关注项 + 8 子 Agent + 5 管理模式',
+              scope: 'out',
+            },
+            {
+              name: '意图网格',
+              desc: '7 个快捷意图 Chip',
+              scope: 'out',
+            },
+            {
+              name: '重置初始化',
+              desc: '清除状态、重新展示引导',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '⚙️ 规则引擎 (Rules Engine)',
+          tag: 'out',
+          tagLabel: '暂不',
+          scope: 'out',
+          features: [
+            {
+              name: '6 大规则维度',
+              desc: '指标阈值/时间超期/对比类/趋势类/行为模式/复合规则',
+              scope: 'out',
+            },
+            {
+              name: '12 条默认规则',
+              desc: '4 指标 + 2 超期 + 2 对比 + 2 趋势 + 2 行为 + 1 复合',
+              scope: 'out',
+            },
+            {
+              name: '规则 CRUD',
+              desc: '添加/删除/编辑/启停切换',
+              scope: 'out',
+            },
+            {
+              name: '自然语言创建规则',
+              desc: 'NL → 结构化规则解析 + AI 预览',
+              scope: 'out',
+            },
+          ],
+        },
+        {
+          name: '🧩 全局功能 / 通用组件',
+          tag: 'mixed',
+          tagLabel: '混合',
+          scope: 'phase1',
+          features: [
+            {
+              name: 'Drawer 抽屉面板',
+              desc: '侧滑面板 — 简报生成/一键督办/会议议题/现场核查/提醒/Agent配置',
+              scope: 'phase1',
+              subs: [
+                { name: '简报生成 Drawer', scope: 'phase1' },
+                { name: '一键督办 Drawer (督办包创建)', scope: 'phase1' },
+                { name: '会议议题 Drawer', scope: 'phase2' },
+                { name: '现场核查 Drawer', scope: 'phase2' },
+              ],
+            },
+            {
+              name: 'Action Modal 动作弹窗',
+              desc: '确认/提示/批量操作确认弹窗',
+              scope: 'phase1',
+            },
+            {
+              name: 'Toast 通知系统',
+              desc: '成功/错误/警告/信息 — 四色 Toast 浮层',
+              scope: 'phase1',
+            },
+            {
+              name: '企业档案面板 (Enterprise Panel)',
+              desc: '右侧固定面板 — Tab 切换 + 企业信息 + 隐患时间线',
+              scope: 'phase2',
+            },
+            {
+              name: '任务详情弹窗',
+              desc: '左右分栏 — 进度/隐患/任务信息',
+              scope: 'phase2',
+            },
+            {
+              name: '密码保护 Gate',
+              desc: 'Demo 访问密码验证',
+              scope: 'phase1',
+            },
+            {
+              name: '数据导出/分享',
+              desc: 'Web Share API (原生分享 → 剪贴板兜底)',
+              scope: 'phase2',
+            },
+            {
+              name: '通用 Loading / 空状态',
+              desc: '场景加载骨架屏 + 无数据占位',
+              scope: 'phase1',
+            },
+            {
+              name: '错误边界 / 异常捕获',
+              desc: '全局错误捕获、友好的错误提示',
+              scope: 'phase2',
+            },
+          ],
+        },
+      ];
+
+      // ===== RENDER ENGINE =====
+      function render() {
+        const root = document.getElementById('treeRoot');
+        const statsEl = document.getElementById('statsBar');
+        root.innerHTML = '';
+
+        let totalP1 = 0,
+          totalP2 = 0,
+          totalOut = 0,
+          totalArch = 0,
+          totalAll = 0;
+
+        function scopeLabel(s) {
+          const map = { phase1: '首期', phase2: '后续', out: '暂不', arch: '架构' };
+          return map[s] || s;
+        }
+        function scopeClass(s) {
+          return s;
+        }
+
+        // Stats
+        DATA.forEach(cat => {
+          cat.features.forEach(f => {
+            totalAll++;
+            if (f.scope === 'phase1') totalP1++;
+            else if (f.scope === 'phase2') totalP2++;
+            else if (f.scope === 'out') totalOut++;
+            else if (f.scope === 'arch') totalArch++;
+            if (f.subs)
+              f.subs.forEach(s => {
+                totalAll++;
+                if (s.scope === 'phase1') totalP1++;
+                else if (s.scope === 'phase2') totalP2++;
+                else if (s.scope === 'out') totalOut++;
+                else if (s.scope === 'arch') totalArch++;
+              });
+          });
+        });
+
+        statsEl.innerHTML = `
+    <div class="stat-card p1"><div class="num">${totalP1}</div><div class="label">✅ 首期实现</div></div>
+    <div class="stat-card p2"><div class="num">${totalP2}</div><div class="label">⏳ 后续迭代</div></div>
+    <div class="stat-card out"><div class="num">${totalOut}</div><div class="label">❌ 暂不实现</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--c-purple)">${totalArch}</div><div class="label">🔧 架构基础</div></div>
+    <div class="stat-card"><div class="num">${totalAll}</div><div class="label">📦 功能项总计</div></div>
+  `;
+
+        // Tree
+        DATA.forEach((cat, ci) => {
+          const div = document.createElement('div');
+          div.className = 'category';
+          div.innerHTML = `
+      <div class="category-header open" onclick="toggleCategory(this)">
+        <span class="arrow">▶</span>
+        <span>${cat.name}</span>
+        <span class="tag ${cat.tag || cat.scope}">${cat.tagLabel || scopeLabel(cat.scope)}</span>
+      </div>
+      <div class="category-body">
+        ${cat.features.map((f, fi) => renderFeature(f, `${ci}-${fi}`)).join('')}
+      </div>
+    `;
+          root.appendChild(div);
+        });
+
+        // Summary
+        document.getElementById('summarySection').innerHTML = `
+    <h3>📌 首期移动端范围边界总结</h3>
+    <div class="summary-grid">
+      <div class="summary-card in">
+        <div class="num">${totalP1}</div>
+        <div class="label">✅ 首期实现</div>
+        <p>工作台、隐患整改、持续跟踪、待确认、AI 全局助手、导航、Skeleton、Drawer、Toast</p>
+      </div>
+      <div class="summary-card p2">
+        <div class="num">${totalP2}</div>
+        <div class="label">⏳ 后续迭代</div>
+        <p>分级处置、隐患回头看、指标下钻、记忆面板、触觉反馈、企业档案面板、搜索启动器</p>
+      </div>
+      <div class="summary-card out">
+        <div class="num">${totalOut}</div>
+        <div class="label">❌ 首期不做</div>
+        <p>督办跟踪、履职效能、主体责任、智能专项检查、月报、规则引擎、初始化引导</p>
+      </div>
+      <div class="summary-card maybe">
+        <div class="num">${totalArch}</div>
+        <div class="label">🔧 架构基础设施</div>
+        <p>PWA Manifest, Service Worker, 安全区域适配, Skeleton 组件等 — 移动端必选能力</p>
+      </div>
+    </div>
+  `;
+      }
+
+      function renderFeature(f, id) {
+        const hasSubs = f.subs && f.subs.length > 0;
+        const scopeCls = scopeClass(f.scope);
+        const subCount = hasSubs ? f.subs.length : 0;
+        const subPhase1 = hasSubs ? f.subs.filter(s => s.scope === 'phase1').length : 0;
+        return `
+    <div class="feature" data-scope="${f.scope}" data-idx="${id}">
+      <div>
+        <div class="name">${f.name}</div>
+        ${f.desc ? `<div class="desc">${f.desc}</div>` : ''}
+        ${hasSubs ? `<div class="sub-toggle" onclick="toggleSubs('${id}')">▸ 展开 ${subCount} 个子项 (首期 ${subPhase1})</div>` : ''}
+        <div class="sub-items" id="subs-${id}">
+          ${
+            hasSubs
+              ? f.subs
+                  .map(
+                    s => `
+            <div class="sub-item" data-scope="${s.scope}">
+              <div>
+                <div class="name">${s.name}</div>
+                ${s.desc ? `<div class="desc">${s.desc}</div>` : ''}
+              </div>
+              <span class="scope ${scopeClass(s.scope)}">${scopeLabel(s.scope)}</span>
+            </div>
+          `,
+                  )
+                  .join('')
+              : ''
+          }
+        </div>
+      </div>
+      <span class="sub-count">${subCount ? `${subCount} 子项` : ''}</span>
+      <span class="scope ${scopeCls}">${scopeLabel(f.scope)}</span>
+    </div>
+  `;
+      }
+
+      // ===== INTERACTIONS =====
+      window.toggleCategory = function (el) {
+        el.classList.toggle('open');
+      };
+
+      window.toggleSubs = function (id) {
+        const el = document.getElementById('subs-' + id);
+        if (el) el.classList.toggle('open');
+      };
+
+      // Filter
+      window.setFilter = function (filter, btn) {
+        document.querySelectorAll('#viewToggle button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.feature').forEach(el => {
+          const scope = el.dataset.scope;
+          if (filter === 'all' || scope === filter) el.style.display = '';
+          else el.style.display = 'none';
+        });
+        document.querySelectorAll('.category').forEach(cat => {
+          const visible = Array.from(cat.querySelectorAll('.feature')).some(el => el.style.display !== 'none');
+          cat.style.display = visible ? '' : 'none';
+          if (visible) cat.querySelector('.category-header')?.classList.add('open');
+        });
+      };
+
+      // Search
+      window.filterFeatures = function (val) {
+        const q = val.trim().toLowerCase();
+        document.querySelectorAll('.feature').forEach(el => {
+          const name = el.querySelector('.name')?.textContent?.toLowerCase() || '';
+          const desc = el.querySelector('.desc')?.textContent?.toLowerCase() || '';
+          el.style.display = !q || name.includes(q) || desc.includes(q) ? '' : 'none';
+        });
+        document.querySelectorAll('.category').forEach(cat => {
+          const visible = Array.from(cat.querySelectorAll('.feature')).some(el => el.style.display !== 'none');
+          cat.style.display = visible ? '' : 'none';
+          if (visible) cat.querySelector('.category-header')?.classList.add('open');
+        });
+      };
+
+      // Init
+      render();
+    </script>
+  </body>
+</html>
