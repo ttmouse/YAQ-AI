@@ -31,24 +31,24 @@
   // ─── 默认配置 ─────────────────────────────────────────────────────────
   var DEFAULTS = {
     placeholder: '输入消息...',
-    sendCommand: null,       // data-cmd 值（发送按钮 + Enter 键）
-    voiceCommand: null,      // data-cmd 值（语音按钮），null 则不显示语音按钮
-    onSend: null,            // 发送回调（替代 sendCommand）
-    onVoice: null,           // 语音回调（替代 voiceCommand）
-    sendIcon: 'arrow-up',    // 发送按钮图标名
-    voiceIcon: 'mic',        // 语音按钮图标名
-    iconSize: 16,            // 图标尺寸（px）
-    variant: 'pill',         // 'pill' | 'init' | 'compact' | 'inline' | 'purple'
-    extraClass: '',          // 附加 CSS 类（加在容器上）
-    inputId: '',             // input 元素的 id
-    inputType: 'text',       // input 的 type
-    inputValue: '',          // 初始输入值
-    inputAttrs: {},          // 额外的 input 属性（key-value 对象）
-    showSend: true,          // 是否显示发送按钮
-    showMic: true,           // 是否显示语音按钮（仅在 voiceCommand 或 onVoice 设置时有效）
-    sendButtonText: '',      // 发送按钮上的文字（有文字时不显示图标）
-    sendButtonIcon: true,    // 发送按钮是否显示图标
-    leadingHtml: '',         // 输入框左侧前置 HTML（例如上传按钮）
+    sendCommand: null, // data-cmd 值（发送按钮 + Enter 键）
+    voiceCommand: null, // data-cmd 值（语音按钮），null 则不显示语音按钮
+    onSend: null, // 发送回调（替代 sendCommand）
+    onVoice: null, // 语音回调（替代 voiceCommand）
+    sendIcon: 'arrow-up', // 发送按钮图标名
+    voiceIcon: 'mic', // 语音按钮图标名
+    iconSize: 16, // 图标尺寸（px）
+    variant: 'pill', // 'pill' | 'init' | 'compact' | 'inline' | 'purple'
+    extraClass: '', // 附加 CSS 类（加在容器上）
+    inputId: '', // input 元素的 id
+    inputType: 'text', // input 的 type
+    inputValue: '', // 初始输入值
+    inputAttrs: {}, // 额外的 input 属性（key-value 对象）
+    showSend: true, // 是否显示发送按钮
+    showMic: true, // 是否显示语音按钮（仅在 voiceCommand 或 onVoice 设置时有效）
+    sendButtonText: '', // 发送按钮上的文字（有文字时不显示图标）
+    sendButtonIcon: true, // 发送按钮是否显示图标
+    leadingHtml: '', // 输入框左侧前置 HTML（例如上传按钮）
   };
 
   var _callbackCounter = 0;
@@ -66,7 +66,7 @@
       case 'init':
         return {
           bar: 'init-chat-bar',
-          inner: false,         // 无内层 wrapper，input 直接作为 flex 子项
+          inner: false, // 无内层 wrapper，input 直接作为 flex 子项
           input: 'init-chat-input',
           mic: 'init-chat-btn',
           send: 'init-chat-send',
@@ -76,14 +76,14 @@
           bar: 'drill-ai-bar',
           inner: false,
           input: 'dmsg-input',
-          mic: false,           // 紧凑型无语音按钮
+          mic: false, // 紧凑型无语音按钮
           send: 'dmsg-send',
         };
       case 'inline':
         return {
           bar: 'agent-input-bar',
           inner: false,
-          input: false,         // inline 的 input 无独立类名，由 .agent-input-bar input 统一样式
+          input: false, // inline 的 input 无独立类名，由 .agent-input-bar input 统一样式
           mic: false,
           send: 'aib-btn',
         };
@@ -99,8 +99,8 @@
       default:
         return {
           bar: 'global-chat-bar',
-          inner: 'global-chat-inner',  // 有内层 wrapper
-          input: false,                // input 无独立类名，由 .global-chat-inner input 统一样式
+          inner: 'global-chat-inner', // 有内层 wrapper
+          input: false, // input 无独立类名，由 .global-chat-inner input 统一样式
           mic: 'global-chat-mic',
           send: 'global-chat-btn',
         };
@@ -117,7 +117,7 @@
     if (opts.sendCommand) {
       attrs += ' data-cmd-key="Enter" data-cmd="' + opts.sendCommand + '"';
     } else if (opts.onSend) {
-      var fnName = '_bip_send_' + (++_callbackCounter);
+      var fnName = '_bip_send_' + ++_callbackCounter;
       attrs += ' data-cmd-key="Enter" data-cmd="' + fnName + '"';
       _registerCallback(opts.onSend, fnName);
     }
@@ -146,14 +146,19 @@
   // ─── HTML 转义 ──────────────────────────────────────────────────────
   function escHtml(s) {
     if (typeof s !== 'string') return '';
-    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   // ─── 构建命令属性 ──────────────────────────────────────────────────
   function _cmdAttr(command, onCallback, prefix) {
     if (command) return ' data-cmd="' + command + '"';
     if (onCallback) {
-      var fnName = prefix + (++_callbackCounter);
+      var fnName = prefix + ++_callbackCounter;
       _registerCallback(onCallback, fnName);
       return ' data-cmd="' + fnName + '"';
     }
@@ -165,7 +170,7 @@
     if (command) {
       el.setAttribute('data-cmd', command);
     } else if (onCallback) {
-      var fnName = prefix + (++_callbackCounter);
+      var fnName = prefix + ++_callbackCounter;
       _registerCallback(onCallback, fnName);
       el.setAttribute('data-cmd', fnName);
     }
@@ -193,16 +198,29 @@
 
     // mic 按钮
     if (opts.showMic && opts.voiceCommand) {
-      html += '<button class="' + cls.mic + '"' + _cmdAttr(opts.voiceCommand, null, '') + ' title="语音输入">' +
-        _iconHtml(opts.voiceIcon, opts.iconSize) + '</button>';
+      html +=
+        '<button class="' +
+        cls.mic +
+        '"' +
+        _cmdAttr(opts.voiceCommand, null, '') +
+        ' title="语音输入">' +
+        _iconHtml(opts.voiceIcon, opts.iconSize) +
+        '</button>';
     } else if (opts.showMic && opts.onVoice) {
-      html += '<button class="' + cls.mic + '"' + _cmdAttr(null, opts.onVoice, '_bip_voice_') + ' title="语音输入">' +
-        _iconHtml(opts.voiceIcon, opts.iconSize) + '</button>';
+      html +=
+        '<button class="' +
+        cls.mic +
+        '"' +
+        _cmdAttr(null, opts.onVoice, '_bip_voice_') +
+        ' title="语音输入">' +
+        _iconHtml(opts.voiceIcon, opts.iconSize) +
+        '</button>';
     }
 
     // 发送按钮
     if (opts.showSend) {
-      html += '<button class="' + cls.send + '"' + _cmdAttr(opts.sendCommand, opts.onSend, '_bip_send_') + ' title="发送">';
+      html +=
+        '<button class="' + cls.send + '"' + _cmdAttr(opts.sendCommand, opts.onSend, '_bip_send_') + ' title="发送">';
       if (opts.sendButtonText && opts.sendButtonIcon) {
         // icon + text 并存（如 rules 场景的 wand-2 + "解析"）
         html += _iconHtml(opts.sendIcon, opts.iconSize) + ' ' + escHtml(opts.sendButtonText);
@@ -214,7 +232,7 @@
       html += '</button>';
     }
 
-    if (cls.inner) html += '</div>';  // 关闭内层 wrapper
+    if (cls.inner) html += '</div>'; // 关闭内层 wrapper
     html += '</div>';
 
     return html;
@@ -258,7 +276,7 @@
       input.setAttribute('data-cmd-key', 'Enter');
       input.setAttribute('data-cmd', opts.sendCommand);
     } else if (opts.onSend) {
-      var fnName = '_bip_send_' + (++_callbackCounter);
+      var fnName = '_bip_send_' + ++_callbackCounter;
       input.setAttribute('data-cmd-key', 'Enter');
       input.setAttribute('data-cmd', fnName);
       _registerCallback(opts.onSend, fnName);

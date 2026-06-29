@@ -875,7 +875,9 @@
       ov.style.minHeight = '0';
     }
     // 追加日常分析到对话流中（不清空旧的初始化内容）
-    chatAppend('<div class="c-row agent"><div class="c-bubble" style="background:#f0fdf4;border-color:#bbf7d0;font-weight:600;font-size:13px">✅ 初始化完成，小安已接管日常监管</div></div>');
+    chatAppend(
+      '<div class="c-row agent"><div class="c-bubble" style="background:#f0fdf4;border-color:#bbf7d0;font-weight:600;font-size:13px">✅ 初始化完成，小安已接管日常监管</div></div>',
+    );
     // 使用日常工作台的数据生成三个板块，追加到对话中
     setTimeout(function () {
       appendDailyOverview();
@@ -885,7 +887,9 @@
   // ═══ 追加日常工作台三大板块到对话流 ─────────────────────
   function appendDailyOverview() {
     if (typeof window.renderDashboard !== 'function') {
-      sceneAppend('<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b">日常监管已就绪，你可以直接输入问题。</div></div>');
+      sceneAppend(
+        '<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b">日常监管已就绪，你可以直接输入问题。</div></div>',
+      );
       return;
     }
   }
@@ -902,16 +906,34 @@
     var t = tags[step.category] || tags.think;
     var suffix = done
       ? '<span style="margin-left:auto;font-weight:700;color:#16a34a">✓</span>'
-      : '<span class="thinking-dot" style="width:5px;height:5px;border-radius:50%;background:' + t.color + ';display:inline-block;animation:pulse 1s infinite;margin-left:auto"></span>';
-    return '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:' + (done ? '#16a34a' : '#64748b') + ';padding:5px 0">' +
-      '<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;color:' + t.color + ';background:' + t.bg + ';flex-shrink:0">' +
-      step.icon + ' ' + t.label + '</span> ' + step.text + suffix + '</div>';
+      : '<span class="thinking-dot" style="width:5px;height:5px;border-radius:50%;background:' +
+        t.color +
+        ';display:inline-block;animation:pulse 1s infinite;margin-left:auto"></span>';
+    return (
+      '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:' +
+      (done ? '#16a34a' : '#64748b') +
+      ';padding:5px 0">' +
+      '<span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;color:' +
+      t.color +
+      ';background:' +
+      t.bg +
+      ';flex-shrink:0">' +
+      step.icon +
+      ' ' +
+      t.label +
+      '</span> ' +
+      step.text +
+      suffix +
+      '</div>'
+    );
   }
 
   // ═══ 追加日常工作台三大板块到对话流 ─────────────────────
   function appendDailyOverview() {
     if (typeof window.renderDashboard !== 'function') {
-      sceneAppend('<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b">日常监管已就绪，你可以直接输入问题。</div></div>');
+      sceneAppend(
+        '<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b">日常监管已就绪，你可以直接输入问题。</div></div>',
+      );
       return;
     }
 
@@ -921,8 +943,11 @@
       { icon: '⚡', text: '正在生成综合分析报告…', category: 'generate' },
     ];
     // 初始渲染第一个步骤
-    var thinkHtml = '<div class="c-row agent" id="thinkingRow"><div class="c-bubble" style="background:#f8fafc;border-color:#e2e8f0;padding:12px 16px">' +
-      '<div id="thinkingSteps">' + processStepHTML(thinkSteps[0]) + '</div></div></div>';
+    var thinkHtml =
+      '<div class="c-row agent" id="thinkingRow"><div class="c-bubble" style="background:#f8fafc;border-color:#e2e8f0;padding:12px 16px">' +
+      '<div id="thinkingSteps">' +
+      processStepHTML(thinkSteps[0]) +
+      '</div></div></div>';
     sceneAppend(thinkHtml);
 
     // 解析仪表板为三大板块
@@ -947,11 +972,16 @@
       if (stepIdx >= thinkSteps.length) {
         var row = document.getElementById('thinkingRow');
         if (row) row.remove();
-        sceneAppend(QuickChip.render([
-          { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
-          { label: '督办超期企业', text: '督办超期未整改的企业' },
-          { label: '查看行动建议', text: '查看行动建议' },
-        ], { variant: 'inline' }));
+        sceneAppend(
+          QuickChip.render(
+            [
+              { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
+              { label: '督办超期企业', text: '督办超期未整改的企业' },
+              { label: '查看行动建议', text: '查看行动建议' },
+            ],
+            { variant: 'inline' },
+          ),
+        );
         refreshIcons();
         return;
       }
@@ -987,8 +1017,10 @@
 
     // 简短的欢迎信息
     var html = '';
-    html += '<div class="c-row agent"><div class="agent-text" style="font-size:15px;font-weight:700;color:#1e293b;padding:8px 0 2px">杨站长，欢迎来到应急监管工作台</div></div>';
-    html += '<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b;line-height:1.6">日常监管工作将从这里展开。你可以直接提问，或者选择以下快捷入口开始：</div></div>';
+    html +=
+      '<div class="c-row agent"><div class="agent-text" style="font-size:15px;font-weight:700;color:#1e293b;padding:8px 0 2px">杨站长，欢迎来到应急监管工作台</div></div>';
+    html +=
+      '<div class="c-row agent"><div class="agent-text" style="font-size:13px;color:#64748b;line-height:1.6">日常监管工作将从这里展开。你可以直接提问，或者选择以下快捷入口开始：</div></div>';
     sceneAppend(html);
 
     // 快捷芯片
@@ -1155,7 +1187,9 @@
           var periodEl = document.querySelector('.attn-card[data-id="monthly_report"] .attn-period');
           if (periodEl) periodEl.textContent = '每月 28 日';
           // 回复
-          appendBelowCard('<div class="c-row agent"><div class="agent-text">好的，已调整。月报改为每月 28 日生成。</div></div>');
+          appendBelowCard(
+            '<div class="c-row agent"><div class="agent-text">好的，已调整。月报改为每月 28 日生成。</div></div>',
+          );
           refreshIcons('initOverlay');
         }, 600);
         return;
@@ -1400,7 +1434,11 @@
       return [
         C.sectionHead('🔍 当前安全态势概览'),
         '<div style="font-size:13px;color:#64748b;line-height:1.7;margin-bottom:12px;padding:12px 14px;background:#f8fafc;border-radius:12px">' +
-          '截至今日，辖区内共有 <strong>47 条</strong>待处理隐患，其中 ' + C.statusBadge('danger', '重大隐患 3 条') + '，' + C.statusBadge('warning', '较大隐患 8 条') + '。' +
+          '截至今日，辖区内共有 <strong>47 条</strong>待处理隐患，其中 ' +
+          C.statusBadge('danger', '重大隐患 3 条') +
+          '，' +
+          C.statusBadge('warning', '较大隐患 8 条') +
+          '。' +
           '</div>',
         C.statCardRow([
           { label: '待处理隐患', value: '47', trend: 'up', delta: '+5', desc: '较上周' },
@@ -1472,9 +1510,7 @@
         '<div style="background:#f8fafc;border-radius:12px;padding:12px;font-size:12px;color:#64748b;line-height:1.6">' +
           '💡 夏季消防安全专项检查进度滞后，距 deadline 还有 10 天，建议加快节奏。' +
           '</div>',
-        C.buttonRow([
-          { label: '查看任务异常分析', cmd: 'showToast', arg: '正在分析任务异常…' },
-        ]),
+        C.buttonRow([{ label: '查看任务异常分析', cmd: 'showToast', arg: '正在分析任务异常…' }]),
       ];
     }
 
@@ -1501,9 +1537,7 @@
           title: 'AI 分析',
           desc: '风险上升企业主要集中在物流片区（12 家），建议重点关注。',
         }),
-        C.buttonRow([
-          { label: '查看风险上升企业', cmd: 'showToast', arg: '已列出风险上升企业' },
-        ]),
+        C.buttonRow([{ label: '查看风险上升企业', cmd: 'showToast', arg: '已列出风险上升企业' }]),
       ];
     }
 
@@ -1529,9 +1563,7 @@
         '<div style="background:#f8fafc;border-radius:12px;padding:12px;font-size:12px;color:#64748b;line-height:1.6">' +
           '💡 区域站有 3 人连续 3 天未填报巡查记录，村社层面勾庄片、物流片各有滞后，建议提醒。' +
           '</div>',
-        C.buttonRow([
-          { label: '提醒未填报人员', cmd: 'showToast', arg: '已发送提醒通知' },
-        ]),
+        C.buttonRow([{ label: '提醒未填报人员', cmd: 'showToast', arg: '已发送提醒通知' }]),
       ];
     }
 
@@ -1567,7 +1599,7 @@
     // 默认不显示快捷芯片
     return null;
   }
- // ─── 全局快捷芯片：追加到消息流中，跟随内容滚动 ──
+  // ─── 全局快捷芯片：追加到消息流中，跟随内容滚动 ──
   // ─── 全局输入条：根据场景更新占位符和命令 ──────────────
   function updateGlobalInputBar(opts) {
     if (!opts) opts = {};

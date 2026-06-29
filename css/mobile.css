@@ -838,8 +838,12 @@
 }
 
 @keyframes pwaFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ─── 安全区域适配（iPhone X+ 等刘海屏） ────────────────────── */
@@ -1560,7 +1564,9 @@ html.pwa-standalone .launcher-body {
 /* ─── 微交互：过渡动画（仅 touch 设备） ───────────────────── */
 @media (hover: none) and (pointer: coarse) {
   .toast {
-    transition: transform 0.25s var(--ease), opacity 0.25s var(--ease);
+    transition:
+      transform 0.25s var(--ease),
+      opacity 0.25s var(--ease);
   }
   .toast.visible {
     animation: toastSlideUp 0.25s var(--ease) both;
@@ -1742,4 +1748,3 @@ html.pwa-standalone .launcher-body {
     justify-content: center;
   }
 }
-

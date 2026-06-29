@@ -762,16 +762,18 @@
     html += '  </div>';
     if (aiZoneVisible) {
       html += '  <div class="rules-ai-body">';
-      html += '    ' + BottomInputBar.render({
-        placeholder: '说一句话就能配置规则，例如：企业连续30天未登录标记为危险',
-        inputId: 'aiRuleInput',
-        sendCommand: 'parseAiRule',
-        variant: 'purple',
-        sendIcon: 'wand-2',
-        sendButtonText: '解析',
-        showMic: false,
-        inputValue: aiInput
-      });
+      html +=
+        '    ' +
+        BottomInputBar.render({
+          placeholder: '说一句话就能配置规则，例如：企业连续30天未登录标记为危险',
+          inputId: 'aiRuleInput',
+          sendCommand: 'parseAiRule',
+          variant: 'purple',
+          sendIcon: 'wand-2',
+          sendButtonText: '解析',
+          showMic: false,
+          inputValue: aiInput,
+        });
       html += '    <div class="rules-ai-hints">试试：';
       var examples = getAIExamples();
       for (var i = 0; i < Math.min(examples.length, 4); i++) {
@@ -1222,16 +1224,18 @@
   // 重建 AI 配置区展开内容
   function rebuildAiZoneBody(zone) {
     var bodyHtml = '<div class="rules-ai-body">';
-    bodyHtml += '    ' + BottomInputBar.render({
-      placeholder: '说一句话就能配置规则，例如：企业连续30天未登录标记为危险',
-      inputId: 'aiRuleInput',
-      sendCommand: 'parseAiRule',
-      variant: 'purple',
-      sendIcon: 'wand-2',
-      sendButtonText: '解析',
-      showMic: false,
-      inputValue: aiInput
-    });
+    bodyHtml +=
+      '    ' +
+      BottomInputBar.render({
+        placeholder: '说一句话就能配置规则，例如：企业连续30天未登录标记为危险',
+        inputId: 'aiRuleInput',
+        sendCommand: 'parseAiRule',
+        variant: 'purple',
+        sendIcon: 'wand-2',
+        sendButtonText: '解析',
+        showMic: false,
+        inputValue: aiInput,
+      });
     bodyHtml += '    <div class="rules-ai-hints">试试：';
     var examples = getAIExamples();
     for (var i = 0; i < Math.min(examples.length, 4); i++) {

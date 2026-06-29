@@ -7,10 +7,7 @@
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       http-equiv="Content-Security-Policy"
       content="
@@ -49,24 +46,51 @@
     <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <!-- iOS 启动屏（splash/ 目录有9种设备尺寸的启动图片） -->
-    <link rel="apple-touch-startup-image" href="splash/splash-640x1136.png"
-          media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-750x1334.png"
-          media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-828x1792.png"
-          media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-1125x2436.png"
-          media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-1170x2532.png"
-          media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-1242x2208.png"
-          media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-1242x2688.png"
-          media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-1284x2778.png"
-          media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
-    <link rel="apple-touch-startup-image" href="splash/splash-1290x2796.png"
-          media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-640x1136.png"
+      media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-750x1334.png"
+      media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-828x1792.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-1125x2436.png"
+      media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-1170x2532.png"
+      media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-1242x2208.png"
+      media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-1242x2688.png"
+      media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-1284x2778.png"
+      media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)"
+    />
+    <link
+      rel="apple-touch-startup-image"
+      href="splash/splash-1290x2796.png"
+      media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)"
+    />
     <meta name="mobile-web-app-capable" content="yes" />
     <!-- 禁止自动识别电话/地址（管理后台不需要） -->
     <meta name="format-detection" content="telephone=no,address=no,email=no" />
@@ -88,7 +112,7 @@
     <link rel="stylesheet" href="css/utilities.css" />
     <link rel="stylesheet" href="css/inspection.css" />
   </head>
-  <body style="background:#f8f9fc">
+  <body style="background: #f8f9fc">
     <!-- ═══ 密码保护浮层 ═══════════════════════════════════════════ -->
     <div class="pwd-overlay" id="pwdOverlay">
       <div class="pwd-modal">
@@ -208,7 +232,7 @@
       <!-- ─── 演示菜单（右上角） ──────────────────────────── -->
       <div class="demo-menu-wrap" id="demoMenuWrap">
         <div class="demo-menu demo-corner-menu" id="demoMenu">
-            <div class="demo-menu-label">Demo</div>
+          <div class="demo-menu-label">Demo</div>
           <div class="demo-menu-item" data-cmd="switchScene" data-arg="special-inspection" title="智能专项检查">
             <i data-lucide="file-search" width="18" height="18"></i>
             <span>智能专项检查</span>
@@ -310,7 +334,14 @@
 
     <!-- ─── 居中大浮层：行动项确认弹窗 ────────────────────────── -->
     <div class="action-modal-overlay" id="actionModalOverlay" onclick="closeActionModal()" tabindex="-1"></div>
-    <div class="action-modal-panel" id="actionModal" role="dialog" aria-modal="true" aria-labelledby="actionModalTitle" tabindex="-1">
+    <div
+      class="action-modal-panel"
+      id="actionModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="actionModalTitle"
+      tabindex="-1"
+    >
       <div class="action-modal-header">
         <h3 id="actionModalTitle"></h3>
         <button class="action-modal-close" onclick="closeActionModal()" aria-label="关闭">
@@ -658,7 +689,7 @@
         <line x1="12" y1="20" x2="12.01" y2="20" />
       </svg>
       <span>网络已断开 · 已缓存内容仍可查阅</span>
-      <button id="offlineRetryBtn" class="offline-retry-btn" style="display:none">重试</button>
+      <button id="offlineRetryBtn" class="offline-retry-btn" style="display: none">重试</button>
     </div>
 
     <!-- ═══ SW 更新提示 ═══════════════════════════════════════════ -->
@@ -895,7 +926,9 @@
           if (lastDiff > 80) {
             var chatBar = e.target.closest('.global-chat-bar, .init-chat-bar');
             if (chatBar) {
-              setTimeout(function () { chatBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 200);
+              setTimeout(function () {
+                chatBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 200);
             }
           }
         });
@@ -977,7 +1010,7 @@
           var match = location.search.match(/scene=([^&]+)/);
           if (match) return match[1];
           var scene = document.getElementById('sceneContent');
-          return scene ? (scene.dataset.scene || 'default') : 'default';
+          return scene ? scene.dataset.scene || 'default' : 'default';
         }
 
         function savePosition() {
@@ -1007,10 +1040,14 @@
 
         // 节流保存：scroll 事件每 300ms 保存一次
         if (centerEl) {
-          centerEl.addEventListener('scroll', function () {
-            if (saveTimer) clearTimeout(saveTimer);
-            saveTimer = setTimeout(savePosition, 300);
-          }, { passive: true });
+          centerEl.addEventListener(
+            'scroll',
+            function () {
+              if (saveTimer) clearTimeout(saveTimer);
+              saveTimer = setTimeout(savePosition, 300);
+            },
+            { passive: true },
+          );
         }
 
         // 暴露恢复方法给场景切换逻辑
@@ -1030,8 +1067,12 @@
       (function () {
         if (!('ontouchstart' in window)) return;
         var SHEET_SELECTORS = [
-          '.action-modal-panel', '.pa-modal-panel', '.modal-panel',
-          '.drill-float', '.conv-sheet', '.memory-panel'
+          '.action-modal-panel',
+          '.pa-modal-panel',
+          '.modal-panel',
+          '.drill-float',
+          '.conv-sheet',
+          '.memory-panel',
         ];
         var threshold = 100; // 下滑 px 阈值触发关闭（略高于之前，减少误触）
         var startY = 0;
@@ -1042,18 +1083,23 @@
 
         function findSheet(el) {
           while (el) {
-            if (el.classList && SHEET_SELECTORS.some(function (sel) {
-              return el.matches && el.matches(sel);
-            })) return el;
+            if (
+              el.classList &&
+              SHEET_SELECTORS.some(function (sel) {
+                return el.matches && el.matches(sel);
+              })
+            )
+              return el;
             el = el.parentElement;
           }
           return null;
         }
 
         function isSheetOpen(sheet) {
-          return sheet.classList.contains('open') ||
-                 (sheet.style.display && sheet.style.display !== 'none' &&
-                  sheet.style.display !== '');
+          return (
+            sheet.classList.contains('open') ||
+            (sheet.style.display && sheet.style.display !== 'none' && sheet.style.display !== '')
+          );
         }
 
         function getCloseTrigger(sheet) {
@@ -1268,7 +1314,9 @@
             retryBtn.style.display = 'none';
             retryBtn.textContent = '重试中...';
             fetch(window.location.href, { method: 'HEAD', cache: 'no-cache' })
-              .then(function () { window.location.reload(); })
+              .then(function () {
+                window.location.reload();
+              })
               .catch(function () {
                 retryBtn.textContent = '重试';
                 retryBtn.style.display = 'inline-flex';
@@ -1422,11 +1470,23 @@
     <script>
       /* ═══ 触觉反馈 (Haptic Feedback) ══════════════════════════════ */
       window.haptic = (function () {
-        if (!navigator.vibrate) return { light: function(){}, medium: function(){}, heavy: function(){} };
+        if (!navigator.vibrate) return { light: function () {}, medium: function () {}, heavy: function () {} };
         return {
-          light: function () { try { navigator.vibrate(6); } catch(e) {} },
-          medium: function () { try { navigator.vibrate(12); } catch(e) {} },
-          heavy: function () { try { navigator.vibrate(20); } catch(e) {} },
+          light: function () {
+            try {
+              navigator.vibrate(6);
+            } catch (e) {}
+          },
+          medium: function () {
+            try {
+              navigator.vibrate(12);
+            } catch (e) {}
+          },
+          heavy: function () {
+            try {
+              navigator.vibrate(20);
+            } catch (e) {}
+          },
         };
       })();
       document.addEventListener('click', function (e) {
@@ -1488,9 +1548,9 @@
             '<div class="skeleton skeleton-h1"></div>' +
             '<div class="skeleton skeleton-badge" style="margin-bottom:12px"></div>' +
             '<div class="skeleton-table">' +
-              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
-              '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
+            '<div class="skeleton-table-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>' +
             '</div>';
         } else {
           html =
@@ -1542,55 +1602,75 @@
           if (!('ontouchstart' in window)) return;
           if (window.innerWidth > 768) return;
 
-          container.addEventListener('touchstart', function (e) {
-            if (self._refreshState === 'refreshing') return;
-            if (container.scrollTop > 5) return;
-            self._startY = e.touches[0].clientY;
-            self._pulling = true;
-          }, { passive: true });
+          container.addEventListener(
+            'touchstart',
+            function (e) {
+              if (self._refreshState === 'refreshing') return;
+              if (container.scrollTop > 5) return;
+              self._startY = e.touches[0].clientY;
+              self._pulling = true;
+            },
+            { passive: true },
+          );
 
-          container.addEventListener('touchmove', function (e) {
-            if (!self._pulling || self._refreshState === 'refreshing') return;
-            var delta = e.touches[0].clientY - self._startY;
-            if (delta < 0) { self._pulling = false; return; }
-            var pull = Math.min(delta * 0.4, self._maxPull);
-            var label = el.querySelector('.ptr-label');
-            var icon = el.querySelector('.ptr-icon');
-            if (pull >= self._threshold) {
-              self._refreshState = 'ready';
-              if (label) label.textContent = '释放刷新';
-              if (icon) icon.classList.add('flipped');
-            } else {
-              self._refreshState = 'pulling';
-              if (label) label.textContent = '下拉刷新';
-              if (icon) icon.classList.remove('flipped');
-            }
-            el.style.height = Math.max(0, pull) + 'px';
-          }, { passive: true });
-
-          container.addEventListener('touchend', function () {
-            if (!self._pulling) return;
-            self._pulling = false;
-            if (self._refreshState === 'ready') {
-              self._refreshState = 'refreshing';
+          container.addEventListener(
+            'touchmove',
+            function (e) {
+              if (!self._pulling || self._refreshState === 'refreshing') return;
+              var delta = e.touches[0].clientY - self._startY;
+              if (delta < 0) {
+                self._pulling = false;
+                return;
+              }
+              var pull = Math.min(delta * 0.4, self._maxPull);
               var label = el.querySelector('.ptr-label');
               var icon = el.querySelector('.ptr-icon');
-              if (label) label.textContent = '刷新中...';
-              if (icon) { icon.className = 'ptr-spinner'; }
-              el.style.height = '44px';
-              el.classList.add('visible');
-              self.onRefresh(function () {
-                self._refreshState = 'idle';
-                el.style.height = '0';
-                el.classList.remove('visible');
+              if (pull >= self._threshold) {
+                self._refreshState = 'ready';
+                if (label) label.textContent = '释放刷新';
+                if (icon) icon.classList.add('flipped');
+              } else {
+                self._refreshState = 'pulling';
                 if (label) label.textContent = '下拉刷新';
-                if (icon) { icon.className = 'ptr-icon'; icon.classList.remove('flipped'); }
-              });
-            } else {
-              el.style.height = '0';
-              self._refreshState = 'idle';
-            }
-          }, { passive: true });
+                if (icon) icon.classList.remove('flipped');
+              }
+              el.style.height = Math.max(0, pull) + 'px';
+            },
+            { passive: true },
+          );
+
+          container.addEventListener(
+            'touchend',
+            function () {
+              if (!self._pulling) return;
+              self._pulling = false;
+              if (self._refreshState === 'ready') {
+                self._refreshState = 'refreshing';
+                var label = el.querySelector('.ptr-label');
+                var icon = el.querySelector('.ptr-icon');
+                if (label) label.textContent = '刷新中...';
+                if (icon) {
+                  icon.className = 'ptr-spinner';
+                }
+                el.style.height = '44px';
+                el.classList.add('visible');
+                self.onRefresh(function () {
+                  self._refreshState = 'idle';
+                  el.style.height = '0';
+                  el.classList.remove('visible');
+                  if (label) label.textContent = '下拉刷新';
+                  if (icon) {
+                    icon.className = 'ptr-icon';
+                    icon.classList.remove('flipped');
+                  }
+                });
+              } else {
+                el.style.height = '0';
+                self._refreshState = 'idle';
+              }
+            },
+            { passive: true },
+          );
         };
 
         window[INST_KEY] = PTR;
@@ -1600,58 +1680,92 @@
 
     <!-- ═══ 无障碍：模态框焦点陷阱 + Escape 关闭 ════════════════ -->
     <script>
-    (function () {
-      var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
-      var FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+      (function () {
+        var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
+        var FOCUSABLE =
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-      function getCloseTrigger(el) {
-        var overlay = el.closest('[class*="overlay"]');
-        if (overlay) return overlay;
-        var closeAttr = el.getAttribute('data-cmd');
-        if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
-        var child = el.querySelector('[data-cmd*="close"]');
-        if (child) return child;
-        return el;
-      }
-
-      function closeModal(modal) {
-        var trigger = getCloseTrigger(modal);
-        trigger.classList.remove('open');
-        if (trigger.style.display) trigger.style.display = 'none';
-        modal.style.display = '';
-        modal.classList.remove('open');
-      }
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          var openModal = document.querySelector(MODAL_SELECTOR + '.open, ' + MODAL_SELECTOR + '[style*="display: block"], ' + MODAL_SELECTOR + '[style*="display: flex"]');
-          if (openModal) { e.preventDefault(); closeModal(openModal); }
+        function getCloseTrigger(el) {
+          var overlay = el.closest('[class*="overlay"]');
+          if (overlay) return overlay;
+          var closeAttr = el.getAttribute('data-cmd');
+          if (closeAttr && closeAttr.indexOf('close') !== -1) return el;
+          var child = el.querySelector('[data-cmd*="close"]');
+          if (child) return child;
+          return el;
         }
-        if (e.key === 'Tab') {
-          var modal = document.querySelector(MODAL_SELECTOR + '.open, ' + MODAL_SELECTOR + '[style*="display: block"], ' + MODAL_SELECTOR + '[style*="display: flex"]');
-          if (!modal) return;
-          var focusable = modal.querySelectorAll(FOCUSABLE);
-          if (focusable.length === 0) return;
-          var first = focusable[0], last = focusable[focusable.length - 1];
-          if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
-          else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
-        }
-      });
 
-      var observer = new MutationObserver(function () {
-        document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
-          var isVisible = modal.classList.contains('open') ||
-            (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
-          if (isVisible && !modal.dataset.focused) {
-            modal.dataset.focused = '1';
-            var first = modal.querySelector(FOCUSABLE);
-            if (first) setTimeout(function () { first.focus(); }, 100);
+        function closeModal(modal) {
+          var trigger = getCloseTrigger(modal);
+          trigger.classList.remove('open');
+          if (trigger.style.display) trigger.style.display = 'none';
+          modal.style.display = '';
+          modal.classList.remove('open');
+        }
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            var openModal = document.querySelector(
+              MODAL_SELECTOR +
+                '.open, ' +
+                MODAL_SELECTOR +
+                '[style*="display: block"], ' +
+                MODAL_SELECTOR +
+                '[style*="display: flex"]',
+            );
+            if (openModal) {
+              e.preventDefault();
+              closeModal(openModal);
+            }
           }
-          if (!isVisible) { delete modal.dataset.focused; }
+          if (e.key === 'Tab') {
+            var modal = document.querySelector(
+              MODAL_SELECTOR +
+                '.open, ' +
+                MODAL_SELECTOR +
+                '[style*="display: block"], ' +
+                MODAL_SELECTOR +
+                '[style*="display: flex"]',
+            );
+            if (!modal) return;
+            var focusable = modal.querySelectorAll(FOCUSABLE);
+            if (focusable.length === 0) return;
+            var first = focusable[0],
+              last = focusable[focusable.length - 1];
+            if (e.shiftKey) {
+              if (document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+              }
+            } else {
+              if (document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+              }
+            }
+          }
         });
-      });
-      observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
-    })();
+
+        var observer = new MutationObserver(function () {
+          document.querySelectorAll(MODAL_SELECTOR).forEach(function (modal) {
+            var isVisible =
+              modal.classList.contains('open') ||
+              (modal.style.display && modal.style.display !== 'none' && modal.style.display !== '');
+            if (isVisible && !modal.dataset.focused) {
+              modal.dataset.focused = '1';
+              var first = modal.querySelector(FOCUSABLE);
+              if (first)
+                setTimeout(function () {
+                  first.focus();
+                }, 100);
+            }
+            if (!isVisible) {
+              delete modal.dataset.focused;
+            }
+          });
+        });
+        observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+      })();
     </script>
   </body>
 </html>

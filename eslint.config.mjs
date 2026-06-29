@@ -9,6 +9,7 @@ export default [
       'scripts/',
       '*.bak',
       '*.json',
+      'js/lucide.min.js',
     ],
   },
   {
@@ -26,6 +27,10 @@ export default [
         escapeHtml: 'readonly',
         showToast: 'readonly',
         showThinking: 'readonly',
+        // 组件全局
+        QuickChip: 'readonly',
+        CardPrimitives: 'readonly',
+        BottomInputBar: 'readonly',
       },
     },
     rules: {

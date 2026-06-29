@@ -472,26 +472,31 @@
 
   // ─── 场景骨架屏生成 ──────────────────────────────────────────
   function renderSkeleton(sceneId) {
-    var _r = function (str, n) { var r = ''; for (var i = 0; i < n; i++) r += str; return r; };
+    var _r = function (str, n) {
+      var r = '';
+      for (var i = 0; i < n; i++) r += str;
+      return r;
+    };
     switch (sceneId) {
       case 'dashboard':
         return (
           '<div class="scene-content">' +
           '<div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding:0 2px">' +
-            _r('<div class="skeleton" style="height:60px;min-width:80px;border-radius:12px;flex-shrink:0"></div>', 4) +
+          _r('<div class="skeleton" style="height:60px;min-width:80px;border-radius:12px;flex-shrink:0"></div>', 4) +
           '</div>' +
           '<div class="skeleton skeleton-title" style="margin-bottom:12px"></div>' +
           _r('<div class="skeleton" style="height:72px;border-radius:12px;margin-bottom:10px"></div>', 3) +
           '<div class="skeleton skeleton-title" style="margin-top:8px;margin-bottom:12px;width:30%"></div>' +
           '<div style="display:flex;flex-direction:column;gap:10px">' +
-            _r(
-              '<div style="display:flex;align-items:center;gap:10px">' +
+          _r(
+            '<div style="display:flex;align-items:center;gap:10px">' +
               '<div class="skeleton" style="width:36px;height:36px;border-radius:999px;flex-shrink:0"></div>' +
               '<div style="flex:1;display:flex;flex-direction:column;gap:6px">' +
               '<div class="skeleton" style="height:10px;width:70%;border-radius:4px;background:var(--fg-soft);position:relative;overflow:hidden"></div>' +
               '<div class="skeleton" style="height:8px;width:40%;border-radius:4px;background:var(--fg-soft);position:relative;overflow:hidden"></div>' +
-              '</div></div>', 3
-            ) +
+              '</div></div>',
+            3,
+          ) +
           '</div></div>'
         );
       case 'hazard-report':
@@ -499,25 +504,26 @@
           '<div class="scene-content">' +
           '<div class="skeleton skeleton-title" style="margin-bottom:14px;width:50%"></div>' +
           '<div style="display:flex;gap:6px;margin-bottom:16px">' +
-            _r('<div class="skeleton" style="height:26px;width:60px;border-radius:999px;flex-shrink:0"></div>', 3) +
+          _r('<div class="skeleton" style="height:26px;width:60px;border-radius:999px;flex-shrink:0"></div>', 3) +
           '</div>' +
           '<div style="display:flex;flex-direction:column;gap:10px">' +
-            _r(
-              '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--fg-soft)">' +
+          _r(
+            '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--fg-soft)">' +
               '<div class="skeleton" style="width:4px;height:40px;border-radius:2px;flex-shrink:0"></div>' +
               '<div style="flex:1;display:flex;flex-direction:column;gap:5px">' +
               '<div class="skeleton" style="height:10px;width:65%;border-radius:4px"></div>' +
               '<div class="skeleton" style="height:8px;width:45%;border-radius:4px"></div>' +
               '<div class="skeleton" style="height:8px;width:30%;border-radius:4px"></div>' +
-              '</div></div>', 5
-            ) +
+              '</div></div>',
+            5,
+          ) +
           '</div></div>'
         );
       case 'efficiency':
         return (
           '<div class="scene-content">' +
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">' +
-            _r('<div class="skeleton" style="height:70px;border-radius:12px"></div>', 4) +
+          _r('<div class="skeleton" style="height:70px;border-radius:12px"></div>', 4) +
           '</div>' +
           '<div class="skeleton skeleton-title" style="margin-bottom:10px;width:35%"></div>' +
           _r('<div class="skeleton" style="height:60px;border-radius:12px;margin-bottom:10px"></div>', 3) +
@@ -529,7 +535,7 @@
         return (
           '<div class="scene-content">' +
           '<div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto">' +
-            _r('<div class="skeleton" style="height:80px;min-width:120px;border-radius:12px;flex-shrink:0"></div>', 3) +
+          _r('<div class="skeleton" style="height:80px;min-width:120px;border-radius:12px;flex-shrink:0"></div>', 3) +
           '</div>' +
           '<div class="skeleton skeleton-title" style="margin-bottom:10px;width:40%"></div>' +
           _r('<div class="skeleton" style="height:64px;border-radius:12px;margin-bottom:10px"></div>', 4) +
@@ -540,14 +546,15 @@
           '<div class="scene-content">' +
           '<div class="skeleton skeleton-title" style="margin-bottom:12px;width:30%"></div>' +
           '<div style="display:flex;flex-direction:column;gap:12px">' +
-            _r(
-              '<div style="display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--fg-soft)">' +
+          _r(
+            '<div style="display:flex;gap:10px;padding:12px;border-radius:12px;background:var(--fg-soft)">' +
               '<div class="skeleton" style="width:36px;height:36px;border-radius:999px;flex-shrink:0"></div>' +
               '<div style="flex:1;display:flex;flex-direction:column;gap:5px">' +
               '<div class="skeleton" style="height:10px;width:55%;border-radius:4px"></div>' +
               '<div class="skeleton" style="height:8px;width:35%;border-radius:4px"></div>' +
-              '</div></div>', 5
-            ) +
+              '</div></div>',
+            5,
+          ) +
           '</div></div>'
         );
       default:
@@ -582,7 +589,9 @@
   /* 符合约束 2「交互必有响应」— 关键操作提供触觉确认              */
   function hapticFeedback(pattern) {
     if (navigator.vibrate && window.matchMedia('(display-mode: standalone)').matches) {
-      try { navigator.vibrate(pattern || 8); } catch (e) {}
+      try {
+        navigator.vibrate(pattern || 8);
+      } catch (e) {}
     }
   }
 
@@ -593,10 +602,14 @@
     if (loading) {
       btn._origHtml = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = '<span class="btn-loader" style="display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spinner 0.6s linear infinite;vertical-align:middle"></span>';
+      btn.innerHTML =
+        '<span class="btn-loader" style="display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spinner 0.6s linear infinite;vertical-align:middle"></span>';
     } else {
       btn.disabled = false;
-      if (btn._origHtml) { btn.innerHTML = btn._origHtml; delete btn._origHtml; }
+      if (btn._origHtml) {
+        btn.innerHTML = btn._origHtml;
+        delete btn._origHtml;
+      }
     }
   }
 
@@ -680,7 +693,10 @@
       }
       // 更新全局底部输入条（placeholder + 命令）
       if (window.YAQ.updateGlobalInputBar) {
-        var inputOpts = { placeholder: '直接问小安，例如：帮我看一下物流片区为什么隐患闭环率下降', sendCommand: 'globalChatSend' };
+        var inputOpts = {
+          placeholder: '直接问小安，例如：帮我看一下物流片区为什么隐患闭环率下降',
+          sendCommand: 'globalChatSend',
+        };
         if (sceneId === 'agent-init') {
           inputOpts.placeholder = '长按直接语音输入';
           inputOpts.sendCommand = 'convChatSend';
@@ -748,9 +764,7 @@
             ];
             break;
           case 'monthly-report':
-            chips = [
-              { label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' },
-            ];
+            chips = [{ label: '按业务组 + 多片区展示', text: '把安全工作组分拆为业务组，并按多个片区展示' }];
             break;
         }
         window.YAQ.showGlobalQuickChip(chips);
@@ -808,9 +822,9 @@
         '<div class="ai-briefing-head">' +
         '<span><b>' +
         greeting +
-      '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
-      '</div>' +
-      '</div>';
+        '，站长。</b><br><span class="ai-briefing-desc">小安结合你的关注重点和今日数据，为你梳理了当前需要留意的几个方向。</span></span><button class="agent-config-btn" onclick="openAgentConfig(\'dashboard\')" title="查看 Agent 配置"><i data-lucide="settings-2" width="14" height="14"></i></button></div>' +
+        '</div>' +
+        '</div>';
     }
 
     // ─── 整体安全态势（指标卡两排） ────────────────────────────
@@ -5445,7 +5459,14 @@
       initialMsgHtml +
       '</div></div>' +
       '</div>' +
-      BottomInputBar.render({ placeholder: '追问...', inputId: 'dmsgInput', sendCommand: 'askAI', variant: 'compact', iconSize: 14, sendIcon: 'send' }) +
+      BottomInputBar.render({
+        placeholder: '追问...',
+        inputId: 'dmsgInput',
+        sendCommand: 'askAI',
+        variant: 'compact',
+        iconSize: 14,
+        sendIcon: 'send',
+      }) +
       '</div>';
 
     $dom.drillBody.innerHTML = listHtml + aiHtml;

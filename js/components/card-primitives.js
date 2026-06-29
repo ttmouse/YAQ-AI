@@ -125,7 +125,8 @@
       html += '<div class="cp-detailcard-meta">';
       for (var k in opts.meta) {
         if (opts.meta.hasOwnProperty(k)) {
-          html += '<span class="cp-detailcard-meta-item"><strong>' + esc(k) + ':</strong> ' + esc(opts.meta[k]) + '</span>';
+          html +=
+            '<span class="cp-detailcard-meta-item"><strong>' + esc(k) + ':</strong> ' + esc(opts.meta[k]) + '</span>';
         }
       }
       html += '</div>';

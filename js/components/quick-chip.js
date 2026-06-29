@@ -37,9 +37,9 @@
      默认配置
      ═══════════════════════════════════════════════════════════════════════ */
   var DEFAULTS = {
-    variant: 'wrap',         // 'wrap' | 'inline'
-    containerClass: '',      // 附加到容器上的 CSS 类
-    onChipClick: null,       // 全局芯片点击回调 (chip, event) => void
+    variant: 'wrap', // 'wrap' | 'inline'
+    containerClass: '', // 附加到容器上的 CSS 类
+    onChipClick: null, // 全局芯片点击回调 (chip, event) => void
   };
 
   /* ═══════════════════════════════════════════════════════════════════════
@@ -53,7 +53,7 @@
     var attrs = ' class="' + cls + '"';
     // 支持两种回调模式：click 字符串 / text 快捷发送
     // 点击后自动移除芯片容器
-    var removeChips = ';var _r=this.closest(\'.quick-chips-row\');if(_r)_r.remove()';
+    var removeChips = ";var _r=this.closest('.quick-chips-row');if(_r)_r.remove()";
     if (chip.click) {
       attrs += ' onclick="' + escHtml(chip.click) + removeChips + '"';
     } else if (chip.text) {
@@ -69,7 +69,8 @@
     html += escHtml(chip.label);
     // 非 primary 芯片显示箭头图标
     if (!chip.primary) {
-      html += '<svg class="qc-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>';
+      html +=
+        '<svg class="qc-chip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>';
     }
     html += '</button>';
     return html;
@@ -143,8 +144,10 @@
         icon.setAttribute('stroke', 'currentColor');
         icon.setAttribute('stroke-width', '2');
         var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', '12'); line.setAttribute('y1', '19');
-        line.setAttribute('x2', '12'); line.setAttribute('y2', '5');
+        line.setAttribute('x1', '12');
+        line.setAttribute('y1', '19');
+        line.setAttribute('x2', '12');
+        line.setAttribute('y2', '5');
         icon.appendChild(line);
         var poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
         poly.setAttribute('points', '5 12 12 5 19 12');
@@ -169,7 +172,12 @@
      ═══════════════════════════════════════════════════════════════════════ */
   function escHtml(s) {
     if (typeof s !== 'string') return '';
-    return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   /* ═══════════════════════════════════════════════════════════════════════

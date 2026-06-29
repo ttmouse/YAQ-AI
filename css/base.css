@@ -58,7 +58,9 @@ input {
 }
 
 /* iOS Safari: 禁止输入框聚焦时自动缩放（font-size < 16px 时触发） */
-input, textarea, select {
+input,
+textarea,
+select {
   font-size: 16px !important;
 }
 p {
@@ -192,7 +194,9 @@ ol {
   }
 }
 @keyframes spinner {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes pulse {
   0%,

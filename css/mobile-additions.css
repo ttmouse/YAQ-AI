@@ -28,8 +28,14 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes toastSlideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -37,8 +43,12 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes skeletonShimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: calc(400px + 100%) 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: calc(400px + 100%) 0;
+  }
 }
 
 .skeleton {
@@ -68,39 +78,108 @@
 }
 
 @keyframes skeletonSceneFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.skeleton-h1 { height: 24px; width: 45%; margin-bottom: 4px; border-radius: var(--r-sm, 6px); }
-.skeleton-h2 { height: 18px; width: 35%; border-radius: var(--r-sm, 6px); }
-.skeleton-p { height: 12px; width: 100%; }
-.skeleton-p.short { width: 65%; }
-.skeleton-card { height: 80px; border-radius: var(--r-lg, 12px); }
-.skeleton-card.tall { height: 120px; }
-.skeleton-row { display: flex; gap: var(--sp-3, 12px); align-items: center; }
-.skeleton-row .skeleton-avatar { width: 36px; height: 36px; border-radius: var(--r-round, 50%); flex-shrink: 0; }
-.skeleton-row .skeleton-line { flex: 1; height: 12px; }
-.skeleton-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3, 12px); }
-.skeleton-grid .skeleton-card { height: 72px; }
-.skeleton-badge { width: 60px; height: 20px; border-radius: var(--r-full, 999px); }
-.skeleton-table { display: flex; flex-direction: column; gap: 8px; }
-.skeleton-table-row { display: flex; gap: 8px; }
-.skeleton-table-row .skeleton-cell { flex: 1; height: 12px; }
-.skeleton-table-row .skeleton-cell:first-child { flex: 0 0 80px; }
+.skeleton-h1 {
+  height: 24px;
+  width: 45%;
+  margin-bottom: 4px;
+  border-radius: var(--r-sm, 6px);
+}
+.skeleton-h2 {
+  height: 18px;
+  width: 35%;
+  border-radius: var(--r-sm, 6px);
+}
+.skeleton-p {
+  height: 12px;
+  width: 100%;
+}
+.skeleton-p.short {
+  width: 65%;
+}
+.skeleton-card {
+  height: 80px;
+  border-radius: var(--r-lg, 12px);
+}
+.skeleton-card.tall {
+  height: 120px;
+}
+.skeleton-row {
+  display: flex;
+  gap: var(--sp-3, 12px);
+  align-items: center;
+}
+.skeleton-row .skeleton-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-round, 50%);
+  flex-shrink: 0;
+}
+.skeleton-row .skeleton-line {
+  flex: 1;
+  height: 12px;
+}
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3, 12px);
+}
+.skeleton-grid .skeleton-card {
+  height: 72px;
+}
+.skeleton-badge {
+  width: 60px;
+  height: 20px;
+  border-radius: var(--r-full, 999px);
+}
+.skeleton-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.skeleton-table-row {
+  display: flex;
+  gap: 8px;
+}
+.skeleton-table-row .skeleton-cell {
+  flex: 1;
+  height: 12px;
+}
+.skeleton-table-row .skeleton-cell:first-child {
+  flex: 0 0 80px;
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    ═══ 内容入场动画 — iOS 风格错峰入场 ══════════════════════════
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes sceneContentEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes listItemEnter {
-  from { opacity: 0; transform: translateX(-6px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 768px) {
@@ -115,22 +194,34 @@
   }
   .scene-content .work-item:nth-child(2),
   .scene-content .hazard-item:nth-child(2),
-  .scene-content .metric-card:nth-child(2) { animation-delay: 0.03s; }
+  .scene-content .metric-card:nth-child(2) {
+    animation-delay: 0.03s;
+  }
   .scene-content .work-item:nth-child(3),
   .scene-content .hazard-item:nth-child(3),
-  .scene-content .metric-card:nth-child(3) { animation-delay: 0.06s; }
+  .scene-content .metric-card:nth-child(3) {
+    animation-delay: 0.06s;
+  }
   .scene-content .work-item:nth-child(4),
   .scene-content .hazard-item:nth-child(4),
-  .scene-content .metric-card:nth-child(4) { animation-delay: 0.09s; }
+  .scene-content .metric-card:nth-child(4) {
+    animation-delay: 0.09s;
+  }
   .scene-content .work-item:nth-child(5),
   .scene-content .hazard-item:nth-child(5),
-  .scene-content .metric-card:nth-child(5) { animation-delay: 0.12s; }
+  .scene-content .metric-card:nth-child(5) {
+    animation-delay: 0.12s;
+  }
   .scene-content .work-item:nth-child(6),
   .scene-content .hazard-item:nth-child(6),
-  .scene-content .metric-card:nth-child(6) { animation-delay: 0.15s; }
-  .scene-content .work-item:nth-child(n+7),
-  .scene-content .hazard-item:nth-child(n+7),
-  .scene-content .metric-card:nth-child(n+7) { animation-delay: 0.18s; }
+  .scene-content .metric-card:nth-child(6) {
+    animation-delay: 0.15s;
+  }
+  .scene-content .work-item:nth-child(n + 7),
+  .scene-content .hazard-item:nth-child(n + 7),
+  .scene-content .metric-card:nth-child(n + 7) {
+    animation-delay: 0.18s;
+  }
   .scene-content.entered > * {
     animation: none;
     opacity: 1;
@@ -199,7 +290,9 @@
 }
 
 @media (hover: none) and (pointer: coarse) {
-  *:focus { outline: none; }
+  *:focus {
+    outline: none;
+  }
   *:focus-visible {
     outline: 3px solid var(--accent);
     outline-offset: 3px;
@@ -240,7 +333,6 @@
   }
 }
 
-
 /* ═══════════════════════════════════════════════════════════════════
    ═══ 下拉刷新指示器 ═══════════════════════════════════════════
    ═══════════════════════════════════════════════════════════════════ */
@@ -258,19 +350,28 @@
   user-select: none;
   -webkit-user-select: none;
 }
-.ptr-indicator.visible { height: 44px; }
+.ptr-indicator.visible {
+  height: 44px;
+}
 .ptr-indicator .ptr-spinner {
-  width: 16px; height: 16px;
+  width: 16px;
+  height: 16px;
   border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: ptrSpin 0.6s linear infinite;
 }
-.ptr-indicator .ptr-icon { transition: transform 0.2s ease; }
-.ptr-indicator .ptr-icon.flipped { transform: rotate(180deg); }
+.ptr-indicator .ptr-icon {
+  transition: transform 0.2s ease;
+}
+.ptr-indicator .ptr-icon.flipped {
+  transform: rotate(180deg);
+}
 
 @keyframes ptrSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -282,8 +383,14 @@
 }
 
 @keyframes offlineSlideDown {
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -291,8 +398,15 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes contextPulse {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 
 .long-press-hint {
@@ -306,7 +420,7 @@
   background: var(--surface, #fff);
   padding: 4px 10px;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -314,13 +428,23 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 @keyframes sceneFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes sceneSlideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scene-content.transitioning {
@@ -332,12 +456,24 @@
 }
 
 /* stagger 延迟 — 2 个及以上子元素逐个入场 */
-.scene-content.transitioning > *:nth-child(1) { animation-delay: 0.02s; }
-.scene-content.transitioning > *:nth-child(2) { animation-delay: 0.06s; }
-.scene-content.transitioning > *:nth-child(3) { animation-delay: 0.10s; }
-.scene-content.transitioning > *:nth-child(4) { animation-delay: 0.14s; }
-.scene-content.transitioning > *:nth-child(5) { animation-delay: 0.18s; }
-.scene-content.transitioning > *:nth-child(6) { animation-delay: 0.22s; }
+.scene-content.transitioning > *:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.scene-content.transitioning > *:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.scene-content.transitioning > *:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.scene-content.transitioning > *:nth-child(4) {
+  animation-delay: 0.14s;
+}
+.scene-content.transitioning > *:nth-child(5) {
+  animation-delay: 0.18s;
+}
+.scene-content.transitioning > *:nth-child(6) {
+  animation-delay: 0.22s;
+}
 
 /* 场景切换滤镜 */
 .scene-content.fade-out {
@@ -360,13 +496,15 @@
 }
 
 .panel-snap-back {
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.3s ease !important;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease !important;
 }
 
 .panel-dismiss {
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.2s ease !important;
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -374,7 +512,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .scrollable-top-shadow {
-  background: linear-gradient(to bottom, rgba(0,0,0,0.06), transparent);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.06), transparent);
   position: sticky;
   top: 0;
   height: 4px;
@@ -401,8 +539,14 @@
 }
 
 @keyframes slideUpSnap {
-  from { transform: translateY(120%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 768px) {
