@@ -237,14 +237,14 @@ ol {
 .state-loading .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--line);
+  border: 3px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
 .state-loading .state-text {
   font-size: var(--fs-sm, 13px);
-  color: var(--weak);
+  color: var(--muted);
 }
 
 .state-empty {
@@ -261,11 +261,11 @@ ol {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--line) 50%, transparent);
+  background: color-mix(in oklch, var(--border) 50%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--weak);
+  color: var(--muted);
   opacity: 0.6;
 }
 .state-empty .state-title {
@@ -275,7 +275,7 @@ ol {
 }
 .state-empty .state-desc {
   font-size: var(--fs-sm, 13px);
-  color: var(--weak);
+  color: var(--muted);
   text-align: center;
   max-width: 320px;
   line-height: 1.5;
@@ -308,8 +308,58 @@ ol {
 }
 .state-error .state-desc {
   font-size: var(--fs-sm, 13px);
-  color: var(--weak);
+  color: var(--muted);
   text-align: center;
   max-width: 320px;
   line-height: 1.5;
+}
+
+/* ─── 空状态操作按钮 — 交互必有响应 ──────────────────── */
+.state-empty .state-action {
+  margin-top: 4px;
+}
+.state-empty .state-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--r-md, 8px);
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 38px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    opacity 0.15s,
+    transform 0.1s;
+}
+.state-empty .state-action-btn:active {
+  opacity: 0.85;
+  transform: scale(0.96);
+}
+
+/* 移动端空状态适配 */
+@media (max-width: 768px) {
+  .state-empty {
+    padding: 48px 16px;
+  }
+  .state-empty .state-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .state-empty .state-title {
+    font-size: 14px;
+  }
+  .state-empty .state-desc {
+    font-size: 12px;
+  }
+  .state-empty .state-action-btn {
+    font-size: 12px;
+    padding: 7px 16px;
+    min-height: 36px;
+  }
 }

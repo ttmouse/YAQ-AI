@@ -123,7 +123,7 @@
   flex: 1;
   min-height: 0;
   margin-top: 0;
-  margin-bottom: var(--sp-1);
+  margin-bottom: 0;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
@@ -238,6 +238,8 @@
   max-width: 100%;
   margin: 0;
   padding: 0 12px;
+  display: flex;
+  flex-direction: column;
 }
 @media (min-width: 769px) {
   .result {
@@ -1678,7 +1680,9 @@
   color: var(--muted);
 }
 .drill-item-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-size: 9px;
   font-weight: 600;
   padding: 1px 6px;
@@ -1689,9 +1693,17 @@
   background: var(--red-soft);
   color: var(--red);
 }
+.drill-item-badge.danger::before {
+  content: '⚠';
+  font-size: 8px;
+}
 .drill-item-badge.warning {
   background: var(--orange-soft);
   color: var(--orange);
+}
+.drill-item-badge.warning::before {
+  content: '△';
+  font-size: 8px;
 }
 .drill-item-badge.neutral {
   background: var(--fg-soft);
@@ -3796,7 +3808,9 @@
   background: var(--accent-light);
 }
 .ht-status {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 600;
   padding: 2px 8px;
@@ -3806,13 +3820,28 @@
   background: var(--red-soft);
   color: var(--red);
 }
+.ht-status.danger::before {
+  content: '⚠';
+  font-size: 9px;
+  line-height: 1;
+}
 .ht-status.warning {
   background: var(--orange-soft);
   color: var(--orange);
 }
+.ht-status.warning::before {
+  content: '△';
+  font-size: 9px;
+  line-height: 1;
+}
 .ht-status.stable {
   background: var(--green-soft);
   color: var(--green);
+}
+.ht-status.stable::before {
+  content: '✓';
+  font-size: 9px;
+  line-height: 1;
 }
 .ht-status.neutral {
   background: var(--fg-soft);
@@ -4794,6 +4823,9 @@
 .scene-content {
   text-align: left;
   padding: var(--scene-pad-y) 0 var(--scene-pad-bottom);
+  flex: 1;
+  min-height: 0;
+  position: relative;
 }
 .scene-content > * {
   animation: fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -6793,13 +6825,11 @@
   max-width: 100%;
   height: auto;
   min-height: 38px;
-  margin: 0 auto var(--sp-1_5);
-  margin: 0 auto calc(var(--sp-1_5) + constant(safe-area-inset-bottom));
-  margin: 0 auto calc(var(--sp-1_5) + env(safe-area-inset-bottom));
+  margin: 0 auto 0;
   background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--border);
   border-radius: 23px;
-  padding: var(--sp-1_5) var(--sp-1) var(--sp-1_5) var(--sp-2);
+  padding: var(--sp-1) var(--sp-1) var(--sp-1) var(--sp-2);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -6816,20 +6846,19 @@
     width: calc(100% - var(--sp-8));
     max-width: var(--scene-max-w);
     min-height: 46px;
-    margin: 0 auto calc(var(--chat-bar-bottom) + constant(safe-area-inset-bottom));
-    margin: 0 auto calc(var(--chat-bar-bottom) + env(safe-area-inset-bottom));
+    margin: 0 auto 0;
   }
 }
 .global-chat-inner {
   display: flex;
   align-items: center;
   gap: var(--sp-1_5);
-  min-height: 36px;
+  min-height: 28px;
   height: auto;
 }
 .global-chat-inner textarea {
   flex: 1;
-  min-height: 36px;
+  min-height: 28px;
   height: auto;
   border: none;
   outline: none;
@@ -6839,7 +6868,7 @@
   background: transparent;
   min-width: 0;
   resize: none;
-  line-height: 36px;
+  line-height: 28px;
   padding: 0;
   overflow: hidden;
   box-sizing: border-box;
