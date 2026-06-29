@@ -937,7 +937,7 @@
   /* ─── 顶栏沉浸延伸（PWA standalone） ──────────────── */
   /* 顶栏背景延伸至状态栏区域，与刘海/灵动岛视觉融合 */
   .top {
-    padding-top: calc(env(safe-area-inset-top, 20px) + 4px) !important;
+    padding-top: calc(env(safe-area-inset-top, 20px) + 12px) !important;
     background: transparent;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
