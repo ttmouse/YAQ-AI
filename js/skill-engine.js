@@ -503,7 +503,13 @@
       window.YAQ.unifiedChatSend = function () {
         var input = document.getElementById('globalChatInput');
         if (!input || !input.value.trim()) return;
-        self.handleUserInput(input.value.trim());
+        // 暂停自动滚动，和快捷输入一致的置顶行为
+        self._autoScrollPaused = true;
+        var sc = self.container && self.container.closest('.center');
+        if (sc) sc._autoScrollEnabled = false;
+        var text = input.value.trim();
+        self.handleUserInput(text);
+        self._scrollUserToTop();
         input.value = '';
         var evt = document.createEvent('Event');
         evt.initEvent('input', true, false);
@@ -565,51 +571,54 @@
       if (chipsRow) chipsRow.remove();
       this.handleUserInput(text);
 
-      // ── 快捷输入滚动：两步走 ─────────────────────────
-      setTimeout(function () {
-        var sc = self.container && self.container.closest('.center');
-        var userRows = self.container && self.container.querySelectorAll('.c-row.user');
-        var userRow = userRows && userRows.length > 0 ? userRows[userRows.length - 1] : null;
-        if (userRow && sc) {
-          // 让 .result 透传 overflow，确保滚动发生在 .center 上
-          var resultEl = self.container.closest('.result');
-          if (resultEl) resultEl.style.overflowY = 'visible';
-
-          // 撑高一屏：min-height 让后续 AI 内容有空间填充
-          var curH = sc.scrollHeight;
-          self.container.style.minHeight = (curH + sc.clientHeight) + 'px';
-
-          // 自定义平滑滚动（可控速度）
-          sc._autoScrollEnabled = false;
-          var start = sc.scrollTop;
-          var offset = userRow.getBoundingClientRect().top - sc.getBoundingClientRect().top;
-          var target = Math.max(0, start + offset - 16);
-          var duration = 800; // ms，越大越慢
-          var startTime = performance.now();
-
-          function easeInOutCubic(t) {
-            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-          }
-
-          function animateScroll(now) {
-            var elapsed = now - startTime;
-            var progress = Math.min(elapsed / duration, 1);
-            var eased = easeInOutCubic(progress);
-            sc.scrollTop = start + (target - start) * eased;
-            if (progress < 1) {
-              requestAnimationFrame(animateScroll);
-            } else {
-              sc._autoScrollEnabled = false;
-            }
-          }
-
-          requestAnimationFrame(animateScroll);
-        }
-      }, 100);
+      this._scrollUserToTop();
 
       setTimeout(function () {
         self._processingChip = false;
       }, 1000);
+    },
+
+    /**
+     * 将最后一条用户消息滚动到视口顶部（平滑动画）
+     * 同时撑高一屏 min-height，给后续 AI 内容留空间
+     */
+    _scrollUserToTop: function () {
+      var self = this;
+      setTimeout(function () {
+        var sc = self.container && self.container.closest('.center');
+        var userRows = self.container && self.container.querySelectorAll('.c-row.user');
+        var userRow = userRows && userRows.length > 0 ? userRows[userRows.length - 1] : null;
+        if (!userRow || !sc) return;
+
+        var resultEl = self.container.closest('.result');
+        if (resultEl) resultEl.style.overflowY = 'visible';
+
+        var curH = sc.scrollHeight;
+        self.container.style.minHeight = (curH + sc.clientHeight) + 'px';
+
+        var start = sc.scrollTop;
+        var offset = userRow.getBoundingClientRect().top - sc.getBoundingClientRect().top;
+        var target = Math.max(0, start + offset - 16);
+        var duration = 800;
+        var startTime = performance.now();
+
+        function easeInOutCubic(t) {
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function animateScroll(now) {
+          var elapsed = now - startTime;
+          var progress = Math.min(elapsed / duration, 1);
+          sc.scrollTop = start + (target - start) * easeInOutCubic(progress);
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          } else {
+            sc._autoScrollEnabled = false;
+          }
+        }
+
+        requestAnimationFrame(animateScroll);
+      }, 100);
     },
 
     /**
