@@ -1686,7 +1686,7 @@
     var top = el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
     // 留出顶部间距（给场景标题等留空间）
     requestAnimationFrame(function () {
-      sc.scrollTop = Math.max(0, top - 16);
+      sc.scrollTop = Math.max(0, top - 46);
     });
   }
 
