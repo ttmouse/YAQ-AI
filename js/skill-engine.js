@@ -633,7 +633,7 @@
 
         var start = sc.scrollTop;
         var offset = userRow.getBoundingClientRect().top - sc.getBoundingClientRect().top;
-        var target = Math.max(0, start + offset - 16);
+        var target = Math.max(0, start + offset - 46);
         var duration = 800;
         var startTime = performance.now();
 
