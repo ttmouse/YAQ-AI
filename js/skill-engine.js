@@ -108,6 +108,7 @@
       var displayMode = opts.displayMode || 'collapse'; // 'collapse' 或 'replace'
 
       var processId = 'process_' + Date.now();
+      var startTime = Date.now(); // 记录开始时间
 
       // ── 创建过程容器 ──
       var processHtml =
@@ -236,6 +237,7 @@
               ' data-chain-html="' + encodeURIComponent(chainHtml) + '"' +
               ' data-detail-html="' + encodeURIComponent(detailHtml) + '">' +
               '<span class="process-collapsed-text">' + escapeHtml(summary.text) + '</span>' +
+              '<span class="process-collapsed-time">' + ((Date.now() - startTime) / 1000).toFixed(1) + 's</span>' +
               '<span class="process-collapsed-toggle">查看详情</span>' +
               '</div>';
             chainContainer.innerHTML = collapsedHtml;
