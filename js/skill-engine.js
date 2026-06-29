@@ -21,6 +21,7 @@
     initialized: false,
     messages: [],
     container: null, // #sceneContent
+    _autoScrollPaused: false, // 快捷输入触发后暂停自动滚动（保留兼容，建议使用 center._autoScrollEnabled）
 
     /**
      * 初始化对话界面
@@ -439,10 +440,13 @@
     },
 
     _scrollToBottom: function () {
+      if (this._autoScrollPaused) return;
       var container = this.container;
       if (!container) return;
       var sc = container.closest('.center');
       if (!sc) return;
+      // 同样检查 center 上的统一自动滚动开关
+      if (sc._autoScrollEnabled === false) return;
       requestAnimationFrame(function () {
         sc.scrollTop = sc.scrollHeight;
       });
@@ -540,11 +544,63 @@
       if (this._processingChip) return;
       this._processingChip = true;
       var self = this;
+
+      // 暂停自动滚动：快捷输入后，用户消息置顶，后续生成内容不再自动跟滚
+      this._autoScrollPaused = true;
+      // 同时禁用 .center 上的 MutationObserver 自动滚动（agent-init.js 的 startConversation）
+      var sc = this.container && this.container.closest('.center');
+      if (sc) sc._autoScrollEnabled = false;
+
       // 移除所有芯片行
       var chipsRow = document.querySelector('.quick-chips-row, .qc-chip-wrap');
       if (chipsRow) chipsRow.remove();
       this.handleUserInput(text);
-      setTimeout(function () { self._processingChip = false; }, 1000);
+
+      // ── 快捷输入滚动：两步走 ─────────────────────────
+      setTimeout(function () {
+        var sc = self.container && self.container.closest('.center');
+        var userRows = self.container && self.container.querySelectorAll('.c-row.user');
+        var userRow = userRows && userRows.length > 0 ? userRows[userRows.length - 1] : null;
+        if (userRow && sc) {
+          // 让 .result 透传 overflow，确保滚动发生在 .center 上
+          var resultEl = self.container.closest('.result');
+          if (resultEl) resultEl.style.overflowY = 'visible';
+
+          // 撑高一屏：min-height 让后续 AI 内容有空间填充
+          var curH = sc.scrollHeight;
+          self.container.style.minHeight = (curH + sc.clientHeight) + 'px';
+
+          // 自定义平滑滚动（可控速度）
+          sc._autoScrollEnabled = false;
+          var start = sc.scrollTop;
+          var offset = userRow.getBoundingClientRect().top - sc.getBoundingClientRect().top;
+          var target = Math.max(0, start + offset - 16);
+          var duration = 800; // ms，越大越慢
+          var startTime = performance.now();
+
+          function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+          }
+
+          function animateScroll(now) {
+            var elapsed = now - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = easeInOutCubic(progress);
+            sc.scrollTop = start + (target - start) * eased;
+            if (progress < 1) {
+              requestAnimationFrame(animateScroll);
+            } else {
+              sc._autoScrollEnabled = false;
+            }
+          }
+
+          requestAnimationFrame(animateScroll);
+        }
+      }, 100);
+
+      setTimeout(function () {
+        self._processingChip = false;
+      }, 1000);
     },
 
     /**
