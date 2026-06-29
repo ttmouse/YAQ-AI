@@ -43,9 +43,9 @@
   z-index: 100;
   min-height: 46px;
   border-radius: 0;
-  background: linear-gradient(to bottom, var(--surface) 60%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: transparent;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--fg);
   padding-left: 10px;
   padding-right: 10px;
@@ -147,6 +147,10 @@
   gap: 10px;
   overflow-y: auto;
   scrollbar-gutter: stable;
+}
+.center {
+  mask-image: linear-gradient(to bottom, transparent 0px, black 56px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 56px);
 }
 
 /* ─── 左栏：侧边导航 ─────────────────────────────────────────── */
