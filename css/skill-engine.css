@@ -1,0 +1,193 @@
+/* ════════════════════════════════════════════════════════════════
+   skill-engine.css — 统一对话引擎样式
+   包含：对话流容器、思考过程可视化、折叠组件、快捷芯片
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── 对话流基础样式（复用 agent-init.css 的 .c-row / .c-bubble） ─── */
+
+/* 欢迎消息 */
+.c-row.welcome {
+  margin-bottom: 4px;
+}
+.welcome-bubble {
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%) !important;
+  border-color: #c7d2fe !important;
+}
+.welcome-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4338ca;
+  line-height: 1.6;
+}
+
+/* 概览气泡（首屏仪表盘内容） */
+.c-row.overview {
+  margin-bottom: 16px;
+}
+.overview-bubble {
+  background: #fff !important;
+  border: 1px solid #e2eaf8 !important;
+  padding: 4px 16px 12px !important;
+}
+
+/* ─── 思考过程 ─── */
+
+/* 过程容器 */
+.c-row.process {
+  margin-bottom: 8px;
+}
+.process-bubble {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  padding: 12px 16px !important;
+  min-width: 260px;
+}
+
+/* 思考链步骤 */
+/* 思考链步骤 — 单行替换 */
+.process-steps-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+}
+.ps-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+.ps-dot.active {
+  background: #6366f1;
+  animation: psPulse 1s ease-in-out infinite;
+}
+.ps-dot.done {
+  background: #22c55e;
+  animation: none;
+}
+.ps-label {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+@keyframes psPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* 后台步骤 — 单行替换，跟随思考链下方 */
+.process-detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #eef2f6;
+  min-height: 24px;
+}
+.process-detail .ps-dot {
+  width: 6px;
+  height: 6px;
+}
+.process-detail .ps-label {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ─── 折叠状态 ─── */
+
+/* 折叠后的过程容器 */
+.c-row.process.collapsed {
+  margin-bottom: 4px;
+}
+.c-row.process.collapsed .process-bubble {
+  padding: 8px 14px !important;
+  background: #f1f5f9 !important;
+  cursor: pointer;
+}
+.c-row.process.collapsed .process-chain {
+  flex-direction: row;
+}
+.process-collapsed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.process-collapsed:hover .process-collapsed-text {
+  color: #6366f1;
+}
+.process-collapsed-icon {
+  font-size: 14px;
+}
+.process-collapsed-text {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.process-collapsed-toggle {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+/* 展开状态 */
+.c-row.process.expanded .process-bubble {
+  background: #f8fafc !important;
+  cursor: default;
+}
+.c-row.process.expanded .process-collapsed-toggle {
+  color: #6366f1;
+}
+.c-row.process.expanded .process-chain {
+  flex-direction: column;
+}
+
+/* ─── 结构化回复 ─── */
+
+.c-row.reply {
+  margin-bottom: 12px;
+}
+.reply-bubble {
+  background: #fff !important;
+  border-color: #e2eaf8 !important;
+  padding: 16px 18px !important;
+}
+
+/* ─── 快捷芯片竖向排列 ─── */
+.quick-chips-row {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 6px !important;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── 内容与底部输入栏的间距 ─── */
+/* 使用 margin-bottom 避免 flex: 1 下 padding 挤压内容 */
+.scene-content::after {
+  content: '';
+  display: block;
+  height: 40px;
+  flex-shrink: 0;
+}
+.scene-content > .quick-chips-row {
+  margin-bottom: 12px;
+}

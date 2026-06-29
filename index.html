@@ -112,6 +112,7 @@
     <link rel="stylesheet" href="css/mobile-additions.css" />
     <link rel="stylesheet" href="css/utilities.css" />
     <link rel="stylesheet" href="css/inspection.css" />
+    <link rel="stylesheet" href="css/skill-engine.css" />
     <!-- ═══ 关键路径内联样式 — 防止加载过程中的背景闪白 ═══════ -->
     <style>
       html {
@@ -616,6 +617,7 @@
     <script src="js/components/bottom-input-bar.js"></script>
     <script src="js/components/quick-chip.js"></script>
     <script src="js/components/card-primitives.js"></script>
+    <script src="js/skill-engine.js"></script>
     <script>
       // ═══ Lucide 性能优化: 默认限定图标渲染容器 ═══════════════════════
       (function () {
@@ -755,6 +757,20 @@
     <script src="js/track-store.js"></script>
     <script src="js/rules.js"></script>
     <script src="js/agent-init.js"></script>
+
+    <!-- ═══ 确保统一对话引擎的命令不被覆盖 ════════════════════ -->
+    <script>
+      (function() {
+        if (window.YAQ && window.YAQ.unifiedChatQuick) {
+          window.YAQ.globalChatQuick = window.YAQ.unifiedChatQuick;
+          window.globalChatQuick = window.YAQ.unifiedChatQuick;
+        }
+        if (window.YAQ && window.YAQ.unifiedChatSend) {
+          window.YAQ.globalChatSend = window.YAQ.unifiedChatSend;
+          window.globalChatSend = window.YAQ.unifiedChatSend;
+        }
+      })();
+    </script>
 
     <!-- ═══ PWA Service Worker 注册 ════════════════════════════════ -->
     <script>
@@ -1738,8 +1754,8 @@
           var sc = document.getElementById('sceneContent');
           if (sc) sc.classList.add('entered');
         };
-
-      <script>
+    </script>
+    <script>
         (function () {
           var MODAL_SELECTOR = '[role="dialog"][aria-modal="true"]';
           var FOCUSABLE =

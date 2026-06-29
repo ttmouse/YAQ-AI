@@ -1,7 +1,7 @@
 /* ═══ Service Worker — PWA 离线缓存（Network-First 策略）═══════════ */
 /* 管理后台数据动态变化，使用 Network-First 确保数据新鲜，
    离线时回退到缓存保障基本可用。 */
-var CACHE_NAME = 'yaq-ai-v10';
+var CACHE_NAME = 'yaq-ai-v13';
 var STATIC_ASSETS = [
   './',
   './index.html',
@@ -12,13 +12,15 @@ var STATIC_ASSETS = [
   './404.html',
   './ai-vs-traditional-comparison.html',
   './special-inspection-prototype.html',
-  './css/app.css',
+  './css/style.css',
   './css/mobile.css',
   './css/mobile-additions.css',
+  './css/skill-engine.css',
   './js/app.js',
   './js/track-store.js',
   './js/rules.js',
   './js/agent-init.js',
+  './js/skill-engine.js',
   './js/data/mock-data.js',
   './js/lucide.min.js',
   './js/components/bottom-input-bar.js',
@@ -118,7 +120,7 @@ self.addEventListener('fetch', function (e) {
           return caches.match('./index.html');
         }
         return new Response(
-          '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><title>离线模式 — 小安工作台</title><style>body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8f9fc;color:#1e1e2e;text-align:center;padding:24px}@media(prefers-color-scheme:dark){body{background:#1a1a2e;color:#e8e8ee}}.offline-icon{width:72px;height:72px;border-radius:50%;background:#e8e8ee;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:32px;color:#8e8ea0}@media(prefers-color-scheme:dark){.offline-icon{background:#2a2a3e;color:#6e6e80}}h1{font-size:20px;font-weight:650;margin:0 0 8px}.desc{font-size:14px;color:#8e8ea0;margin:0 0 8px;line-height:1.6;max-width:300px}.hint{font-size:12px;color:#b0b0b8;margin-bottom:28px}.retry-btn{padding:14px 36px;border:none;border-radius:12px;background:#6366f1;color:#fff;font-size:15px;font-weight:600;cursor:pointer;min-height:48px;transition:opacity .15s}.retry-btn:active{opacity:.8}.retry-btn:disabled{opacity:.5}.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}.status-dot.offline{background:#ef4444}.status-dot.checking{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style></head><body><div class="offline-icon">📡</div><h1>网络已断开</h1><p class="desc">已缓存的内容仍可正常查阅<br>新数据将在恢复连接后自动加载</p><p class="hint"><span class="status-dot offline"></span>当前处于离线模式</p><button class="retry-btn" onclick="this.disabled=true;this.textContent='正在重连…';this.querySelector('.status-dot')?.classList.replace('offline','checking');fetch(window.location.href,{method:'HEAD',cache:'no-cache'}).then(function(){location.reload()}).catch(function(){this.disabled=false;this.textContent='重新连接'}.bind(this))">重新连接</button></body></html>',
+          `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><title>离线模式 — 小安工作台</title><style>body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8f9fc;color:#1e1e2e;text-align:center;padding:24px}@media(prefers-color-scheme:dark){body{background:#1a1a2e;color:#e8e8ee}}.offline-icon{width:72px;height:72px;border-radius:50%;background:#e8e8ee;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:32px;color:#8e8ea0}@media(prefers-color-scheme:dark){.offline-icon{background:#2a2a3e;color:#6e6e80}}h1{font-size:20px;font-weight:650;margin:0 0 8px}.desc{font-size:14px;color:#8e8ea0;margin:0 0 8px;line-height:1.6;max-width:300px}.hint{font-size:12px;color:#b0b0b8;margin-bottom:28px}.retry-btn{padding:14px 36px;border:none;border-radius:12px;background:#6366f1;color:#fff;font-size:15px;font-weight:600;cursor:pointer;min-height:48px;transition:opacity .15s}.retry-btn:active{opacity:.8}.retry-btn:disabled{opacity:.5}.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}.status-dot.offline{background:#ef4444}.status-dot.checking{background:#f59e0b;animation:pulse 1s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}</style></head><body><div class="offline-icon">📡</div><h1>网络已断开</h1><p class="desc">已缓存的内容仍可正常查阅<br>新数据将在恢复连接后自动加载</p><p class="hint"><span class="status-dot offline"></span>当前处于离线模式</p><button class="retry-btn" onclick="this.disabled=true;this.textContent='正在重连…';this.querySelector('.status-dot')?.classList.replace('offline','checking');fetch(window.location.href,{method:'HEAD',cache:'no-cache'}).then(function(){location.reload()}).catch(function(){this.disabled=false;this.textContent='重新连接'}.bind(this))">重新连接</button></body></html>`,
           { status: 503, headers: { 'Content-Type': 'text/html;charset=utf-8' } }
         );
       });

@@ -29,10 +29,10 @@ npm run build:js
 
 echo "🎨 压缩并合并 CSS..."
 # 合并非响应式 CSS → app.css（跨文件去重）
-cat css/style.css css/agent-init.css css/tokens.css css/base.css css/layout.css css/blocks.css css/detail.css css/modal.css css/work-items.css css/assistant.css css/inspection.css css/utilities.css > /tmp/app-merged.css 2>/dev/null
+cat css/style.css css/agent-init.css css/tokens.css css/base.css css/layout.css css/blocks.css css/detail.css css/modal.css css/work-items.css css/assistant.css css/inspection.css css/skill-engine.css css/utilities.css > /tmp/app-merged.css 2>/dev/null
 npx cleancss -o dist/css/app.css /tmp/app-merged.css 2>/dev/null
 rm -f /tmp/app-merged.css
-echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（12 个源文件合并+去重压缩）"
+echo "   $(wc -c < dist/css/app.css | tr -d ' ')B — app.css（13 个源文件合并+去重压缩）"
 
 # 单独压缩 mobile.css（响应式单独加载）
 npx cleancss -o dist/css/mobile.css css/mobile.css 2>/dev/null

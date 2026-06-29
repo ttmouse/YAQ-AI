@@ -185,10 +185,16 @@
     var box = document.getElementById('chatBox');
     if (!box) return;
     box.insertAdjacentHTML('beforeend', html);
-    // init-overlay 现在是滚动容器，统一滚到底部
+    // chatBox (.init-content) 是实际滚动容器（overflow-y: auto），统一滚到底部
+    scrollChatToBottom();
+  }
+
+  // ─── 初始化对话容器安全滚动到底部 ──────────────────────
+  function scrollChatToBottom() {
+    var box = document.getElementById('chatBox');
+    if (!box) return;
     requestAnimationFrame(function () {
-      var ov = document.getElementById('initOverlay');
-      if (ov) ov.scrollTop = ov.scrollHeight;
+      box.scrollTop = box.scrollHeight;
     });
   }
   function agentMsg(html) {
@@ -274,8 +280,7 @@
       }
       output += chunk;
       el.innerHTML = output;
-      var ct = document.getElementById('initOverlay');
-      if (ct) ct.scrollTop = ct.scrollHeight;
+      scrollChatToBottom();
       if (ci >= tok.v.length) {
         ci = 0;
         ti++;
@@ -534,8 +539,7 @@
         id +
         '\')" title="移除">✕</button>';
       list.appendChild(card);
-      var ov = document.getElementById('initOverlay');
-      if (ov) ov.scrollTop = ov.scrollHeight;
+      scrollChatToBottom();
     }
     refreshIcons('initOverlay');
   }
@@ -868,20 +872,24 @@
         sendCommand: 'globalChatSend',
       });
     }
-    // 初始化场景内容转为紧凑模式（不再撑满高度，让后续内容自然追加）
+    // 关闭初始化浮窗，进入日常工作台
     var ov = document.getElementById('initOverlay');
     if (ov) {
-      ov.style.height = 'auto';
-      ov.style.minHeight = '0';
+      ov.classList.remove('active');
+      ov.style.display = 'none';
     }
-    // 追加日常分析到对话流中（不清空旧的初始化内容）
-    chatAppend(
-      '<div class="c-row agent"><div class="c-bubble" style="background:#f0fdf4;border-color:#bbf7d0;font-weight:600;font-size:13px">✅ 初始化完成，小安已接管日常监管</div></div>',
-    );
-    // 使用日常工作台的数据生成三个板块，追加到对话中
-    setTimeout(function () {
-      appendDailyOverview();
-    }, 400);
+    // 渲染工作台 + 在后台初始化统一对话引擎
+    if (window.renderScene) window.renderScene('dashboard');
+    if (window.YAQ && window.YAQ.UnifiedChat) {
+      window.YAQ.UnifiedChat.reset();
+      window.YAQ.UnifiedChat.initialize({
+        quickChips: [
+          { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
+          { label: '帮我看看今天的隐患情况', text: '帮我看看今天的重大隐患情况' },
+          { label: '查看行动建议', text: '查看行动建议' },
+        ],
+      });
+    }
   }
 
   // ═══ 追加日常工作台三大板块到对话流 ─────────────────────
@@ -1060,8 +1068,7 @@
                 '</div>';
               card.style.animation = 'fadeUp .35s ease-out both';
               grid.appendChild(card);
-              var ov = document.getElementById('initOverlay');
-              if (ov) ov.scrollTop = ov.scrollHeight;
+              scrollChatToBottom();
             }
           }
         }
@@ -1083,11 +1090,8 @@
       floatCard.appendChild(wrap);
     }
     wrap.insertAdjacentHTML('beforeend', html);
-    // DOM 更新后滚动到 init-overlay 底部
-    requestAnimationFrame(function () {
-      var ov = document.getElementById('initOverlay');
-      if (ov) ov.scrollTop = ov.scrollHeight;
-    });
+    // DOM 更新后滚动到 chatBox 底部
+    scrollChatToBottom();
   }
 
   function convChatSend() {
@@ -1350,7 +1354,18 @@
       ov.classList.remove('active');
       ov.style.display = 'none';
     }
+    // 渲染工作台 + 初始化统一对话引擎
     if (window.renderScene) window.renderScene('dashboard');
+    if (window.YAQ && window.YAQ.UnifiedChat) {
+      window.YAQ.UnifiedChat.reset();
+      window.YAQ.UnifiedChat.initialize({
+        quickChips: [
+          { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
+          { label: '帮我看看今天的隐患情况', text: '帮我看看今天的重大隐患情况' },
+          { label: '查看行动建议', text: '查看行动建议' },
+        ],
+      });
+    }
   }
   // showToast — 复用 YAQ.showToast，保留降级兜底
   var showToast = function (text) {
@@ -1634,20 +1649,19 @@
     });
     var html = QuickChip.render(chipsWithText, { variant: 'inline' });
     sceneAppend(html);
-    // 滚动到底部，让芯片可见
-    var container = document.getElementById('sceneContent');
-    if (container) container.scrollTop = container.scrollHeight;
+    // sceneAppend 已自动滚动到底部
   }
 
   function globalChatQuick(text) {
+    // 先移除快捷芯片（避免内容变化后滚动位置偏移）
+    var inlineChips = document.querySelector('.quick-chips-row');
+    if (inlineChips) inlineChips.remove();
+
     // 显示用户消息
     sceneAppend('<div class="c-row user">' + '<div class="c-bubble user">' + escapeHtml(text) + '</div>' + '</div>');
 
     var input = document.getElementById('globalChatInput');
     if (input) input.value = '';
-    // 隐藏已展示的快捷芯片（从消息流中移除）
-    var inlineChips = document.querySelector('.quick-chips-row');
-    if (inlineChips) inlineChips.remove();
     if (input) input.blur();
 
     // 根据关键词路由到具体场景
@@ -1691,17 +1705,30 @@
     simulateAIResponse(text);
   }
 
+  // ─── 安全的滚动到底部辅助函数 ──────────────────────────
+  // 使用 RAF + setTimeout 双保险，确保内容渲染后可靠滚动
+  function scrollSceneToBottom() {
+    var container = document.getElementById('sceneContent');
+    if (!container) return;
+    var sc = container.closest('.center');
+    if (!sc) return;
+
+    function doScroll() {
+      sc.scrollTop = sc.scrollHeight;
+    }
+
+    // RAF 优先（在下一帧绘制前执行）
+    requestAnimationFrame(doScroll);
+    // setTimeout 兜底（某些浏览器 RAF 批次中 scrollHeight 可能滞后）
+    setTimeout(doScroll, 50);
+  }
+
   // ─── sceneContent 容器追加（带滚动） ─────────────────────
   function sceneAppend(html) {
     var container = document.getElementById('sceneContent');
     if (!container) return;
     container.insertAdjacentHTML('beforeend', html);
-    var scrollContainer = container.closest('.center');
-    if (scrollContainer) {
-      requestAnimationFrame(function () {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      });
-    }
+    scrollSceneToBottom();
   }
 
   // ─── sceneContent 思考 → 逐段展示回复 ──────────────────
@@ -1726,19 +1753,13 @@
         function appendNext() {
           if (idx >= sections.length) {
             refreshIcons();
+            // 图标替换（<i> → <svg>）可能改变布局，需要再次滚动
+            scrollSceneToBottom();
             if (callback) callback();
             return;
           }
           el.insertAdjacentHTML('beforeend', sections[idx]);
-          var container = document.getElementById('sceneContent');
-          if (container) {
-            var sc = container.closest('.center');
-            if (sc) {
-              requestAnimationFrame(function () {
-                sc.scrollTop = sc.scrollHeight;
-              });
-            }
-          }
+          scrollSceneToBottom();
           idx++;
           setTimeout(appendNext, 250 + Math.random() * 200);
         }
@@ -2051,12 +2072,10 @@
 
   function init() {
     if (ls.get(STORAGE_KEY) === 'true') {
-      setTimeout(function () {
-        if (window.renderScene) window.renderScene('dashboard');
-      }, 50);
+      // 初始化已完成，统一对话引擎已接管
       return;
     }
-    // 切换到初始化场景（渲染在 #sceneContent 中，不再是浮窗）
+    // 切换到初始化场景（渲染在 #sceneContent 中）
     if (window.switchScene) {
       window.switchScene('agent-init');
     }

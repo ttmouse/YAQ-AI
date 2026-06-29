@@ -59,6 +59,41 @@
   contain-intrinsic-size: 120px;
 }
 
+/* 内容区容器 — 细粒度滚动性能优化 */
+.center {
+  /* 启用 GPU 合成层，减少滚动时的重绘 */
+  will-change: scroll-position;
+  /* 提示浏览器此元素将滚动 */
+  overscroll-behavior: contain;
+}
+
+/* 列表密集型区域 — 更深度的 contain 优化 */
+.work-items-list,
+.hazard-list-wrap,
+.followup-list {
+  contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 200px;
+}
+
+/* 弹窗内容区滚动性能 */
+.drawer-body,
+.action-modal-body,
+.pa-modal-body,
+.hmodal-body,
+.tmodal-body {
+  contain: layout style paint;
+  /* 滚动容器使用 GPU 加速 */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 搜索面板内容区 */
+.launcher-body {
+  contain: layout style paint;
+  content-visibility: auto;
+  contain-intrinsic-size: 400px;
+}
+
 /* ─── 移动端滚动条 — 极简风格 ─────────────────────────── */
 /* iOS 风格薄滚动条，不占用布局空间 */
 @media (hover: none) and (pointer: coarse) {
@@ -231,17 +266,17 @@
   .mobile-username {
     font-size: 14px;
     font-weight: 600;
-    color: var(--text, #1e1e2e);
+    color: var(--fg, #1e1e2e);
     line-height: 1.2;
   }
 
   .mobile-org {
-    font-size: 10px;
-    color: var(--text-muted, #8e8ea0);
+    font-size: 11px;
+    color: var(--muted, #8e8ea0);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.2;
+    line-height: 1.3;
     padding-bottom: 2px;
   }
 
@@ -252,14 +287,16 @@
   }
 
   .meta-mobile .topbar-search {
-    width: 36px;
-    height: 36px;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     cursor: pointer;
-    color: var(--text, #1e293b);
+    color: var(--fg, #1e293b);
     transition: opacity 0.2s;
   }
 
@@ -268,13 +305,15 @@
   }
 
   .mobile-plus-btn {
-    width: 36px;
-    height: 36px;
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
-    color: var(--text, #1e293b);
+    color: var(--fg, #1e293b);
     border: none;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -401,12 +440,12 @@
   .global-chat-bar {
     height: auto;
     min-height: 38px;
-    margin-bottom: 6px;
+    margin-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
     padding: 5px 6px 5px 12px;
   }
   .global-chat-bar:focus-within {
     padding: 10px 6px 4px 12px;
-    margin-bottom: 12px;
+    margin-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 
   /* 全屏面板底部安全区适配（iOS 底部横条） */
@@ -792,6 +831,20 @@
   }
 }
 
+@media (max-width: 480px) {
+  /* 对话气泡 — 移动端舒适阅读宽度（45-75 字符/行） */
+  .bubble-wrap,
+  .bubble {
+    max-width: min(85vw, 480px);
+    word-break: break-word;
+  }
+
+  /* AI 回复结果区底部留白 */
+  .assistant-body {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px) + 60px);
+  }
+}
+
 /* ─── 超小屏（≤400px）特殊适配 ────────────────────────────── */
 @media (max-width: 400px) {
   /* 能力卡片网格在极小屏变回 1 列 */
@@ -1089,7 +1142,21 @@ html.pwa-standalone .global-chat-bar:focus-within {
   #swUpdateBtn,
   .global-chat-btn,
   .global-chat-btn-icon,
-  .offline-retry-btn {
+  .offline-retry-btn,
+  /* 以下为新增触控目标 — 确保所有可交互元素满足 ≥44px */
+  .topbar-search,
+  .mobile-plus-btn,
+  .tab-item,
+  .ep-tab,
+  .nav-item,
+  .state-action-btn,
+  .rules-dim-item,
+  .launcher-search-clear,
+  .toast-undo-btn,
+  .qc-chip,
+  .goal-chip,
+  .intent-chip,
+  .pwa-ios-guide-btn {
     min-width: 44px;
     min-height: 44px;
     display: inline-flex;
@@ -1629,6 +1696,125 @@ html.pwa-standalone .launcher-body {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+/* ═══ 移动端底部导航栏（底部 Tab Bar）══════════════════════════════ */
+/* 设计原则：减法优先 — ≤5 项；包容性 — ≥44px；接近性 — 图标+标签 */
+@media (max-width: 768px) {
+  .mb-bottom-nav {
+    display: none;
+    align-items: stretch;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(52px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: var(--surface, #ffffff);
+    border-top: 0.5px solid var(--border, rgba(0, 0, 0, 0.08));
+    z-index: 900;
+    box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .mb-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 4px 2px;
+    border: none;
+    background: transparent;
+    color: var(--muted, #8e8ea0);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: color 0.15s ease;
+    min-height: 44px;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .mb-nav-item:active {
+    transform: scale(0.94);
+    transition: transform 0.06s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .mb-nav-item.active {
+    color: var(--accent, #6366f1);
+    background: var(--accent-soft, transparent);
+  }
+  .mb-nav-item.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2.5px;
+    border-radius: 0 0 2px 2px;
+    background: var(--accent, #6366f1);
+  }
+  .mb-nav-item svg {
+    display: block;
+    flex-shrink: 0;
+  }
+  .mb-nav-item span {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+  }
+
+  /* 底部导航隐藏（弹窗打开时） */
+  .mb-bottom-nav.hide-bot-nav {
+    display: none !important;
+  }
+
+  /* PWA standalone 模式下额外安全区 */
+  @media (display-mode: standalone) {
+    .toast {
+      bottom: calc(112px + env(safe-area-inset-bottom, 34px)) !important;
+    }
+  }
+}
+
+/* 桌面端（>768px）隐藏底部导航 */
+@media (min-width: 769px) {
+  .mb-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* ─── 弹窗打开时隐藏底部导航 ──────────────────────────── */
+@media (max-width: 768px) {
+  body:has(.hmodal-panel[style*='display: block']) .mb-bottom-nav,
+  body:has(.tmodal-panel[style*='display: block']) .mb-bottom-nav,
+  body:has(.modal-panel[style*='display: flex']) .mb-bottom-nav,
+  body:has(.pa-modal-panel[style*='display: flex']) .mb-bottom-nav,
+  body:has(.drill-float.open) .mb-bottom-nav,
+  body:has(.action-modal-panel.open) .mb-bottom-nav,
+  body:has(.action-modal-panel[style*='display: flex']) .mb-bottom-nav,
+  body:has(.memory-panel.open) .mb-bottom-nav,
+  body:has(.launcher-panel.open) .mb-bottom-nav {
+    display: none !important;
+  }
+
+  /* ─── 弹窗打开时锁定背景滚动（容错 — 防止误触滚动） ─── */
+  body:has(.hmodal-panel[style*='display: block']),
+  body:has(.tmodal-panel[style*='display: block']),
+  body:has(.modal-panel[style*='display: flex']),
+  body:has(.pa-modal-panel[style*='display: flex']),
+  body:has(.drill-float.open),
+  body:has(.action-modal-panel.open),
+  body:has(.memory-panel.open),
+  body:has(.launcher-panel.open),
+  body:has(.drawer-overlay.open) {
+    overflow: hidden;
   }
 }
 

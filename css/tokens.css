@@ -123,6 +123,6 @@
   --scene-max-w: 840px;
   --scene-pad-x: 16px;
   --scene-pad-x-lg: 24px;
-  --scene-pad-y: 22px;
-  --scene-pad-bottom: 24px;
+  --scene-pad-y: 4px;
+  --scene-pad-bottom: 4px;
 }

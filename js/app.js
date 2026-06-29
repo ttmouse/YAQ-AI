@@ -153,8 +153,9 @@
   };
 
   // ─── YAQ 命名空间 — 后续脚本（agent-init.js/track-store.js）会补充更多方法 ──
-  var YAQ = {};
-  window.YAQ = YAQ;
+  // 注意：保留已有的属性（如 skill-engine.js 注入的 UnifiedChat/SkillRouter）
+  window.YAQ = window.YAQ || {};
+  var YAQ = window.YAQ;
 
   // ════════════════════════════════════════════════════════════════
   // 自定义弹窗（替换原生 prompt/confirm — 移动端体验差不可接受）
@@ -716,7 +717,8 @@
         window.YAQ.updateGlobalInputBar(inputOpts);
       }
       // Agent 内容渲染完成后，显示对应的快捷输入
-      if (window.YAQ.showGlobalQuickChip) {
+      // 如果 UnifiedChat 已接管输入，由它负责显示芯片，跳过旧逻辑
+      if (window.YAQ.showGlobalQuickChip && !(window.YAQ && window.YAQ.UnifiedChat && window.YAQ.UnifiedChat.initialized)) {
         var chips = [];
         switch (sceneId) {
           case 'dashboard':
@@ -8249,6 +8251,9 @@
     closeTab: closeTab,
     renderScene: renderScene,
     renderDashboard: renderDashboard,
+    renderHazardReport: renderHazardReport,
+    renderEfficiency: renderEfficiency,
+    renderMonthlyReport: renderMonthlyReport,
 
     // ─── UI 工具 ───
     showToast: showToast,
@@ -8407,6 +8412,9 @@
   window.renderScene = window.YAQ.renderScene;
   window.escapeHtml = window.YAQ.escapeHtml; // 供 agent-init.js 等后续脚本使用
   window.renderDashboard = window.YAQ.renderDashboard;
+  window.renderHazardReport = window.YAQ.renderHazardReport;
+  window.renderEfficiency = window.YAQ.renderEfficiency;
+  window.renderMonthlyReport = window.YAQ.renderMonthlyReport;
   window.switchScene = window.YAQ.switchScene; // 供移动端底部导航 onclick 使用
   window.onMetricSearch = window.YAQ.onMetricSearch; // 供指标搜索 oninput 使用 (#53)
   window.onLauncherSearch = window.YAQ.onLauncherSearch; // 供启动台搜索 oninput 使用 (#53)
@@ -8715,6 +8723,8 @@
 
   // ── keydown 委托：替代内联 onkeydown (#73) ──────────
   document.addEventListener('keydown', function (e) {
+    // 中文/日文输入法组合期间不触发命令
+    if (e.isComposing || e.keyCode === 229) return;
     var el = e.target.closest('[data-cmd-key]');
     if (el) {
       var key = el.getAttribute('data-cmd-key');
@@ -9953,7 +9963,18 @@
 
   window.bootApp = function () {
     window._yaqBooted = true;
+    // 正常渲染工作台仪表盘
     renderScene('dashboard');
+    // 在后台初始化统一对话引擎（接管输入 + 技能路由）
+    if (window.YAQ && window.YAQ.UnifiedChat && !window.YAQ.UnifiedChat.initialized) {
+      window.YAQ.UnifiedChat.initialize({
+        quickChips: [
+          { label: '分析超期未闭环原因', text: '分析一下隐患闭环未关闭的原因' },
+          { label: '帮我看看今天的隐患情况', text: '帮我看看今天的重大隐患情况' },
+          { label: '查看行动建议', text: '查看行动建议' },
+        ],
+      });
+    }
     bindInteractions();
     window.dispatchEvent(new Event('yaq:booted'));
   };
