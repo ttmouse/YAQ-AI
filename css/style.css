@@ -149,8 +149,6 @@
   scrollbar-gutter: stable;
 }
 .center {
-  mask-image: linear-gradient(to bottom, transparent 0px, black 32px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 32px);
 }
 
 /* ─── 左栏：侧边导航 ─────────────────────────────────────────── */
@@ -6972,9 +6970,9 @@
    演示菜单（三点）
    ═════════════════════════════════════════════════════════════════════ */
 .demo-menu-wrap {
-  position: absolute;
+  position: fixed;
   right: 14px;
-  top: 44px;
+  top: 52px;
   z-index: 950;
 }
 .demo-menu {
